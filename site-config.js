@@ -5,7 +5,7 @@ window.ORRERY_SITE = {
   contactEmail: 'hello@example.com',           // for privacy requests, security reports and support
   coffeeUrl: 'https://www.buymeacoffee.com/yourname',   // your Buy Me a Coffee page
   siteUrl: '',                                 // optional: where studio.html is published, e.g. https://your.domain/studio.html
-  repoUrl: 'https://github.com/your-org/orrery',  // the public source repository (placeholder: set your own; the header's GitHub button links here)
+  repoUrl: 'https://github.com/Hypertoroid/Orrery.github.io',  // the public source repository (placeholder: set your own; the header's GitHub button links here)
   apiBase: '/api',                             // the optional server: opt-in usage statistics, and AI Generate and Fix when it has a key. Without it the studio still works fully
   year: 2026,
 };

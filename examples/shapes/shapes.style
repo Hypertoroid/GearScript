@@ -1,0 +1,4 @@
+Tube, Capsule, Prism, Pyramid, Dome, Wedge, Beam, Ring, Nut, Bolt { color: steel; material: metal; }
+Star, Cam   { color: brass; material: metal; }
+#Base       { color: copper; material: metal; }
+#Floor      { color: #2a3138; material: matte; }

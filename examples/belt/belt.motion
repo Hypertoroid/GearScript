@@ -1,0 +1,7 @@
+// deg/s2 is an angular acceleration: the motor spins up for 1 s, then runs steadily.
+Motor {
+    0s..1s:  rotate: 360deg/s2;
+    then 3s: rotate: 360deg/s;
+}
+
+Motor { 0s..1s: sound: SpinUp; 1s..4s: sound: Run; }

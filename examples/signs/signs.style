@@ -1,0 +1,9 @@
+Board  { color: #3a4048; material: matte; }
+Plaque { font-family: mono; font-weight: 600; color: #9fb3c8; text-align: right; }
+Gear   { material: metal; }
+Driver { color: #c9a43a; text: "36"; font-weight: bold; text-color: #2a1d08; }
+Idler  { color: #8f99a3; text: "18"; font-weight: bold; text-color: #15191d; }
+Output { color: #bf7a4b; text: "12"; font-weight: bold; text-color: #2a1408; }
+Title  { color: #ffd27a; font-weight: 700; }
+Step1, Step2, Step3 { color: #eef1f4; text-background: #10203099; font-weight: 500; }
+Brand  { font-style: 3d; font-weight: bold; text-depth: 6mm; color: #7cc0ff; }

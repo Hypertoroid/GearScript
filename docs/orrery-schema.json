@@ -1,0 +1,2074 @@
+{
+ "language": 1,
+ "studio": "1.0.0-beta",
+ "versionLine": "@orrery 1",
+ "sections": [
+  "scene",
+  "style",
+  "motion"
+ ],
+ "fileExtension": ".orrery",
+ "syntax": {
+  "part": "Name::Type.class { prop: value; }",
+  "group": "Name::Group { member: Type { ... } }",
+  "define": "define Name(param, other = 10mm) :: Type { ... }",
+  "let": "let name = value;",
+  "comment": "// line  or  /* block */",
+  "styleRule": "Selector, .class, #Name { prop: value; }",
+  "motionRule": "Target { forever: prop: value;  0s..2s: prop: a -> b ease-in-out;  then 2s: ... }"
+ },
+ "units": {
+  "mm": "length",
+  "cm": "length",
+  "m": "length",
+  "deg": "angle",
+  "rad": "angle",
+  "turn": "angle",
+  "s": "time",
+  "ms": "time",
+  "mm/s": "speed",
+  "deg/s": "spin rate",
+  "turn/s": "spin rate",
+  "mm/s2": "acceleration",
+  "m/s2": "acceleration",
+  "deg/s2": "angular acceleration",
+  "%": "fraction"
+ },
+ "easings": [
+  "linear",
+  "ease",
+  "ease-in",
+  "ease-out",
+  "ease-in-out",
+  "cubic-bezier(0.4, 0, 0.2, 1)"
+ ],
+ "shapes": {
+  "Box": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    }
+   ],
+   "required": [
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis"
+   ],
+   "doc": "size (x, y, z)"
+  },
+  "Sphere": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "pole.top",
+    "pole.bottom",
+    "axis"
+   ],
+   "doc": "radius"
+  },
+  "Cylinder": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "height",
+     "example": "height: 100mm;",
+     "doc": "Height along the axis"
+    }
+   ],
+   "required": [
+    "radius",
+    "height"
+   ],
+   "anchors": [
+    "axis",
+    "face.top",
+    "face.bottom"
+   ],
+   "doc": "radius, height"
+  },
+  "Cone": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "height",
+     "example": "height: 100mm;",
+     "doc": "Height along the axis"
+    }
+   ],
+   "required": [
+    "radius",
+    "height"
+   ],
+   "anchors": [
+    "axis",
+    "face.top",
+    "face.bottom",
+    "apex"
+   ],
+   "doc": "radius, height"
+  },
+  "Torus": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "tube",
+     "example": "tube: 3mm;",
+     "doc": "Tube radius"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "radius, tube"
+  },
+  "Rod": {
+   "properties": [
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    },
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    }
+   ],
+   "required": [
+    "length"
+   ],
+   "anchors": [
+    "axis",
+    "end.a",
+    "end.b"
+   ],
+   "doc": "length, radius"
+  },
+  "Gear": {
+   "properties": [
+    {
+     "name": "teeth",
+     "example": "teeth: 24;",
+     "doc": "Number of teeth (6 or more)"
+    },
+    {
+     "name": "module",
+     "example": "module: 2mm;",
+     "doc": "Tooth size; meshed gears share it"
+    },
+    {
+     "name": "width",
+     "example": "width: 10mm;",
+     "doc": "Width"
+    }
+   ],
+   "required": [
+    "teeth"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back",
+    "pitch-circle"
+   ],
+   "doc": "teeth, module, width"
+  },
+  "Rect": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "normal"
+   ],
+   "doc": "size (w, h), thickness"
+  },
+  "Disc": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back",
+    "normal"
+   ],
+   "doc": "radius, thickness"
+  },
+  "Line": {
+   "properties": [
+    {
+     "name": "from",
+     "example": "from: (x, y, z);",
+     "doc": "Start point"
+    },
+    {
+     "name": "to",
+     "example": "to: (x, y, z);",
+     "doc": "End point"
+    },
+    {
+     "name": "stroke",
+     "example": "stroke: 3mm;",
+     "doc": "Line thickness"
+    }
+   ],
+   "required": [
+    "from",
+    "to"
+   ],
+   "anchors": [
+    "start",
+    "end",
+    "mid",
+    "axis"
+   ],
+   "doc": "from, to, stroke"
+  },
+  "Curve": {
+   "properties": [
+    {
+     "name": "domain",
+     "example": "domain: u in 0..1;",
+     "doc": "Parameter range"
+    },
+    {
+     "name": "point",
+     "example": "point: (f(u, t), ...);",
+     "doc": "Point as a function of u and t"
+    },
+    {
+     "name": "stroke",
+     "example": "stroke: 3mm;",
+     "doc": "Line thickness"
+    }
+   ],
+   "required": [
+    "domain",
+    "point"
+   ],
+   "anchors": [
+    "start",
+    "mid",
+    "end"
+   ],
+   "doc": "domain: u in 0..1; point: (...)"
+  },
+  "Group": {
+   "properties": [],
+   "required": [],
+   "anchors": [],
+   "doc": "named members that move as one"
+  },
+  "Pulley": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "width",
+     "example": "width: 10mm;",
+     "doc": "Width"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "radius, width"
+  },
+  "Wheel": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "width",
+     "example": "width: 10mm;",
+     "doc": "Width"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "radius, width"
+  },
+  "Spring": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    },
+    {
+     "name": "turns",
+     "example": "turns: 8;",
+     "doc": "Number of coils"
+    },
+    {
+     "name": "wire",
+     "example": "wire: 2mm;",
+     "doc": "Wire thickness"
+    }
+   ],
+   "required": [
+    "radius",
+    "length"
+   ],
+   "anchors": [
+    "axis",
+    "end.a",
+    "end.b"
+   ],
+   "doc": "radius, length, turns, wire"
+  },
+  "Arrow": {
+   "properties": [
+    {
+     "name": "from",
+     "example": "from: (x, y, z);",
+     "doc": "Start point"
+    },
+    {
+     "name": "to",
+     "example": "to: (x, y, z);",
+     "doc": "End point"
+    },
+    {
+     "name": "stroke",
+     "example": "stroke: 3mm;",
+     "doc": "Line thickness"
+    },
+    {
+     "name": "head",
+     "example": "head: 12mm;",
+     "doc": "Arrow head length"
+    }
+   ],
+   "required": [
+    "from",
+    "to"
+   ],
+   "anchors": [
+    "tail",
+    "head",
+    "start",
+    "end",
+    "mid"
+   ],
+   "doc": "from, to, stroke, head"
+  },
+  "Link": {
+   "properties": [
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    },
+    {
+     "name": "width",
+     "example": "width: 10mm;",
+     "doc": "Width"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "length"
+   ],
+   "anchors": [
+    "end.a",
+    "end.b",
+    "mid",
+    "axis",
+    "line",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "length, width, thickness: a bar whose ends are pin axles"
+  },
+  "Tube": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "inner",
+     "example": "inner: 30mm;",
+     "doc": "Inner radius (Tube, Ring, Star)"
+    },
+    {
+     "name": "height",
+     "example": "height: 100mm;",
+     "doc": "Height along the axis"
+    }
+   ],
+   "required": [
+    "radius",
+    "height"
+   ],
+   "anchors": [
+    "axis",
+    "face.top",
+    "face.bottom"
+   ],
+   "doc": "radius, inner, height: a hollow cylinder"
+  },
+  "Capsule": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    }
+   ],
+   "required": [
+    "radius",
+    "length"
+   ],
+   "anchors": [
+    "axis",
+    "end.a",
+    "end.b"
+   ],
+   "doc": "radius, length: a rod with round ends"
+  },
+  "Prism": {
+   "properties": [
+    {
+     "name": "sides",
+     "example": "sides: 6;",
+     "doc": "Number of sides"
+    },
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "height",
+     "example": "height: 100mm;",
+     "doc": "Height along the axis"
+    }
+   ],
+   "required": [
+    "radius",
+    "height"
+   ],
+   "anchors": [
+    "axis",
+    "face.top",
+    "face.bottom"
+   ],
+   "doc": "sides, radius, height"
+  },
+  "Pyramid": {
+   "properties": [
+    {
+     "name": "sides",
+     "example": "sides: 6;",
+     "doc": "Number of sides"
+    },
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "height",
+     "example": "height: 100mm;",
+     "doc": "Height along the axis"
+    }
+   ],
+   "required": [
+    "radius",
+    "height"
+   ],
+   "anchors": [
+    "axis",
+    "face.top",
+    "face.bottom",
+    "apex"
+   ],
+   "doc": "sides, radius, height"
+  },
+  "Dome": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.bottom",
+    "pole.top"
+   ],
+   "doc": "radius: half a sphere on a flat base"
+  },
+  "Wedge": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    }
+   ],
+   "required": [
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "slope"
+   ],
+   "doc": "size (x, y, z): a ramp"
+  },
+  "Plate": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    },
+    {
+     "name": "corner",
+     "example": "corner: 6mm;",
+     "doc": "Corner rounding"
+    },
+    {
+     "name": "hole",
+     "example": "hole: 8mm;",
+     "doc": "Radius of the centre hole"
+    }
+   ],
+   "required": [
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "normal",
+    "hole"
+   ],
+   "doc": "size (w, h), thickness, corner, hole"
+  },
+  "Beam": {
+   "properties": [
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    },
+    {
+     "name": "height",
+     "example": "height: 100mm;",
+     "doc": "Height along the axis"
+    },
+    {
+     "name": "width",
+     "example": "width: 10mm;",
+     "doc": "Width"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "length"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "end.a",
+    "end.b",
+    "line"
+   ],
+   "doc": "length, height, width, thickness: an I-beam along x"
+  },
+  "Ring": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "inner",
+     "example": "inner: 30mm;",
+     "doc": "Inner radius (Tube, Ring, Star)"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "radius, inner, thickness: a washer"
+  },
+  "Nut": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    },
+    {
+     "name": "hole",
+     "example": "hole: 8mm;",
+     "doc": "Radius of the centre hole"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "radius, thickness, hole: a hex nut"
+  },
+  "Bolt": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    },
+    {
+     "name": "head",
+     "example": "head: 12mm;",
+     "doc": "Arrow head length"
+    }
+   ],
+   "required": [
+    "radius",
+    "length"
+   ],
+   "anchors": [
+    "axis",
+    "end.a",
+    "end.b",
+    "head"
+   ],
+   "doc": "radius, length, head: a hex-head bolt"
+  },
+  "Cam": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "lift",
+     "example": "lift: 20mm;",
+     "doc": "How far the cam nose rises"
+    },
+    {
+     "name": "width",
+     "example": "width: 10mm;",
+     "doc": "Width"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back",
+    "nose"
+   ],
+   "doc": "radius, lift, width: a pear cam"
+  },
+  "Star": {
+   "properties": [
+    {
+     "name": "points",
+     "example": "points: 5;  Path: points: (0, 0) (40mm, 0) (20mm, 30mm);",
+     "doc": "Star: number of points. Path: the outline, point after point"
+    },
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "inner",
+     "example": "inner: 30mm;",
+     "doc": "Inner radius (Tube, Ring, Star)"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back"
+   ],
+   "doc": "points, radius, inner, thickness"
+  },
+  "Mesh": {
+   "properties": [
+    {
+     "name": "src",
+     "example": "src: \"piston.stl\";",
+     "doc": "A model file added to the project (STL, GLB or glTF)"
+    },
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "fit",
+     "example": "fit: contain;",
+     "doc": "contain keeps proportions; stretch fills the size box"
+    }
+   ],
+   "required": [
+    "src",
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis"
+   ],
+   "doc": "src \"file.stl\" or \"file.glb\", size (x, y, z), fit: contain | stretch"
+  },
+  "Sound": {
+   "properties": [
+    {
+     "name": "kind",
+     "example": "kind: directional;  or  kind: point;",
+     "doc": "Light type"
+    },
+    {
+     "name": "src",
+     "example": "src: \"piston.stl\";",
+     "doc": "A model file added to the project (STL, GLB or glTF)"
+    },
+    {
+     "name": "pitch",
+     "example": "pitch: 120%;",
+     "doc": "Higher or lower than normal (Sound)"
+    },
+    {
+     "name": "volume",
+     "example": "volume: 60%;",
+     "doc": "How loud (Sound)"
+    },
+    {
+     "name": "length",
+     "example": "length: 120mm;",
+     "doc": "Length (Rod, Link: centre to centre)"
+    }
+   ],
+   "required": [
+    "kind"
+   ],
+   "anchors": [],
+   "doc": "A sound to play from a motion rule: kind (tick, knock, chime…) or src \"voice-over.mp3\", pitch, volume, length"
+  },
+  "Voice": {
+   "properties": [
+    {
+     "name": "voice",
+     "example": "voice: en-GB;  or  voice: \"Samantha\";",
+     "doc": "Voice: a language (en-US, en-IN, fr-FR…) or a voice name installed on the computer"
+    },
+    {
+     "name": "neural",
+     "example": "neural: en_GB-alan-medium;",
+     "doc": "Voice: the neural voice used when an export speaks the lines (Piper voices; left out, one is picked from voice)"
+    },
+    {
+     "name": "rate",
+     "example": "rate: 95%;",
+     "doc": "Voice: how fast it speaks, 50% to 200%"
+    },
+    {
+     "name": "pitch",
+     "example": "pitch: 120%;",
+     "doc": "Higher or lower than normal (Sound)"
+    },
+    {
+     "name": "volume",
+     "example": "volume: 60%;",
+     "doc": "How loud (Sound)"
+    },
+    {
+     "name": "captions",
+     "example": "captions: off;",
+     "doc": "Voice: on (the default) shows each line in the picture, and in exports"
+    }
+   ],
+   "required": [],
+   "anchors": [],
+   "doc": "A narrator for say: lines: voice (en-GB or a voice name), rate, pitch, volume, captions"
+  },
+  "Triangle": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "apex",
+     "example": "apex: 10mm;",
+     "doc": "Shifts the top corner sideways"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "normal",
+    "apex",
+    "corner.left",
+    "corner.right"
+   ],
+   "doc": "size (w, h), apex, thickness: flat, facing +z"
+  },
+  "Ellipse": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "size"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "normal"
+   ],
+   "doc": "size (w, h), thickness: flat"
+  },
+  "Polygon": {
+   "properties": [
+    {
+     "name": "sides",
+     "example": "sides: 6;",
+     "doc": "Number of sides"
+    },
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back",
+    "normal"
+   ],
+   "doc": "sides, radius, thickness: a flat regular polygon"
+  },
+  "Text": {
+   "properties": [
+    {
+     "name": "text",
+     "example": "text: \"Inlet valve\";  (\\n starts a new line)",
+     "doc": "Text: in the scene for a Text part; in style it prints on the part's faces"
+    },
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "facing",
+     "example": "facing: front;",
+     "doc": "Text: camera (the default) keeps it turned to the viewer, so it reads straight at any zoom; front keeps it fixed in the scene, facing +z, like a sign on a wall"
+    }
+   ],
+   "required": [],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "normal"
+   ],
+   "doc": "text \"Hello\", size (letter height), facing: front | camera; style it with font-family, font-size, font-style: 3d …"
+  },
+  "Plot": {
+   "properties": [
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "function",
+     "example": "function: 2 * sin(x);  (x is the horizontal value; t makes it move)",
+     "doc": "Plot: the curve to draw"
+    },
+    {
+     "name": "data",
+     "example": "data: (0, 12) (1, 18) (2, 9);",
+     "doc": "Plot: the values to draw, as (x, y) pairs"
+    },
+    {
+     "name": "kind",
+     "example": "kind: directional;  or  kind: point;",
+     "doc": "Light type"
+    },
+    {
+     "name": "x-axis",
+     "example": "x-axis: 0..10 step 2 \"time (s)\";",
+     "doc": "Plot: the horizontal range, the tick spacing and a title"
+    },
+    {
+     "name": "y-axis",
+     "example": "y-axis: -1..1 step 0.5 \"position\";",
+     "doc": "Plot: the vertical range; left out, it fits the data"
+    },
+    {
+     "name": "x-label",
+     "example": "x-label: \"time (s)\";",
+     "doc": "Plot: the horizontal axis title"
+    },
+    {
+     "name": "y-label",
+     "example": "y-label: \"speed (m/s)\";",
+     "doc": "Plot: the vertical axis title"
+    },
+    {
+     "name": "stroke",
+     "example": "stroke: 3mm;",
+     "doc": "Line thickness"
+    },
+    {
+     "name": "reveal",
+     "example": "reveal: min(1, t / 3s);",
+     "doc": "Plot: how much of the series is drawn, 0 to 1: draws it on over time"
+    },
+    {
+     "name": "axes",
+     "example": "axes: none;",
+     "doc": "Plot: hide the axes (to lay a second series over the first)"
+    },
+    {
+     "name": "grid",
+     "example": "grid: floor;",
+     "doc": "Draw a floor grid"
+    }
+   ],
+   "required": [],
+   "anchors": [],
+   "doc": "size (w, h), function of x (and t) or data (x, y) …, kind: line | bars | points | area, x-axis/y-axis: 0..10 step 2 \"label\", reveal"
+  },
+  "Sector": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "angle",
+     "example": "angle: 90deg;",
+     "doc": "How far the slice or arc goes round"
+    },
+    {
+     "name": "start",
+     "example": "start: 0deg;",
+     "doc": "Where it starts, anticlockwise from +x"
+    },
+    {
+     "name": "inner",
+     "example": "inner: 30mm;",
+     "doc": "Inner radius (Tube, Ring, Star)"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back",
+    "normal",
+    "tip",
+    "mid",
+    "edge.start",
+    "edge.end"
+   ],
+   "doc": "radius, angle, start, inner, thickness: a pie slice or ring segment"
+  },
+  "Arc": {
+   "properties": [
+    {
+     "name": "radius",
+     "example": "radius: 40mm;",
+     "doc": "Radius"
+    },
+    {
+     "name": "angle",
+     "example": "angle: 90deg;",
+     "doc": "How far the slice or arc goes round"
+    },
+    {
+     "name": "start",
+     "example": "start: 0deg;",
+     "doc": "Where it starts, anticlockwise from +x"
+    },
+    {
+     "name": "stroke",
+     "example": "stroke: 3mm;",
+     "doc": "Line thickness"
+    }
+   ],
+   "required": [
+    "radius"
+   ],
+   "anchors": [
+    "axis",
+    "start",
+    "mid",
+    "end"
+   ],
+   "doc": "radius, angle, start, stroke: a curved line"
+  },
+  "Path": {
+   "properties": [
+    {
+     "name": "points",
+     "example": "points: 5;  Path: points: (0, 0) (40mm, 0) (20mm, 30mm);",
+     "doc": "Star: number of points. Path: the outline, point after point"
+    },
+    {
+     "name": "thickness",
+     "example": "thickness: 4mm;",
+     "doc": "Thickness"
+    }
+   ],
+   "required": [
+    "points"
+   ],
+   "anchors": [
+    "axis",
+    "face.front",
+    "face.back",
+    "normal",
+    "start",
+    "end"
+   ],
+   "doc": "points (x, y) (x, y) ..., thickness: any flat outline"
+  }
+ },
+ "commonProperties": [
+  {
+   "name": "at",
+   "example": "at: (x, y, z);  or  at: Other.face.top + (0, 10mm, 0);",
+   "doc": "Where the centre goes"
+  },
+  {
+   "name": "align",
+   "example": "align: face.bottom;",
+   "doc": "Put this anchor on the at point"
+  },
+  {
+   "name": "orient",
+   "example": "orient: 90deg about x;",
+   "doc": "Starting rotation"
+  },
+  {
+   "name": "visible",
+   "example": "visible: false;",
+   "doc": "Hide but keep usable"
+  },
+  {
+   "name": "repeat",
+   "example": "repeat: 4 step (100mm, 0, 0);",
+   "doc": "Numbered copies; i counts 0, 1, 2 ..."
+  },
+  {
+   "name": "scatter",
+   "example": "scatter: 40 in plane xz (600mm, 400mm) seed 7 spin 360deg vary 20% apart;",
+   "doc": "Copies at random places, the same on every build: in plane (xz, xy, yz, an equation \"2x + y - z = 100mm\" or normal (a, b, c)), along x, in box, in disc, on circle, in sphere. Copies are Name1..NameN; flat shapes lie in the plane. A plane takes a third size, (w, d, depth), to spread copies off it too"
+  },
+  {
+   "name": "attach",
+   "example": "attach: own-anchor to Other.anchor;",
+   "doc": "Fuse to another part"
+  },
+  {
+   "name": "hinge",
+   "example": "hinge: own-line on Other.line;  or  hinge: end.a on (0, 0, 0);",
+   "doc": "Turn about a line, riding on the other part"
+  },
+  {
+   "name": "slider",
+   "example": "slider: axis on Other.axis;",
+   "doc": "Slide along a line"
+  },
+  {
+   "name": "range",
+   "example": "range: -45deg..45deg;",
+   "doc": "Limit a hinge or slider"
+  },
+  {
+   "name": "mesh",
+   "example": "mesh: G1;  or  mesh: G1 at 60deg;",
+   "doc": "Mesh with a gear (ratio from teeth)"
+  },
+  {
+   "name": "couple",
+   "example": "couple: Hub 1/12;",
+   "doc": "Turn at a ratio of another part"
+  },
+  {
+   "name": "belt",
+   "example": "belt: Motor;",
+   "doc": "Belt drive, same direction"
+  },
+  {
+   "name": "pin",
+   "example": "pin: own-point to Other.point;",
+   "doc": "Keep two points together (closes a loop)"
+  },
+  {
+   "name": "overlap",
+   "example": "overlap: allow;",
+   "doc": "Do not warn when this part passes through another (W0560)"
+  },
+  {
+   "name": "fixed",
+   "example": "fixed: top-left;",
+   "doc": "Keeps the part at one place on the screen whatever the Observer does: top-left, top, top-right, left, center, right, bottom-left, bottom, bottom-right, then an optional margin (5%); or (x%, y%) from the top-left. For titles and logos in a moving camera"
+  }
+ ],
+ "blocks": {
+  "Observer": [
+   {
+    "name": "position",
+    "example": "position: (x, y, z);",
+    "doc": "Camera position"
+   },
+   {
+    "name": "look-at",
+    "example": "look-at: Part;",
+    "doc": "What the camera looks at"
+   },
+   {
+    "name": "zoom",
+    "example": "zoom: 1;",
+    "doc": "Zoom factor"
+   },
+   {
+    "name": "fov",
+    "example": "fov: 40deg;",
+    "doc": "Field of view"
+   },
+   {
+    "name": "projection",
+    "example": "projection: orthographic;",
+    "doc": "Flat projection"
+   }
+  ],
+  "Light": [
+   {
+    "name": "kind",
+    "example": "kind: directional;  or  kind: point;",
+    "doc": "Light type"
+   },
+   {
+    "name": "direction",
+    "example": "direction: (-1, -2, -1);",
+    "doc": "Light direction"
+   },
+   {
+    "name": "power",
+    "example": "power: 0.8;",
+    "doc": "Brightness, 0 to 1"
+   },
+   {
+    "name": "at",
+    "example": "at: (x, y, z);  or  at: Other.face.top + (0, 10mm, 0);",
+    "doc": "Where the centre goes"
+   },
+   {
+    "name": "color",
+    "example": "color: #hex | name | gradient(#a, #b, axis: x);",
+    "doc": "Colour"
+   }
+  ],
+  "Scene": [
+   {
+    "name": "duration",
+    "example": "duration: 4s;",
+    "doc": "Animation length"
+   },
+   {
+    "name": "frame",
+    "example": "frame: reel;  or  frame: 9:16;  or  frame: 1080x1920;",
+    "doc": "The picture's shape and size: the preview shows it exactly, and exports use it"
+   },
+   {
+    "name": "sky",
+    "example": "sky: dusk;  or  sky: #1d3b70 #f2b38a #2a2030;",
+    "doc": "A glowing sphere round the whole scene: day dawn dusk sunset night space overcast studio, or top, horizon and below colours"
+   },
+   {
+    "name": "sun"
+   },
+   {
+    "name": "ground",
+    "example": "ground: #3d4a35;",
+    "doc": "A wide floor under the model that fades into the sky. It sits at the foot of the model, leaving out glowing parts (so a sun can rise from below it); ground: #3d4a35 at 0mm; sets its height"
+   },
+   {
+    "name": "stars",
+    "example": "stars: 800;",
+    "doc": "How many stars the sky shows (night and space have them already)"
+   },
+   {
+    "name": "background",
+    "example": "background: #0b0f14;",
+    "doc": "Background colour, or transparent"
+   },
+   {
+    "name": "grid",
+    "example": "grid: floor;",
+    "doc": "Draw a floor grid"
+   },
+   {
+    "name": "explode",
+    "example": "Scene: explode: 1 along y;  motion: Scene { 0s..2s: explode: 0 -> 1; }  part style: explode: 0;",
+    "doc": "Exploded view: parts move apart from the middle of the model. On a part, a weight: 0 keeps it in place, 2 moves it twice as far"
+   }
+  ]
+ },
+ "style": [
+  {
+   "name": "use",
+   "example": "use: Metal, Polished;",
+   "doc": "Take the properties of named styles (Metal::Style { … }), left to right: a later style wins, and the part's own properties win over all of them"
+  },
+  {
+   "name": "color",
+   "example": "color: #hex | name | gradient(#a, #b, axis: x);",
+   "doc": "Colour"
+  },
+  {
+   "name": "material",
+   "example": "material: metal;",
+   "doc": "matte, plastic, metal, brushed, chrome, gold, glass, flat, glow"
+  },
+  {
+   "name": "outline",
+   "example": "outline: 1px #222;",
+   "doc": "Edge lines"
+  },
+  {
+   "name": "opacity",
+   "example": "opacity: 0.5;",
+   "doc": "0 (invisible) to 1 (solid), or 50%"
+  },
+  {
+   "name": "luminosity",
+   "example": "luminosity: 80% [colour] [range];  motion: luminosity: 0 -> 100%;",
+   "doc": "The part shines and lights what is near it"
+  },
+  {
+   "name": "text",
+   "example": "text: \"Inlet valve\";  (\\n starts a new line)",
+   "doc": "Text: in the scene for a Text part; in style it prints on the part's faces"
+  },
+  {
+   "name": "text-side",
+   "example": "text-side: front;  or  text-side: front top;  or  all",
+   "doc": "Which faces carry the text: front back left right top bottom; round parts wrap it round the side"
+  },
+  {
+   "name": "font-family",
+   "example": "font-family: sans;  or  serif | mono | \"Avenir Next\"",
+   "doc": "Typeface: sans, serif, mono, or any font installed on the computer (3D letters: sans, serif, mono)"
+  },
+  {
+   "name": "font-size",
+   "example": "font-size: 24mm;  or  40%",
+   "doc": "Letter height; a % is a share of the face. Leave it out to fit the face"
+  },
+  {
+   "name": "font-weight",
+   "example": "font-weight: bold;  or  600",
+   "doc": "normal, bold, or 100 to 900"
+  },
+  {
+   "name": "font-style",
+   "example": "font-style: italic;  or  3d  or  italic 3d",
+   "doc": "italic slants the letters; 3d makes them solid, with depth and shadows"
+  },
+  {
+   "name": "text-color",
+   "example": "text-color: #1b1f24;",
+   "doc": "Colour of the letters; a Text also takes color"
+  },
+  {
+   "name": "text-depth",
+   "example": "text-depth: 4mm;",
+   "doc": "How far 3D letters stand out (implies font-style: 3d)"
+  },
+  {
+   "name": "text-align",
+   "example": "text-align: center;",
+   "doc": "left, center or right"
+  },
+  {
+   "name": "text-padding",
+   "example": "text-padding: 6mm;",
+   "doc": "Space between the letters and the edge of the face or background"
+  },
+  {
+   "name": "text-background",
+   "example": "text-background: #10203080;",
+   "doc": "A panel behind the letters, so they read over anything"
+  },
+  {
+   "name": "line-height",
+   "example": "line-height: 1.2;",
+   "doc": "Space between lines, as a multiple of the letter height"
+  },
+  {
+   "name": "label",
+   "example": "label: \"text\";",
+   "doc": "Text above the part"
+  },
+  {
+   "name": "label-color",
+   "example": "label-color: #b8442e;",
+   "doc": "Colour of the label text"
+  },
+  {
+   "name": "label-size",
+   "example": "label-size: 140%;",
+   "doc": "Label size; 100% is normal"
+  },
+  {
+   "name": "label-background",
+   "example": "label-background: #10203080;",
+   "doc": "A panel behind the label. Left out, a label is bare text"
+  },
+  {
+   "name": "trail",
+   "example": "trail: [anchor] [time] [colour];",
+   "doc": "Draw the path a point follows"
+  },
+  {
+   "name": "roughness",
+   "example": "roughness: 0.3;",
+   "doc": "0 (mirror) to 1 (chalk); overrides the material"
+  },
+  {
+   "name": "metalness",
+   "example": "metalness: 0.9;",
+   "doc": "0 (paint) to 1 (bare metal); overrides the material"
+  },
+  {
+   "name": "wireframe",
+   "example": "wireframe: on;",
+   "doc": "Draw only the triangle edges"
+  },
+  {
+   "name": "shadow",
+   "example": "shadow: none;",
+   "doc": "none stops the part casting a shadow"
+  },
+  {
+   "name": "cut",
+   "example": "cut: z 0mm;  or  cut: -x 20mm;  motion: cut: 200mm -> 0mm;",
+   "doc": "Section view: slices the part with a plane in scene coordinates and cuts away the side the axis points to"
+  },
+  {
+   "name": "cut-color",
+   "example": "cut-color: #c0392b;",
+   "doc": "Colour of the cut faces (a section view)"
+  },
+  {
+   "name": "explode",
+   "example": "Scene: explode: 1 along y;  motion: Scene { 0s..2s: explode: 0 -> 1; }  part style: explode: 0;",
+   "doc": "Exploded view: parts move apart from the middle of the model. On a part, a weight: 0 keeps it in place, 2 moves it twice as far"
+  }
+ ],
+ "materials": [
+  {
+   "name": "metal",
+   "doc": "soft metal"
+  },
+  {
+   "name": "brushed",
+   "doc": "satin metal"
+  },
+  {
+   "name": "chrome",
+   "doc": "mirror metal"
+  },
+  {
+   "name": "gold",
+   "doc": "polished gold"
+  },
+  {
+   "name": "plastic",
+   "doc": "smooth"
+  },
+  {
+   "name": "matte",
+   "doc": "no shine"
+  },
+  {
+   "name": "glass",
+   "doc": "see-through"
+  },
+  {
+   "name": "ghost",
+   "doc": "x-ray: faint faces, clear edges"
+  },
+  {
+   "name": "flat",
+   "doc": "faceted"
+  },
+  {
+   "name": "glow",
+   "doc": "shines: luminosity 60%"
+  }
+ ],
+ "motion": {
+  "part": [
+   {
+    "name": "rotate",
+    "example": "rotate: 60deg/s [about x|y|z|Part.axis];  hinged: rotate: 0deg -> 90deg;",
+    "doc": "Turn. A hinged part turns about its hinge (an angle, a speed or a change)"
+   },
+   {
+    "name": "orbit",
+    "example": "orbit: Center 30deg/s;",
+    "doc": "Circle another part"
+   },
+   {
+    "name": "move",
+    "example": "move: (x, y, z);  slider: move: -90mm -> 90mm;",
+    "doc": "Slide. A vector for free parts; a number along the line for a slider"
+   },
+   {
+    "name": "along",
+    "example": "along: CurveName 12s;",
+    "doc": "Follow a Curve"
+   },
+   {
+    "name": "x",
+    "example": "x: 0;",
+    "doc": "Pin a coordinate"
+   },
+   {
+    "name": "y",
+    "example": "y: 0;",
+    "doc": "Pin a coordinate"
+   },
+   {
+    "name": "z",
+    "example": "z: 0;",
+    "doc": "Pin a coordinate"
+   },
+   {
+    "name": "opacity",
+    "example": "opacity: 0.5;",
+    "doc": "0 (invisible) to 1 (solid), or 50%"
+   },
+   {
+    "name": "color",
+    "example": "color: #hex | name | gradient(#a, #b, axis: x);",
+    "doc": "Colour"
+   },
+   {
+    "name": "luminosity",
+    "example": "luminosity: 80% [colour] [range];  motion: luminosity: 0 -> 100%;",
+    "doc": "The part shines and lights what is near it"
+   },
+   {
+    "name": "cut",
+    "example": "cut: z 0mm;  or  cut: -x 20mm;  motion: cut: 200mm -> 0mm;",
+    "doc": "Section view: slices the part with a plane in scene coordinates and cuts away the side the axis points to"
+   },
+   {
+    "name": "sound",
+    "example": "sound: Knock at end;",
+    "doc": "Play a Sound: at start, at end, at 2s or every 1s; then an optional volume like 60%"
+   },
+   {
+    "name": "say",
+    "example": "say: Narrator \"The intake valve opens\";  or  say: \"Done\" at end;",
+    "doc": "Speak a line (and show it as a caption): the browser's voice in the preview and the 3D player"
+   }
+  ],
+  "observer": [
+   {
+    "name": "follow",
+    "example": "follow: Part offset (x, y, z);",
+    "doc": "Camera keeps an offset from a part"
+   },
+   {
+    "name": "orbit",
+    "example": "orbit: Center 30deg/s;",
+    "doc": "Circle another part"
+   },
+   {
+    "name": "look-at",
+    "example": "look-at: Part;",
+    "doc": "What the camera looks at"
+   },
+   {
+    "name": "zoom",
+    "example": "zoom: 1;",
+    "doc": "Zoom factor"
+   },
+   {
+    "name": "move",
+    "example": "move: (x, y, z);  slider: move: -90mm -> 90mm;",
+    "doc": "Slide. A vector for free parts; a number along the line for a slider"
+   },
+   {
+    "name": "x",
+    "example": "x: 0;",
+    "doc": "Pin a coordinate"
+   },
+   {
+    "name": "y",
+    "example": "y: 0;",
+    "doc": "Pin a coordinate"
+   },
+   {
+    "name": "z",
+    "example": "z: 0;",
+    "doc": "Pin a coordinate"
+   },
+   {
+    "name": "position",
+    "example": "position: (x, y, z);",
+    "doc": "Camera position"
+   },
+   {
+    "name": "sound",
+    "example": "sound: Knock at end;",
+    "doc": "Play a Sound: at start, at end, at 2s or every 1s; then an optional volume like 60%"
+   }
+  ],
+  "scene": [
+   {
+    "name": "sound",
+    "example": "sound: Knock at end;",
+    "doc": "Play a Sound: at start, at end, at 2s or every 1s; then an optional volume like 60%"
+   },
+   {
+    "name": "say",
+    "example": "say: Narrator \"The intake valve opens\";  or  say: \"Done\" at end;",
+    "doc": "Speak a line (and show it as a caption): the browser's voice in the preview and the 3D player"
+   },
+   {
+    "name": "explode",
+    "example": "Scene: explode: 1 along y;  motion: Scene { 0s..2s: explode: 0 -> 1; }  part style: explode: 0;",
+    "doc": "Exploded view: parts move apart from the middle of the model. On a part, a weight: 0 keeps it in place, 2 moves it twice as far"
+   }
+  ]
+ },
+ "chapters": {
+  "common": "@common",
+  "chapter": "@chapter Name [\"Title\"] [extends Other] [cut | fade [time] [#colour] | crossfade [time]] [fade-out [time] [#colour]]",
+  "transitions": {
+   "cut": "straight in",
+   "fade": "through a colour (black unless given), 0.8 s unless given",
+   "crossfade": "blends over the end of the chapter before, 1 s unless given"
+  },
+  "extends": "the chapter starts from the other chapter's scene and style (not its motion); a later Observer replaces the inherited one",
+  "maxChapterSeconds": 120
+ },
+ "sounds": {
+  "tick": "A clock tick: a bright, short click",
+  "tock": "The lower half of tick-tock",
+  "ratchet": "A pawl clicking over five teeth",
+  "clank": "Two metal parts striking",
+  "latch": "A latch clicking shut",
+  "gear": "Gear teeth rattling past each other",
+  "spring": "A spring released: boing",
+  "rattle": "A chain or loose links rattling",
+  "footstep": "A metal foot landing: a robot's step",
+  "clang": "A heavy steel part striking: rings out",
+  "chug": "One puff of a steam engine",
+  "hiss": "Steam or air escaping",
+  "rumble": "An engine running: low, pulsing",
+  "knock": "A soft wooden knock: a part landing",
+  "thud": "Something heavy set down",
+  "click": "A tiny dry click",
+  "snap": "A crisp snap into place",
+  "pop": "A rounded pop",
+  "tap": "A light tap",
+  "whoosh": "Air rushing past",
+  "swish": "A quick swipe",
+  "whirr": "An electric motor running",
+  "servo": "A servo moving: rising buzz",
+  "slide": "Metal sliding on metal",
+  "creak": "A hinge creaking as a door swings",
+  "squeak": "Rubber squeaking across glass",
+  "chime": "A clear chime",
+  "bell": "A small bell, struck once",
+  "ding": "A bright ding",
+  "beep": "An electronic beep",
+  "blip": "A short interface blip",
+  "success": "Two notes up: done",
+  "alert": "Two notes down: attention",
+  "hum": "A low mains hum, for under a scene"
+ },
+ "skies": [
+  "day",
+  "dawn",
+  "dusk",
+  "sunset",
+  "night",
+  "space",
+  "overcast",
+  "studio"
+ ],
+ "frames": {
+  "landscape": "1920x1080",
+  "portrait": "1080x1920",
+  "square": "1080x1080",
+  "youtube": "1920x1080",
+  "youtube-short": "1080x1920",
+  "reel": "1080x1920",
+  "tiktok": "1080x1920",
+  "instagram": "1080x1350",
+  "linkedin": "1080x1350",
+  "slides": "1920x1080",
+  "4k": "3840x2160",
+  "cinema": "2048x858"
+ }
+}

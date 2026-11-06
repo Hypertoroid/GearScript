@@ -1,0 +1,5 @@
+// Your first sketch, in the current syntax.
+Ball::Sphere { radius: 50mm; at: (0, 0, 0); }
+Observer     { position: (1000mm, 0, 0); zoom: 3; }
+Light        { power: 0.44; }
+Scene        { grid: floor; duration: 14s; }

@@ -1,0 +1,93 @@
+// A skeleton wall clock, assembled step by step and then started.
+// ---- the case ----
+Backboard::Plate { size: (400mm, 1380mm); thickness: 24mm; corner: 30mm; at: (0, 0, -52mm); }
+Crown::Box  { size: (450mm, 44mm, 104mm); at: (0, 712mm, -40mm); }
+Crown2::Box { size: (410mm, 22mm, 86mm); at: (0, 745mm, -40mm); }
+Finial::Sphere { radius: 17mm; at: (0, 772mm, -40mm); overlap: allow; }   // set into the crown
+Plinth::Box  { size: (450mm, 44mm, 104mm); at: (0, -712mm, -40mm); }
+Plinth2::Box { size: (410mm, 22mm, 86mm); at: (0, -745mm, -40mm); }
+TagBoard::Sphere { radius: 1mm; at: (150mm, -250mm, 0); }
+TagCrown::Sphere { radius: 1mm; at: (160mm, 790mm, -40mm); }
+TagPlinth::Sphere { radius: 1mm; at: (160mm, -650mm, -40mm); }
+// ---- the movement frame ----
+BackPlate::Plate { size: (270mm, 300mm); thickness: 5mm; corner: 26mm; at: (0, 340mm, -15mm); overlap: allow; }   // pillars and arbors are set into it
+Pillar1::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (-118mm, 208mm, 5mm); overlap: allow; }
+Pillar2::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (118mm, 208mm, 5mm); overlap: allow; }
+Pillar3::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (-118mm, 472mm, 5mm); overlap: allow; }
+Pillar4::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (118mm, 472mm, 5mm); overlap: allow; }
+TagBack::Sphere { radius: 1mm; at: (175mm, 210mm, 0); }
+TagPillars::Sphere { radius: 1mm; at: (140mm, 510mm, 10mm); }
+// ---- the gear train: each wheel spins on its own arbor ----
+GreatWheel::Group { wheel: Gear { teeth: 64; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 14.08mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (-59.65mm, 244.81mm, 5mm); orient: 52.81deg about z; }
+TagGreatWheel::Sphere { radius: 1mm; at: (-150mm, 170mm, 30mm); }
+CentreWheel::Group { wheel: Gear { teeth: 40; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 8.8mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 330mm, 5mm); orient: 0deg about z; }
+TagCentreWheel::Sphere { radius: 1mm; at: (95mm, 290mm, 30mm); }
+ThirdWheel::Group { wheel: Gear { teeth: 30; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 6.6mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (45mm, 383.62mm, 5mm); orient: 218.67deg about z; }
+TagThirdWheel::Sphere { radius: 1mm; at: (120mm, 430mm, 30mm); }
+EscapeWheel::Group { wheel: Gear { teeth: 24; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 6mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 413.48mm, 5mm); orient: 318.64deg about z; }
+TagEscapeWheel::Sphere { radius: 1mm; at: (-100mm, 470mm, 30mm); }
+// ---- the escapement: the anchor rocks with the pendulum ----
+Anchor::Group { arm1: Link { length: 42mm; width: 8mm; thickness: 5mm; orient: -55deg about z; at: (12.05mm, -17.2mm, 0); } arm2: Link { length: 42mm; width: 8mm; thickness: 5mm; orient: -125deg about z; at: (-12.05mm, -17.2mm, 0); } boss: Cylinder { radius: 7mm; height: 10mm; orient: 90deg about x; at: (0, 0, 0); } crutch: Cylinder { radius: 2mm; height: 40mm; orient: 90deg about x; at: (0, 0, -18mm); } at: (0, 459.48mm, 5mm); overlap: allow; }   // its pallets enter the escape wheel; its crutch holds the pendulum rod
+TagAnchor::Sphere { radius: 1mm; at: (90mm, 499.48mm, 20mm); }
+FrontPlate::Group { top: Beam { length: 270mm; height: 22mm; width: 5mm; thickness: 5mm; at: (0, 155mm, 0); } bottom: Beam { length: 270mm; height: 22mm; width: 5mm; thickness: 5mm; at: (0, -135mm, 0); } left: Box { size: (22mm, 290mm, 5mm); at: (-125mm, 10mm, 0); } right: Box { size: (22mm, 290mm, 5mm); at: (125mm, 10mm, 0); } at: (0, 330mm, 25mm); overlap: allow; }
+TagFront::Sphere { radius: 1mm; at: (170mm, 500mm, 30mm); }
+// ---- the dial ----
+ChapterRing::Ring { radius: 150mm; inner: 112mm; thickness: 4mm; at: (0, 330mm, 42mm); }
+TagRing::Sphere { radius: 1mm; at: (190mm, 430mm, 45mm); }
+Mark0::Box { size: (6mm, 22mm, 2mm); orient: 0deg about z; at: (0, 461mm, 45mm); }
+Mark1::Box { size: (3mm, 13mm, 2mm); orient: -30deg about z; at: (65.5mm, 443.45mm, 45mm); }
+Mark2::Box { size: (3mm, 13mm, 2mm); orient: -60deg about z; at: (113.45mm, 395.5mm, 45mm); }
+Mark3::Box { size: (6mm, 22mm, 2mm); orient: -90deg about z; at: (131mm, 330mm, 45mm); }
+Mark4::Box { size: (3mm, 13mm, 2mm); orient: -120deg about z; at: (113.45mm, 264.5mm, 45mm); }
+Mark5::Box { size: (3mm, 13mm, 2mm); orient: -150deg about z; at: (65.5mm, 216.55mm, 45mm); }
+Mark6::Box { size: (6mm, 22mm, 2mm); orient: -180deg about z; at: (0, 199mm, 45mm); }
+Mark7::Box { size: (3mm, 13mm, 2mm); orient: -210deg about z; at: (-65.5mm, 216.55mm, 45mm); }
+Mark8::Box { size: (3mm, 13mm, 2mm); orient: -240deg about z; at: (-113.45mm, 264.5mm, 45mm); }
+Mark9::Box { size: (6mm, 22mm, 2mm); orient: -270deg about z; at: (-131mm, 330mm, 45mm); }
+Mark10::Box { size: (3mm, 13mm, 2mm); orient: -300deg about z; at: (-113.45mm, 395.5mm, 45mm); }
+Mark11::Box { size: (3mm, 13mm, 2mm); orient: -330deg about z; at: (-65.5mm, 443.45mm, 45mm); }
+TagMarks::Sphere { radius: 1mm; at: (-200mm, 390mm, 45mm); }
+Cannon::Cylinder { radius: 3mm; height: 34mm; orient: 90deg about x; at: (0, 330mm, 38mm); overlap: allow; }   // the hands and the centre arbor turn on it
+HourHand::Group { blade: Box { size: (8mm, 72mm, 2mm); at: (0, 34mm, 0); } tip: Prism { sides: 4; radius: 9mm; height: 2mm; orient: 90deg about x; at: (0, 72mm, 0); } boss: Cylinder { radius: 9mm; height: 3mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 330mm, 49mm); }
+MinuteHand::Group { blade: Box { size: (5mm, 112mm, 2mm); at: (0, 50mm, 0); } tail: Box { size: (5mm, 26mm, 2mm); at: (0, -13mm, 0); } boss: Cylinder { radius: 7mm; height: 3mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 330mm, 53mm); }
+TagHour::Sphere { radius: 1mm; at: (-150mm, 410mm, 55mm); }
+TagMinute::Sphere { radius: 1mm; at: (140mm, 440mm, 58mm); }
+// ---- the pendulum: a seconds pendulum, one beat per second ----
+Pendulum::Group { spring: Box { size: (14mm, 22mm, 1mm); at: (0, -11mm, 0); } rod: Cylinder { radius: 3mm; height: 760mm; at: (0, -400mm, 0); } bob: Cylinder { radius: 58mm; height: 16mm; orient: 90deg about x; at: (0, -790mm, 0); } nut: Cylinder { radius: 6mm; height: 12mm; at: (0, -858mm, 0); } at: (0, 483.48mm, -30mm); }
+TagPendulum::Sphere { radius: 1mm; at: (150mm, -306.52mm, -30mm); }
+// ---- the weights: they power the clock as they fall ----
+PulleyL::Pulley { radius: 14mm; width: 6mm; at: (-168mm, 205mm, -14mm); overlap: allow; }
+CordL::Cylinder { radius: 1.2mm; height: 330mm; at: (-168mm, 40mm, -14mm); overlap: allow; }
+WeightL::Tube { radius: 27mm; inner: 22mm; height: 180mm; at: (-168mm, -215mm, -14mm); }
+CapL::Cylinder { radius: 27mm; height: 6mm; at: (-168mm, -122mm, -14mm); overlap: allow; }   // closes the weight's tube
+HookL::Torus { radius: 6mm; tube: 1.5mm; at: (-168mm, -114mm, -14mm); overlap: allow; }
+PulleyR::Pulley { radius: 14mm; width: 6mm; at: (168mm, 205mm, -14mm); overlap: allow; }
+CordR::Cylinder { radius: 1.2mm; height: 330mm; at: (168mm, 40mm, -14mm); overlap: allow; }
+WeightR::Tube { radius: 27mm; inner: 22mm; height: 180mm; at: (168mm, -215mm, -14mm); }
+CapR::Cylinder { radius: 27mm; height: 6mm; at: (168mm, -122mm, -14mm); overlap: allow; }   // closes the weight's tube
+HookR::Torus { radius: 6mm; tube: 1.5mm; at: (168mm, -114mm, -14mm); overlap: allow; }
+
+
+TagWeights::Sphere { radius: 1mm; at: (-260mm, -240mm, -14mm); }
+Bezel::Ring { radius: 156mm; inner: 148mm; thickness: 8mm; at: (0, 330mm, 58mm); }
+Glass::Disc { radius: 150mm; thickness: 2mm; at: (0, 330mm, 60mm); }
+// ---- the camera looks at Aim, which glides between points of interest ----
+// ---- sounds: generated by Orrery, so free to use ----
+Thud::Sound   { kind: thud; volume: 80%; }
+Knock::Sound  { kind: knock; volume: 75%; }
+Tap::Sound    { kind: tap; pitch: 130%; volume: 45%; }
+Clank::Sound  { kind: clank; pitch: 80%; volume: 45%; }
+Snap::Sound   { kind: snap; volume: 55%; }
+Latch::Sound  { kind: latch; volume: 70%; }
+Click::Sound  { kind: click; volume: 60%; }
+Ding::Sound   { kind: ding; pitch: 150%; volume: 40%; }
+Whoosh::Sound { kind: whoosh; length: 1.6s; volume: 30%; }
+Tick::Sound   { kind: tick; volume: 80%; }
+Tock::Sound   { kind: tock; volume: 80%; }
+Chime::Sound  { kind: chime; volume: 45%; }
+Aim::Sphere { radius: 1mm; at: (0, 0, 0); }
+Observer { position: (900mm, 250mm, 2900mm); fov: 34deg; }
+Light { kind: directional; direction: (-0.55, -0.7, -1); power: 0.95; }
+Light { kind: point; at: (420mm, 700mm, 650mm); power: 0.32; color: #ffe2b8; }
+Light { kind: point; at: (-500mm, 300mm, 900mm); power: 0.3; color: #cfe0ff; }
+Scene { duration: 110s; background: #0b0f14; }

@@ -1,0 +1,5 @@
+Face             { color: #f3efe6; material: matte; outline: 1px #8a8378; }
+HourHub, Hour    { color: graphite; }
+MinuteHub        { color: #b8442e; }
+Minute           { color: #b8442e; label: "minute"; }
+Hour             { label: "hour"; }

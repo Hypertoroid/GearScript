@@ -1,0 +1,4 @@
+define Tyre(r = 30mm) :: Wheel { radius: r; width: 14mm; }
+W1::Tyre(20mm) { at: (0, 0, 0); }
+W2::Tyre(30mm) { at: (120mm, 0, 0); }
+W3::Tyre(40mm) { at: (240mm, 0, 0); }

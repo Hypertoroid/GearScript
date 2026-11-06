@@ -1,0 +1,23 @@
+@orrery 1
+
+@scene
+// A curve defined as a function of u and time t.
+Wave::Curve {
+    domain: u in 0..1;
+    point: (u * 400mm - 200mm, 40mm * sin(6.283 * (u * 2 - t / 2s)), 0);
+    stroke: 4mm;
+}
+Bead::Sphere { radius: 12mm; }
+
+Observer { position: (0, 60mm, 520mm); look-at: (0, 0, 0); }
+Light { kind: directional; direction: (-0.5, -1, -1); power: 0.9; }
+Scene { duration: 4s; }
+
+@style
+Wave { color: #1c6b82; material: plastic; }
+Bead { color: #e0a63a; material: metal; }
+
+@motion
+Bead {
+    forever: along: Wave 4s;
+}

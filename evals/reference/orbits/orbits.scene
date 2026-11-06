@@ -1,0 +1,4 @@
+Sun::Sphere { radius: 30mm; at: (0, 0, 0); }
+Earth::Sphere { radius: 10mm; at: (150mm, 0, 0); }
+Moon::Sphere { radius: 3mm; at: Earth.center + (25mm, 0, 0); }
+Scene { duration: 12s; }

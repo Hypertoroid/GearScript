@@ -1,0 +1,27 @@
+// The only speed in the whole scene. Everything else follows from it.
+let cruise = (420mm/s, 0, 0);
+
+Loco {
+    0s..3s:  move: (0, 0, 0) -> cruise ease-in;      // pull away from a stand
+    then 7s: move: cruise;
+}
+
+Driver, Small { forever: roll: Track; }
+
+Arm { 8.3s..8.9s: rotate: 0deg -> -45deg ease-out; }    // the signal drops to clear the line
+
+// Follow the engine, push in on the valve gear, then pull back out.
+Observer {
+    forever:   follow: Loco.view offset (260mm, 100mm, 900mm);
+    2.5s..5s:  move: (0, 0, 0) -> (-40mm, -70mm, -470mm) ease-in-out;
+    5.5s..8s:  move: (0, 0, 0) -> (40mm, 70mm, 470mm) ease-in-out;
+}
+
+// Steam: a hiss as it pulls away, then two puffs per turn of the 45mm driving wheels, faster as it speeds up
+Loco {
+    0s..1s:  sound: Steam;
+    0.6s..2s: sound: Chuff every 0.6s;
+    2s..3s:  sound: Chuff every 0.42s;
+    3s..10s: sound: Chuff every 0.337s;    // 420mm/s on a 283mm wheel: 1.49 turns a second, two puffs each
+}
+Arm { 8.3s..8.9s: sound: Signal at end; }

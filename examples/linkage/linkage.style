@@ -1,0 +1,5 @@
+Base, .post { color: #3b4148; material: matte; }
+Crank       { color: #b8442e; material: plastic; label: "crank (driven)"; }
+Coupler     { color: #e0a63a; material: plastic; }
+Rocker      { color: #2f6f8f; material: plastic; label: "rocker"; }
+Pen         { color: #f2efe6; trail: #c2410c; }      // the coupler curve

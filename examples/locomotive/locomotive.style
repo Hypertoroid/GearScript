@@ -1,0 +1,18 @@
+.engine        { color: #1f4e3d; material: plastic; outline: 1px #0c2018; }
+.dark          { color: #24282d; material: matte; }
+.red           { color: #a8382a; }
+.trim          { color: #c9a43a; material: metal; }
+Loco.dome      { color: #c9a43a; material: metal; }
+Loco.lamp      { color: #fff4c2; luminosity: 90%; }
+Loco.frame     { color: #a8382a; }
+Rod            { color: graphite; material: metal; }
+Driver         { color: gradient(#6e1d13, #c2492f, axis: x); material: plastic; }
+Small          { color: gradient(#6e1d13, #c2492f, axis: x); }
+Side, Main     { color: steel; material: metal; }
+Cross          { color: #c7ccd2; material: metal; }
+.rail          { color: #8f99a3; material: metal; }
+.sleeper       { color: #6b4a2f; material: matte; }
+Ground         { color: #4f6b3a; material: matte; }
+Post           { color: #f2efe6; }
+Arm            { color: #b8442e; }
+D2             { trail: crank 2.4s #e0a63a; }      // the crank pin traces a curtate cycloid

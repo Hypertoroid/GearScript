@@ -1,0 +1,2 @@
+// One motion rule. The solver keeps the pin together at every frame.
+Crank { forever: rotate: 180deg/s; }

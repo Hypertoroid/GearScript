@@ -1,0 +1,14 @@
+Base {
+    forever: rotate: 60deg/s;
+}
+Upper {
+    0s..2s: rotate: 0deg -> 35deg ease-in-out;
+    3s..5s: rotate: 35deg -> 0deg ease-in-out;
+}
+Fore {
+    0.5s..2.5s: rotate: 0deg -> 80deg ease-in-out;
+    3.5s..5.5s: rotate: 80deg -> 0deg ease-in-out;
+}
+
+Upper { 0s..2s: sound: Servo; 3s..5s: sound: Servo; }
+Fore  { 0.5s..2.5s: sound: Servo 70%; 3.5s..5.5s: sound: Servo 70%; }

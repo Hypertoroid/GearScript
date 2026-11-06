@@ -1,0 +1,6 @@
+Pole   { color: #9aa1a8; material: brushed; }
+Box1   { color: #e8e8e4; material: plastic; }
+Vane   { color: #2b3138; material: metal; }
+Vane.arrow { color: #b8442e; }
+Cups   { color: #d9dde2; material: plastic; }
+Cups.hub, Cups.arm1, Cups.arm2 { color: #5d6670; }

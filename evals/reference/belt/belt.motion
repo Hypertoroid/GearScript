@@ -1,0 +1,1 @@
+Motor { forever: rotate: 360deg/s; }

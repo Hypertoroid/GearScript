@@ -1,0 +1,4 @@
+Crank { forever: rotate: 180deg/s; }
+
+// one squeak per sweep: the crank turns once in 2 s, the blade sweeps twice
+Crank { forever: sound: Squeak every 1s; }

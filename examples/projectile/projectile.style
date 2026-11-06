@@ -1,0 +1,5 @@
+Ground    { color: #4a5059; material: matte; }
+Launcher  { color: graphite; material: metal; }
+Ball      { color: #e0a63a; material: plastic; label: "ball"; }
+Arc       { color: #5db2c8; opacity: 0.5; }
+Gravity   { color: #b8442e; label: "g = 1.62 m/s2"; }

@@ -1,0 +1,2 @@
+Sails { forever: rotate: 50deg/s about z; }
+Scene { 0s..10s: sun: -5deg -> 10deg ease-in-out; }   // sunrise: from below the horizon to 10 degrees up

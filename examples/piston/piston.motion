@@ -1,0 +1,6 @@
+Piston {
+    0s..1.2s: move: -90mm -> 90mm ease-in-out;
+    then:     move: 90mm -> -90mm ease-in-out;
+}
+
+Piston { 0s..1.2s: sound: Stop at end; then: sound: Stop at end; }    // at each end of the stroke

@@ -1,0 +1,3 @@
+.wooden     { color: oak; material: matte; outline: 1px #3b2a1c; }
+Door.knob   { color: brass; material: metal; }
+Frame       { color: #6b7480; }

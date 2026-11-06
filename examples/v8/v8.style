@@ -1,0 +1,13 @@
+Crank            { color: #7d868f; material: brushed; }
+.journal, .crankpin { color: #e3e8ee; material: chrome; }
+Bore             { color: #a9cbd9; material: glass; opacity: 0.18; outline: 1px #5f8798; }
+Piston           { color: #dde2e8; material: chrome; }
+ConRod           { color: #a7b0ba; material: brushed; }
+.head            { color: #4a5159; material: brushed; }
+.cover           { color: #a3221a; material: brushed; }
+Intake           { color: #cfd4da; material: chrome; }
+Flywheel         { color: #5c646d; material: brushed; }
+Pulley           { color: #30363d; material: metal; }
+Camshaft, .lobe  { color: #c9a43a; material: gold; }
+Alternator       { color: #8d969f; material: brushed; }
+CL1              { trail: mid #e0a63a; }     // the path of one rod's midpoint

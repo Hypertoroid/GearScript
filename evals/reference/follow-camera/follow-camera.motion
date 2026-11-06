@@ -1,0 +1,2 @@
+Crate { forever: move: (300mm/s, 0, 0); }
+Observer { forever: follow: Crate offset (0, 200mm, 800mm); }

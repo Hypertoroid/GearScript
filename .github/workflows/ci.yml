@@ -1,0 +1,28 @@
+name: checks
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install the CLI
+        run: cd cli && npm install --omit=optional
+      - name: Every example compiles
+        run: |
+          cd cli
+          fail=0
+          for f in ../examples/*.orrery; do node orrery.js check "$f" > /dev/null || { echo "FAILED: $f"; fail=1; }; done
+          exit $fail
+      - name: Every example still moves as saved (tests/motion)
+        run: cd cli && node orrery.js test
+      - name: Beautify keeps every example the same
+        run: |
+          cd cli
+          for f in ../examples/*.orrery; do node orrery.js format "$f" > /tmp/f.orrery && node orrery.js check /tmp/f.orrery > /dev/null || { echo "FORMAT BROKE: $f"; exit 1; }; done
+      - name: Evaluation set
+        run: cd cli && node orrery.js eval ../evals/tasks.json ../evals/reference
+      - name: Server tests
+        run: cd server && npm test

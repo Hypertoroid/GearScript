@@ -1,0 +1,2 @@
+Earth     { forever: rotate: 15deg/s about y; }
+Satellite { forever: orbit: Earth 30deg/s; }

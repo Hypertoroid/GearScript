@@ -1,0 +1,3 @@
+Motor::Pulley { radius: 20mm; width: 16mm; at: (0, 0, 0); }
+Drum::Pulley { radius: 60mm; width: 16mm; at: (250mm, 0, 0); belt: Motor; }
+Scene { duration: 3s; }

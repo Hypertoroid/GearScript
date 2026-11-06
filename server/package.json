@@ -1,0 +1,10 @@
+{
+  "name": "orrery-server",
+  "version": "1.0.0-beta",
+  "description": "Reference server for Orrery Studio: serves the studio, opt-in usage statistics, and (with an API key) AI Generate and Fix.",
+  "main": "server.js",
+  "private": true,
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22.13" },
+  "scripts": { "start": "node server.js", "test": "node test.js" }
+}

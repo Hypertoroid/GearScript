@@ -1,0 +1,7 @@
+// One motion rule drives the whole engine.
+Crank    { forever: rotate: 270deg/s about z; }
+
+// One slow lap around it.
+Observer { forever: orbit: Target 360deg / 8s; }
+
+Scene { sound: Idle; }    // eight cylinders, four firings a turn

@@ -1,0 +1,5 @@
+Head { forever: rotate: 30deg/s about y; }   // one turn in the 12 s loop
+// the keeper climbs the stairs: each window warms up as a light goes on
+W1 { 1s..2s: color: #2a2f38 -> #ffd27a; luminosity: 0 -> 60%; }
+W2 { 3s..4s: color: #2a2f38 -> #ffd27a; luminosity: 0 -> 60%; }
+W3 { 5s..6s: color: #2a2f38 -> #ffd27a; luminosity: 0 -> 60%; }

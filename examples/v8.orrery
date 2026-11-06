@@ -1,0 +1,94 @@
+@orrery 1
+
+@scene
+// A cross-plane V8, cut away to show its moving parts.
+// Only the crankshaft is driven. Eight connecting rods and eight pistons are closed loops,
+// solved every frame; a belt turns the camshaft at half speed and spins the alternator.
+let r = 45mm;                        // crank throw: a 90mm stroke
+let a1 = 90deg;  let a2 = 0deg;      // cross-plane crank: throws 90 degrees apart
+let a3 = 180deg; let a4 = 270deg;
+let left = 45deg; let right = -45deg;  // the two banks, 90 degrees apart
+
+Crank::Group {
+    main:  Cylinder.journal { radius: 26mm; height: 30mm; orient: 90deg about x; repeat: 5 step (0, 0, 110mm); at: (0, 0, -220mm); }
+    pin1:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a1), r * sin(a1), -165mm); }
+    pin2:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a2), r * sin(a2), -55mm); }
+    pin3:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a3), r * sin(a3), 55mm); }
+    pin4:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a4), r * sin(a4), 165mm); }
+    web1:  Box.web { size: (58mm, 112mm, 12mm); orient: a1 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a1), 10mm * sin(a1), -194mm); }
+    web2:  Box.web { size: (58mm, 112mm, 12mm); orient: a2 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a2), 10mm * sin(a2), -84mm); }
+    web3:  Box.web { size: (58mm, 112mm, 12mm); orient: a3 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a3), 10mm * sin(a3), 26mm); }
+    web4:  Box.web { size: (58mm, 112mm, 12mm); orient: a4 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a4), 10mm * sin(a4), 136mm); }
+    nose:  Rod { length: 70mm; radius: 16mm; orient: 90deg about x; at: (0, 0, 270mm); }
+    tail:  Rod { length: 40mm; radius: 30mm; orient: 90deg about x; at: (0, 0, -255mm); }
+    anchor l1: (r * cos(a1), r * sin(a1), -177mm);   anchor r1: (r * cos(a1), r * sin(a1), -153mm);
+    anchor l2: (r * cos(a2), r * sin(a2), -67mm);    anchor r2: (r * cos(a2), r * sin(a2), -43mm);
+    anchor l3: (r * cos(a3), r * sin(a3), 43mm);     anchor r3: (r * cos(a3), r * sin(a3), 67mm);
+    anchor l4: (r * cos(a4), r * sin(a4), 153mm);    anchor r4: (r * cos(a4), r * sin(a4), 177mm);
+    at: (0, 0, 0);
+}
+
+// One line per cylinder, piston and rod, from three part types.
+define Bore(row, a) :: Cylinder { radius: 50mm; height: 190mm; orient: a about z; at: (-185mm * sin(a), 185mm * cos(a), row); }
+define Piston(bore) :: Cylinder { radius: 47mm; height: 58mm; slider: axis on bore; }
+define ConRod(crank, piston, a) :: Link { length: 150mm; width: 20mm; thickness: 10mm; orient: 90deg + a about z; hinge: end.a on crank; pin: end.b to piston; }
+
+L1::Bore(-177mm, left);  L2::Bore(-67mm, left);  L3::Bore(43mm, left);  L4::Bore(153mm, left);
+R1::Bore(-153mm, right); R2::Bore(-43mm, right); R3::Bore(67mm, right); R4::Bore(177mm, right);
+PL1::Piston(L1.axis); PL2::Piston(L2.axis); PL3::Piston(L3.axis); PL4::Piston(L4.axis);
+PR1::Piston(R1.axis); PR2::Piston(R2.axis); PR3::Piston(R3.axis); PR4::Piston(R4.axis);
+CL1::ConRod(Crank.l1, PL1.center, left);  CL2::ConRod(Crank.l2, PL2.center, left);
+CL3::ConRod(Crank.l3, PL3.center, left);  CL4::ConRod(Crank.l4, PL4.center, left);
+CR1::ConRod(Crank.r1, PR1.center, right); CR2::ConRod(Crank.r2, PR2.center, right);
+CR3::ConRod(Crank.r3, PR3.center, right); CR4::ConRod(Crank.r4, PR4.center, right);
+
+// Cylinder heads, valve covers and the intake between the banks.
+HeadL::Box.head   { size: (150mm, 46mm, 460mm); orient: left about z; at: (-303mm * sin(left), 303mm * cos(left), 0); }
+HeadR::Box.head   { size: (150mm, 46mm, 460mm); orient: right about z; at: (-303mm * sin(right), 303mm * cos(right), 0); }
+CoverL::Box.cover { size: (118mm, 30mm, 430mm); orient: left about z; at: (-341mm * sin(left), 341mm * cos(left), 0); }
+CoverR::Box.cover { size: (118mm, 30mm, 430mm); orient: right about z; at: (-341mm * sin(right), 341mm * cos(right), 0); }
+Intake::Box       { size: (130mm, 54mm, 420mm); at: (0, 262mm, 0); }
+
+// Flywheel at the back; pulleys and belts at the front.
+Flywheel::Gear     { teeth: 96; module: 3mm; width: 18mm; attach: face.front to Crank.tail.end.a; }
+CrankPulley::Pulley { radius: 40mm; width: 24mm; attach: face.back to Crank.nose.end.b; }
+CamPulley::Pulley  { radius: 80mm; width: 24mm; at: (0, 150mm, 317mm); belt: CrankPulley; }
+Camshaft::Rod      { length: 470mm; radius: 10mm; orient: 90deg about x; attach: end.b to CamPulley.face.back; }
+Lobe::Box.lobe     { size: (16mm, 30mm, 14mm); repeat: 8; orient: i * 135deg about z;
+                     attach: center to Camshaft.center + (-7mm * sin(i * 135deg), 7mm * cos(i * 135deg), -245mm + i * 50mm); }
+AltPulley::Pulley  { radius: 26mm; width: 24mm; at: (-175mm, 40mm, 317mm); belt: CrankPulley; }
+Alternator::Cylinder { radius: 44mm; height: 90mm; orient: 90deg about x; attach: face.top to AltPulley.face.back; }
+
+Target::Sphere { radius: 1mm; at: (0, 70mm, 0); visible: false; }
+
+// sounds: generated by Orrery, free to use
+Idle::Sound { kind: rumble; length: 8s; volume: 70%; }
+
+Observer { position: (760mm, 560mm, 900mm); look-at: Target; }
+Light { kind: directional; direction: (-0.5, -1, -0.6); power: 0.8; }
+Light { kind: directional; direction: (0.9, -0.3, 0.5); power: 0.4; }
+Scene { duration: 8s; background: #0b0f14; }
+
+@style
+Crank            { color: #7d868f; material: brushed; }
+.journal, .crankpin { color: #e3e8ee; material: chrome; }
+Bore             { color: #a9cbd9; material: glass; opacity: 0.18; outline: 1px #5f8798; }
+Piston           { color: #dde2e8; material: chrome; }
+ConRod           { color: #a7b0ba; material: brushed; }
+.head            { color: #4a5159; material: brushed; }
+.cover           { color: #a3221a; material: brushed; }
+Intake           { color: #cfd4da; material: chrome; }
+Flywheel         { color: #5c646d; material: brushed; }
+Pulley           { color: #30363d; material: metal; }
+Camshaft, .lobe  { color: #c9a43a; material: gold; }
+Alternator       { color: #8d969f; material: brushed; }
+CL1              { trail: mid #e0a63a; }     // the path of one rod's midpoint
+
+@motion
+// One motion rule drives the whole engine.
+Crank    { forever: rotate: 270deg/s about z; }
+
+// One slow lap around it.
+Observer { forever: orbit: Target 360deg / 8s; }
+
+Scene { sound: Idle; }    // eight cylinders, four firings a turn

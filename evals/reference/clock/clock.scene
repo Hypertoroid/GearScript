@@ -1,0 +1,3 @@
+MinuteHub::Disc { radius: 10mm; thickness: 4mm; at: (0, 0, 4mm); }
+HourHub::Disc { radius: 14mm; thickness: 4mm; at: (0, 0, 0); couple: MinuteHub 1/12; }
+Scene { duration: 60s; }

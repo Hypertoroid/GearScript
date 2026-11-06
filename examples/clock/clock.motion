@@ -1,0 +1,6 @@
+// One turn of the minute hand every 12 s.
+MinuteHub {
+    forever: rotate: -30deg/s;
+}
+
+MinuteHub { 0s..12s: sound: Tick every 2s; 1s..12s: sound: Tock every 2s; }

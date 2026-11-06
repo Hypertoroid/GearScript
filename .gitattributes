@@ -1,0 +1,4 @@
+*.orrery linguist-language=CSS
+*.scene linguist-language=CSS
+*.style linguist-language=CSS
+*.motion linguist-language=CSS

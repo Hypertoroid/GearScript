@@ -1,0 +1,1524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orrery Guide</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%20width%3D%2264%22%20height%3D%2264%22%3E%20%20%20%3Cdefs%3E%20%20%20%20%20%3ClinearGradient%20id%3D%22ogbg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2316264a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230a1222%22%2F%3E%3C%2FlinearGradient%3E%20%20%20%20%20%3CradialGradient%20id%3D%22ogsun%22%20cx%3D%220.38%22%20cy%3D%220.35%22%20r%3D%220.75%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ffe29a%22%2F%3E%3Cstop%20offset%3D%220.55%22%20stop-color%3D%22%23ffb84d%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e07a1e%22%2F%3E%3C%2FradialGradient%3E%20%20%20%3C%2Fdefs%3E%20%20%20%3Crect%20x%3D%222%22%20y%3D%222%22%20width%3D%2260%22%20height%3D%2260%22%20rx%3D%2215%22%20fill%3D%22url%28%23ogbg%29%22%2F%3E%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2220%22%20fill%3D%22none%22%20stroke%3D%22%239fc3e6%22%20stroke-opacity%3D%220.55%22%20stroke-width%3D%221.6%22%2F%3E%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%2211%22%20fill%3D%22none%22%20stroke%3D%22%239fc3e6%22%20stroke-opacity%3D%220.32%22%20stroke-width%3D%221.2%22%2F%3E%20%20%20%3Cline%20x1%3D%2232%22%20y1%3D%2232%22%20x2%3D%2246.14%22%20y2%3D%2217.86%22%20stroke%3D%22%23ffd27a%22%20stroke-opacity%3D%220.9%22%20stroke-width%3D%222.2%22%20stroke-linecap%3D%22round%22%2F%3E%20%20%20%3Ccircle%20cx%3D%2221.66%22%20cy%3D%2228.24%22%20r%3D%222.6%22%20fill%3D%22%23c9d4e6%22%2F%3E%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%2232%22%20r%3D%226.6%22%20fill%3D%22url%28%23ogsun%29%22%2F%3E%20%20%20%3Ccircle%20cx%3D%2246.14%22%20cy%3D%2217.86%22%20r%3D%224.8%22%20fill%3D%22%233fb8c9%22%2F%3E%20%20%20%3Ccircle%20cx%3D%2252.91%22%20cy%3D%2215.40%22%20r%3D%221.9%22%20fill%3D%22%23e9eef6%22%2F%3E%20%3C%2Fsvg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a reference manual. Sticky contents on the left, a 70-character reading column, code blocks that match the studio's editor. */
+:root {
+  --bg: #e9edf1; --panel: #f7f9fa; --panel-2: #eef2f5; --line: #d3dae1; --fg: #1a222b; --muted: #5b6774;
+  --accent: #1c6b82; --accent-ink: #ffffff; --accent-soft: rgba(28, 107, 130, 0.10);
+  --err: #bf3328; --warn: #9a6200; --ok: #2c7a4c; --code-bg: #f3f6f8;
+  --syn-kw: #8a3db0; --syn-num: #a24c12; --syn-name: #17697f; --syn-com: #7a8591; --syn-str: #2c7a4c; --syn-prop: #344556; --syn-op: #7a5a1e;
+  --font-ui: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1419; --panel: #151b21; --panel-2: #1b232a; --line: #29323b; --fg: #dde4ea; --muted: #8995a1;
+    --accent: #5db2c8; --accent-ink: #08151a; --accent-soft: rgba(93, 178, 200, 0.12);
+    --err: #ef6b5f; --warn: #e2a63a; --ok: #5cc28a; --code-bg: #131a20;
+    --syn-kw: #c792ea; --syn-num: #f0a35e; --syn-name: #6fc3d8; --syn-com: #6b7783; --syn-str: #8fd19e; --syn-prop: #b6c3cf; --syn-op: #d8b86a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1419; --panel: #151b21; --panel-2: #1b232a; --line: #29323b; --fg: #dde4ea; --muted: #8995a1;
+  --accent: #5db2c8; --accent-ink: #08151a; --accent-soft: rgba(93, 178, 200, 0.12);
+  --err: #ef6b5f; --warn: #e2a63a; --ok: #5cc28a; --code-bg: #131a20;
+  --syn-kw: #c792ea; --syn-num: #f0a35e; --syn-name: #6fc3d8; --syn-com: #6b7783; --syn-str: #8fd19e; --syn-prop: #b6c3cf; --syn-op: #d8b86a;
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 15px; line-height: 1.6; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.top {
+  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding-block: 10px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.top b { font-size: 15px; font-weight: 600; }
+.top b em { font-style: normal; color: var(--accent); }
+.top .logo { width: 26px; height: 26px; flex: none; margin-right: -6px; }
+.top .ver { font-family: var(--font-code); font-size: 11px; color: var(--muted); }
+.top .spacer { flex: 1; }
+.sitefoot { border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; padding: 18px 16px 28px; text-align: center; } .sitefoot a { color: var(--muted); }
+kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px; background: var(--panel-2, transparent); }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg);
+  border-radius: var(--radius); padding: 5px 11px; font: 500 13px var(--font-ui); text-decoration: none; cursor: pointer;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.wrap { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 40px; max-width: 1180px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 80px; }
+nav.toc { position: sticky; top: 72px; align-self: start; max-height: calc(100vh - 96px); overflow: auto; font-size: 13.5px; }
+nav.toc .h { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 8px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; counter-reset: s; }
+nav.toc li { margin: 0; }
+nav.toc a { display: block; padding: 4px 10px; border-left: 2px solid transparent; color: var(--fg); text-decoration: none; }
+nav.toc a:hover { color: var(--accent); }
+nav.toc a.on { border-left-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+main { min-width: 0; max-width: 780px; }
+
+h1 { font-size: 34px; line-height: 1.15; margin: 0 0 10px; letter-spacing: -0.02em; text-wrap: balance; }
+.lede { font-size: 17px; color: var(--muted); max-width: 62ch; margin: 0 0 18px; }
+section { padding-top: 26px; margin-top: 26px; border-top: 1px solid var(--line); }
+h2 { font-size: 23px; line-height: 1.25; margin: 0 0 10px; letter-spacing: -0.01em; text-wrap: balance; }
+h3 { font-size: 16.5px; margin: 26px 0 6px; }
+p, ul, ol { max-width: 68ch; }
+p { margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+code { font-family: var(--font-code); font-size: 0.86em; background: var(--panel-2); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.kicker { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+
+.code { position: relative; margin: 10px 0 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--code-bg); overflow: hidden; }
+.code .bar { display: flex; align-items: center; gap: 8px; padding: 5px 10px; border-bottom: 1px solid var(--line); background: var(--panel-2);
+  font-family: var(--font-code); font-size: 11.5px; color: var(--muted); }
+.code .bar .copy { margin-left: auto; border: 0; background: none; color: var(--muted); font: 500 12px var(--font-ui); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.code .bar .copy:hover { color: var(--accent); background: var(--accent-soft); }
+.code pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--font-code); font-size: 13px; line-height: 1.6; color: var(--syn-prop); tab-size: 4; }
+.k { color: var(--syn-kw); } .n { color: var(--syn-num); } .N { color: var(--syn-name); font-weight: 500; }
+.c { color: var(--syn-com); font-style: italic; } .s { color: var(--syn-str); } .o { color: var(--syn-op); } .p { color: var(--syn-prop); }
+
+.tbl { overflow-x: auto; margin: 10px 0 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--line); }
+th { background: var(--panel-2); font-weight: 600; font-size: 12.5px; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+td.code-cell { font-family: var(--font-code); font-size: 12.5px; }
+
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin: 12px 0 16px; max-width: 68ch; }
+.note.warn { border-left-color: var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); }
+.note p:last-child { margin: 0; }
+
+.recipe { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 16px 18px; margin: 18px 0; }
+.recipe header { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.recipe header h3 { margin: 0; }
+.recipe header .tags { font-size: 12px; color: var(--muted); }
+.recipe header .btn { margin-left: auto; }
+.recipe .code { margin: 8px 0 0; }
+.recipe .tried { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+
+.steps { counter-reset: step; list-style: none; padding: 0; }
+.steps > li { position: relative; padding-left: 40px; margin-bottom: 18px; }
+.steps > li::before { counter-increment: step; content: counter(step); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-ink); font-weight: 600; font-size: 13px; display: grid; place-items: center; }
+
+figure { margin: 14px 0 18px; }
+figure svg { width: 100%; max-width: 640px; height: auto; display: block; }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; max-width: 68ch; }
+.svg-line { stroke: var(--muted); }
+.svg-face { fill: var(--accent-soft); stroke: var(--accent); }
+.svg-text { fill: var(--fg); font-family: var(--font-code); font-size: 12px; }
+.svg-muted { fill: var(--muted); font-family: var(--font-ui); font-size: 12px; }
+.svg-hl { stroke: var(--err); stroke-width: 3; }
+.svg-text.err { fill: var(--err); } .svg-text.acc { fill: var(--accent); }
+.svg-dot { fill: var(--err); }
+
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; gap: 10px; }
+  nav.toc { position: static; max-height: none; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 10px; }
+  nav.toc ol { columns: 2; column-gap: 12px; }
+  h1 { font-size: 28px; }
+}
+@media (max-width: 480px) { nav.toc ol { columns: 1; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <svg class="logo" viewBox="0 0 64 64" aria-hidden="true"><defs>
+    <linearGradient id="hgbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#16264a"/><stop offset="1" stop-color="#0a1222"/></linearGradient>
+    <radialGradient id="hgsun" cx="0.38" cy="0.35" r="0.75"><stop offset="0" stop-color="#ffe29a"/><stop offset="0.55" stop-color="#ffb84d"/><stop offset="1" stop-color="#e07a1e"/></radialGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="15" fill="url(#hgbg)"/>
+  <circle cx="32" cy="32" r="20" fill="none" stroke="#9fc3e6" stroke-opacity="0.55" stroke-width="1.6"/>
+  <circle cx="32" cy="32" r="11" fill="none" stroke="#9fc3e6" stroke-opacity="0.32" stroke-width="1.2"/>
+  <line x1="32" y1="32" x2="46.14" y2="17.86" stroke="#ffd27a" stroke-opacity="0.9" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="21.66" cy="28.24" r="2.6" fill="#c9d4e6"/>
+  <circle cx="32" cy="32" r="6.6" fill="url(#hgsun)"/>
+  <circle cx="46.14" cy="17.86" r="4.8" fill="#3fb8c9"/>
+  <circle cx="52.91" cy="15.40" r="1.9" fill="#e9eef6"/></svg><b>Orrery <em>Guide</em></b><span class="ver">for Studio 1.0</span>
+  <span class="spacer"></span>
+  <a class="btn primary" href="studio.html">Open the studio</a>
+</header>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Contents">
+    <p class="h">Contents</p>
+    <ol id="toc">
+      <li><a href="#glance">At a glance</a></li>
+      <li><a href="#start">Getting started</a></li>
+      <li><a href="#tutorial">Your first animation</a></li>
+      <li><a href="#tenmin">Ten minutes: crank to video</a></li>
+      <li><a href="#values">Values and units</a></li>
+      <li><a href="#entities">Parts and groups</a></li>
+      <li><a href="#shapes">Shape reference</a></li>
+      <li><a href="#anchors">Anchors</a></li>
+      <li><a href="#connect">Connecting parts</a></li>
+      <li><a href="#loops">Linkages and loops</a></li>
+      <li><a href="#style">Style</a></li>
+      <li><a href="#sections">Cutaway and exploded views</a></li>
+      <li><a href="#motion">Motion</a></li>
+      <li><a href="#text">Text</a></li>
+      <li><a href="#camera">Camera, frame, sky</a></li>
+      <li><a href="#sound">Sound and narration</a></li>
+      <li><a href="#charts">Charts</a></li>
+      <li><a href="#recipes">Recipes</a></li>
+      <li><a href="#errors">Errors</a></li>
+      <li><a href="#chapters">Chapters</a></li>
+      <li><a href="#export">Export and projects</a></li>
+      <li><a href="#cli">Command line and AI</a></li>
+      <li><a href="#limits">Current limits</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="kicker">Guide</div>
+    <h1>Describe how parts relate. Orrery works out the motion.</h1>
+    <p class="lede">Orrery is a small, CSS-like language for mechanism animations. You write three short files, and the studio solves the joints, gears and cameras, renders every frame and exports a GIF.</p>
+
+    <!-- ============================== GLANCE ============================== -->
+    <section id="glance">
+      <h2>At a glance</h2>
+      <p class="lead-note"><i>An orrery is a clockwork model of the solar system: turn one gear and every planet moves in step. Orrery works the same way for any machine: describe the parts and how they connect, drive one of them, and the rest follow.</i></p>
+      <p>The whole language follows three rules:</p>
+      <ol>
+        <li><b>A part declares what it connects to</b>, inside its own block: <code>attach</code>, <code>hinge</code>, <code>slider</code>, <code>mesh</code>, <code>couple</code>, <code>belt</code>, <code>pin</code>.</li>
+        <li><b>Units decide what a value means.</b> <code>90deg</code> is an angle, <code>90deg/s</code> a spin rate, <code>90deg/s2</code> an angular acceleration. The same goes for <code>mm</code>, <code>mm/s</code> and <code>mm/s2</code>.</li>
+        <li><b>Values come first, then keywords:</b> <code>rotate: 60deg/s about G1.axis;</code> · <code>orbit: Sun 30deg/s;</code> · <code>follow: Car offset (…);</code></li>
+      </ol>
+      <div data-snippet="scene">// .scene: what exists
+let wheel = 55mm;
+Car::Group {
+    body: Box { size: (440mm, 50mm, 180mm); }
+    axle: Rod { length: 230mm; orient: 90deg about x; at: body.face.bottom; }
+}
+FL::Wheel { radius: wheel; hinge: axis on Car.axle.end.b; }
+Observer { position: (380mm, 330mm, 1150mm); }</div>
+      <div data-snippet="style">// .style: how it looks
+Car   { color: #2f6f8f; outline: 1px #13303d; }
+Wheel { color: gradient(#141619, #b9c0c8, axis: x); label: "front left"; }</div>
+      <div data-snippet="motion">// .motion: how it moves
+Car      { 0s..2s: move: (0, 0, 0) -> (600mm/s, 0, 0) ease-in; }   // speed up: a change of speed
+FL       { forever: roll: Road; }                                  // spin follows the distance travelled
+Observer { forever: follow: Car offset (380mm, 260mm, 1150mm); }</div>
+    </section>
+
+    <!-- ============================== START ============================== -->
+    <section id="start">
+      <h2>Getting started</h2>
+      <p>A project is three files. Each one has a single job, like HTML, CSS and animations on the web.</p>
+      <div class="tbl"><table>
+        <tr><th>File</th><th>Answers</th><th>Contains</th></tr>
+        <tr><td><code>.scene</code></td><td>What exists?</td><td>Parts, groups, anchors, connections, the camera and lights</td></tr>
+        <tr><td><code>.style</code></td><td>How does it look?</td><td>Selectors with colour, material, outline, opacity and labels</td></tr>
+        <tr><td><code>.motion</code></td><td>How does it move?</td><td>Time blocks that drive parts, joints and the camera</td></tr>
+      </table></div>
+      <h3 id="single">Split or Combined</h3>
+      <p>The same project can also be <b>one file</b>, with a line <code>@scene</code>, <code>@style</code> or <code>@motion</code> starting each section. Switch with the <b>Split / Combined</b> buttons in the header (or in Settings). <b>Split</b> keeps three tabs and saves them as a <code>.zip</code>; <b>Combined</b> is one <code>.orrery</code> file. The combined file is easiest to read top to bottom, and to hand to an AI assistant for review or edits.</p>
+      <div data-snippet="project">@orrery 1
+
+@scene
+Crank::Link { length: 40mm; hinge: end.a on (0, 0, 0); }
+
+@style
+Crank { color: #b8442e; }
+
+@motion
+Crank { forever: rotate: 180deg/s; }</div>
+      <ul>
+        <li>The first line, <code>@orrery 1</code>, says which version of the language the project is written in. It is optional, and the studio writes it for you. Language 1 is stable: a project that works today keeps working in every 1.x release, and error codes keep their meaning.</li>
+        <li>Problems show the line in the single file and which section it is in; clicking one jumps there. <kbd>Ctrl</kbd> <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd> jump to a section.</li>
+        <li>Pasting a single-file project into the three-file view fills all three tabs, so an assistant's one-block reply drops straight in.</li>
+        <li>In the single-file view, <b>Save project</b> writes <code>project.orrery</code>; <b>Open</b> reads <code>.orrery</code> files in either view.</li>
+        <li>Each marker sits alone on its line and each section appears once (E0105–E0107 explain any mix-ups). You cannot switch back to three files until the markers are fixed, so nothing is lost.</li>
+      </ul>
+      <h3>The studio</h3>
+      <ul>
+        <li><b>Left:</b> the three file tabs and the editor. The preview rebuilds a moment after you stop typing.</li>
+        <li><b>Problems:</b> under the editor. Click a problem to jump to its line. A problem the studio knows how to correct (a misspelt property, a <code>#</code> comment, a minus without spaces) has a <b>Fix</b> button; with the site's AI on, the others have <b>Fix with AI</b>. <b>Fix N</b> at the top applies every exact fix at once. <b>Copy as JSON</b> gives the list to an AI agent.</li>
+        <li><b>Right:</b> the live preview. <b>Observer</b> shows your camera; <b>Free</b> lets you drag to look around. Hinge axes and gear lines can be switched on in Settings.</li>
+        <li><b>Examples</b> opens every example by category, with a picture of each. Clicking one opens it here; if your project has unsaved changes the studio first asks whether to save them, discard them or open the example in a <b>new tab</b> instead. <kbd>Ctrl</kbd>-click (or middle-click) always opens a new tab. <b>New project</b> works the same way.</li>
+        <li><b>Copy state</b> (the button at the right end of the timeline, or right-click the preview) copies, as text, where every part is at the current moment: its position, rotation, bounding box and joint, plus the camera and any problems. Paste it into an AI chat with what looks wrong, for example "the left foot goes through the floor at 2.4 s". The AI prompt panel can include it too: tick <b>Include the state</b>.</li>
+        <li><b>Header:</b> Examples, the Split / Combined switch, AI prompt, Save and Export. Everything else (open, 3D models, this guide, settings, the tour, and cookie preferences where the site collects statistics) is under <b>More</b> (the ⋯ button).</li>
+        <li><b>Click any part</b> in the preview to jump to its code.</li>
+        <li><b>Timeline:</b> play, pause (or press Space) and drag to scrub.</li>
+        <li><b>Resize anything:</b> drag the divider between code and preview, or above the Problems list. Double-click a divider to reset it. The expand buttons give the code or the preview the whole window; Esc brings the layout back.</li>
+        <li><b>Guided tour</b>: <b>More › Take the tour</b> (or Settings › Layout › Start the tour) dims the studio, spotlights one feature at a time and explains it. <b>Previous</b>, <b>Next</b> and <b>Skip tour</b>, or <kbd>←</kbd> <kbd>→</kbd> and <kbd>Esc</kbd>. It opens once by itself on a first visit.</li>
+        <li><b>Type hints</b>: as you type, a list suggests what fits where the caret is: shape types after <code>Name::</code>, the properties that shape takes (required ones marked), anchors after <code>Part.</code> (lines and points labelled), <code>on</code> / <code>to</code> / <code>about</code> keywords, gears to mesh with, units after a number, materials, colours, easings, time blocks and camera properties. The bottom line shows how the property is written. <kbd>↑</kbd> <kbd>↓</kbd> to choose, <kbd>Enter</kbd> or <kbd>Tab</kbd> to insert, <kbd>Esc</kbd> to close, <kbd>Ctrl</kbd> <kbd>Space</kbd> to open them any time. Settings › Type hints turns them to manual or off.</li>
+        <li><b>Insert a shape</b>: the cube button above the code, or <b>Browse shapes…</b> at the top of the type hints after <code>Name::</code>, opens every built-in shape by category with a picture. Search, pick one and press <b>Insert</b> (or double-click it): it arrives with sensible starting values to edit.</li>
+        <li><b>Colours</b>: a small swatch sits beside every colour in the code; click it to choose a new one with your system's colour picker. While typing a colour, the hints show <b>Pick a colour…</b>, then the colours this project already uses (with their RGB values) and the named finishes.</li>
+        <li><b>The code editor</b> has find and replace (<kbd>Ctrl</kbd> <kbd>F</kbd>, with match case, regular expressions and replace all), multiple cursors (<kbd>Ctrl</kbd>-click to add one, <kbd>Ctrl</kbd> <kbd>D</kbd> to select the next match too, <kbd>Alt</kbd>-drag for a column), folding (the arrows beside the line numbers fold a block or a whole @section), bracket matching, and undo and redo that remember each tab separately. It is CodeMirror, bundled with the studio; if it cannot load, a plain editor takes its place.</li>
+        <li><b>Checkpoint</b>: the flag button beside Beautify clears the undo history of the whole project, every file and chapter, so pressing <kbd>Ctrl</kbd> <kbd>Z</kbd> again and again stops there. It asks first; Shift-click skips the question. Set one when a version works before you try something bold.</li>
+        <li><b>Beautify</b>: the lines-and-sparkle button above the code (or <kbd>Shift</kbd> <kbd>Alt</kbd> <kbd>F</kbd>) lays the code out like CSS: one property per line, even indents, a blank line between rules, comments kept where they were. A motion block with one property stays on one line; with several, its time label gets a line of its own. Only spacing changes, so the animation is exactly the same, and <kbd>Ctrl</kbd> <kbd>Z</kbd> undoes it. In Split view it tidies the open file; in Combined view, all of it.</li>
+        <li><b>Right-click the code</b> (or press the Menu key or <kbd>Shift</kbd> <kbd>F10</kbd> in it) for undo and redo, cut, copy, paste, select all, beautify, comment lines (<kbd>Ctrl</kbd> <kbd>/</kbd>), find and replace, run now, insert a shape or a sound, the state of the part under the caret, copy the whole project, the AI prompt and expand.</li>
+        <li><b>Settings</b> (<b>More › Settings</b>, or <kbd>Ctrl</kbd> <kbd>,</kbd>): theme, accent colour, syntax colours, interface size, editor font, size, spacing, ligatures and indent, line numbers, bracket closing, type hints, when the preview updates, playback speed and looping, joint axes and gear lines, the floor grid, labels, trails, render sharpness, background, where the code panel sits, and export defaults. Settings are kept in this browser.</li>
+        <li><b>Themes</b>: Graphite (the default, dark, with an orange accent; Settings › Accent colour changes it), Studio light and Ember (warm red) are Orrery's own. Monokai (the classic palette by Wimer Hazenberg, as shipped in VS Code), Dracula (Zeno Rocha) and Solarized Light (Ethan Schoonover) follow well-known editor colour schemes, published under the MIT licence; their names belong to their authors and are used here only to say which scheme a theme follows.</li>
+        <li><b>Built with</b> three.js (3D), CodeMirror (the editor) and mp4-muxer and webm-muxer by Vanilagy (video files), all under the MIT licence.</li>
+        <li><b>Open source:</b> Orrery itself is under the Apache License 2.0, so you can read, change and share the code, including for commercial work. The animations and projects you make are yours. The name and logo are not covered by the licence; see TRADEMARKS.md in the source.</li>
+      </ul>
+      <div class="tbl"><table>
+        <tr><th>Shortcut</th><th>Does</th></tr>
+        <tr><td><kbd>Ctrl</kbd> <kbd>Space</kbd></td><td>Show type hints for where the caret is</td></tr>
+        <tr><td><kbd>Ctrl</kbd> <kbd>Enter</kbd></td><td>Run the preview now (the only way when Settings › Update the preview is set to manual)</td></tr>
+        <tr><td><kbd>Space</kbd></td><td>Play or pause, when the editor is not focused</td></tr>
+        <tr><td><kbd>Ctrl</kbd> <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd></td><td>Switch to .scene, .style or .motion</td></tr>
+        <tr><td><kbd>Ctrl</kbd> <kbd>S</kbd></td><td>Save the project</td></tr>
+        <tr><td><kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>E</kbd></td><td>Expand the preview, or restore it</td></tr>
+        <tr><td><kbd>Shift</kbd> <kbd>Alt</kbd> <kbd>F</kbd></td><td>Beautify the code</td></tr>
+        <tr><td><kbd>Ctrl</kbd> <kbd>/</kbd></td><td>Comment or uncomment the selected lines</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Close a panel, or leave the expanded view</td></tr>
+      </table></div>
+      <div class="note"><p>Only the parts that drive a mechanism need motion rules. Anything attached, hinged, meshed, coupled or belted to a driver follows by itself.</p></div>
+    </section>
+
+    <!-- ============================== TUTORIAL ============================== -->
+    <section id="tutorial">
+      <h2>Your first animation: a swinging sign</h2>
+      <p>Four steps build a shop sign that swings in the wind. Each step adds a few lines.</p>
+      <ol class="steps">
+        <li>
+          <p><b>Make a post and an arm.</b> The arm's left face is aligned to a point near the top of the post's right face, so you never compute its centre.</p>
+          <div data-snippet="scene">Post::Box { size: (40mm, 600mm, 40mm); at: (0, 300mm, 0); }
+Arm::Box  { size: (300mm, 30mm, 30mm); align: face.left; at: Post.face.right + (0, 270mm, 0); }</div>
+        </li>
+        <li>
+          <p><b>Hang the sign on a hinge.</b> <code>hinge: edge.top on Arm.edge.bottom;</code> snaps the sign's top edge to the arm's bottom edge and lets it turn about that line.</p>
+          <div data-snippet="scene">Sign::Box { size: (220mm, 140mm, 10mm); hinge: edge.top on Arm.edge.bottom; }
+
+Observer { position: (700mm, 520mm, 900mm); look-at: (120mm, 460mm, 0); }
+Light { kind: directional; direction: (-0.6, -1, -0.8); power: 0.85; }
+Scene { duration: 2s; }</div>
+        </li>
+        <li>
+          <p><b>Give it a look.</b> Styles use selectors: a type, a name, a <code>.class</code> or an <code>#id</code>.</p>
+          <div data-snippet="style">Post, Arm { color: #3b4148; material: metal; }
+Sign      { color: #e0a63a; outline: 1px #5a3f0c; label: "Open"; }</div>
+        </li>
+        <li>
+          <p><b>Make it swing.</b> On a hinged part, <code>rotate</code> turns it about its hinge. Here the angle is a function of time <code>t</code>.</p>
+          <div data-snippet="motion">Sign {
+    forever: rotate: 20deg * sin(t * 3.1416);
+}</div>
+          <p><button class="btn primary" type="button" data-try="sign">Try it in the studio</button></p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="tenmin">
+      <h2>Ten minutes: from one crank to a finished video</h2>
+      <p>Five steps take a four-bar linkage from one moving part to a lit, ticking animation you can export or send as a link. Each step only adds lines.</p>
+      <ol class="steps">
+        <li>
+          <p><b>Drive one part.</b> A hinge at the origin and one motion rule. Nothing else moves by itself in Orrery: parts move because they are driven or connected.</p>
+          <div data-snippet="scene">let crank = 40mm;
+Crank::Link { length: crank; width: 14mm; hinge: end.a on (0, 0, 0); }</div>
+          <div data-snippet="motion">Crank { forever: rotate: 180deg/s; }</div>
+        </li>
+        <li>
+          <p><b>Close a loop.</b> The coupler hangs on the crank, the rocker on a fixed point, and a <code>pin</code> joins their free ends. You never say how the coupler or rocker move: the solver keeps the pin together at every instant.</p>
+          <div data-snippet="scene">Coupler::Link { length: 120mm; width: 14mm; hinge: end.a on Crank.end.b + (0, 0, 6mm);
+                anchor tip: (10mm, 46mm, 0); pin: end.b to Rocker.end.b; }
+Rocker::Link  { length: 90mm; width: 14mm; orient: 90deg about z; hinge: end.a on (110mm, 0, 0); }</div>
+        </li>
+        <li>
+          <p><b>Trace a curve.</b> The coupler names a point of its own, <code>tip</code>. Attach a small sphere there and give it a <code>trail</code>: it draws the coupler curve, the shape engineers use to design walking machines.</p>
+          <div data-snippet="scene">Pen::Sphere { radius: 5mm; attach: Coupler.tip; }</div>
+          <div data-snippet="style">Pen { color: #ffd27a; trail: #ffb84d; }</div>
+        </li>
+        <li>
+          <p><b>Light and sound.</b> <code>luminosity</code> makes the pen glow and light what is near it; a generated click marks each turn of the crank (one turn takes 2 s at 180°/s).</p>
+          <div data-snippet="scene">Click::Sound { kind: click; }
+Scene { duration: 4s; background: #0f1216; }</div>
+          <div data-snippet="style">Pen { color: #ffd27a; luminosity: 80%; trail: #ffb84d; }</div>
+          <div data-snippet="motion">Crank { forever: rotate: 180deg/s; sound: Click every 2s; }</div>
+        </li>
+        <li>
+          <p><b>Tidy, check and share.</b> Press <kbd>Shift</kbd> <kbd>Alt</kbd> <kbd>F</kbd> to beautify the code. The Problems list should say "No problems". Then <b>Export › MP4</b> for a video with sound, or <b>Save › Orrery file</b> to send the project itself: whoever opens the file gets the whole project, every chapter included.</p>
+          <p><button class="btn primary" type="button" data-try="tenmin">Open the finished project</button></p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============================== VALUES ============================== -->
+    <section id="values">
+      <h2>Values and units</h2>
+      <h3>Units decide what a value means</h3>
+      <div class="tbl"><table>
+        <tr><th>Quantity</th><th>Position or angle</th><th>Speed</th><th>Acceleration</th></tr>
+        <tr><td>Length</td><td><code>mm</code> <code>cm</code> <code>m</code></td><td><code>mm/s</code> <code>m/s</code></td><td><code>mm/s2</code> <code>m/s2</code></td></tr>
+        <tr><td>Angle</td><td><code>deg</code> <code>rad</code> <code>turn</code></td><td><code>deg/s</code> <code>turn/s</code></td><td><code>deg/s2</code></td></tr>
+      </table></div>
+      <p>Dividing by a time also makes a speed: <code>360deg / 12s</code> is a spin rate. Other units: <code>s</code> and <code>ms</code> for time, <code>%</code> for fractions. A bare number is millimetres for lengths and seconds for times; write units everywhere to be clear.</p>
+      <h3>Kinds of value</h3>
+      <div class="tbl"><table>
+        <tr><th>Kind</th><th>Example</th><th>Notes</th></tr>
+        <tr><td>Number</td><td class="code-cell">40mm, 90deg, 0.8</td><td>No space between number and unit</td></tr>
+        <tr><td>Vector</td><td class="code-cell">(0, 1500mm, 0)</td><td>x right, y up, z towards the viewer</td></tr>
+        <tr><td>Anchor</td><td class="code-cell">Door.panel.edge.left</td><td>A point or line on a part; see <a href="#anchors">Anchors</a></td></tr>
+        <tr><td>Point maths</td><td class="code-cell">chassis.face.top + (0, 10mm, 0)</td><td>An anchor plus or minus a vector</td></tr>
+        <tr><td>Range</td><td class="code-cell">0deg..110deg</td><td>Hinge and slider limits, time blocks</td></tr>
+        <tr><td>Change</td><td class="code-cell">0deg -&gt; 90deg ease-in-out</td><td>Goes from one value to the other across its time block</td></tr>
+        <tr><td>Colour</td><td class="code-cell">#e0a63a, steel, peru</td><td>Hex, CSS names, or Orrery's named finishes</td></tr>
+        <tr><td>Text</td><td class="code-cell">"500 mm/s"</td><td>Labels</td></tr>
+      </table></div>
+      <h3>Expressions</h3>
+      <p>Arithmetic (<code>+ - * /</code>) and these functions work anywhere a number does: <code>sin cos tan sqrt abs min max pow floor exp atan2 length</code>. <code>PI</code> is π.</p>
+      <div data-snippet="scene">// A point on a circle of radius 140mm, 250 degrees round
+Earth::Sphere { radius: 10mm; at: (140mm * cos(250deg), 0, 140mm * sin(250deg)); }</div>
+      <h3 id="let">let: named values</h3>
+      <p><code>let</code> names a value once and works in all three files. Names start with a lower-case letter, because capitals are reserved for parts. A <code>let</code> can hold a number, a vector or a whole expression, even one that uses a curve's <code>u</code>.</p>
+      <div data-snippet="motion">let cruise = (600mm/s, 0, 0);
+let year = 12s;
+
+Car   { 0s..2s: move: (0, 0, 0) -> cruise; }
+Earth { forever: orbit: Sun 360deg / year; }</div>
+      <div class="note"><p>Reserved names: <code>t i u v x y z axis to on at about step offset</code>.</p></div>
+      <h3>Comments</h3>
+      <p><code>// to the end of the line</code> and <code>/* blocks */</code>, as in CSS. <code>#</code> is never a comment: a <code>#</code> followed directly by letters or digits is a colour (<code>#38bdf8</code>) or an id (<code>#G2</code>), and a <code>#</code> followed by a space is error E0104.</p>
+    </section>
+
+    <!-- ============================== ENTITIES ============================== -->
+    <section id="entities">
+      <h2>Parts and groups</h2>
+      <p>Every part is declared as <code>Name::Type</code>, with optional classes, and a block of properties. Names start with a capital letter.</p>
+      <div data-snippet="scene">G1::Gear.gear.steel { teeth: 36; module: 2mm; width: 10mm; at: (0, 0, 0); }</div>
+      <h3>Placement properties</h3>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Example</th><th>Meaning</th></tr>
+        <tr><td><code>at</code></td><td class="code-cell">at: Frame.face.top + (0, 10mm, 0);</td><td>Where the part's centre goes</td></tr>
+        <tr><td><code>align</code></td><td class="code-cell">align: face.bottom;</td><td>Put this anchor of the part on the <code>at</code> point instead of its centre</td></tr>
+        <tr><td><code>orient</code></td><td class="code-cell">orient: 90deg about x;</td><td>Initial rotation about <code>x</code>, <code>y</code>, <code>z</code> or a vector</td></tr>
+        <tr><td><code>visible</code></td><td class="code-cell">visible: false;</td><td>Hidden but still usable, for example as an invisible path</td></tr>
+        <tr><td><code>repeat</code></td><td class="code-cell">repeat: 11 step (500mm, 0, 0);</td><td>Numbered copies; see below</td></tr>
+        <tr><td>connections</td><td class="code-cell">hinge: edge.top on Arm.edge.bottom;</td><td>See <a href="#connect">Connecting parts</a></td></tr>
+      </table></div>
+      <h3>Groups</h3>
+      <p>A <code>Group</code> holds named members that share one frame. Members can be placed against each other, and the group moves as one.</p>
+      <div data-snippet="scene">Door::Group.wooden {
+    panel: Box    { size: (800mm, 2000mm, 40mm); }
+    knob:  Sphere { radius: 30mm; at: panel.face.front + (320mm, 0, 25mm); }
+    anchor grip: knob.center;        // a custom anchor on the group
+    at: (430mm, 1000mm, 0);
+}</div>
+      <p>Refer to a member as <code>Door.knob</code>, and to its anchors as <code>Door.panel.edge.left</code>.</p>
+      <h3 id="repeat">repeat and i</h3>
+      <p><code>repeat: N</code> makes N copies named <code>Name1</code> to <code>NameN</code>. Add <code>step (dx, dy, dz)</code> to shift each copy, or use <code>i</code> (0, 1, 2 …) in any expression for patterns such as rings.</p>
+      <div data-snippet="scene">// A row of lane dashes: Road.dash1 ... Road.dash11, 500mm apart
+Road::Group {
+    surface: Box { size: (6000mm, 4mm, 700mm); }
+    dash: Box.dash { size: (220mm, 2mm, 18mm); at: surface.face.top + (-2500mm, 1mm, 0); repeat: 11 step (500mm, 0, 0); }
+}
+
+// A ring of 7 trees
+Trunk::Cylinder.trunk { radius: 9mm; height: 70mm; repeat: 7; at: (680mm * cos(i * 0.9), 35mm, 620mm * sin(i * 0.9)); }</div>
+      <div class="note"><p>Give repeated parts a class (<code>.dash</code>, <code>.trunk</code>) and style or move them all with one selector.</p></div>
+      <h3 id="scatter">scatter: random copies</h3>
+      <p><code>scatter</code> places copies at random spots that stay the same every time you build: leaves on a floor, droplets in a cloud, stars in a field. Choose the area, then any options.</p>
+      <div data-snippet="scene">Leaf::Polygon.leaf { sides: 5; radius: 22mm; thickness: 2mm; scatter: 40 in plane xz (640mm, 440mm) seed 4 spin 360deg vary 30% apart; }
+Drop::Sphere.drop  { radius: 8mm; at: (0, 200mm, 0); scatter: 25 in sphere 120mm; }
+Peg::Cylinder.peg  { radius: 6mm; height: 40mm; scatter: 12 on circle 300mm; }</div>
+      <p>Areas: <code>in plane xz (w, d)</code> (also <code>xy</code>, <code>yz</code>, any plane as an equation in quotes, <code>in plane "x + y + z = 300mm" (w, d)</code>, or <code>in plane normal (1, 1, 0) (w, d)</code> through the part's <code>at</code>), <code>along x 800mm</code>, <code>in box (x, y, z)</code>, <code>in disc 300mm</code>, <code>on circle 300mm</code>, <code>in sphere 200mm</code>. Options: <code>seed 7</code> for another layout, <code>spin 360deg</code> for a random turn, <code>vary 20%</code> for different sizes, <code>apart</code> to keep copies from touching. Flat shapes lie down in the plane; give a plane a third size, <code>in plane xz (600mm, 400mm, 200mm)</code>, and the copies also spread 200 mm off it, filling a slab (bubbles, dust, stars) instead of lying flat. The copies are <code>Leaf1</code> … <code>Leaf40</code>; style and move them all through their class.</p>
+      <h3 id="fixed">fixed: a place on the screen</h3>
+      <p>When the Observer moves, orbits or follows a part, a title in the scene drifts away. <code>fixed</code> pins a part to the screen instead: it stays at that place, at the size it has from the Observer's starting point, whatever the camera does. It keeps its own motion, so a badge can still spin and a caption can still fade.</p>
+      <div data-snippet="scene">Title::Text { text: "How a gearbox works"; size: 16mm; fixed: top-left; }
+Logo::Polygon { sides: 6; radius: 14mm; thickness: 3mm; fixed: bottom-right 4%; }
+Step::Text { text: "Step 2"; fixed: (50%, 90%); }</div>
+      <p>Places: <code>top-left</code>, <code>top</code>, <code>top-right</code>, <code>left</code>, <code>center</code>, <code>right</code>, <code>bottom-left</code>, <code>bottom</code>, <code>bottom-right</code>, then an optional margin (5% of the frame's height by default); or <code>(x%, y%)</code> for the part's centre from the top-left corner. A fixed part goes on a whole part, not a group member, and takes no hinge, attach or other connection.</p>
+      <h3 id="define">define: your own part types</h3>
+      <p><code>define</code> names a part type built on a shape or a group, with parameters and optional defaults. Use it like a built-in shape, with values in brackets, by position or by name. Properties in the part's own block are added to the type's, and replace any with the same name.</p>
+      <div data-snippet="scene">define Tyre(mount, r = 55mm) :: Wheel { radius: r; width: 34mm; hinge: axis on mount; }
+
+FL::Tyre(Car.axle1.end.b);
+FR::Tyre(Car.axle1.end.a);
+RL::Tyre(mount: Car.axle2.end.b, r: 60mm);</div>
+      <p>The type's name is also a selector and a motion target, so one rule styles or moves every part built from it:</p>
+      <div data-snippet="style">Tyre { color: gradient(#16181b, #5d6670, axis: x); }</div>
+      <div data-snippet="motion">Tyre { forever: roll: Road; }</div>
+      <div class="note"><p>A parameter can hold any value, including an anchor such as <code>Car.axle1.end.b</code>. Parameters hide <code>let</code> values with the same name. A type built on a Group cannot go inside another group.</p></div>
+    </section>
+
+    <!-- ============================== SHAPES ============================== -->
+    <section id="shapes">
+      <h2>Shape reference</h2>
+      <p>Every shape also has <code>center</code> and <code>com</code>, its true centre of mass for a uniform solid (<code>center-of-mass</code> is the long name). For a Box they are the same point; for a Cone the centre of mass is a quarter of the way up, for a Dome 3/8 of the radius above its base, and for a Sector or Arc it moves toward the curved edge. <code>com.x</code>, <code>com.y</code> and <code>com.z</code> are lines through it, so <code>hinge: com.z on Base.axis</code> pivots a part at its balance point. A group's <code>com</code> weighs its members by volume. A required property is in bold.</p>
+      <div class="tbl"><table>
+        <tr><th>Type</th><th>Properties</th><th>Anchors</th></tr>
+        <tr><td><code>Box</code></td><td><b>size (x, y, z)</b></td><td>face.*, edge.*, corner.*, axis (y)</td></tr>
+        <tr><td><code>Sphere</code></td><td><b>radius</b></td><td>pole.top, pole.bottom, axis (y)</td></tr>
+        <tr><td><code>Cylinder</code></td><td><b>radius</b>, <b>height</b></td><td>axis (y), face.top, face.bottom</td></tr>
+        <tr><td><code>Cone</code></td><td><b>radius</b>, <b>height</b></td><td>axis, face.top, face.bottom, apex</td></tr>
+        <tr><td><code>Torus</code></td><td><b>radius</b>, tube</td><td>axis (z), face.front, face.back</td></tr>
+        <tr><td><code>Rod</code></td><td><b>length</b>, radius</td><td>axis (y), end.a, end.b</td></tr>
+        <tr><td><code>Link</code></td><td><b>length</b>, width, thickness</td><td>end.a, end.b, mid, axis: all lines along z, like pin axles; line (along the bar)</td></tr>
+        <tr><td><code>Gear</code></td><td><b>teeth</b>, module (2mm), width</td><td>axis (z), face.front, face.back, pitch-circle</td></tr>
+        <tr><td><code>Pulley</code>, <code>Wheel</code></td><td><b>radius</b>, width</td><td>axis (z), face.front, face.back</td></tr>
+        <tr><td><code>Disc</code></td><td><b>radius</b>, thickness</td><td>axis (z), normal, face.front, face.back</td></tr>
+        <tr><td><code>Rect</code></td><td><b>size (w, h)</b>, thickness</td><td>like Box, plus normal</td></tr>
+        <tr><td><code>Spring</code></td><td><b>radius</b>, <b>length</b>, turns, wire</td><td>axis (y), end.a, end.b</td></tr>
+        <tr><td><code>Line</code></td><td><b>from</b>, <b>to</b>, stroke</td><td>start, end, mid, axis</td></tr>
+        <tr><td><code>Arrow</code></td><td><b>from</b>, <b>to</b>, stroke, head</td><td>tail, head, start, end, mid</td></tr>
+        <tr><td><code>Curve</code></td><td><b>domain</b>, <b>point</b>, stroke</td><td>start, mid, end</td></tr>
+        <tr><td><code>Tube</code></td><td><b>radius</b>, inner, <b>height</b></td><td>axis (y), face.top, face.bottom</td></tr>
+        <tr><td><code>Capsule</code></td><td><b>radius</b>, <b>length</b></td><td>axis (y), end.a, end.b</td></tr>
+        <tr><td><code>Prism</code>, <code>Pyramid</code></td><td>sides, <b>radius</b>, <b>height</b></td><td>axis (y), face.top, face.bottom (Pyramid: apex)</td></tr>
+        <tr><td><code>Dome</code></td><td><b>radius</b></td><td>axis (y), face.bottom, pole.top</td></tr>
+        <tr><td><code>Wedge</code></td><td><b>size (x, y, z)</b></td><td>like Box, plus slope</td></tr>
+        <tr><td><code>Plate</code></td><td><b>size (w, h)</b>, thickness, corner, hole</td><td>like Box, plus normal and hole</td></tr>
+        <tr><td><code>Beam</code></td><td><b>length</b>, height, width, thickness</td><td>an I-beam along x: like Box, plus end.a, end.b, line</td></tr>
+        <tr><td><code>Ring</code></td><td><b>radius</b>, inner, thickness</td><td>axis (z), face.front, face.back</td></tr>
+        <tr><td><code>Nut</code></td><td><b>radius</b>, thickness, hole</td><td>axis (z), face.front, face.back</td></tr>
+        <tr><td><code>Bolt</code></td><td><b>radius</b>, <b>length</b>, head</td><td>axis (y), end.a, end.b, head (at end.b)</td></tr>
+        <tr><td><code>Cam</code></td><td><b>radius</b>, lift, width</td><td>axis (z), face.front, face.back, nose</td></tr>
+        <tr><td><code>Star</code></td><td>points, <b>radius</b>, inner, thickness</td><td>axis (z), face.front, face.back</td></tr>
+        <tr><td><code>Mesh</code></td><td><b>src</b>, <b>size (x, y, z)</b>, fit</td><td>like Box (a 3D model you added, fitted in the size)</td></tr>
+        <tr><td colspan="3"><b>2D shapes</b> lie flat in the x-y plane, facing +z; thickness defaults to 1mm. Angles go anticlockwise from +x.</td></tr>
+        <tr><td><code>Triangle</code></td><td><b>size (w, h)</b>, apex, thickness</td><td>like Box, plus normal, apex, corner.left, corner.right</td></tr>
+        <tr><td><code>Ellipse</code></td><td><b>size (w, h)</b>, thickness</td><td>like Box, plus normal</td></tr>
+        <tr><td><code>Polygon</code></td><td>sides, <b>radius</b>, thickness</td><td>axis (z), normal, face.front, face.back</td></tr>
+        <tr><td><code>Sector</code></td><td><b>radius</b>, angle (90deg), start, inner, thickness</td><td>a pie slice, or a ring segment with inner: axis, normal, tip, mid, edge.start, edge.end</td></tr>
+        <tr><td><code>Arc</code></td><td><b>radius</b>, angle (180deg), start, stroke</td><td>a curved line: start, mid, end, axis</td></tr>
+        <tr><td><code>Path</code></td><td><b>points</b> (x, y) (x, y) …, thickness</td><td>any flat outline: axis, normal, start, end</td></tr>
+        <tr><td><code>Text</code></td><td><b>text</b> "…", size, facing</td><td>words as a part (see <a href="#text">Text</a>): like Box, plus normal</td></tr>
+        <tr><td><code>Group</code></td><td>members</td><td>center, com, com.x, com.y, com.z, custom anchors</td></tr>
+      </table></div>
+      <h3 id="models">Your own 3D models</h3>
+      <p><b>More › 3D models…</b> adds STL, GLB or glTF files (a glTF must be a single file; export as .glb if it points to others). Each file is placed with a <code>Mesh</code> part, which fits the model inside its <code>size</code> box: <code>fit: contain</code> (the default) keeps its proportions, <code>fit: stretch</code> fills the box. Because the box is known, every Box anchor works, so models attach, hinge and slide like any other part. Adding one model inserts a Mesh line for you, sized from the file (read as millimetres). Models are saved inside the project's .zip and kept in this browser.</p>
+      <div data-snippet="scene">Piston::Mesh { src: "piston.stl"; size: (60mm, 90mm, 60mm); at: (0, 45mm, 0); }</div>
+      <h3>Curves: shapes as functions</h3>
+      <p>A <code>Curve</code> is any function of a parameter. Use <code>t</code> inside it and the curve changes over time.</p>
+      <div data-snippet="scene">Wave::Curve {
+    domain: u in 0..1;
+    point: (u * 400mm - 200mm, 40mm * sin(6.283 * (u * 2 - t / 2s)), 0);
+    stroke: 4mm;
+}</div>
+    </section>
+
+    <!-- ============================== ANCHORS ============================== -->
+    <section id="anchors">
+      <h2>Anchors</h2>
+      <p>Anchors are named points and lines on a part. They live in the part's own frame and move with it, which is why you can place and connect parts without computing coordinates.</p>
+      <figure>
+        <svg viewBox="0 0 640 290" role="img" aria-label="Box anchors: faces, a face axis, a two-face edge and a corner">
+          <g class="svg-line" fill="none" stroke-width="1.4">
+            <path class="svg-face" d="M180 110 L360 110 L360 250 L180 250 Z"/>
+            <path d="M180 110 L250 60 L430 60 L360 110"/>
+            <path d="M360 250 L430 200 L430 60"/>
+            <path stroke-dasharray="4 4" d="M180 250 L250 200 L430 200 M250 200 L250 60"/>
+          </g>
+          <line class="svg-hl" x1="180" y1="114" x2="180" y2="246"/>
+          <line stroke="var(--accent)" stroke-width="3" stroke-dasharray="6 4" x1="395" y1="94" x2="395" y2="232"/>
+          <circle class="svg-dot" cx="360" cy="110" r="5"/>
+          <text class="svg-text" x="262" y="232">face.front</text>
+          <text class="svg-text" x="290" y="50">face.top</text>
+          <text class="svg-text" x="440" y="140">face.right</text>
+          <text class="svg-text err" x="40" y="186">edge.left-front</text>
+          <text class="svg-text acc" x="440" y="232">edge.right</text>
+          <text class="svg-muted" x="440" y="248">(face axis)</text>
+          <line class="svg-line" stroke-width="1" x1="364" y1="106" x2="452" y2="92"/><text class="svg-text" x="456" y="96">corner.right-top-front</text>
+          <text class="svg-muted" x="24" y="40">+y up · +x right · +z towards you</text>
+        </svg>
+        <figcaption>On a Box, faces are named by direction. <code>edge.left-front</code> is where two faces meet. <code>edge.right</code> alone is the right face's centre line along its longest side, which is what you want for hinging thin plates.</figcaption>
+      </figure>
+      <div class="tbl"><table>
+        <tr><th>Form</th><th>Kind</th><th>Example</th></tr>
+        <tr><td><code>face.&lt;f&gt;</code></td><td>point with a normal</td><td class="code-cell">Frame.face.top</td></tr>
+        <tr><td><code>edge.&lt;f&gt;</code></td><td>line (face axis)</td><td class="code-cell">Door.panel.edge.left</td></tr>
+        <tr><td><code>edge.&lt;f1&gt;-&lt;f2&gt;</code></td><td>line where two faces meet</td><td class="code-cell">Base.edge.right-top</td></tr>
+        <tr><td><code>corner.&lt;x&gt;-&lt;y&gt;-&lt;z&gt;</code></td><td>point</td><td class="code-cell">Box.corner.left-top-front</td></tr>
+        <tr><td><code>axis</code></td><td>line</td><td class="code-cell">G1.axis</td></tr>
+        <tr><td><code>end.a</code>, <code>end.b</code></td><td>point on a line</td><td class="code-cell">Crank.end.b</td></tr>
+        <tr><td><code>anchor name: …;</code></td><td>custom point</td><td class="code-cell">anchor tip: (0, 120mm, 0);</td></tr>
+      </table></div>
+      <p>Faces are <code>front</code> (+z), <code>back</code> (−z), <code>left</code> (−x), <code>right</code> (+x), <code>top</code> (+y), <code>bottom</code> (−y). Anchors are never guessed: a wrong name is an error that lists the valid ones.</p>
+    </section>
+
+    <!-- ============================== CONNECT ============================== -->
+    <section id="connect">
+      <h2>Connecting parts</h2>
+      <p>A part declares what it connects to, inside its own block. The connection places the part for you and keeps it connected while things move.</p>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Freedom</th><th>Written as</th></tr>
+        <tr><td><code>attach</code></td><td>none: moves as one</td><td class="code-cell">attach: end.a to G1.face.front;</td></tr>
+        <tr><td><code>hinge</code></td><td>turns about a line</td><td class="code-cell">hinge: edge.top on Arm.edge.bottom;</td></tr>
+        <tr><td><code>slider</code></td><td>slides along a line</td><td class="code-cell">slider: axis on Barrel.axis;</td></tr>
+        <tr><td><code>mesh</code></td><td>turns with a gear, ratio from teeth</td><td class="code-cell">mesh: G1;  or  mesh: G1 at 60deg;</td></tr>
+        <tr><td><code>couple</code></td><td>turns with a part at any ratio</td><td class="code-cell">couple: MinuteHub 1/12;</td></tr>
+        <tr><td><code>belt</code></td><td>turns with a pulley, same direction</td><td class="code-cell">belt: Motor;</td></tr>
+        <tr><td><code>pin</code></td><td>keeps two points together, closing a loop</td><td class="code-cell">pin: end.b to Rocker.end.b;</td></tr>
+      </table></div>
+      <h3>attach</h3>
+      <p>Moves the part so <i>its</i> anchor sits on the other part's anchor, then fuses them. With one anchor, the part's centre is used.</p>
+      <div data-snippet="scene">Crank::Rod  { length: 50mm; radius: 2.5mm; attach: end.a to G1.face.front; }
+Bob::Sphere { radius: 30mm; attach: Arm.face.bottom; }</div>
+      <h3>hinge and slider</h3>
+      <p>Both take <i>own line</i> <code>on</code> <i>other line</i>, or just the other line (then the part's own <code>axis</code> is used). The other side can also be a point: an anchor plus an offset, or a fixed position such as <code>(110mm, 0, 0)</code>. Then the part turns about its own line through that point. The part's motion rule drives the joint. Add <code>range</code> to limit it. A group can be hinged too: name a member's line as its own line.</p>
+      <div data-snippet="scene">Sign::Box  { size: (220mm, 140mm, 10mm); hinge: edge.top on Arm.edge.bottom; range: -30deg..30deg; }
+FL::Wheel  { radius: 53mm; width: 34mm; hinge: axis on Car.axleF.end.b; }
+Piston::Cylinder { radius: 36mm; height: 50mm; slider: axis on Barrel.axis; range: -110mm..110mm; }
+
+Door::Group {
+    panel: Box { size: (800mm, 2000mm, 40mm); }
+    hinge: panel.edge.left on Frame.edge.right;
+}</div>
+      <div class="note"><p>Hinges carry their part along when the part they sit on moves. That is how wheels ride on a car and a forearm rides on an upper arm.</p></div>
+      <h3>mesh, couple and belt</h3>
+      <p><code>mesh</code> places the gear at the correct centre distance, turns it so the teeth interlock and sets the ratio. Add <code>at 60deg</code> to place it round the other gear. <code>couple</code> uses any ratio between round parts. <code>belt</code> draws a belt and turns both pulleys the same way.</p>
+      <div data-snippet="scene">G1::Gear { teeth: 36; module: 2mm; at: (0, 0, 0); }
+G2::Gear { teeth: 12; module: 2mm; mesh: G1; }             // turns -3 times as fast
+G3::Gear { teeth: 18; module: 2mm; mesh: G2 at 60deg; }    // placed above G2</div>
+    </section>
+
+    <!-- ============================== LOOPS ============================== -->
+    <section id="loops">
+      <h2>Linkages and closed loops</h2>
+      <p>Hinges in a chain are easy: each part rides on the one before. A <b>closed loop</b>, where the chain comes back to the ground, also needs the parts to stay together. <code>pin</code> says which two points must meet. Drive one joint, such as the crank. Every hinge or slider in the loop without a motion rule is solved at each frame so the pins hold.</p>
+      <div data-snippet="scene">// A crank-rocker four-bar linkage
+Crank::Link   { length: 40mm;  hinge: end.a on (0, 0, 0); }
+Coupler::Link { length: 120mm; hinge: end.a on Crank.end.b + (0, 0, 6mm); pin: end.b to Rocker.end.b; }
+Rocker::Link  { length: 90mm;  orient: 90deg about z; hinge: end.a on (110mm, 0, 0); }</div>
+      <div data-snippet="motion">Crank { forever: rotate: 180deg/s; }</div>
+      <h3>Slider-crank</h3>
+      <p>The same idea with a slider. The piston has no motion rule, so it slides to wherever the connecting rod puts it.</p>
+      <div data-snippet="scene">Crank::Link      { length: 50mm; hinge: end.a on (0, 0, 0); }
+Bore::Cylinder   { radius: 22mm; height: 220mm; orient: 90deg about z; at: (200mm, 0, 0); }
+Piston::Cylinder { radius: 20mm; height: 40mm; slider: axis on Bore.axis; }
+Rod::Link        { length: 180mm; hinge: end.a on Crank.end.b + (0, 0, 6mm); pin: end.b to Piston.center; }</div>
+      <ul>
+        <li><b>Use Link for bars.</b> Its ends are lines along z, so hinges and pins on them turn in the xy plane.</li>
+        <li><b>A pin is an axle.</b> Parts can sit at different depths along it, which is why <code>+ (0, 0, 6mm)</code> layers the coupler in front of the crank.</li>
+        <li><b>The starting pose picks the branch.</b> A four-bar can usually close two ways, elbow up or down. Orient the rocker roughly where you want it.</li>
+        <li><b>The compiler checks the whole motion.</b> <code>E0352</code> means the loop cannot close at all; check the lengths. <code>E0353</code> gives the time when the linkage locks, for example when a crank is too long to turn fully.</li>
+      </ul>
+      <p><button class="btn primary" type="button" data-try="linkage">Try a four-bar in the studio</button></p>
+    </section>
+
+    <!-- ============================== STYLE ============================== -->
+    <section id="style">
+      <h2>Style</h2>
+      <p>Selectors match like CSS. Later rules win; there is no specificity scoring.</p>
+      <div class="tbl"><table>
+        <tr><th>Selector</th><th>Matches</th></tr>
+        <tr><td><code>Gear</code></td><td>every part of that type, or the part named Gear</td></tr>
+        <tr><td><code>Door</code></td><td>the part named Door, including all its members</td></tr>
+        <tr><td><code>Door.knob</code></td><td>one member of a group</td></tr>
+        <tr><td><code>.wooden</code></td><td>every part with that class (members inherit their group's classes)</td></tr>
+        <tr><td><code>#G2</code></td><td>the part named G2</td></tr>
+        <tr><td><code>Crank, Knob</code></td><td>both</td></tr>
+        <tr><td><code>*</code></td><td>every part (later rules still win, so put it first)</td></tr>
+      </table></div>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Values</th></tr>
+        <tr><td><code>color</code></td><td>#hex, <code>#rrggbbaa</code> (the last two digits are alpha), <code>rgb(255, 140, 0)</code>, <code>rgba(255, 140, 0, 0.5)</code>, <code>hsl(30deg, 100%, 50%)</code>, <code>transparent</code>, CSS names, <code>steel brass oak copper aluminium iron rubber walnut glass graphite</code>, or <code>gradient(#a, #b, axis: x)</code>. A colour's alpha makes the faces see-through; <code>transparent</code> hides them and leaves the outline, a quick wireframe.</td></tr>
+        <tr><td><code>material</code></td><td><code>matte</code> <code>plastic</code> <code>metal</code> <code>brushed</code> <code>chrome</code> <code>gold</code> <code>glass</code> <code>ghost</code> (an x-ray look: faint faces with clear edges; see <a href="#sections">Cutaway</a>) <code>flat</code> <code>glow</code> (shorthand for <code>luminosity: 60%</code>; the metals reflect a soft studio light)</td></tr>
+        <tr><td><code>outline</code></td><td><code>1px #2b3138</code>; an alpha colour such as <code>#00000040</code> gives a faint edge</td></tr>
+        <tr><td><code>opacity</code></td><td>0 (invisible) to 1 (solid), or a percentage like <code>40%</code>. The faces, outline and label fade together; on a group it fades every member. It multiplies with the colour's alpha. Animate it in the motion file to fade parts in and out.</td></tr>
+        <tr><td><code>luminosity</code></td><td>The part shines and lights the parts near it: <code>[level] [colour] [range]</code>, as in <code>luminosity: 80%;</code> or <code>luminosity: 120% #ffd27a 600mm;</code>. 100% is a lamp, up to 400% for a strong light. The colour defaults to the part's own; the range is how far its light reaches. A solid luminous part gets a soft halo; a see-through one (a beam, a glass shade) adds its light like a real beam. A lamp casts no shadow of itself. The first eight luminous parts light the scene (W0610 beyond that); the rest still shine. Animate the level in the motion file.</td></tr>
+        <tr><td><code>roughness</code>, <code>metalness</code></td><td>0 to 1, or a percentage; they override the material. <code>roughness: 0</code> is a mirror, <code>1</code> is chalk. <code>metalness: 1</code> is bare metal and reflects the studio light.</td></tr>
+        <tr><td><code>wireframe</code></td><td><code>on</code> draws only the triangle edges, <code>off</code> (the default) the faces</td></tr>
+        <tr><td><code>shadow</code></td><td><code>none</code> stops the part casting a shadow; <code>cast</code> is the default</td></tr>
+        <tr><td><code>text</code> and the font properties</td><td>words printed on the part's faces: see <a href="#text">Text</a></td></tr>
+        <tr><td><code>label</code></td><td>a tag shown above the part, which follows it and is always on top. It is bare text with a soft halo, so it reads over light and dark backgrounds. For anything that stays on screen, Text reads better and never covers the motion</td></tr>
+        <tr><td><code>label-color</code>, <code>label-size</code></td><td>the colour of the label's text, and its size (<code>140%</code>; 100% is normal)</td></tr>
+        <tr><td><code>label-background</code></td><td>a rounded panel behind the label, such as <code>#10203080</code> (the last two digits are its alpha). Left out, there is no panel; <code>none</code> removes one set by another rule</td></tr>
+        <tr><td><code>cut</code>, <code>cut-color</code>, <code>explode</code></td><td>section and exploded views: see <a href="#sections">Cutaway and exploded views</a></td></tr>
+        <tr><td><code>trail</code></td><td>draws the path an anchor follows: <code>[anchor] [time] [colour]</code>, each optional. No time means the whole run so far.</td></tr>
+      </table></div>
+      <h3 id="styles">Named styles: write once, reuse everywhere</h3>
+      <div data-snippet="style">Metal::Style { material: metal; color: steel; roughness: 0.3; }
+Polished::Style { roughness: 0.1; outline: 1px #2b3138; }
+Brass::Style { use: Metal; color: brass; }
+
+Gear  { use: Brass, Polished; }
+Crank { use: Metal; color: #8f99a3; }</div>
+      <p><code>Metal::Style { … }</code> names a set of properties, written like any other declaration; <code>use: a, b;</code> takes them. The list is read left to right, so a later style wins when two set the same property, and properties written beside <code>use</code> win over all of them. Styles can use other styles. A part can also take styles in the scene: <code>Crank::Link { length: 80mm; use: Metal; }</code>. Style rules written later still win over earlier ones, as in CSS.</p>
+      <div data-snippet="style">Gear   { color: steel; material: metal; outline: 1px #1e252c; }
+#G2    { color: brass; }
+.tyre  { color: gradient(#141619, #b9c0c8, axis: x); }   // a gradient makes spin visible
+Sun    { color: #ffcf5a; luminosity: 160%; label: "Sun"; }   // shines and lights the planets
+Pen    { trail: #c2410c; }                               // the coupler curve of a linkage
+Blade  { trail: face.top 1s #2f6f8f; }                   // the last second of a wiper's sweep</div>
+    </section>
+
+    <!-- ============================== SECTIONS ============================== -->
+    <section id="sections">
+      <h2>Cutaway and exploded views</h2>
+      <p>Explainers often need to show what is inside. Three tools do it without changing the parts themselves.</p>
+      <h3>Cut a part open</h3>
+      <div data-snippet="style">Barrel { cut: z 0mm; cut-color: #b8442e; }   // cuts away the half towards the viewer
+Cover  { cut: -x 40mm; }                      // cuts away everything left of x = 40mm</div>
+      <p><code>cut</code> is a direction and an offset: a flat plane in scene coordinates, and the side the direction points to is removed. <code>z</code> points at the viewer, so <code>cut: z 0mm;</code> opens the front half. Use <code>x</code>, <code>-x</code>, <code>y</code>, <code>-y</code>, <code>z</code>, <code>-z</code> or a vector such as <code>(1, 0, 1)</code>. The cut faces are filled in a darker shade of the part's colour, or <code>cut-color</code>. The plane stays where it is while the part moves, like a real section. <code>cut: none;</code> removes a cut set by an earlier rule.</p>
+      <div data-snippet="motion">Barrel, Gland { 0s..1.5s: cut: 90mm -> 0mm ease-out; }   // the plane slides in</div>
+      <p>In motion, <code>cut</code> moves the plane: an offset, or a change from one offset to another. It takes its direction from the style (or <code>z</code> if the style has none). A cut never moves a part, so it can sit beside any motion source.</p>
+      <h3>See through a casing</h3>
+      <div data-snippet="style">Housing { material: ghost; }               // faint faces, clear edges
+Housing { material: ghost; opacity: 0.3; }  // a little more solid</div>
+      <h3>Explode an assembly</h3>
+      <div data-snippet="scene">Scene { explode: 1 along y; }   // a still exploded view</div>
+      <div data-snippet="motion">Scene { 1s..3s: explode: 0 -> 1.2 ease-in-out; }   // the parts move apart, then stay apart</div>
+      <div data-snippet="style">Base   { explode: 0; }   // stays where it is
+Bolts  { explode: 2; }   // moves twice as far as the rest</div>
+      <p>Each part moves away from the middle of the model by its distance from the middle times the amount: at 1, every part is twice as far out. <code>along x</code>, <code>y</code> or <code>z</code> keeps the movement to one axis, which suits stacks such as a gearbox cover and back plate. Parts held together by a group move as one; Text and Plot parts stay put unless they have their own <code>explode</code> weight. The exploded positions are for showing: hinges, meshes and the camera still follow the assembled positions.</p>
+      <p>Try the <b>Cutaway: a hydraulic cylinder</b> example, and the third chapter of <b>How a gearbox works</b>.</p>
+    </section>
+
+    <!-- ============================== MOTION ============================== -->
+    <section id="motion">
+      <h2>Motion</h2>
+      <p>A motion rule names what to move and lists time blocks. The target can be a part, a <code>.class</code>, several of these separated by commas, or <code>Observer</code>.</p>
+      <div data-snippet="motion">Upper, Fore { 0s..2s: rotate: 0deg -> 40deg ease-in-out; }
+.tyre       { forever: roll: Road; }</div>
+      <h3>Time blocks</h3>
+      <div class="tbl"><table>
+        <tr><th>Block</th><th>Runs</th></tr>
+        <tr><td><code>forever:</code></td><td>the whole animation</td></tr>
+        <tr><td><code>0s..2s:</code></td><td>during that range</td></tr>
+        <tr><td><code>then:</code></td><td>after the previous block, for as long as it lasted</td></tr>
+        <tr><td><code>then 3s:</code></td><td>after the previous block, for 3 s</td></tr>
+      </table></div>
+      <h3>How values behave over time</h3>
+      <div class="tbl"><table>
+        <tr><th>Value</th><th>Example</th><th>Behaviour</th></tr>
+        <tr><td>Position or angle</td><td class="code-cell">rotate: 90deg;</td><td>Set from the start of its block. The latest block that has started wins.</td></tr>
+        <tr><td>Change of position</td><td class="code-cell">rotate: 0deg -&gt; 90deg ease-in-out;</td><td>Moves across its block, then holds the end value</td></tr>
+        <tr><td>Speed</td><td class="code-cell">rotate: 60deg/s;</td><td>Moves during its block; what it moved stays moved. Speeds from several blocks add up.</td></tr>
+        <tr><td>Change of speed</td><td class="code-cell">move: (0, 0, 0) -&gt; (600mm/s, 0, 0);</td><td>Speeds up or slows down across its block: an acceleration with easing</td></tr>
+        <tr><td>Acceleration</td><td class="code-cell">move: (0, -9.81m/s2, 0);</td><td>Constant acceleration during its block</td></tr>
+        <tr><td>Function of t</td><td class="code-cell">rotate: 35deg * sin(t * 10);</td><td>Any expression using time in seconds</td></tr>
+      </table></div>
+      <p>Easings follow CSS: <code>linear</code> (default), <code>ease</code>, <code>ease-in</code>, <code>ease-out</code>, <code>ease-in-out</code>, <code>cubic-bezier(x1, y1, x2, y2)</code>.</p>
+      <h3>Properties for parts</h3>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Example</th><th>Notes</th></tr>
+        <tr><td><code>rotate</code></td><td class="code-cell">rotate: 60deg/s about G1.axis;</td><td>On a hinged part, turns it about its hinge. Without <code>about</code>, the part's own axis (or y). Also <code>about x</code>, <code>y</code>, <code>z</code> or a line on another part</td></tr>
+        <tr><td><code>orbit</code></td><td class="code-cell">orbit: Earth 360deg / 2s;</td><td>Circles round another part about the vertical, following it if it moves</td></tr>
+        <tr><td><code>move</code></td><td class="code-cell">move: (500mm/s, 0, 0);</td><td>A vector: an offset, a speed or an acceleration. Add more move lines to combine them</td></tr>
+        <tr><td><code>along</code></td><td class="code-cell">along: Run 12s;</td><td>Follow a Curve, one lap per given time</td></tr>
+        <tr><td><code>x</code>, <code>y</code>, <code>z</code></td><td class="code-cell">x: 0;</td><td>Pin one coordinate</td></tr>
+        <tr><td><code>opacity</code></td><td class="code-cell">0s..1s: opacity: 0 -&gt; 1 ease-in;</td><td>Fade in or out; works on a part or a whole group, with any easing or an expression of t</td></tr>
+        <tr><td><code>color</code></td><td class="code-cell">0s..2s: color: #2f6fb0 -&gt; #e0a63a;</td><td>Change colour over a block (alpha too); the latest started block wins</td></tr>
+        <tr><td><code>luminosity</code></td><td class="code-cell">0s..1s: luminosity: 0 -&gt; 100%;</td><td>Turn a light on, off or up; the colour and range come from the style</td></tr>
+      </table></div>
+      <h3>Properties for hinged and sliding parts</h3>
+      <p>Every kind of motion uses one of two verbs: <b>rotate</b> turns and <b>move</b> slides. On a hinged part, <code>rotate</code> turns it about its hinge; on a slider, <code>move</code> takes a number along its line. <code>opacity</code>, <code>color</code> and <code>luminosity</code> change only how a part looks, so they work on hinged and sliding parts too, in the same rule or a rule of their own.</p>
+      <div class="tbl"><table>
+        <tr><th>Connection</th><th>Property</th><th>Example</th></tr>
+        <tr><td>hinge</td><td><code>rotate</code></td><td class="code-cell">rotate: 0deg -&gt; 95deg ease-in-out;</td></tr>
+        <tr><td>hinge</td><td><code>roll</code></td><td class="code-cell">roll: Road;</td></tr>
+        <tr><td>slider</td><td><code>move</code></td><td class="code-cell">move: -90mm -&gt; 90mm;</td></tr>
+      </table></div>
+      <h3 id="accel">Acceleration</h3>
+      <p>There is no separate acceleration keyword: write the unit and the value means it. Three common patterns:</p>
+      <div data-snippet="motion">// 1. Speed up, cruise, brake: changes between speeds
+let cruise = (600mm/s, 0, 0);
+Car {
+    0s..1.5s: move: (0, 0, 0) -> cruise ease-in;
+    then:     move: cruise;
+    3s..4.2s: move: cruise -> (0, 0, 0) ease-out;
+}
+
+// 2. A thrown ball: a launch speed plus gravity, both as move lines
+Ball {
+    0s..1.5s: move: (600mm/s, 1200mm/s, 0);
+              move: (0, -1.62m/s2, 0);
+}
+
+// 3. A motor spinning up: an angular acceleration, then a steady speed
+Motor {
+    0s..1s:  rotate: 360deg/s2;
+    then 3s: rotate: 360deg/s;
+}</div>
+      <h3 id="roll">roll</h3>
+      <p><code>roll</code> turns a hinged wheel by the distance its centre travels divided by its radius, so the spin always matches the speed, including while speeding up and braking. It assumes straight-line travel on level ground.</p>
+      <h3 id="orbit">orbit</h3>
+      <p><code>orbit</code> keeps a part's offset from a centre part and swings it round. Because the centre is followed, orbits nest: a moon can circle a planet that circles a star.</p>
+      <div data-snippet="motion">Earth { forever: orbit: Sun 360deg / 12s;  rotate: 360deg / 2s; }
+Moon  { forever: orbit: Earth 360deg / 2s; }</div>
+    </section>
+
+    <!-- ============================== TEXT ============================== -->
+    <section id="text">
+      <h2>Text</h2>
+      <p>Words are part of the scene, drawn in 3D, so they sit where you put them and never cover the motion. There are two kinds: a <b>Text</b> part, made only of words, and <b>face text</b>, printed on any part's faces.</p>
+      <div data-snippet="scene">Title::Text { text: "Four-stroke cycle"; size: 30mm; at: (0, 260mm, 0); }
+Block::Box  { size: (200mm, 120mm, 80mm); at: (0, 60mm, 0); }</div>
+      <div data-snippet="style">Title { color: #ffd27a; font-weight: 600; text-background: #10203080; }
+Block { color: steel; text: "ENGINE BLOCK"; text-side: front top; font-family: serif; font-style: 3d; text-depth: 2mm; }</div>
+      <p>A Text is a part like any other: place it, attach it, move it, fade it with <code>opacity</code> or change its colour with <code>color: #a -&gt; #b</code>. <code>size</code> is the height of a line of letters; <code>\n</code> in the text starts a new line. A Text turns to face the viewer (<code>facing: camera</code>, the default), so it reads straight however the camera moves or zooms; <code>facing: front</code> keeps it fixed in the scene, like a sign on a wall. Words printed on a part's faces stay on the faces; for words that should always read straight, use a Text part beside it. To keep a title in one place on the screen while the camera moves, add <a href="#fixed"><code>fixed</code></a>.</p>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Values</th></tr>
+        <tr><td><code>text</code></td><td><code>"PISTON"</code>. In style it prints on the part's faces; on a Text it replaces the scene's text</td></tr>
+        <tr><td><code>text-side</code></td><td><code>front</code> (the default), <code>back</code>, <code>left</code>, <code>right</code>, <code>top</code>, <code>bottom</code>, several at once, or <code>all</code>. Cylinders, rods and other round parts wrap the text round their side, like print on a can</td></tr>
+        <tr><td><code>font-family</code></td><td><code>sans</code>, <code>serif</code>, <code>mono</code>, or any font installed on the computer in quotes: <code>"Avenir Next"</code></td></tr>
+        <tr><td><code>font-size</code></td><td>a length such as <code>24mm</code>, or a share of the face such as <code>40%</code>. Leave it out and the text fits the face</td></tr>
+        <tr><td><code>font-weight</code></td><td><code>normal</code>, <code>bold</code>, or <code>100</code> to <code>900</code></td></tr>
+        <tr><td><code>font-style</code></td><td><code>italic</code>; <code>3d</code> for solid letters with depth, lighting and shadows (sans, serif and mono outlines); or <code>italic 3d</code></td></tr>
+        <tr><td><code>text-color</code></td><td>the colour of the letters (a Text also takes <code>color</code>). Without it, dark or light, whichever reads on the part</td></tr>
+        <tr><td><code>text-depth</code></td><td>how far 3D letters stand out, such as <code>4mm</code></td></tr>
+        <tr><td><code>text-align</code>, <code>text-padding</code>, <code>line-height</code></td><td><code>left</code> / <code>center</code> / <code>right</code>; the space to the edge; the space between lines (<code>1.2</code>)</td></tr>
+        <tr><td><code>text-background</code></td><td>a panel behind the letters, such as <code>#10203080</code>, so captions read over anything</td></tr>
+      </table></div>
+      <p>The type hints suggest every property and its values as you type. Insert a Text from the shape picker (<b>Text and sky</b>).</p>
+    </section>
+
+    <!-- ============================== CAMERA ============================== -->
+    <section id="camera">
+      <h2>Camera, lights and scene</h2>
+      <div data-snippet="scene">Observer { position: (2600mm, 1700mm, 3400mm); look-at: (450mm, 1000mm, 0); zoom: 1; fov: 40deg; }
+Light    { kind: directional; direction: (-1, -2, -1.5); power: 0.85; }
+Light    { kind: point; at: (0, 0, 0); power: 0.5; }
+Scene    { duration: 4.5s; grid: floor; background: #070a10; }</div>
+      <p><code>background</code> takes any colour. <code>background: transparent</code> keeps the background clear: the preview shows a checkerboard, and a saved PNG frame, <b>PNG frames</b>, <b>GIF</b> and the <b>3D player</b> keep the transparency, so the animation can sit on a slide, a web page or in a video editor. MP4 and WebM have no transparency, so those fill it with the theme colour. You can also pick <b>Transparent</b> under Background in the right-click menu or Settings without changing the code.</p>
+      <h3 id="frame">Frame: portrait, landscape, Shorts and Reels</h3>
+      <div data-snippet="scene">Scene { duration: 8s; frame: reel; }</div>
+      <p><code>frame</code> sets the shape and size of the picture. The preview shows exactly that frame, and exports use its size. Presets: <code>youtube</code> (1920×1080), <code>youtube-short</code>, <code>reel</code> and <code>tiktok</code> (1080×1920), <code>instagram</code> and <code>linkedin</code> (1080×1350), <code>square</code>, <code>slides</code> for PowerPoint, Keynote and Google Slides, <code>4k</code> and <code>cinema</code>. Or write a ratio, <code>frame: 4:5</code>, or pixels, <code>frame: 1080x1920</code>. For Shorts, Reels and TikTok a dashed box shows the safe area that the app's buttons and captions leave clear; keep titles inside it. A tall frame keeps the camera's width, so turning a scene portrait does not crop it.</p>
+      <h3 id="sky">Sky, ground and sun</h3>
+      <div data-snippet="scene">Scene { duration: 8s; sky: dusk; ground: #2c3328; sun: (6deg, -30deg) #ffb36b; }</div>
+      <div data-snippet="motion">Scene { 0s..8s: sun: -5deg -> 10deg ease-in-out; }   // a sunrise</div>
+      <p><code>sun</code> draws a sun on the sky: its height above the horizon, then its direction (<code>0deg</code> looks into the scene along −z, <code>90deg</code> is to the right, along +x), then an optional colour. It sits far beyond the scene, so it never rests on the ground; below the horizon it is hidden, and it lights the scene from where it stands, fading as it sets. Animate its height in a Scene motion rule for a sunrise or a sunset.</p>
+      <p>The ground sits at the foot of the model (glowing parts do not count, so a lamp below it stays hidden); <code>ground: #2c3328 at 0mm;</code> sets the height yourself. <code>shadow: none;</code> in a part's style stops it casting a shadow.</p>
+      <p><code>sky</code> wraps the whole scene in a hollow, glowing sphere that travels with the camera, so you never reach its edge. Choose a preset, <code>day</code> <code>dawn</code> <code>dusk</code> <code>sunset</code> <code>night</code> <code>space</code> <code>overcast</code> <code>studio</code>, or give one to three colours from the top through the horizon to below: <code>sky: #1d3b70 #f2b38a #2a2030;</code>. The sky also tints the soft ambient light, so a dusk sky warms the parts. <code>night</code> and <code>space</code> have stars, and <code>stars: 1500;</code> sets how many. <code>ground</code> lays a wide floor at the foot of the model that fades into the sky and catches the shadows. Right-click the preview and pick <b>Sky</b> to try the presets; it writes your choice into the Scene block. The sky shows while the preview background is <b>From the scene</b>, the default.</p>
+      <p>Without an Observer the studio frames the whole scene. Without a duration it uses the end of the last time block; if every block runs forever it uses 6 s, and with no motion at all, 4 s.</p>
+      <h3>Moving the camera</h3>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Example</th><th>Notes</th></tr>
+        <tr><td><code>follow</code></td><td class="code-cell">follow: Car offset (380mm, 260mm, 1150mm);</td><td>Keeps a fixed offset and looks at the part</td></tr>
+        <tr><td><code>orbit</code></td><td class="code-cell">orbit: Mouse 60deg/s;</td><td>Circles a part, even a moving one, and looks at it</td></tr>
+        <tr><td><code>look-at</code></td><td class="code-cell">look-at: Door.knob;</td><td>Turns to face a part or point</td></tr>
+        <tr><td><code>zoom</code></td><td class="code-cell">zoom: 1 -&gt; 2;</td><td>Zooms about the look-at point</td></tr>
+        <tr><td><code>move</code>, <code>x</code>, <code>y</code>, <code>z</code>, <code>position</code></td><td class="code-cell">move: (0, -20mm/s, 0);</td><td>Combine with follow or orbit for spirals</td></tr>
+      </table></div>
+      <div data-snippet="motion">// Circle with the eagle while dropping, like a hunter closing in
+Observer {
+    forever: orbit: Mouse 60deg/s;
+             move: (0, -20mm/s, 0);
+}</div>
+    </section>
+
+    <!-- ============================== RECIPES ============================== -->
+    <section id="sound">
+      <h2>Sound</h2>
+      <p>Sounds play at moments of the motion, so they stay in time when the motion changes. Declare a <code>Sound</code> in the scene, then play it from a motion rule with <code>sound:</code>. Every sound is generated by the studio from a recipe, not recorded, so it is free of copyright and sounds the same on every computer.</p>
+      <div data-snippet="scene">Knock::Sound { kind: knock; }
+Tick::Sound  { kind: tick; volume: 60%; }
+Bell::Sound  { kind: bell; pitch: 120%; }
+Hum::Sound   { kind: hum; length: 3s; }</div>
+      <div data-snippet="motion">Lid {
+    0s..1.5s: rotate: 0deg -> 110deg ease-out;
+              sound: Knock at end;          // when the lid lands
+}
+Pendulum {
+    forever:  rotate: 6deg * sin(t * 3.1416);
+              sound: Tick every 1s 50%;     // a tick each second, at half volume
+}
+Scene { sound: Bell at 4s; sound: Hum; }  // at set times, from no part in particular</div>
+      <div class="tbl"><table>
+        <tr><th>Write</th><th>Plays</th></tr>
+        <tr><td><code>sound: Knock;</code></td><td>when the time block starts</td></tr>
+        <tr><td><code>sound: Knock at end;</code></td><td>when the time block ends: a part landing</td></tr>
+        <tr><td><code>sound: Knock at 1.5s;</code></td><td>this long after the block starts (outside a time block, at that time)</td></tr>
+        <tr><td><code>sound: Tick every 1s;</code></td><td>again and again while the block runs</td></tr>
+        <tr><td><code>… 60%</code></td><td>quieter, after any of the above</td></tr>
+      </table></div>
+      <div class="tbl"><table>
+        <tr><th>Sound property</th><th>Values</th></tr>
+        <tr><td><b><code>kind</code></b></td><td>one of the built-in sounds below</td></tr>
+        <tr><td><code>pitch</code></td><td><code>50%</code> to <code>200%</code>; higher or lower than normal</td></tr>
+        <tr><td><code>volume</code></td><td><code>0%</code> to <code>100%</code></td></tr>
+        <tr><td><code>length</code></td><td>for the sustained kinds, such as <code>length: 3s;</code></td></tr>
+      </table></div>
+      <div class="tbl"><table>
+        <tr><th>Group</th><th>Kinds</th></tr>
+        <tr><td>Clock and mechanism</td><td><code>tick</code> <code>tock</code> <code>ratchet</code> <code>clank</code> <code>latch</code> <code>gear</code> <code>spring</code> <code>rattle</code></td></tr>
+        <tr><td>Machines and steam</td><td><code>footstep</code> (a metal foot) <code>clang</code> <code>chug</code> (one puff) <code>hiss</code> <code>rumble</code> (an engine; takes <code>length</code>)</td></tr>
+        <tr><td>Impacts</td><td><code>knock</code> <code>thud</code> <code>click</code> <code>snap</code> <code>pop</code> <code>tap</code></td></tr>
+        <tr><td>Movement</td><td><code>whoosh</code> <code>swish</code> <code>whirr</code> <code>servo</code> <code>slide</code> <code>creak</code> <code>squeak</code> (these take <code>length</code>)</td></tr>
+        <tr><td>Signals</td><td><code>chime</code> <code>bell</code> <code>ding</code> <code>beep</code> <code>blip</code> <code>success</code> <code>alert</code></td></tr>
+        <tr><td>Ambience</td><td><code>hum</code> (takes <code>length</code>)</td></tr>
+      </table></div>
+      <ul>
+        <li><b>Picking a sound:</b> while typing <code>sound:</code> or <code>kind:</code>, the hints list the sounds; arrow through them to hear each one, or choose <b>Pick a sound…</b> for the catalogue, where you click a sound to hear it and adjust pitch and volume before inserting it. A new sound is declared in the scene for you. The speaker button in the header opens the catalogue too.</li>
+        <li><b>Volume:</b> the speaker button on the preview opens the volume slider and a mute button; its icon shows the level. Below them, <b>Sounds in this animation</b> lists every sound event, to hear one, remove it from the code, or add a sound at the current moment.</li>
+        <li><b>In the examples:</b> the robot's feet clank as they land, the locomotive chuffs faster as it speeds up, the door creaks, the wiper squeaks, the clocks tick. Open any of them to see the lines that do it.</li>
+        <li><b>Left and right:</b> each sound comes from where its part is on screen, so a sound on the left plays more in the left speaker. Sounds in a <code>Scene</code> rule play in the middle.</li>
+        <li><b>Exports:</b> MP4 and WebM include the sound (AAC or Opus, whichever the browser can make); the export panel can leave it out. The 3D player plays it once the viewer clicks. GIF and PNG frames are silent. On the command line, <code>orrery render project.orrery -o sound.wav</code> writes the sound track alone.</li>
+      </ul>
+      <h3 id="narration">Narration and voice-overs</h3>
+      <div data-snippet="scene">Narrator::Voice { voice: en-GB; rate: 95%; }</div>
+      <div data-snippet="motion">Crank { 0s..3s: rotate: 0deg -> 180deg; say: Narrator "The crank turns half a revolution."; }</div>
+      <p><code>say</code> speaks a line with the browser's own voice, in the studio and in the 3D player, and shows it as a caption. <code>voice</code> is a language such as <code>en-US</code> or <code>en-IN</code>, or the name of a voice on the computer (the hints list them); <code>captions: off;</code> speaks without the words. A video file cannot record the browser's voice, so exports draw the captions into the picture, and the export panel saves them as an <code>.srt</code> file for YouTube or a video editor. For speech in the file, tick <b>Speak the lines into the video</b> in the export panel: a neural voice (Piper) runs in your browser and speaks each line into the MP4 or WebM. It is experimental, and the voice (20 to 70 MB) downloads the first time; <code>neural: en_GB-alan-medium;</code> on the Voice picks one. Or record a voice-over, or make one with any text-to-speech tool, and add it with <b>Insert › 3D models and audio</b>, and play it like any sound:</p>
+      <p><b>Writing lines that land:</b> a voice speaks about 2.6 words a second at <code>rate: 100%</code>. Leave that long before the next line of the same voice, because a new line cuts the caption off, and make the block or <code>Scene { duration }</code> long enough for the last line to finish. One idea per line, 4 to 14 words, works best. Put a line in the block whose motion it describes, so words and motion move together when you change the timing.</p>
+      <p><b>Captions as files:</b> the export panel saves every spoken line as <b>.srt</b> (YouTube, video editors) or <b>.vtt</b> (web players: <code>&lt;track src="name.vtt"&gt;</code>). With chapters, the times run across the whole film.</p>
+      <div data-snippet="scene">VoiceOver::Sound { src: "intro.mp3"; volume: 90%; }</div>
+      <p>Audio files (MP3, WAV, OGG, M4A) also work for music and recorded effects. They play in the preview, are mixed into MP4 and WebM, and are saved in the project's .zip.</p>
+    </section>
+
+    <section id="charts">
+      <h2>Charts</h2>
+      <p>A <code>Plot</code> draws a function or your data on axes with ticks and labels. It is a part like any other, so it can sit next to the mechanism it explains, fade in, and draw itself on.</p>
+      <div data-snippet="scene">Wave::Plot  { size: (420mm, 240mm); function: sin(x - t * 2) * exp(-x / 8); x-axis: 0..10 step 2 "time (s)"; y-axis: -1.2..1.2 step 0.5 "position"; reveal: min(1, t / 3s); }
+Sales::Plot { size: (360mm, 240mm); data: (1, 12) (2, 18) (3, 9) (4, 22); x-label: "quarter"; at: (480mm, 0, 0); }</div>
+      <div class="tbl"><table>
+        <tr><th>Property</th><th>Values</th></tr>
+        <tr><td><code>function</code> or <code>data</code></td><td>a formula in <code>x</code> (add <code>t</code> to make it move), or <code>(x, y)</code> pairs</td></tr>
+        <tr><td><code>kind</code></td><td><code>line</code> (functions), <code>bars</code> (data), <code>points</code>, <code>area</code></td></tr>
+        <tr><td><code>x-axis</code>, <code>y-axis</code></td><td>a range, a tick step and a title: <code>0..10 step 2 "time (s)"</code>. Leave <code>y-axis</code> out and it fits the values</td></tr>
+        <tr><td><code>reveal</code></td><td>how much is drawn, 0 to 1; <code>min(1, t / 3s)</code> draws it on over 3 s</td></tr>
+        <tr><td><code>stroke</code>, <code>axes: none</code>, <code>grid: none</code></td><td>line width; hide the axes to lay a second series over the first (same size and ranges)</td></tr>
+      </table></div>
+      <p>Style the series with <code>color</code> and the numbers with <code>text-color</code>. A chart's anchors include <code>origin</code>, the point (0, 0), for attaching markers.</p>
+    </section>
+
+    <section id="recipes">
+      <h2>Recipes</h2>
+      <p>Complete projects you can open straight in the studio. Each shows one idea.</p>
+      <div id="recipeList"></div>
+    </section>
+
+    <!-- ============================== ERRORS ============================== -->
+    <section id="errors">
+      <h2>Errors</h2>
+      <p>Every problem names its file, line and column, says what went wrong and suggests a fix. Errors stop the preview from updating (it keeps showing the last good build); warnings do not. <b>Copy as JSON</b> produces:</p>
+      <div data-snippet="json">[
+  {
+    "severity": "error",
+    "code": "E0412",
+    "file": "scene",
+    "line": 7,
+    "col": 1,
+    "message": "G3 is driven twice with ratios that disagree (-2.000 vs -1.500).",
+    "fix": "Remove one mesh, or change teeth so both paths give the same ratio."
+  }
+]</div>
+      <h3>Codes</h3>
+      <div class="tbl"><table id="codes">
+        <tr><th>Codes</th><th>Area</th><th>Typical causes</th></tr>
+        <tr><td><code>W0100</code></td><td>Version</td><td>The project's first line says it was written for a newer major version of Orrery than this studio.</td></tr>
+        <tr><td><code>E0100</code>–<code>E0122</code></td><td>Syntax, let, repeat</td><td>A missing <code>;</code> or <code>}</code>, an unknown unit, a let name with a capital, a let defined twice, repeat outside 1–200</td></tr>
+        <tr><td><code>W0105</code></td><td>Hyphen</td><td><code>gap-10mm</code> is one name, because names may contain hyphens (like <code>ease-in-out</code>). When the first part is a let or a part, the warning suggests <code>gap - 10mm</code>.</td></tr>
+        <tr><td><code>E0221</code>–<code>W0223</code></td><td>sun</td><td>A sun that is not <code>(height, direction)</code>, a height outside −30° to 90°, a sun motion with more than a height, or a sun motion without <code>sun</code> in the Scene block.</td></tr>
+        <tr><td><code>E0230</code>, <code>E0231</code></td><td>fixed</td><td>An unknown screen place (write <code>fixed: top-left;</code> or <code>fixed: (50%, 10%);</code>); fixed on a group member, or on a part joined to the scene with a hinge, attach or another connection.</td></tr>
+        <tr><td><code>W0519</code></td><td>Pacing</td><td>A spoken line takes longer to say than the motion lasts, so the picture stands still under the words, or it runs past the end of the animation. Stretch the motion over the line (about 2.5 words a second), or say less.</td></tr>
+        <tr><td><code>W0560</code></td><td>Overlap</td><td>Two parts that are not connected pass through each other while one of them moves (parts that both stay still are left alone, so a band round a tower is fine). The message names both and the first moment it happens. Move one, connect them, or add <code>overlap: allow;</code> to one of them if it is meant.</td></tr>
+        <tr><td><code>E0130</code>–<code>E0139</code></td><td>define</td><td>A type name in lower case or the same as a shape, an unknown or missing parameter, too many values, a group inside a group, a type built on itself</td></tr>
+        <tr><td><code>E0201</code>–<code>E0215</code></td><td>Parts</td><td>Unknown shape type, a required property missing (Box needs size), fewer than 6 teeth, a name used twice, two Observers, <code>orient</code> without <code>about</code></td></tr>
+        <tr><td><code>E0300</code>–<code>E0311</code></td><td>Values and anchors</td><td>A vector where a number was expected, an anchor a shape does not have (the message lists the valid ones)</td></tr>
+        <tr><td><code>E0320</code></td><td>Names</td><td>A name that is misspelled or declared further down</td></tr>
+        <tr><td><code>E0330</code>–<code>E0345</code></td><td>attach, hinge, slider</td><td>Attaching a part to itself, a hinge where neither side is a line, a hinge between parts that are attached</td></tr>
+        <tr><td><code>E0350</code>–<code>E0354</code></td><td>pin and loops</td><td>A badly written pin, a loop that cannot close (with the gap in mm), a linkage that locks (with the time), a loop where every joint is driven</td></tr>
+        <tr><td><code>E0400</code></td><td>Conflicts</td><td>One piece driven by two things: two parts fused together that each have a motion rule, or a rule plus a hinge, mesh or belt. Several rules for the same part are fine: they add up. The message lists every source.</td></tr>
+        <tr><td><code>E0410</code>–<code>E0419</code></td><td>mesh, couple, belt</td><td>Meshing a non-gear, different modules, gears at the wrong distance, gear loops whose ratios disagree, a part with no axis, a badly written connection</td></tr>
+        <tr><td><code>E0420</code></td><td>Ranges</td><td>A hinge rotation or slider move outside its range</td></tr>
+        <tr><td><code>E0500</code>–<code>E0541</code></td><td>Motion</td><td>An unknown target, a time range that ends before it starts, bad rotate / move / follow / orbit forms, roll on a part with no radius, a speed change in a <code>forever</code> block, an acceleration that changes</td></tr>
+        <tr><td><code>E0540</code>–<code>E0547</code></td><td>Sound</td><td>No Sound with that name, an unknown kind, a sound: with a bad "at" or "every", a Sound inside a group, a rule aimed at a Sound</td></tr>
+        <tr><td><code>E0600</code>–<code>E0608</code>, <code>W0607</code>–<code>W0610</code></td><td>Style</td><td>Unknown colour (including a bad <code>rgb()</code>, or a hex code that is not 3, 4, 6 or 8 digits) or material, a gradient with one colour, a trail value that is neither an anchor nor a colour, a luminosity that is not a level, colour and range, a shadow or wireframe value that is not one of its words, a value outside 0–1, more than eight luminous parts</td></tr>
+        <tr><td><code>E0998</code></td><td>Simulation</td><td>A problem that only appears when the animation plays; check the last motion rule you changed</td></tr>
+        <tr><td><code>W0202</code>–<code>W0602</code></td><td>Warnings</td><td>A property a shape ignores, a mesh nothing turns, a selector or class that matches nothing, a camera property that does not exist, a move on a hinged part</td></tr>
+      </table></div>
+    </section>
+
+    <!-- ============================== EXPORT ============================== -->
+    <!-- ============================== CHAPTERS ============================== -->
+    <section id="chapters">
+      <h2>Chapters</h2>
+      <p>A longer video is easier to make in parts. Each <b>chapter</b> is a complete animation, with its own time starting at 0 s (up to 120 s each), and the export joins them into one video. You can preview, fix and export any chapter on its own.</p>
+      <ul>
+        <li><b>Start:</b> press <b>Chapters</b> in the bar above the code. What you have becomes <code>Chapter1</code>, and <code>Chapter2</code> continues it with the same scene and style, ready for new motion.</li>
+        <li><b>The strip</b> above the code shows <b>common</b> and every chapter. Click one to edit it; double-click (or <b>⋯</b>) for its settings: name, title, what it starts from, how it starts, and a fade-out at the end. The <b>×</b> on a chapter deletes it: an empty one goes at once, one with code asks first (Shift-click skips the question), and <b>Undo</b> in the note that follows brings it back. <b>+</b> adds a chapter that continues this one, a copy, or a blank one. Right-click a chapter to move, duplicate or delete it.</li>
+        <li><b>Film</b>, under the preview, plays every chapter in order with its transitions, as the export will. <b>Chapter</b> plays only the one you are editing. The tracks panel shows the chapters as a row along the top while the film plays.</li>
+        <li><b>Problems</b> lists errors in every chapter, marked with the chapter's name; click one to go there.</li>
+      </ul>
+      <h3>In the code</h3>
+      <div data-snippet="project">@orrery 1
+@common
+@scene
+Scene { frame: youtube; sky: studio; }     // every chapter shares the picture
+Narrator::Voice { voice: en-GB; }
+@style
+Gear { color: brass; material: metal; }
+
+@chapter Intro "Two gears" fade 0.8s
+@scene
+G1::Gear { teeth: 36; }
+G2::Gear { teeth: 12; mesh: G1; }
+@motion
+G1 { 0s..4s: rotate: 0deg/s -> 40deg/s; say: Narrator "Two gears, one driving the other."; }
+
+@chapter Ratio extends Intro crossfade 1s fade-out 1s
+@scene
+Observer { position: (0, 60mm, 420mm); look-at: G2; }   // replaces the camera it inherits
+@motion
+G1 { forever: rotate: 40deg/s; }</div>
+      <div class="tbl"><table>
+        <tr><th>On a chapter line</th><th>Does</th></tr>
+        <tr><td><code>@chapter Name</code></td><td>starts a chapter; the name starts with a capital letter. Its <code>@scene</code>, <code>@style</code> and <code>@motion</code> follow (leave out any it does not need)</td></tr>
+        <tr><td><code>"Title"</code></td><td>the title used in the chapter list for a video description (the name, spaced out, if left out)</td></tr>
+        <tr><td><code>extends Other</code></td><td>starts from Other's scene and style, not its motion. Add parts and later style rules; a new <code>Observer</code> replaces the one it inherits</td></tr>
+        <tr><td><code>cut</code> · <code>fade 0.8s #000000</code> · <code>crossfade 1s</code></td><td>how this chapter starts: straight in, through a colour, or blended over the end of the chapter before (a crossfade overlaps the two)</td></tr>
+        <tr><td><code>fade-out 1s</code></td><td>fades to black (or a colour) at the end: for the last chapter</td></tr>
+      </table></div>
+      <p><code>@common</code> comes first and holds what every chapter shares: put <code>Scene { frame: … }</code> there, since one video has one shape. Chapters save as one <code>.orrery</code> file (or a <code>.zip</code> with 3D models), and the 3D player carries every chapter.</p>
+      <p>The preview shows a crossfade with a still picture of the chapter before; the export blends the moving pictures.</p>
+    </section>
+
+    <section id="export">
+      <h2>Export and projects</h2>
+      <ul>
+        <li><b>Whole film or this chapter:</b> with chapters, the export panel asks which. A whole film can run to 6 minutes in MP4 and WebM.</li>
+        <li><b>Chapter list:</b> with chapters, <b>Copy the chapter list</b> gives lines such as <code>0:00 What a gearbox does</code> for a YouTube description (YouTube makes chapters when there are at least three, each 10 s or longer).</li>
+        <li><b>Tracks</b> (the button at the right of the timeline) shows every motion rule, spoken line and sound on a time axis. Click a bar to jump to that moment and to its line in the code.</li>
+        <li><b>Export</b> has five formats; MP4 and WebM carry the project's sounds. If you change the code or an export option after rendering, Save is switched off until you render again, so a saved file always matches what you see. Long animations export their first part at true speed (a GIF holds 300 frames; a video 3,600), and the panel says how much fits. <b>MP4</b> (H.264, plays everywhere) and <b>WebM</b> (VP9, small) videos: 640 to 1920 px wide, 24, 30 or 60 fps, three quality levels, up to 3,600 frames. <b>GIF</b>: 320 to 800 px, 15 to 25 fps, up to 300 frames; it has only 256 colours, so videos look smoother. <b>PNG frames</b>: every frame as a numbered PNG in one <code>.zip</code> (up to 1,800 frames), with full transparency; video editors (Premiere, DaVinci Resolve, After Effects, Final Cut) import it as an image sequence. With a transparent background a GIF keeps it too, with each pixel fully clear or solid. <b>3D player</b>: one <code>.html</code> file with the animation inside; anyone can open it in a browser to watch, pause, scrub, orbit with Free and change what is shown from the right-click menu, and it can be put on any website or embedded with an <code>&lt;iframe&gt;</code>. Pick the <b>shape</b> for videos and GIFs: like the preview, 16:9, 1:1, 4:5 or 9:16. Exports always use the Observer camera. Video needs a current Chrome, Edge, Safari or Firefox.</li>
+        <li><b>Shadows:</b> the main light casts soft shadows, including onto the ground under the model. Turn them off in Settings or the right-click menu if the preview is slow.</li>
+        <li><b>No accounts:</b> there is nothing to sign up for. Everything, including every export, works straight away, and your projects stay in your browser. Where the studio runs on an Orrery server, it asks once whether it may count which features are used; a copy opened on its own asks nothing and sends nothing.</li>
+        <li><b>File menu:</b> <b>New project</b> (<kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>N</kbd>) starts from a blank page or a starting point: a Short or Reel, an explainer, an assembly sequence or a slide graphic. <b>Open recent</b> lists the last eight projects in this browser (the code; 3D models and audio files are added again). One-file projects save as <code>.orrery</code>; the installed Studio opens <code>.orrery</code> files from your computer.</li>
+        <li><b>Project name:</b> the bar above the code shows it. Click it to rename. An orange dot means there are unsaved changes.</li>
+        <li><b>Save</b> (the button in the header, or <kbd>Ctrl</kbd> <kbd>S</kbd>) uses the project name. Its arrow (or <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>S</kbd>) saves as an <b>.orrery</b> file, a <b>.zip</b>, <b>three loose files</b> (into a folder you pick, in Chrome and Edge) or <b>JSON</b> for other tools. In Chrome and Edge the first save asks where to put the file, and later saves write straight back to it, like a desktop app; other browsers download a copy each time. Before an example or another project replaces unsaved work, and before you close the tab, the studio asks whether to save.</li>
+        <li><b>By default</b>, Save in the Combined view writes <code>name.orrery</code>; in Split view it writes <code>name.zip</code> holding <code>name.scene</code>, <code>name.style</code> and <code>name.motion</code>. <b>Open</b> reads either (and <code>.json</code> projects saved for tools), takes the project name from the file name and switches to the matching view.</li>
+        <li><b>Is the preview up to date?</b> The small badge at the top left of the preview tells you: a blue spinner while your latest edits are waiting to run, a green tick once the preview shows them, and a red mark when the code has errors (the preview then keeps the last version that compiled).</li>
+        <li><b>Right-click the preview</b> (or press the Menu key or <kbd>Shift</kbd> <kbd>F10</kbd> on it) for play and restart, speed, show or hide labels, the floor grid, joint axes, trails and the scene summary, the background, the camera (with <b>Reset the view</b>, also the circular-arrow button above the preview, which brings a Free camera back to where the scene's Observer stands), expand, save the current frame as a PNG and export a GIF. Changes there are saved to Settings, and Settings changes show there.</li>
+        <li><b>Examples and new projects</b> open in this tab; with unsaved work the studio asks first and offers a new tab instead.</li>
+        <li><b>Download Studio</b> (in the <b>More</b> menu) installs Orrery Studio as an app, the same way Chrome and Edge offer with the install icon in the address bar: it gets its own window and icon, and works offline. Where the browser cannot install (Firefox, or a page shown inside another site), the dialog explains what to do, and offers the whole studio as one HTML file that opens from disk with no internet.</li>
+        <li><b>After you save an export</b>, a small note may ask whether you would like to say thanks (a coffee, a star, or sharing the link). It shows after the first save and then now and again, and never again once you tick <b>Don’t show this again</b> or use one of its links.</li>
+        <li>Your edits are kept in this browser between visits.</li>
+      </ul>
+    </section>
+
+    <!-- ============================== CLI ============================== -->
+    <section id="cli">
+      <h2>Command line and AI agents</h2>
+      <p>The <code>cli</code> folder in the download has a command-line tool. It reads the compiler straight out of <code>studio.html</code>, so it can never disagree with the studio. It needs Node 18 or later: run <code>npm install</code> in the folder once.</p>
+      <div class="tbl"><table>
+        <tr><th>Command</th><th>Does</th></tr>
+        <tr><td class="code-cell">node orrery.js check car/ --json</td><td>Compiles and lists problems with codes, lines and fixes. The exit code is 1 when there are errors.</td></tr>
+        <tr><td class="code-cell">node orrery.js check car.orrery --fix</td><td>Applies the fixes that warnings carry: comments written with <code>#</code>, other names for a property (<code>position</code>, <code>colour</code>, <code>rotation</code>) and easings such as <code>easeInOut</code>.</td></tr>
+        <tr><td class="code-cell">node orrery.js schema</td><td>Prints the language as JSON (shapes, properties, anchors, values) for editors and AI tools; also <code>docs/orrery-schema.json</code> and the MCP tool <code>orrery_schema</code>.</td></tr>
+        <tr><td class="code-cell">node orrery.js sample car/ --at 0,2 --points FL.center</td><td>Solves the motion and prints positions, rotations and anchor points as JSON, so you can check the motion with numbers</td></tr>
+        <tr><td class="code-cell">node orrery.js render car/ -o car.gif</td><td>Renders the GIF in a headless browser (needs Playwright)</td></tr>
+        <tr><td class="code-cell">node orrery.js eval tasks.json answers/</td><td>Scores AI answers against the test set in <code>evals/</code></td></tr>
+        <tr><td class="code-cell">node orrery.js mcp</td><td>Runs as an MCP server with check, sample, render and spec tools</td></tr>
+      </table></div>
+      <p>A project is a folder holding <code>.scene</code>, <code>.style</code> and <code>.motion</code> files, or a saved <code>.orrery.json</code>. <code>node orrery.js examples out/</code> writes every studio example as a folder to start from.</p>
+      <h3>The AI prompt button</h3>
+      <p>In the studio, <b>AI prompt</b> copies a short version of the syntax as instructions any chat assistant can follow. The reply format follows your view: in the three-file view it asks for three code blocks (scene, style, motion); in the one-file view, for a single block with @scene, @style and @motion sections, so the reply pastes straight back. The panel shows which format it will ask for and lets you switch. Type what you want to animate, tick <b>Include my current code</b> if it should edit your project, and paste the result into the assistant. It replies with three code blocks: paste each into its tab. <code>node orrery.js prompt</code> prints the same text (add <code>--single</code> for the one-file format).</p>
+      <h3>AI on this site</h3>
+      <p>Where the studio runs with an Orrery server that has an AI key, the AI panel also has <b>Generate</b>: it sends the same prompt to the AI and puts the answer straight into the editor, and <b>Undo the AI change</b> puts your project back. When the code has errors, <b>Fix with AI</b> appears in the Problems panel and sends the errors with the code. Each visitor has a daily number of requests. Without the server, <b>Copy prompt</b> works with any assistant.</p>
+      <h3>Using Orrery from an AI agent</h3>
+      <ol>
+        <li>Give the agent <code>SPEC.md</code>: the whole language on a few pages.</li>
+        <li>Connect the MCP server, or let the agent run the command-line tool.</li>
+        <li>The agent writes the files, calls <b>check</b> until there are no errors, calls <b>sample</b> to confirm the motion, then <b>render</b>.</li>
+      </ol>
+      <p>The <code>evals</code> folder holds 16 tasks with prompts, numeric checks and reference answers. Use it to measure how often a model gets a mechanism right first time.</p>
+    </section>
+
+    <!-- ============================== LIMITS ============================== -->
+    <section id="limits">
+      <h2>Current limits</h2>
+      <p>What language 1 does not do, so you know before you start:</p>
+      <ul>
+        <li><b>No forces or collisions.</b> Motion is described, not simulated: there is no mass, gravity unless you write it, bouncing or friction.</li>
+        <li><b>Accelerations are constant</b> within a block. Use several blocks, or a change between speeds, for anything else.</li>
+        <li><b>Loops are solved, not simulated.</b> Linkages with pins work, including four-bars and slider-cranks. Ball joints, cams and gears inside a loop do not yet.</li>
+        <li><b>roll</b> assumes straight-line travel on level ground.</li>
+        <li><b>Solid functions</b> (signed-distance solids) and boolean operations are not in yet. Curves are.</li>
+        <li><b>Motion rules</b> move whole parts, not individual group members. Use a hinge or a separate part instead.</li>
+        <li><b>Rendering</b> is clean and simple: soft shadows, metals, glass and light from luminous parts, but no image textures.</li>
+        <li><b>Exploded views</b> are for showing: joints and the camera follow the assembled positions, and trails do not explode.</li>
+        <li><b>Overlap warnings are sampled</b> at up to 24 moments, so a very fast pass-through between samples can be missed.</li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+'use strict';
+/* ---------- recipes: complete projects, each checked against the compiler ---------- */
+const RECIPES = [
+  { id: 'v8', title: 'V8 engine', tags: 'showcase · 8 closed loops · define · belts · gear · chrome and brushed metal · orbiting camera', about: 'One rotate line turns the crankshaft; eight rods and pistons are solved as closed loops, a belt turns the camshaft at half speed, and the camera circles the engine.',
+    scene: `// A cross-plane V8, cut away to show its moving parts.
+// Only the crankshaft is driven. Eight connecting rods and eight pistons are closed loops,
+// solved every frame; a belt turns the camshaft at half speed and spins the alternator.
+let r = 45mm;                        // crank throw: a 90mm stroke
+let a1 = 90deg;  let a2 = 0deg;      // cross-plane crank: throws 90 degrees apart
+let a3 = 180deg; let a4 = 270deg;
+let left = 45deg; let right = -45deg;  // the two banks, 90 degrees apart
+
+Crank::Group {
+    main:  Cylinder.journal { radius: 26mm; height: 30mm; orient: 90deg about x; repeat: 5 step (0, 0, 110mm); at: (0, 0, -220mm); }
+    pin1:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a1), r * sin(a1), -165mm); }
+    pin2:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a2), r * sin(a2), -55mm); }
+    pin3:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a3), r * sin(a3), 55mm); }
+    pin4:  Cylinder.crankpin { radius: 22mm; height: 46mm; orient: 90deg about x; at: (r * cos(a4), r * sin(a4), 165mm); }
+    web1:  Box.web { size: (58mm, 112mm, 12mm); orient: a1 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a1), 10mm * sin(a1), -194mm); }
+    web2:  Box.web { size: (58mm, 112mm, 12mm); orient: a2 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a2), 10mm * sin(a2), -84mm); }
+    web3:  Box.web { size: (58mm, 112mm, 12mm); orient: a3 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a3), 10mm * sin(a3), 26mm); }
+    web4:  Box.web { size: (58mm, 112mm, 12mm); orient: a4 - 90deg about z; repeat: 2 step (0, 0, 58mm); at: (10mm * cos(a4), 10mm * sin(a4), 136mm); }
+    nose:  Rod { length: 70mm; radius: 16mm; orient: 90deg about x; at: (0, 0, 270mm); }
+    tail:  Rod { length: 40mm; radius: 30mm; orient: 90deg about x; at: (0, 0, -255mm); }
+    anchor l1: (r * cos(a1), r * sin(a1), -177mm);   anchor r1: (r * cos(a1), r * sin(a1), -153mm);
+    anchor l2: (r * cos(a2), r * sin(a2), -67mm);    anchor r2: (r * cos(a2), r * sin(a2), -43mm);
+    anchor l3: (r * cos(a3), r * sin(a3), 43mm);     anchor r3: (r * cos(a3), r * sin(a3), 67mm);
+    anchor l4: (r * cos(a4), r * sin(a4), 153mm);    anchor r4: (r * cos(a4), r * sin(a4), 177mm);
+    at: (0, 0, 0);
+}
+
+// One line per cylinder, piston and rod, from three part types.
+define Bore(row, a) :: Cylinder { radius: 50mm; height: 190mm; orient: a about z; at: (-185mm * sin(a), 185mm * cos(a), row); }
+define Piston(bore) :: Cylinder { radius: 47mm; height: 58mm; slider: axis on bore; }
+define ConRod(crank, piston, a) :: Link { length: 150mm; width: 20mm; thickness: 10mm; orient: 90deg + a about z; hinge: end.a on crank; pin: end.b to piston; }
+
+L1::Bore(-177mm, left);  L2::Bore(-67mm, left);  L3::Bore(43mm, left);  L4::Bore(153mm, left);
+R1::Bore(-153mm, right); R2::Bore(-43mm, right); R3::Bore(67mm, right); R4::Bore(177mm, right);
+PL1::Piston(L1.axis); PL2::Piston(L2.axis); PL3::Piston(L3.axis); PL4::Piston(L4.axis);
+PR1::Piston(R1.axis); PR2::Piston(R2.axis); PR3::Piston(R3.axis); PR4::Piston(R4.axis);
+CL1::ConRod(Crank.l1, PL1.center, left);  CL2::ConRod(Crank.l2, PL2.center, left);
+CL3::ConRod(Crank.l3, PL3.center, left);  CL4::ConRod(Crank.l4, PL4.center, left);
+CR1::ConRod(Crank.r1, PR1.center, right); CR2::ConRod(Crank.r2, PR2.center, right);
+CR3::ConRod(Crank.r3, PR3.center, right); CR4::ConRod(Crank.r4, PR4.center, right);
+
+// Cylinder heads, valve covers and the intake between the banks.
+HeadL::Box.head   { size: (150mm, 46mm, 460mm); orient: left about z; at: (-303mm * sin(left), 303mm * cos(left), 0); }
+HeadR::Box.head   { size: (150mm, 46mm, 460mm); orient: right about z; at: (-303mm * sin(right), 303mm * cos(right), 0); }
+CoverL::Box.cover { size: (118mm, 30mm, 430mm); orient: left about z; at: (-341mm * sin(left), 341mm * cos(left), 0); }
+CoverR::Box.cover { size: (118mm, 30mm, 430mm); orient: right about z; at: (-341mm * sin(right), 341mm * cos(right), 0); }
+Intake::Box       { size: (130mm, 54mm, 420mm); at: (0, 262mm, 0); }
+
+// Flywheel at the back; pulleys and belts at the front.
+Flywheel::Gear     { teeth: 96; module: 3mm; width: 18mm; attach: face.front to Crank.tail.end.a; }
+CrankPulley::Pulley { radius: 40mm; width: 24mm; attach: face.back to Crank.nose.end.b; }
+CamPulley::Pulley  { radius: 80mm; width: 24mm; at: (0, 150mm, 317mm); belt: CrankPulley; }
+Camshaft::Rod      { length: 470mm; radius: 10mm; orient: 90deg about x; attach: end.b to CamPulley.face.back; }
+Lobe::Box.lobe     { size: (16mm, 30mm, 14mm); repeat: 8; orient: i * 135deg about z;
+                     attach: center to Camshaft.center + (-7mm * sin(i * 135deg), 7mm * cos(i * 135deg), -245mm + i * 50mm); }
+AltPulley::Pulley  { radius: 26mm; width: 24mm; at: (-175mm, 40mm, 317mm); belt: CrankPulley; }
+Alternator::Cylinder { radius: 44mm; height: 90mm; orient: 90deg about x; attach: face.top to AltPulley.face.back; }
+
+Target::Sphere { radius: 1mm; at: (0, 70mm, 0); visible: false; }
+
+Observer { position: (760mm, 560mm, 900mm); look-at: Target; }
+Light { kind: directional; direction: (-0.5, -1, -0.6); power: 0.8; }
+Light { kind: directional; direction: (0.9, -0.3, 0.5); power: 0.4; }
+Scene { duration: 8s; background: #0b0f14; }
+`,
+    style: `Crank            { color: #7d868f; material: brushed; }
+.journal, .crankpin { color: #e3e8ee; material: chrome; }
+Bore             { color: #a9cbd9; material: glass; opacity: 0.18; outline: 1px #5f8798; }
+Piston           { color: #dde2e8; material: chrome; }
+ConRod           { color: #a7b0ba; material: brushed; }
+.head            { color: #4a5159; material: brushed; }
+.cover           { color: #a3221a; material: brushed; }
+Intake           { color: #cfd4da; material: chrome; }
+Flywheel         { color: #5c646d; material: brushed; }
+Pulley           { color: #30363d; material: metal; }
+Camshaft, .lobe  { color: #c9a43a; material: gold; }
+Alternator       { color: #8d969f; material: brushed; }
+CL1              { trail: mid #e0a63a; }     // the path of one rod's midpoint
+`,
+    motion: `// One motion rule drives the whole engine.
+Crank    { forever: rotate: 270deg/s about z; }
+
+// One slow lap around it.
+Observer { forever: orbit: Target 360deg / 8s; }
+`,
+  },
+  { id: 'locomotive', title: 'Steam locomotive', tags: 'showcase · define · repeat · two closed loops · slider · roll · acceleration · trail · camera move', about: 'Only one speed is written. The wheels roll, the coupling and main rods are solved as closed loops, the crosshead slides, a signal clears, and the camera pushes in on the valve gear.',
+    scene: `// A steam locomotive, built only from library shapes.
+// Nothing here is animated by hand except the train's speed: the wheels roll, the coupling rod and
+// main rod are solved as closed loops, and the crosshead slides wherever the main rod pushes it.
+let r = 45mm;                    // driving wheel radius
+let pitch = 100mm;               // axle spacing
+
+Loco::Group.engine {
+    frame:     Box { size: (400mm, 24mm, 96mm); at: (40mm, 30mm, 0); }
+    footplate: Box { size: (450mm, 6mm, 156mm); at: (45mm, 55mm, 0); }
+    boiler:    Cylinder { radius: 48mm; height: 300mm; orient: 90deg about z; at: (95mm, 108mm, 0); }
+    band:      Cylinder.trim { radius: 49mm; height: 6mm; orient: 90deg about z; repeat: 3; at: (0mm + i * 90mm, 108mm, 0); }
+    smokebox:  Cylinder.dark { radius: 52mm; height: 50mm; orient: 90deg about z; at: (268mm, 108mm, 0); }
+    chimney:   Cylinder.dark { radius: 13mm; height: 50mm; at: (262mm, 176mm, 0); }
+    dome:      Sphere { radius: 22mm; at: (120mm, 152mm, 0); }
+    cab:       Box { size: (110mm, 135mm, 156mm); at: (-122mm, 122mm, 0); }
+    window:    Box.dark { size: (40mm, 36mm, 158mm); at: (-112mm, 150mm, 0); }
+    roof:      Box.dark { size: (134mm, 8mm, 170mm); at: (-122mm, 193mm, 0); }
+    beam:      Box.red { size: (10mm, 32mm, 156mm); at: (270mm, 44mm, 0); }
+    lamp:      Sphere { radius: 9mm; at: (296mm, 148mm, 0); }
+    axle:      Rod { length: 132mm; radius: 5mm; orient: 90deg about x; repeat: 3; at: (-60mm + i * pitch, 0, 0); }
+    cyl:       Cylinder.dark { radius: 20mm; height: 70mm; orient: 90deg about z; at: (252mm, 0, 84mm); }
+    guide:     Rod { length: 72mm; radius: 2.5mm; orient: 90deg about z; at: (182mm, 13mm, 84mm); }
+    anchor view: (60mm, 110mm, 0);           // where the camera looks
+    at: (0, r, 0);
+}
+
+// Driving wheels: one line each. The crank anchor is where the rods attach.
+define Driver(mount) :: Wheel { radius: r; width: 10mm; hinge: axis on mount; anchor crank: (0, -24mm, 0); }
+D1::Driver(Loco.axle1.end.b);
+D2::Driver(Loco.axle2.end.b);
+D3::Driver(Loco.axle3.end.b);
+D4::Driver(Loco.axle1.end.a);
+D5::Driver(Loco.axle2.end.a);
+D6::Driver(Loco.axle3.end.a);
+
+// Valve gear. Two closed loops: the coupling rod joins all three cranks,
+// and the main rod joins the middle crank to a crosshead on a slider.
+Side::Link  { length: 200mm; width: 10mm; thickness: 4mm; hinge: end.a on D1.crank + (0, 0, 9mm);
+              pin: end.b to D3.crank;  pin: mid to D2.crank; }
+Main::Link  { length: 140mm; width: 12mm; thickness: 4mm; hinge: end.a on D2.crank + (0, 0, 15mm);
+              pin: end.b to Cross.center; }
+Cross::Box  { size: (14mm, 22mm, 12mm); orient: -90deg about z; slider: axis on Loco.guide.axis; }
+PistonRod::Rod { length: 80mm; radius: 3mm; orient: -90deg about z; attach: end.a to Cross.center; }
+
+// The tender rides behind, fused to the cab.
+Tender::Group.engine {
+    tank:  Box { size: (210mm, 110mm, 156mm); }
+    coal:  Box.dark { size: (150mm, 20mm, 120mm); align: face.bottom; at: tank.face.top + (-15mm, 0, 0); }
+    frame: Box.red { size: (220mm, 20mm, 96mm); align: face.top; at: tank.face.bottom; }
+    axle:  Rod { length: 132mm; radius: 4mm; orient: 90deg about x; repeat: 2; at: (-55mm + i * 110mm, -103mm, 0); }
+    attach: tank.face.right to Loco.cab.face.left + (-16mm, -30mm, 0);
+}
+define Small(mount) :: Wheel { radius: 32mm; width: 8mm; hinge: axis on mount; }
+T1::Small(Tender.axle1.end.b);
+T2::Small(Tender.axle2.end.b);
+T3::Small(Tender.axle1.end.a);
+T4::Small(Tender.axle2.end.a);
+
+// The line: rails, sleepers, and a semaphore signal that clears as the train approaches.
+Track::Group {
+    railN:   Box.rail { size: (5000mm, 8mm, 6mm); at: (2100mm, -4mm, 65mm); }
+    railS:   Box.rail { size: (5000mm, 8mm, 6mm); at: (2100mm, -4mm, -65mm); }
+    sleeper: Box.sleeper { size: (16mm, 6mm, 190mm); repeat: 50; at: (-350mm + i * 100mm, -11mm, 0); }
+}
+Ground::Box { size: (5600mm, 4mm, 1400mm); at: (2100mm, -16mm, 0); }
+Post::Box   { size: (12mm, 340mm, 12mm); at: (3250mm, 156mm, -190mm); }
+Arm::Link   { length: 90mm; width: 16mm; thickness: 4mm; orient: 180deg about z; hinge: end.a on (3256mm, 300mm, -182mm); }
+
+Observer { position: (260mm, 200mm, 900mm); }
+Light { kind: directional; direction: (-0.4, -1, -0.7); power: 0.9; }
+Scene { duration: 10s; background: #cfe0ea; }
+`,
+    style: `.engine        { color: #1f4e3d; material: plastic; outline: 1px #0c2018; }
+.dark          { color: #24282d; material: matte; }
+.red           { color: #a8382a; }
+.trim          { color: #c9a43a; material: metal; }
+Loco.dome      { color: #c9a43a; material: metal; }
+Loco.lamp      { color: #fff4c2; luminosity: 90%; }
+Loco.frame     { color: #a8382a; }
+Rod            { color: graphite; material: metal; }
+Driver         { color: gradient(#6e1d13, #c2492f, axis: x); material: plastic; }
+Small          { color: gradient(#6e1d13, #c2492f, axis: x); }
+Side, Main     { color: steel; material: metal; }
+Cross          { color: #c7ccd2; material: metal; }
+.rail          { color: #8f99a3; material: metal; }
+.sleeper       { color: #6b4a2f; material: matte; }
+Ground         { color: #4f6b3a; material: matte; }
+Post           { color: #f2efe6; }
+Arm            { color: #b8442e; label: "signal"; }
+D2             { trail: crank 2.4s #e0a63a; }      // the crank pin traces a curtate cycloid
+`,
+    motion: `// The only speed in the whole scene. Everything else follows from it.
+let cruise = (420mm/s, 0, 0);
+
+Loco {
+    0s..3s:  move: (0, 0, 0) -> cruise ease-in;      // pull away from a stand
+    then 7s: move: cruise;
+}
+
+Driver, Small { forever: roll: Track; }
+
+Arm { 8.3s..8.9s: rotate: 0deg -> -45deg ease-out; }    // the signal drops to clear the line
+
+// Follow the engine, push in on the valve gear, then pull back out.
+Observer {
+    forever:   follow: Loco.view offset (260mm, 100mm, 900mm);
+    2.5s..5s:  move: (0, 0, 0) -> (-40mm, -70mm, -470mm) ease-in-out;
+    5.5s..8s:  move: (0, 0, 0) -> (40mm, 70mm, 470mm) ease-in-out;
+}
+`,
+  },
+  { id: 'sign', title: 'Swinging sign', tags: 'hinge property · function of t', about: 'The tutorial project: align, a hinge declared inside the part, and an angle that is a function of time.',
+    scene: `Post::Box { size: (40mm, 600mm, 40mm); at: (0, 300mm, 0); }
+Arm::Box  { size: (300mm, 30mm, 30mm); align: face.left; at: Post.face.right + (0, 270mm, 0); }
+Sign::Box { size: (220mm, 140mm, 10mm); hinge: edge.top on Arm.edge.bottom; }
+
+Observer { position: (700mm, 520mm, 900mm); look-at: (120mm, 460mm, 0); }
+Light { kind: directional; direction: (-0.6, -1, -0.8); power: 0.85; }
+Scene { duration: 2s; }
+`,
+    style: `Post, Arm { color: #3b4148; material: metal; }
+Sign      { color: #e0a63a; outline: 1px #5a3f0c; label: "Open"; }
+`,
+    motion: `Sign {
+    forever: rotate: 20deg * sin(t * 3.1416);
+}
+` },
+  { id: 'gears', title: 'Two gears and a handle', tags: 'mesh property · attach · rotate about another part', about: 'Turn the handle; the mesh places the second gear and sets its speed.',
+    scene: `Big::Gear   { teeth: 30; module: 2mm; width: 10mm; at: (0, 0, 0); }
+Small::Gear { teeth: 15; module: 2mm; width: 10mm; mesh: Big; }
+
+Handle::Rod { length: 40mm; radius: 2.5mm; attach: end.a to Big.face.front; }
+
+Observer { position: (20mm, -30mm, 180mm); look-at: (22mm, 0, 0); }
+Light { kind: directional; direction: (-0.5, -1, -1.2); power: 0.9; }
+`,
+    style: `Gear   { color: steel; material: metal; outline: 1px #1e252c; }
+Small  { color: brass; label: "2x speed"; }
+Handle { color: #b8442e; }
+`,
+    motion: `Handle {
+    forever: rotate: 60deg/s about Big.axis;
+}
+` },
+  { id: 'carousel', title: 'Carousel', tags: 'group · repeat with i · rotate', about: 'Eight seats placed in a ring with one repeat line, spinning as one group.',
+    scene: `Carousel::Group {
+    platform: Disc { radius: 150mm; thickness: 10mm; orient: 90deg about x; }
+    pole:     Cylinder { radius: 8mm; height: 160mm; at: (0, 80mm, 0); }
+    roof:     Cone { radius: 160mm; height: 50mm; at: (0, 185mm, 0); }
+    seat:     Sphere.seat { radius: 16mm; repeat: 8; at: (120mm * cos(i * 0.785), 22mm, 120mm * sin(i * 0.785)); }
+}
+
+Observer { position: (0, 320mm, 520mm); look-at: (0, 60mm, 0); }
+Light { kind: directional; direction: (-0.5, -1, -0.6); power: 0.85; }
+Scene { duration: 8s; }
+`,
+    style: `Carousel       { color: #f2efe6; material: plastic; }
+Carousel.roof  { color: #b8442e; }
+.seat          { color: #1c6b82; }
+`,
+    motion: `Carousel {
+    forever: rotate: 45deg/s about y;
+}
+` },
+  { id: 'cart', title: 'Rolling cart', tags: 'let · hinge property · roll · follow', about: 'Wheels hinge on axle ends and roll by themselves as the cart moves.',
+    scene: `let r = 40mm;
+
+Cart::Group {
+    bed:   Box { size: (300mm, 30mm, 140mm); }
+    axleF: Rod { length: 180mm; radius: 5mm; orient: 90deg about x; at: bed.face.bottom + (100mm, -5mm, 0); }
+    axleR: Rod { length: 180mm; radius: 5mm; orient: 90deg about x; at: bed.face.bottom + (-100mm, -5mm, 0); }
+    at: (0, 60mm, 0);
+}
+W1::Wheel.tyre { radius: r; width: 24mm; hinge: axis on Cart.axleF.end.b; }
+W2::Wheel.tyre { radius: r; width: 24mm; hinge: axis on Cart.axleF.end.a; }
+W3::Wheel.tyre { radius: r; width: 24mm; hinge: axis on Cart.axleR.end.b; }
+W4::Wheel.tyre { radius: r; width: 24mm; hinge: axis on Cart.axleR.end.a; }
+
+Floor::Box { size: (3000mm, 4mm, 400mm); at: (1000mm, -2mm, 0); }
+Observer { position: (250mm, 260mm, 700mm); }
+Light { kind: directional; direction: (-0.5, -1, -0.6); power: 0.85; }
+Scene { duration: 4s; }
+`,
+    style: `Cart   { color: #e0a63a; material: plastic; }
+Rod    { color: graphite; }
+.tyre  { color: gradient(#141619, #b9c0c8, axis: x); }
+Floor  { color: #c6ced6; material: matte; }
+`,
+    motion: `Cart     { forever: move: (300mm/s, 0, 0); }
+.tyre    { forever: roll: Floor; }
+Observer { forever: follow: Cart offset (250mm, 200mm, 700mm); }
+` },
+  { id: 'moon', title: 'Planet and moon', tags: 'nested orbit · glow · moving camera', about: 'A moon circles a planet that circles a star, while the camera circles everything.',
+    scene: `Star::Sphere   { radius: 30mm; at: (0, 0, 0); }
+Planet::Sphere { radius: 12mm; at: (150mm, 0, 0); }
+Moon::Sphere   { radius: 4mm;  at: Planet.center + (28mm, 0, 0); }
+Orbit::Torus   { radius: 150mm; tube: 0.6mm; orient: 90deg about x; }
+
+Light { kind: point; at: (0, 0, 0); power: 0.6; }
+Observer { position: (0, 220mm, 380mm); look-at: (0, 0, 0); }
+Scene { duration: 12s; background: #070a10; }
+`,
+    style: `Star   { color: #ffcf5a; luminosity: 150%; }
+Planet { color: gradient(#2a6fbf, #5fb36a, axis: x); label: "planet"; }
+Moon   { color: #cfcfcf; }
+Orbit  { color: #3a4656; }
+`,
+    motion: `let year = 12s;
+
+Planet   { forever: orbit: Star 360deg / year; rotate: 180deg/s about y; }
+Moon     { forever: orbit: Planet 360deg / 2s; }
+Observer { forever: orbit: Star 360deg / 12s; }
+` },
+  { id: 'piston', title: 'Piston on a slider', tags: 'slider property · range · then', about: 'A slider declared inside the part, moving back and forth inside a glass barrel.',
+    scene: `Barrel::Cylinder { radius: 40mm; height: 280mm; orient: 90deg about z; at: (0, 60mm, 0); }
+Piston::Cylinder { radius: 36mm; height: 50mm; slider: axis on Barrel.axis; range: -110mm..110mm; }
+Stem::Rod        { length: 220mm; radius: 7mm; attach: end.b to Piston.face.bottom; }
+
+Observer { position: (40mm, 230mm, 560mm); look-at: (60mm, 50mm, 0); }
+Light { kind: directional; direction: (-0.4, -1, -0.8); power: 0.9; }
+Scene { grid: floor; }
+`,
+    style: `Barrel { color: glass; material: glass; outline: 1px #5d8a96; }
+Piston { color: steel; material: metal; }
+Stem   { color: #b8442e; }
+`,
+    motion: `Piston {
+    0s..1.2s: move: -90mm -> 90mm ease-in-out;
+    then:     move: 90mm -> -90mm ease-in-out;
+}
+` },
+  { id: 'launch', title: 'Launch and brake', tags: 'acceleration · speed change · roll', about: 'A cart speeds up, cruises and brakes, while a motor spins up with an angular acceleration. Units alone say which is which.',
+    scene: `let r = 40mm;
+
+Cart::Group {
+    bed:  Box { size: (300mm, 30mm, 140mm); }
+    axle: Rod { length: 180mm; radius: 5mm; orient: 90deg about x; at: bed.face.bottom + (0, -5mm, 0); }
+    at: (0, 60mm, 0);
+}
+W1::Wheel.tyre { radius: r; width: 24mm; hinge: axis on Cart.axle.end.b; }
+W2::Wheel.tyre { radius: r; width: 24mm; hinge: axis on Cart.axle.end.a; }
+
+Motor::Group {
+    disc: Disc { radius: 50mm; thickness: 12mm; }
+    mark: Box  { size: (8mm, 40mm, 4mm); at: disc.face.front + (0, 25mm, 2mm); }
+    at: (150mm, 300mm, -150mm);
+}
+
+Floor::Box { size: (3000mm, 4mm, 400mm); at: (800mm, -2mm, 0); }
+Observer { position: (700mm, 900mm, 2900mm); look-at: (700mm, 80mm, 0); }
+Light { kind: directional; direction: (-0.5, -1, -0.6); power: 0.85; }
+Scene { duration: 5s; }
+`,
+    style: `Cart  { color: #e0a63a; material: plastic; }
+Rod   { color: graphite; }
+.tyre { color: gradient(#141619, #b9c0c8, axis: x); }
+Motor      { color: steel; material: metal; label: "360 deg/s2"; }
+Motor.mark { color: #b8442e; }
+Floor { color: #c6ced6; material: matte; }
+`,
+    motion: `let cruise = (600mm/s, 0, 0);
+
+Cart {
+    0s..1.5s:   move: (0, 0, 0) -> cruise ease-in;      // speed up
+    then 1.5s:  move: cruise;                           // cruise
+    then 1.5s:  move: cruise -> (0, 0, 0) ease-out;     // brake
+}
+.tyre { forever: roll: Floor; }
+
+Motor {
+    0s..1s:  rotate: 360deg/s2 about z;      // spin up to one turn per second
+    then 4s: rotate: 360deg/s about z;
+}
+` },
+  { id: 'linkage', title: 'Four-bar linkage', tags: 'Link · pin · closed loop · trail', about: 'One driven crank; the pin closes the loop, the solver moves the coupler and rocker, and a trail draws the coupler curve.',
+    scene: `Crank::Link   { length: 40mm;  width: 14mm; hinge: end.a on (0, 0, 0); }
+Coupler::Link { length: 120mm; width: 14mm; hinge: end.a on Crank.end.b + (0, 0, 6mm);
+                anchor tip: (10mm, 46mm, 0); pin: end.b to Rocker.end.b; }
+Rocker::Link  { length: 90mm;  width: 14mm; orient: 90deg about z; hinge: end.a on (110mm, 0, 0); }
+Pen::Sphere   { radius: 5mm; attach: Coupler.tip; }
+
+Observer { position: (60mm, 70mm, 420mm); look-at: (60mm, 60mm, 0); }
+Light { kind: directional; direction: (-0.4, -0.8, -1); power: 0.85; }
+Scene { duration: 4s; }
+`,
+    style: `Crank   { color: #b8442e; }
+Coupler { color: #e0a63a; }
+Rocker  { color: #2f6f8f; }
+Pen     { color: #f2efe6; trail: #c2410c; }
+`,
+    motion: `Crank { forever: rotate: 180deg/s; }
+` },
+];
+window.__RECIPES = RECIPES;
+
+/* ---------- highlighter (same rules as the studio) ---------- */
+const KW = new Set(['to', 'on', 'at', 'about', 'offset', 'step', 'in', 'let', 'define', 'anchor', 'forever', 'then']);
+const EAS = new Set(['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out']);
+const HRX = /(\/\*[\s\S]*?(?:\*\/|$)|\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*")|(#[A-Za-z0-9_-]+)|((?:\d+(?:\.\d+)?|\.\d+)(?:deg|rad|turn|mm|cm|ms|px|m|s|%)?(?:\/s)?)|([A-Za-z_][A-Za-z0-9_]*(?:-(?!>)[A-Za-z0-9_]+)*)|(->|\.\.|::)/g;
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function highlight(src, file) {
+  if (file === 'json') return esc(src);
+  let out = '', last = 0, m; HRX.lastIndex = 0;
+  while ((m = HRX.exec(src))) {
+    if (m.index > last) out += esc(src.slice(last, m.index));
+    let cls = null;
+    if (m[1]) cls = 'c'; else if (m[2]) cls = 's'; else if (m[3]) cls = file === 'style' ? 'N' : 'n'; else if (m[4]) cls = 'n';
+    else if (m[5]) { const w = m[5]; const after = src.slice(HRX.lastIndex).match(/^\s*(::|:(?!:))/); cls = KW.has(w) || EAS.has(w) ? 'k' : /^[A-Z]/.test(w) ? 'N' : after && after[1] === ':' ? 'p' : null; }
+    else if (m[6]) cls = 'o';
+    out += cls ? `<span class="${cls}">${esc(m[0])}</span>` : esc(m[0]);
+    last = HRX.lastIndex; if (m[0].length === 0) HRX.lastIndex++;
+  }
+  return out + esc(src.slice(last));
+}
+function codeBlock(src, file, label) {
+  const wrap = document.createElement('div'); wrap.className = 'code';
+  const bar = document.createElement('div'); bar.className = 'bar'; bar.textContent = label || (file === 'json' ? 'JSON' : file === 'project' ? 'project.orrery (one file)' : '.' + file);
+  const btn = document.createElement('button'); btn.className = 'copy'; btn.type = 'button'; btn.textContent = 'Copy';
+  btn.addEventListener('click', () => {
+    const done = (t) => { btn.textContent = t; setTimeout(() => (btn.textContent = 'Copy'), 1400); };
+    try { navigator.clipboard.writeText(src).then(() => done('Copied'), () => { selectIn(pre); done('Press Ctrl+C'); }); }
+    catch (e) { selectIn(pre); done('Press Ctrl+C'); }
+  });
+  bar.appendChild(btn);
+  const pre = document.createElement('pre'); pre.innerHTML = highlight(src, file);
+  wrap.append(bar, pre); return wrap;
+}
+function selectIn(el) { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+document.querySelectorAll('[data-snippet]').forEach(el => { el.replaceWith(codeBlock(el.textContent.replace(/^\n/, ''), el.dataset.snippet)); });
+
+/* ---------- recipe cards + try buttons ---------- */
+const list = document.getElementById('recipeList');
+for (const r of RECIPES) {
+  const card = document.createElement('article'); card.className = 'recipe'; card.id = 'recipe-' + r.id;
+  card.innerHTML = `<header><h3>${esc(r.title)}</h3><span class="tags">${esc(r.tags)}</span><button class="btn primary" type="button" data-try="${r.id}">Try it in the studio</button></header><p>${esc(r.about)}</p>`;
+  for (const f of ['scene', 'style', 'motion']) card.appendChild(codeBlock(r[f].replace(/\n$/, ''), f, `${r.id}.${f}`));
+  list.appendChild(card);
+}
+/* "Try it" opens the project in the studio as a project link: a copy in a new tab, so the reader's own project is never replaced */
+const TUTORIALS = {
+  tenmin: { name: 'four-bar in ten minutes', scene: `let crank = 40mm;
+Crank::Link   { length: crank; width: 14mm; hinge: end.a on (0, 0, 0); }
+Coupler::Link { length: 120mm; width: 14mm; hinge: end.a on Crank.end.b + (0, 0, 6mm);
+                anchor tip: (10mm, 46mm, 0); pin: end.b to Rocker.end.b; }
+Rocker::Link  { length: 90mm; width: 14mm; orient: 90deg about z; hinge: end.a on (110mm, 0, 0); }
+Pen::Sphere   { radius: 5mm; attach: Coupler.tip; }
+Click::Sound  { kind: click; }
+
+Observer { position: (60mm, 70mm, 420mm); look-at: (60mm, 60mm, 0); }
+Scene { duration: 4s; background: #0f1216; }
+`, style: `Crank   { color: #b8442e; label: "crank"; }
+Coupler { color: #e0a63a; }
+Rocker  { color: #2f6f8f; }
+Pen     { color: #ffd27a; luminosity: 80%; trail: #ffb84d; }
+`, motion: `Crank { forever: rotate: 180deg/s; sound: Click every 2s; }
+` } };
+async function shareUrl(r) {
+  const text = `@orrery 1\n\n@scene\n${r.scene.trim()}\n\n@style\n${r.style.trim()}\n\n@motion\n${r.motion.trim()}\n`;
+  const st = new Blob([new TextEncoder().encode(text)]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+  const u = new Uint8Array(await new Response(st).arrayBuffer()); let b = ''; for (let i = 0; i < u.length; i += 0x8000) b += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000));
+  return 'studio.html#p=' + btoa(b).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') + '&n=' + encodeURIComponent(r.name || r.title || r.id || 'example');
+}
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-try]'); if (!b) return;
+  const r = TUTORIALS[b.dataset.try] || RECIPES.find(x => x.id === b.dataset.try); if (!r) return;
+  try { const url = await shareUrl(r); const w = window.open(url, '_blank'); if (!w) location.href = url; }
+  catch (err) { b.textContent = 'Copy the code blocks into the studio instead'; }
+});
+
+/* ---------- contents highlight ---------- */
+const links = [...document.querySelectorAll('#toc a')];
+const secs = links.map(a => document.querySelector(a.getAttribute('href')));
+const onScroll = () => {
+  let cur = 0; secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < 120) cur = i; });
+  links.forEach((a, i) => a.classList.toggle('on', i === cur));
+};
+addEventListener('scroll', onScroll, { passive: true }); onScroll();
+})();
+</script>
+<footer class="sitefoot">© <span data-site="year"></span> <span data-site="owner"></span>. Open source under the <a href="LICENSE">Apache License 2.0</a>. · <a href="privacy.html">Privacy policy</a> · <a href="terms.html">Terms of use</a> · <a data-site="coffeeUrl" href="#" target="_blank" rel="noopener">Buy me a coffee</a></footer>
+<script src="site-config.js"></script>
+<script>(function () { var S = Object.assign({ owner: "Sivaprasad Murali", year: new Date().getFullYear(), coffeeUrl: "#" }, window.ORRERY_SITE || {}); document.querySelectorAll("[data-site]").forEach(function (el) { var k = el.getAttribute("data-site"); if (k === "coffeeUrl") { el.href = S.coffeeUrl; if (!/^https:\/\//.test(S.coffeeUrl || "") || /yourname/.test(S.coffeeUrl)) el.hidden = true; } else el.textContent = S[k]; }); })();</script>
+</body>
+</html>

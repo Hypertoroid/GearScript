@@ -1,0 +1,3 @@
+Crate::Box { size: (100mm, 100mm, 100mm); at: (0, 0, 0); }
+Observer { position: (0, 200mm, 800mm); }
+Scene { duration: 4s; }

@@ -1,0 +1,13 @@
+// A hydraulic cylinder, cut open: a section plane slides in, then the piston strokes inside the barrel.
+// The sky is three colours of its own: top, horizon and below.
+Barrel::Tube    { radius: 60mm; inner: 48mm; height: 400mm; orient: 90deg about z; }
+CapEnd::Cylinder { radius: 62mm; height: 20mm; orient: 90deg about z; at: (-210mm, 0, 0); }
+Gland::Tube     { radius: 62mm; inner: 14mm; height: 20mm; orient: 90deg about z; at: (210mm, 0, 0); }
+Piston::Cylinder { radius: 47mm; height: 40mm; orient: 90deg about z; at: (-120mm, 0, 0); }
+Rod::Rod        { length: 380mm; radius: 12mm; orient: -90deg about z; attach: end.a to Piston.center; overlap: allow; }
+Port1::Cylinder { radius: 9mm; height: 40mm; at: (-170mm, 70mm, 0); overlap: allow; }
+Port2::Cylinder { radius: 9mm; height: 40mm; at: (170mm, 70mm, 0); overlap: allow; }
+
+Observer { position: (240mm, 230mm, 660mm); look-at: (20mm, 0, 0); }
+Light    { kind: directional; direction: (-0.5, -1, -0.6); power: 0.8; }
+Scene    { duration: 7s; sky: #16263f #3a5f8a #11161d; frame: youtube; }

@@ -1,0 +1,13 @@
+// Wind turbines at sunset: three rotors on one ridge, each turning at its own speed.
+Mast::Cylinder.mast { radius: 9mm; height: 420mm; at: (0, 210mm, 0); repeat: 3 step (380mm, 0, -300mm); }
+Nacelle::Box.nacelle { size: (26mm, 26mm, 70mm); at: (0, 432mm, 10mm); repeat: 3 step (380mm, 0, -300mm); overlap: allow; }
+Rotor::Group.rotor {
+  hub: Sphere { radius: 15mm; }
+  b1: Box { size: (14mm, 190mm, 4mm); at: (0, 102mm, 0); }
+  b2: Box { size: (14mm, 190mm, 4mm); at: (-88.3mm, -51mm, 0); orient: 120deg about z; }
+  b3: Box { size: (14mm, 190mm, 4mm); at: (88.3mm, -51mm, 0); orient: -120deg about z; }
+  at: (0, 432mm, 56mm); overlap: allow; repeat: 3 step (380mm, 0, -300mm);
+}
+
+Observer { position: (1150mm, 420mm, 1150mm); look-at: (330mm, 300mm, -300mm); fov: 38deg; }
+Scene    { duration: 8s; sky: sunset; ground: #2e2a2a; sun: (5deg, -28deg) #ffb36b; }   // low in the sky, behind the turbines

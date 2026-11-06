@@ -1,0 +1,3 @@
+Rotor1 { forever: rotate: 70deg/s about z; }
+Rotor2 { forever: rotate: 55deg/s about z; }
+Rotor3 { forever: rotate: 85deg/s about z; }

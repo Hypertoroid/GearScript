@@ -1,0 +1,10 @@
+Ball {
+    forever: rotate: 45deg/s;
+             move: (0, 100mm/s, 0);
+             x: 0;
+}
+
+Observer {
+    0s..10s: follow: Ball offset (1000mm, 0, 0);
+    then:    y: 0;
+}

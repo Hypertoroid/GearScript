@@ -1,0 +1,2 @@
+Vane { forever: rotate: 30deg * sin(t * 80deg/s) + 10deg * sin(t * 230deg/s) about y; }   // gusts: two waves added together
+Cups { forever: rotate: 220deg/s about y; }

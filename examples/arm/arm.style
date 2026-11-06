@@ -1,0 +1,3 @@
+Base, Tower   { color: graphite; material: metal; }
+Upper, Fore   { color: #e0a63a; material: plastic; outline: 1px #5a3f0c; }
+Hand          { color: #b8442e; material: plastic; }

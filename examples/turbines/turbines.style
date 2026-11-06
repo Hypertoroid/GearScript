@@ -1,0 +1,2 @@
+.mast, .nacelle { color: #e9e6e1; material: plastic; }
+.rotor  { color: #f4f2ee; material: plastic; }

@@ -1,0 +1,2 @@
+// Everything but the floor turns at the same rate.
+Tube, Pill, Hex, Pyr, Cap, Ramp, Base, Girder, Washer, HexNut, Screw, Lobe, Badge { forever: rotate: 60deg/s about y; }

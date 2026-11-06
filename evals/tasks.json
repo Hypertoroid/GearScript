@@ -1,0 +1,429 @@
+{
+ "format": "orrery-eval",
+ "version": "1.0",
+ "note": "Give an agent each prompt (with SPEC.md), save its answer as <answers>/<id>.orrery (one file with @scene, @style and @motion) or <answers>/<id>/<id>.scene/.style/.motion, then run: orrery eval tasks.json <answers>",
+ "tasks": [
+  {
+   "id": "gear-pair",
+   "prompt": "Two meshed spur gears with module 2mm: G1 has 36 teeth and sits at the origin, G2 has 12 teeth. Turn G1 at 30deg/s about its axis for 4 seconds.",
+   "checks": [
+    {
+     "name": "centre distance is 48mm",
+     "at": 0,
+     "distance": [
+      "G1.center",
+      "G2.center"
+     ],
+     "expect": 48,
+     "tol": 0.5
+    },
+    {
+     "name": "G2 turns -3x G1 (-90deg after 1s)",
+     "turn": "G2",
+     "at": 1,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": -90,
+     "tol": 1
+    }
+   ]
+  },
+  {
+   "id": "door",
+   "prompt": "A door named Door (800 x 2000 x 40 mm) hangs on a fixed post named Frame (60 x 2000 x 60 mm) and is hinged along its left edge. It opens from 0 to 90 degrees over 2 seconds with ease-in-out, then stays open.",
+   "checks": [
+    {
+     "name": "door turned 90deg about the vertical at 2s",
+     "turn": "Door",
+     "at": 2,
+     "axis": [
+      0,
+      1,
+      0
+     ],
+     "expect": 90,
+     "tol": 1,
+     "eitherWay": true
+    },
+    {
+     "name": "still open at 3s",
+     "turn": "Door",
+     "at": 3,
+     "axis": [
+      0,
+      1,
+      0
+     ],
+     "expect": 90,
+     "tol": 1,
+     "eitherWay": true
+    }
+   ]
+  },
+  {
+   "id": "four-bar",
+   "prompt": "A planar four-bar linkage in the xy plane. Ground pivots at (0, 0, 0) and (110mm, 0, 0). Crank (40mm) turns about the first pivot at 180deg/s. Coupler (120mm) joins the crank tip to the tip of Rocker (90mm), which turns about the second pivot. Use the names Crank, Coupler and Rocker and the Link shape.",
+   "checks": [
+    {
+     "name": "crank tip at 90deg after 0.5s",
+     "at": 0.5,
+     "point": "Crank.end.b",
+     "expect": [
+      0,
+      40,
+      null
+     ],
+     "tol": 0.5
+    },
+    {
+     "name": "loop stays closed",
+     "at": 0.7,
+     "distance": [
+      "Coupler.end.b",
+      "Rocker.end.b"
+     ],
+     "expect": 0,
+     "tol": 0.5,
+     "plane": "xy"
+    },
+    {
+     "name": "rocker keeps its length to the pivot",
+     "at": 1.3,
+     "distance": [
+      "Rocker.end.b",
+      "Rocker.end.a"
+     ],
+     "expect": 90,
+     "tol": 0.5,
+     "plane": "xy"
+    },
+    {
+     "name": "rocker pivot fixed",
+     "at": 1.3,
+     "point": "Rocker.end.a",
+     "expect": [
+      110,
+      0,
+      null
+     ],
+     "tol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "slider-crank",
+   "prompt": "A slider-crank: Crank (a 50mm Link) turns about the origin at 90deg/s. A connecting rod Rod (180mm Link) joins the crank tip to Piston, a cylinder that slides along the x axis inside a fixed cylinder named Bore lying along x and centred at (200mm, 0, 0).",
+   "checks": [
+    {
+     "name": "piston at top dead centre at t=0",
+     "at": 0,
+     "point": "Piston.center",
+     "expect": [
+      230,
+      0,
+      null
+     ],
+     "tol": 0.5
+    },
+    {
+     "name": "piston position when crank is at 90deg",
+     "at": 1,
+     "point": "Piston.center",
+     "expect": [
+      172.92,
+      0,
+      null
+     ],
+     "tol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "rolling-cart",
+   "prompt": "A cart named Cart (a group with a 400 x 40 x 160 mm body and front and rear axles) has four wheels of radius 50mm hinged on the axle ends. The cart drives along +x at 500mm/s for 2 seconds and the wheels roll on a ground part named Floor without slipping.",
+   "checks": [
+    {
+     "name": "cart travelled 1000mm",
+     "at": 2,
+     "point": "Cart.center",
+     "expect": [
+      1000,
+      null,
+      null
+     ],
+     "tol": 1
+    },
+    {
+     "name": "front wheel turned -1000/50 rad",
+     "turn": "W1",
+     "at": 2,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": -1145.916,
+     "tol": 2
+    }
+   ]
+  },
+  {
+   "id": "pendulum",
+   "prompt": "A pendulum: a 300mm rod named Arm hangs from a fixed pivot block named Pivot and swings plus or minus 30 degrees about the z axis with a period of 2 seconds, starting at the centre.",
+   "checks": [
+    {
+     "name": "swung 30deg at a quarter period",
+     "turn": "Arm",
+     "at": 0.5,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": 30,
+     "tol": 1,
+     "eitherWay": true
+    },
+    {
+     "name": "back to the centre at half a period",
+     "turn": "Arm",
+     "at": 1,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": 0,
+     "tol": 1
+    }
+   ]
+  },
+  {
+   "id": "orbits",
+   "prompt": "A Sun sphere at the origin; Earth starts 150mm away along +x and orbits the Sun once every 12 seconds; a Moon starts 25mm from Earth along +x and orbits Earth once every 2 seconds.",
+   "checks": [
+    {
+     "name": "Earth stays 150mm from the Sun",
+     "at": 3,
+     "distance": [
+      "Sun.center",
+      "Earth.center"
+     ],
+     "expect": 150,
+     "tol": 0.5
+    },
+    {
+     "name": "Moon stays 25mm from Earth",
+     "at": 5,
+     "distance": [
+      "Earth.center",
+      "Moon.center"
+     ],
+     "expect": 25,
+     "tol": 0.5
+    },
+    {
+     "name": "Earth a quarter of the way round at 3s",
+     "at": 3,
+     "distance": [
+      "Earth.center",
+      "Sun.center"
+     ],
+     "expect": 150,
+     "tol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "accelerate",
+   "prompt": "A ball named Ball (radius 20mm) starts at rest at the origin and accelerates along +x at 200mm/s2 for 3 seconds.",
+   "checks": [
+    {
+     "name": "x = a t^2 / 2 at 3s",
+     "at": 3,
+     "point": "Ball.center",
+     "expect": [
+      900,
+      0,
+      0
+     ],
+     "tol": 1
+    },
+    {
+     "name": "x at 1s",
+     "at": 1,
+     "point": "Ball.center",
+     "expect": [
+      100,
+      0,
+      0
+     ],
+     "tol": 1
+    }
+   ]
+  },
+  {
+   "id": "belt",
+   "prompt": "A motor pulley Motor (radius 20mm) at the origin drives a drum Drum (radius 60mm) at (250mm, 0, 0) through a belt. The motor turns at 360deg/s.",
+   "checks": [
+    {
+     "name": "drum turns at a third of the motor speed",
+     "turn": "Drum",
+     "at": 1,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": 120,
+     "tol": 1
+    }
+   ]
+  },
+  {
+   "id": "define-wheels",
+   "prompt": "Create a reusable part type with a radius parameter and use it for three wheels named W1, W2 and W3 with radii 20mm, 30mm and 40mm, placed 120mm apart along x starting at the origin.",
+   "checks": [
+    {
+     "name": "uses define",
+     "uses": "\\bdefine\\b"
+    },
+    {
+     "name": "W3 placed at 240mm",
+     "at": 0,
+     "point": "W3.center",
+     "expect": [
+      240,
+      0,
+      0
+     ],
+     "tol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "follow-camera",
+   "prompt": "A box named Crate starts at the origin and moves along +x at 300mm/s. The camera follows it with an offset of (0, 200mm, 800mm).",
+   "checks": [
+    {
+     "name": "camera follows at 2s",
+     "at": 2,
+     "camera": true,
+     "expect": [
+      600,
+      200,
+      800
+     ],
+     "tol": 1
+    }
+   ]
+  },
+  {
+   "id": "clock",
+   "prompt": "A clock: a disc MinuteHub turns once per 60 seconds clockwise seen from the front (+z). A disc HourHub on the same axis turns at 1/12 of the minute hub, through a coupling.",
+   "checks": [
+    {
+     "name": "minute hub turned -360deg/60s (-60deg at 10s)",
+     "turn": "MinuteHub",
+     "at": 10,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": -60,
+     "tol": 1
+    },
+    {
+     "name": "hour hub turned -5deg at 10s",
+     "turn": "HourHub",
+     "at": 10,
+     "axis": [
+      0,
+      0,
+      1
+     ],
+     "expect": -5,
+     "tol": 0.5
+    }
+   ]
+  },
+  {
+   "id": "reel-caption",
+   "prompt": "A vertical 9:16 Instagram Reel: a gear turning at 45deg/s in the middle, and a title Text part reading \"How a gear turns\" that always faces the camera.",
+   "checks": [
+    {
+     "name": "frame is 9:16",
+     "sceneOpt": "frame.aspect",
+     "expect": 0.5625,
+     "tol": 0.001
+    },
+    {
+     "name": "the title says the words",
+     "textOf": "Title",
+     "expect": "How a gear turns"
+    },
+    {
+     "name": "the gear turns",
+     "uses": "rotate:\\s*45deg/s"
+    }
+   ]
+  },
+  {
+   "id": "scatter-field",
+   "prompt": "Scatter 30 small flat discs (radius 15mm) across the floor in an 800mm by 600mm area, using a fixed seed so the layout is the same every time.",
+   "checks": [
+    {
+     "name": "30 discs or more",
+     "parts": 30
+    },
+    {
+     "name": "uses scatter with a seed",
+     "uses": "scatter:[^;]*seed"
+    }
+   ]
+  },
+  {
+   "id": "night-sky",
+   "prompt": "A slowly spinning lighthouse lamp (a glowing sphere) at night: a sky with stars and a dark ground under it.",
+   "checks": [
+    {
+     "name": "has a sky",
+     "sceneOpt": "sky",
+     "expect": true
+    },
+    {
+     "name": "has stars",
+     "sceneOpt": "sky.stars",
+     "expect": true
+    },
+    {
+     "name": "has a ground",
+     "sceneOpt": "ground",
+     "expect": true
+    }
+   ]
+  },
+  {
+   "id": "styles-reuse",
+   "prompt": "Three gears in a row, meshed. Define one named metal style and reuse it on all three gears, then make only the middle gear brass coloured on top of that style.",
+   "checks": [
+    {
+     "name": "defines a named style",
+     "uses": "[A-Za-z_][\\w-]*::Style\\s*\\{"
+    },
+    {
+     "name": "reuses it with use:",
+     "uses": "use:"
+    },
+    {
+     "name": "three gears or more",
+     "parts": 3
+    }
+   ]
+  }
+ ]
+}

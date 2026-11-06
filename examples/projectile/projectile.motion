@@ -1,0 +1,7 @@
+// Two move lines: a speed (mm/s) and an acceleration (m/s2). They add together.
+Ball {
+    0s..flight: move: (vx, vy, 0);
+                move: (0, g, 0);
+}
+
+Ball { 0s..flight: sound: Land at end; }    // touches down

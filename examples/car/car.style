@@ -1,0 +1,9 @@
+.paint      { color: #2f6f8f; material: plastic; outline: 1px #13303d; }
+Car.glass   { color: #a9d4e0; material: glass; }
+.lamp       { color: #fff4c2; material: plastic; }
+.tail       { color: #d23b2e; }
+Car.bumper  { color: graphite; }
+Rod         { color: graphite; material: metal; }
+Tyre        { color: gradient(#16181b, #5d6670, axis: x); material: matte; }
+Road        { color: #3b4148; material: matte; }
+.dash       { color: #f2efe6; }

@@ -1,0 +1,10 @@
+Sun      { color: #ffcf5a; luminosity: 160% 1400mm; }    // the Sun shines and lights the planets
+Mercury  { color: #a7a29b; }
+Venus    { color: #e3c38a; }
+Earth    { color: gradient(#2a6fbf, #5fb36a, axis: x); }
+Moon     { color: #cfcfcf; }
+Mars     { color: #c4562f; }
+Jupiter  { color: gradient(#c9a37a, #f1e2c6, axis: y); }
+Saturn   { color: #e2cf9a; }
+Rings    { color: #cdb98a; opacity: 0.8; }
+.orbit   { color: #3a4656; material: flat; }

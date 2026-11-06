@@ -1,0 +1,7 @@
+// the mass follows the same formula the chart draws, 60 mm per unit
+Mass  { forever: move: (60mm * (1 - exp(-t / 2.5) * cos(t * 2.4)), 0, 0); }
+Scene {
+    0s..1s: say: Narrator "A mass on a spring is let go.";
+    3s..4s: say: Narrator "It overshoots, and the swings die away.";
+    6.5s..7s: say: Narrator "The chart traces its position over time.";
+}

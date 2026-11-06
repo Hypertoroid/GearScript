@@ -1,0 +1,3 @@
+Pivot::Box { size: (40mm, 20mm, 40mm); at: (0, 400mm, 0); }
+Arm::Link { length: 300mm; width: 12mm; orient: 90deg about z; hinge: end.b on (0, 390mm, 0); }
+Scene { duration: 4s; }

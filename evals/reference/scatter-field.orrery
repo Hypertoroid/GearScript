@@ -1,0 +1,8 @@
+@orrery 1
+@scene
+Floor::Box { size: (900mm, 10mm, 700mm); at: (0, -5mm, 0); }
+Dot::Disc.dot { radius: 15mm; thickness: 2mm; at: (0, 1mm, 0); scatter: 30 in plane xz (800mm, 600mm) seed 3 apart; }
+Scene { duration: 2s; }
+@style
+.dot { color: #38bdf8; }
+@motion

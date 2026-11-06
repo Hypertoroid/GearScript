@@ -1,0 +1,4 @@
+Barrel, CapEnd, Gland { color: steel; material: brushed; cut: z 0mm; cut-color: #b8442e; }
+Port1, Port2 { color: #5d6670; material: metal; cut: z 0mm; }
+Piston { color: #c9a43a; material: metal; }
+Rod    { color: #dfe4ea; material: chrome; }

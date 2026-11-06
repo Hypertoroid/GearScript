@@ -1,0 +1,2 @@
+Ball::Sphere { radius: 20mm; at: (0, 0, 0); }
+Scene { duration: 3s; }

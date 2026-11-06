@@ -1,0 +1,15 @@
+.tile { color: graphite; material: matte; outline: 1px #1f2933; }
+.body { color: graphite; material: metal; outline: 1px #2b3138; }
+.torso { color: #e2e8f0; material: plastic; outline: 1px #475569; }
+.head { color: #f1f5f9; material: plastic; outline: 1px #475569; }
+.visor { color: #0f172a; material: glass; }
+.eye { color: #38bdf8; luminosity: 70%; }
+.core { color: #22d3ee; luminosity: 50%; }
+.leg { color: aluminium; material: brushed; outline: 1px #2b3138; }
+.arm { color: aluminium; material: brushed; outline: 1px #2b3138; }
+.joint { color: steel; material: chrome; }
+.foot { color: #334155; material: metal; outline: 1px #0f172a; }
+.hand { color: #cbd5e1; material: plastic; outline: 1px #475569; }
+
+HandL { trail: end.b 0.8s #38bdf8; }
+HandR { trail: end.b 0.8s #f472b6; }

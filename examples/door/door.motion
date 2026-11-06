@@ -1,0 +1,6 @@
+Door {
+    0s..2s:   rotate: 0deg -> 95deg ease-in-out;
+    2.5s..4s: rotate: 95deg -> 0deg ease-in;
+}
+
+Door { 0.1s..2s: sound: Creak; 2.5s..4s: sound: Shut at end; }

@@ -1,0 +1,3 @@
+Cog  { forever: rotate: 90deg/s; }
+Ring { 0s..4s: rotate: 0deg -> 360deg about y ease-in-out; }
+Word { 0s..0.6s: opacity: 0 -> 1; }

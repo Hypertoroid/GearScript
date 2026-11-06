@@ -1,0 +1,2 @@
+Earth { forever: orbit: Sun 360deg / 12s; }
+Moon  { forever: orbit: Earth 360deg / 2s; }

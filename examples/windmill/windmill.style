@@ -1,0 +1,5 @@
+Tower  { color: #e2d6c2; material: matte; }
+Cap    { color: #6b3b2a; }
+Door   { color: #4a3426; }
+Sails  { color: #f3efe6; material: matte; }
+Sails.hub { color: #4a3b30; material: metal; }

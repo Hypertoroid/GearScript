@@ -1,0 +1,4 @@
+// The biggest slice slides out along its middle (72 degrees) and back, every 4 seconds
+SliceA  { forever: move: (cos(72deg) * 28mm * (0.5 - 0.5 * cos(t * 1.5708)), sin(72deg) * 28mm * (0.5 - 0.5 * cos(t * 1.5708)), 0); }
+// The needle sweeps between 20 and 160 degrees
+Needle  { forever: rotate: 90deg + 70deg * sin(t * 1.5708); }

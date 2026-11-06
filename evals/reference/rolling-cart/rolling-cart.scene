@@ -1,0 +1,12 @@
+Cart::Group {
+    body: Box { size: (400mm, 40mm, 160mm); }
+    axle: Rod { length: 220mm; radius: 5mm; orient: 90deg about x; repeat: 2; at: body.face.bottom + (130mm - i * 260mm, 0, 0); }
+    at: (0, 60mm, 0);
+}
+define W(mount) :: Wheel { radius: 50mm; width: 20mm; hinge: axis on mount; }
+W1::W(Cart.axle1.end.b);
+W2::W(Cart.axle1.end.a);
+W3::W(Cart.axle2.end.b);
+W4::W(Cart.axle2.end.a);
+Floor::Box { size: (3000mm, 4mm, 400mm); at: (1000mm, -2mm, 0); }
+Scene { duration: 2s; }

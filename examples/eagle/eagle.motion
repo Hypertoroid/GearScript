@@ -1,0 +1,22 @@
+let circling = 60deg/s;     // one lap every 6 s
+let sink = -25mm/s;          // the spiral tightens toward the ground
+
+Mouse {
+    forever: along: Run 12s;
+}
+
+// orbit keeps the eagle's offset from the prey and swings it round, even while the prey moves.
+Eagle {
+    forever: orbit: Mouse circling;
+             move: (0, sink, 0);
+}
+
+// A wing angle can be any function of time t.
+WingL { forever: rotate: 35deg * sin(t * 10); }
+WingR { forever: rotate: -35deg * sin(t * 10); }
+
+// The camera circles with the eagle, a little behind and above it.
+Observer {
+    forever: orbit: Mouse circling;
+             move: (0, -20mm/s, 0);
+}

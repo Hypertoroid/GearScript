@@ -1,0 +1,6 @@
+// Only the crank has a rule. Everything else follows.
+Crank {
+    forever: rotate: 60deg/s about G1.axis;
+}
+
+Scene { sound: Mesh; }

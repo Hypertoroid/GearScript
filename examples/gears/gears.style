@@ -1,0 +1,4 @@
+Gear         { color: steel; material: metal; outline: 1px #1e252c; }
+#G2          { color: brass; }
+#G3          { color: copper; }
+Crank, Knob  { color: #b8442e; material: plastic; }

@@ -1,0 +1,36 @@
+// Stride frequency 5.236 rad/s (1.2s per stride). The pelvis no longer advances, it only bobs.
+Pelvis { forever: move: (0, -180mm * (1 - cos(28deg * sin(t * 5.236))), 0); }
+
+// Treadmill: tiles slide backwards at 270mm/s, matching the old walking speed. Each tile wraps by one 300mm pitch
+// every 1.111s, which looks seamless because the tiles are identical.
+.tile { forever: move: (-300mm * (t / 1.1111 - floor(t / 1.1111)), 0, 0); }
+
+// Hips swing in opposite phase
+ThighL { forever: rotate: 28deg * sin(t * 5.236); }
+ThighR { forever: rotate: -28deg * sin(t * 5.236); }
+
+// Knees bend backwards only while that leg swings forward
+ShankL { forever: rotate: -5deg - 38deg * max(0, cos(t * 5.236)); }
+ShankR { forever: rotate: -5deg - 38deg * max(0, -cos(t * 5.236)); }
+
+// Ankles cancel the hip plus knee angle to keep each foot level
+FootL { forever: rotate: 5deg - 28deg * sin(t * 5.236) + 38deg * max(0, cos(t * 5.236)); }
+FootR { forever: rotate: 5deg + 28deg * sin(t * 5.236) + 38deg * max(0, -cos(t * 5.236)); }
+
+// Arms swing against the leg on the same side; the elbow bends as the arm comes forward
+UpperL { forever: rotate: -34deg * sin(t * 5.236); }
+UpperR { forever: rotate: 34deg * sin(t * 5.236); }
+ForeL { forever: rotate: 14deg + 26deg * max(0, -sin(t * 5.236)); }
+ForeR { forever: rotate: 14deg + 26deg * max(0, sin(t * 5.236)); }
+
+// Hands flick at the wrist, slightly behind the arm swing
+HandL { forever: rotate: -16deg * sin(t * 5.236 - 0.8); }
+HandR { forever: rotate: 16deg * sin(t * 5.236 - 0.8); }
+
+// Camera stays fixed in front and slowly orbits the robot
+Observer { forever: orbit: Pelvis 6deg/s; forever: look-at: Pelvis; }
+
+// A metal foot lands as each leg reaches the front of its swing (0.3 s and 0.9 s into every 1.2 s stride)
+FootL { 0.3s..60s: sound: StepL every 1.2s; }
+FootR { 0.9s..60s: sound: StepR every 1.2s; }
+Scene { sound: Belt; }    // the treadmill

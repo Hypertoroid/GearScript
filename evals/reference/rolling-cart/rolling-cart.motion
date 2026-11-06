@@ -1,0 +1,2 @@
+Cart { forever: move: (500mm/s, 0, 0); }
+W { forever: roll: Floor; }

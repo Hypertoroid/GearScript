@@ -1,0 +1,4 @@
+Crank::Link   { length: 40mm;  hinge: end.a on (0, 0, 0); }
+Coupler::Link { length: 120mm; hinge: end.a on Crank.end.b + (0, 0, 6mm); pin: end.b to Rocker.end.b; }
+Rocker::Link  { length: 90mm;  orient: 90deg about z; hinge: end.a on (110mm, 0, 0); }
+Scene { duration: 2s; }

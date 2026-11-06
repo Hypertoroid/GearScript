@@ -1,0 +1,4 @@
+Pivot   { color: graphite; }
+Arm     { color: steel; material: metal; }
+Bob     { color: brass; material: metal; label: "bob"; }
+Gravity { color: #b8442e; label: "g"; }

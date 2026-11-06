@@ -1,0 +1,29 @@
+@orrery 1
+
+@scene
+// A narrated chart: a damped spring, with its position plotted beside it as it moves.
+// The narrator's lines are spoken in the preview and the 3D player, and drawn as captions in exports.
+Wall::Box      { size: (20mm, 200mm, 120mm); at: (-470mm, 0, 0); }
+Coil::Curve    { domain: u in 0..1; point: (-460mm + u * (125mm + 60mm * (1 - exp(-t / 2.5) * cos(t * 2.4))), 16mm * cos(u * 3240deg), 16mm * sin(u * 3240deg)); stroke: 3mm; }   // the spring stretches with the mass
+Mass::Box      { size: (70mm, 70mm, 70mm); at: (-300mm, 0, 0); }
+Wave::Plot     { size: (460mm, 260mm); function: 1 - exp(-x / 2.5) * cos(x * 2.4); x-axis: 0..8 step 2 "time (s)"; y-axis: 0..1.8 step 0.5 "position"; reveal: min(1, t / 8s); at: (190mm, 0, 0); }
+Title::Text    { text: "A damped spring"; size: 30mm; at: (0, 220mm, 0); facing: camera; }
+Narrator::Voice { voice: en-GB; rate: 95%; }
+Observer { position: (0, 40mm, 1250mm); look-at: (0, 10mm, 0); }
+Scene    { duration: 9s; frame: youtube; sky: studio; }
+
+@style
+Wall  { color: #3a4048; }
+Coil  { color: steel; material: metal; }
+Mass  { color: #e0a63a; material: plastic; text: "1 kg"; text-side: front; font-weight: bold; }
+Wave  { color: #38bdf8; }
+Title { color: #ffffff; font-weight: 700; }
+
+@motion
+// the mass follows the same formula the chart draws, 60 mm per unit
+Mass  { forever: move: (60mm * (1 - exp(-t / 2.5) * cos(t * 2.4)), 0, 0); }
+Scene {
+    0s..1s: say: Narrator "A mass on a spring is let go.";
+    3s..4s: say: Narrator "It overshoots, and the swings die away.";
+    6.5s..7s: say: Narrator "The chart traces its position over time.";
+}

@@ -1,0 +1,8 @@
+// A spinning badge for video overlays. The background is transparent: export PNG frames (or a GIF) and only the badge remains.
+// Video files have no transparency, so MP4 and WebM fill the background.
+Ring::Torus { radius: 120mm; tube: 12mm; }
+Cog::Gear   { teeth: 24; module: 6mm; width: 20mm; }
+Word::Text  { text: "LIVE"; size: 46mm; at: (0, -200mm, 0); facing: camera; }
+
+Observer { position: (0, 0, 760mm); look-at: (0, -30mm, 0); }
+Scene    { duration: 4s; background: transparent; frame: square; }

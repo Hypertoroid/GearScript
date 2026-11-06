@@ -1,0 +1,5 @@
+Earth { color: gradient(#1d4f91, #3fa66b, axis: y); roughness: 0.75; }
+Satellite { color: #c9ced6; material: metal; }
+Satellite.panelL, Satellite.panelR { color: #1c3f7a; metalness: 0.6; roughness: 0.3; }
+Satellite.dish { color: #eeeeee; }
+Moon { color: #bfc4cc; roughness: 1; }

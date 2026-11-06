@@ -1,0 +1,10 @@
+Sea        { color: #1d3a5c; metalness: 0.1; roughness: 0.5; }
+Rock       { color: #4a4f57; roughness: 0.95; }
+Tower      { color: #e8e4dc; }
+Band1, Band2 { color: #b8442e; }
+Gallery, Roof { color: #2b3138; metalness: 0.8; roughness: 0.4; }
+Room       { color: #9fc4e8; material: glass; }
+Head.lamp  { color: #fff1c4; luminosity: 120% 1400mm; }            // a strong light that reaches the sea
+Head.beam  { color: rgba(255, 200, 90, 0.45); luminosity: 100%; shadow: none; }   // see-through and luminous: it adds light like a real beam
+.window    { color: #2a2f38; luminosity: 0 #ffd27a 160mm; }   // dark until the motion turns it up; it lights only the wall nearby
+Moon       { color: #dfe6f0; luminosity: 45% 2400mm; }

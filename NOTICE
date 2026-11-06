@@ -1,0 +1,28 @@
+Orrery
+Copyright 2026 Sivaprasad Murali and the Orrery contributors
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+The name "Orrery" and the Orrery logo are not licensed under
+the Apache License; see TRADEMARKS.md.
+
+This product includes or loads third-party software under its own licence:
+
+  three.js r128 (3D rendering)               MIT License, Copyright 2010-2021 three.js authors
+  CodeMirror 6 (editor, bundled in vendor/)  MIT License, see vendor/CODEMIRROR-LICENSE.txt
+  mp4-muxer 5.2.2 and webm-muxer 5.1.4       MIT License, Copyright Vanilagy
+    (loaded only when a video is exported)
+  3D letter outlines (vendor/fonts3d.js):     Helvetiker and Optimer under the MgOpen licence;
+    Droid Sans Mono under the Apache License 2.0; see vendor/FONTS3D-LICENSE.txt
+    (loaded only when a project uses font-style: 3d)
+  piper-tts-web 1.0.5 and ONNX Runtime Web     MIT License; Piper voices (rhasspy/piper-voices) under
+    their own licences, listed in each voice's MODEL_CARD (loaded from cdn.jsdelivr.net and
+    huggingface.co only when an export speaks say: lines)
+
+The web fonts IBM Plex Sans, IBM Plex Sans Condensed and JetBrains Mono are
+loaded from Google Fonts under the SIL Open Font License 1.1. The landing page also loads
+Fraunces, Inter Tight, Geist and Geist Mono from Google Fonts under the same licence.
+
+Several editor themes follow published colour schemes (Monokai, Dracula, Nord,
+One Dark, Tokyo Night, Gruvbox, Solarized, Night Blue); their names are used
+only to describe them.

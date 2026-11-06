@@ -1,0 +1,26 @@
+// A flat explainer: a donut chart whose biggest slice pops out, a gauge whose needle sweeps,
+// and a few 2D shapes. Everything lies in the x-y plane, seen straight on.
+Board::Rect      { size: (980mm, 560mm); thickness: 2mm; at: (0, 0, -6mm); }
+
+// Donut chart: four slices (40%, 25%, 20%, 15%) around a hole
+SliceA::Sector   { radius: 160mm; inner: 70mm; start: 0deg;   angle: 144deg; thickness: 6mm; at: (-230mm, -20mm, 0); }
+SliceB::Sector   { radius: 160mm; inner: 70mm; start: 144deg; angle: 90deg;  thickness: 6mm; at: (-230mm, -20mm, 0); }
+SliceC::Sector   { radius: 160mm; inner: 70mm; start: 234deg; angle: 72deg;  thickness: 6mm; at: (-230mm, -20mm, 0); }
+SliceD::Sector   { radius: 160mm; inner: 70mm; start: 306deg; angle: 54deg;  thickness: 6mm; at: (-230mm, -20mm, 0); }
+
+// Gauge: a coloured arc, tick marks and a needle on a hub
+Dial::Arc        { radius: 130mm; start: 0deg; angle: 180deg; stroke: 16mm; at: (230mm, -80mm, 0); }
+Hub::Disc        { radius: 16mm; thickness: 8mm; at: (230mm, -80mm, 4mm); }
+Needle::Link     { length: 112mm; width: 9mm; thickness: 3mm; hinge: end.a on Hub.axis; }
+Tick::Rect       { size: (4mm, 22mm); thickness: 2mm; at: (230mm, 58mm, 2mm); }
+
+// 2D shapes along the top
+Badge::Polygon   { sides: 6; radius: 34mm; thickness: 4mm; at: (-400mm, 200mm, 0); }
+Spark::Star      { points: 5; radius: 34mm; inner: 15mm; thickness: 4mm; at: (-290mm, 200mm, 0); }
+Lens::Ellipse    { size: (90mm, 50mm); thickness: 4mm; at: (-160mm, 200mm, 0); }
+Flag::Triangle   { size: (60mm, 64mm); apex: 10mm; thickness: 4mm; at: (-40mm, 200mm, 0); }
+Pointer::Path    { points: (0, 0) (60mm, 0) (60mm, -14mm) (96mm, 12mm) (60mm, 38mm) (60mm, 24mm) (0, 24mm); thickness: 4mm; at: (40mm, 188mm, 0); }
+
+Observer { position: (0, 0, 1400mm); look-at: (0, 10mm, 0); projection: orthographic; zoom: 1.2; }
+Light    { kind: directional; direction: (-0.4, -0.6, -1); power: 0.3; }
+Scene    { duration: 8s; background: #0e1420; }

@@ -1,0 +1,14 @@
+let year = 12s;              // one Earth year in this animation
+
+Mercury { forever: orbit: Sun 360deg / (year * 0.25); }
+Venus   { forever: orbit: Sun 360deg / (year * 0.6); }
+Earth   { forever: orbit: Sun 360deg / year;  rotate: 360deg / 2s; }
+Moon    { forever: orbit: Earth 360deg / 2s; }      // circles Earth while Earth circles the Sun
+Mars    { forever: orbit: Sun 360deg / (year * 2); }
+Jupiter { forever: orbit: Sun 360deg / (year * 4);  rotate: 90deg/s; }
+Saturn  { forever: orbit: Sun 360deg / (year * 8);  rotate: 60deg/s; }
+
+// A moving observer: one slow lap around the whole system.
+Observer {
+    forever: orbit: Sun 360deg / 24s;
+}

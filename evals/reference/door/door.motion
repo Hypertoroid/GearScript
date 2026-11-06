@@ -1,0 +1,1 @@
+Door { 0s..2s: rotate: 0deg -> 90deg ease-in-out; }

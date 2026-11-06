@@ -1,0 +1,53 @@
+@orrery 1
+
+@scene
+// A stylised solar system. Distances and speeds are compressed so the motion reads.
+Sun::Sphere      { radius: 40mm; at: (0, 0, 0); }
+Mercury::Sphere  { radius: 5mm;  at: (70mm, 0, 0); }
+Venus::Sphere    { radius: 9mm;  at: (100mm * cos(140deg), 0, 100mm * sin(140deg)); }
+Earth::Sphere    { radius: 10mm; at: (140mm * cos(250deg), 0, 140mm * sin(250deg)); }
+Moon::Sphere     { radius: 3mm;  at: Earth.center + (20mm, 0, 0); }
+Mars::Sphere     { radius: 7mm;  at: (185mm * cos(40deg), 0, 185mm * sin(40deg)); }
+Jupiter::Sphere  { radius: 24mm; at: (260mm * cos(200deg), 0, 260mm * sin(200deg)); }
+Saturn::Sphere   { radius: 20mm; at: (340mm * cos(310deg), 0, 340mm * sin(310deg)); }
+Rings::Torus     { radius: 32mm; tube: 3mm; orient: 70deg about x; attach: Saturn.center; }
+
+// Orbit paths: thin rings lying flat.
+P1::Torus.orbit { radius: 70mm;  tube: 0.5mm; orient: 90deg about x; overlap: allow; }
+P2::Torus.orbit { radius: 100mm; tube: 0.5mm; orient: 90deg about x; overlap: allow; }
+P3::Torus.orbit { radius: 140mm; tube: 0.5mm; orient: 90deg about x; overlap: allow; }
+P4::Torus.orbit { radius: 185mm; tube: 0.5mm; orient: 90deg about x; overlap: allow; }
+P5::Torus.orbit { radius: 260mm; tube: 0.5mm; orient: 90deg about x; overlap: allow; }
+P6::Torus.orbit { radius: 340mm; tube: 0.5mm; orient: 90deg about x; overlap: allow; }
+
+Light { kind: directional; direction: (0, -1, -0.4); power: 0.12; }     // a faint fill; the Sun does the rest
+Observer { position: (0, 430mm, 820mm); look-at: (0, 0, 0); }
+Scene { duration: 24s; background: #070a10; }
+
+@style
+Sun      { color: #ffcf5a; luminosity: 160% 1400mm; }    // the Sun shines and lights the planets
+Mercury  { color: #a7a29b; }
+Venus    { color: #e3c38a; }
+Earth    { color: gradient(#2a6fbf, #5fb36a, axis: x); }
+Moon     { color: #cfcfcf; }
+Mars     { color: #c4562f; }
+Jupiter  { color: gradient(#c9a37a, #f1e2c6, axis: y); }
+Saturn   { color: #e2cf9a; }
+Rings    { color: #cdb98a; opacity: 0.8; }
+.orbit   { color: #3a4656; material: flat; }
+
+@motion
+let year = 12s;              // one Earth year in this animation
+
+Mercury { forever: orbit: Sun 360deg / (year * 0.25); }
+Venus   { forever: orbit: Sun 360deg / (year * 0.6); }
+Earth   { forever: orbit: Sun 360deg / year;  rotate: 360deg / 2s; }
+Moon    { forever: orbit: Earth 360deg / 2s; }      // circles Earth while Earth circles the Sun
+Mars    { forever: orbit: Sun 360deg / (year * 2); }
+Jupiter { forever: orbit: Sun 360deg / (year * 4);  rotate: 90deg/s; }
+Saturn  { forever: orbit: Sun 360deg / (year * 8);  rotate: 60deg/s; }
+
+// A moving observer: one slow lap around the whole system.
+Observer {
+    forever: orbit: Sun 360deg / 24s;
+}

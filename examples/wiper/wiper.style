@@ -1,0 +1,6 @@
+Screen { color: #a9d4e0; material: glass; }
+Motor  { color: #3b4148; }
+Bar    { color: #6b7580; material: plastic; }
+Crank  { color: #e0a63a; label: "motor crank"; }
+Arm    { color: graphite; }
+Blade  { color: #b8442e; trail: face.top 1s #2f6f8f; }

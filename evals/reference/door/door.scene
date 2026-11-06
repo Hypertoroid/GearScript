@@ -1,0 +1,3 @@
+Frame::Box { size: (60mm, 2000mm, 60mm); at: (0, 1000mm, 0); }
+Door::Box  { size: (800mm, 2000mm, 40mm); hinge: edge.left on Frame.edge.right; }
+Scene { duration: 3s; }

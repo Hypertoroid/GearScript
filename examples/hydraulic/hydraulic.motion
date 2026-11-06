@@ -1,0 +1,3 @@
+// the plane slides in from in front of the cylinder, then the piston strokes out and back
+Barrel, CapEnd, Gland, Port1, Port2 { 0s..1.5s: cut: 90mm -> 0mm ease-out; }
+Piston { 1.5s..3.5s: move: (0, 0, 0) -> (190mm, 0, 0) ease-in-out; then 3s: move: (190mm, 0, 0) -> (0, 0, 0) ease-in-out; }

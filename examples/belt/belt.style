@@ -1,0 +1,4 @@
+Pulley     { color: aluminium; material: metal; outline: 1px #2b3138; }
+Motor      { label: "Motor"; }
+Drum       { label: "Drum: half speed"; }
+Mark, Fan  { color: #b8442e; material: plastic; }

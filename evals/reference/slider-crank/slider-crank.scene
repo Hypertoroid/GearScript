@@ -1,0 +1,5 @@
+Crank::Link { length: 50mm; hinge: end.a on (0, 0, 0); }
+Bore::Cylinder { radius: 22mm; height: 220mm; orient: 90deg about z; at: (200mm, 0, 0); }
+Piston::Cylinder { radius: 20mm; height: 40mm; slider: axis on Bore.axis; }
+Rod::Link { length: 180mm; hinge: end.a on Crank.end.b + (0, 0, 6mm); pin: end.b to Piston.center; }
+Scene { duration: 4s; }

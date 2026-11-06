@@ -1,0 +1,1 @@
+Crank { forever: rotate: 90deg/s; }

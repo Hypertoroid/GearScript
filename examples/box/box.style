@@ -1,0 +1,3 @@
+Box  { color: #c9a26b; material: matte; outline: 1px #6e5130; }
+Base { color: #b58d57; }
+Lid  { color: #d8b680; }

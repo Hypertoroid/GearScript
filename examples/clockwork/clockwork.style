@@ -1,0 +1,40 @@
+Backboard { color: #5b3a24; material: plastic; }
+Crown, Crown2, Plinth, Plinth2 { color: #4a2e1c; material: plastic; }
+Finial { color: #d9a84a; material: gold; }
+TagBoard { color: transparent; label: "Walnut backboard"; }
+TagCrown { color: transparent; label: "Crown and finial"; }
+TagPlinth { color: transparent; label: "Plinth"; }
+BackPlate { color: #5e4422; material: metal; }
+Pillar1, Pillar2, Pillar3, Pillar4 { color: #e2c070; material: gold; }
+TagBack { color: transparent; label: "Back plate"; }
+TagPillars { color: transparent; label: "Pillars hold the plates apart"; }
+TagGreatWheel { color: transparent; label: "Great wheel · driven by the weights"; }
+TagCentreWheel { color: transparent; label: "Centre wheel · one turn per hour"; }
+TagThirdWheel { color: transparent; label: "Third wheel"; }
+TagEscapeWheel { color: transparent; label: "Escape wheel · lets one tooth go per tick"; }
+GreatWheel, CentreWheel, ThirdWheel { color: #e2b04e; material: metal; outline: 1px #5a3f12; }
+EscapeWheel { color: #c8ced6; material: chrome; outline: 1px #3a4048; }
+GreatWheel.arbor, CentreWheel.arbor, ThirdWheel.arbor, EscapeWheel.arbor { color: #c8ced6; material: chrome; }
+Anchor { color: #c8ced6; material: chrome; outline: 1px #3a4048; }
+TagAnchor { color: transparent; label: "Anchor · rocks with the pendulum"; }
+FrontPlate { color: #a8812f; material: metal; }
+TagFront { color: transparent; label: "Front plate"; }
+ChapterRing { color: #e6dabd; material: matte; outline: 1px #a89a78; }
+TagRing { color: transparent; label: "Chapter ring"; }
+Mark0, Mark1, Mark2, Mark3, Mark4, Mark5, Mark6, Mark7, Mark8, Mark9, Mark10, Mark11 { color: #1b1f24; material: matte; }
+TagMarks { color: transparent; label: "Hour marks"; }
+Cannon { color: #c8ced6; material: chrome; }
+HourHand, MinuteHand { color: #22406e; material: metal; }
+TagHour { color: transparent; label: "Hour hand"; }
+TagMinute { color: transparent; label: "Minute hand"; }
+Pendulum { color: #c8ced6; material: chrome; }
+Pendulum.bob { color: #d9a945; material: metal; }
+TagPendulum { color: transparent; label: "Pendulum · one beat per second"; }
+PulleyL, PulleyR { color: #c99a3e; material: brushed; }
+CordL, CordR { color: #2b2b2b; material: matte; }
+WeightL, WeightR, CapL, CapR { color: #d9a945; material: metal; }
+HookL, HookR { color: #c8ced6; material: chrome; }
+TagWeights { color: transparent; label: "Drive weights · the clock's power"; }
+Bezel { color: #e3b650; material: gold; }
+Glass { color: #cfe6f0; material: glass; }
+Aim { color: transparent; }

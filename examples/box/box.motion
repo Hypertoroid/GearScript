@@ -1,0 +1,10 @@
+Right { 0s..1s: rotate: 0deg -> 90deg ease-in-out; }
+Left  { 0s..1s: rotate: 0deg -> -90deg ease-in-out; }
+Front { 1s..2s: rotate: 0deg -> -90deg ease-in-out; }
+Back  { 1s..2s: rotate: 0deg -> 90deg ease-in-out; }
+Lid   { 2s..3s: rotate: 0deg -> 90deg ease-in-out; }
+
+// a soft knock as each flap lands
+Right { 0s..1s: sound: Flap at end; }
+Front { 1s..2s: sound: Flap at end; }
+Lid   { 2s..3s: sound: Flap at end; }

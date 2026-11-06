@@ -1,0 +1,6 @@
+Flywheel { color: gradient(#3b4148, #8f99a3, axis: x); material: metal; }
+Weight   { color: #3b4148; }
+Crank    { color: #b8442e; }
+Rod      { color: steel; material: metal; trail: mid #e0a63a; }
+Piston   { color: #c7ccd2; material: metal; }
+Bore     { color: glass; material: glass; outline: 1px #5d8a96; }

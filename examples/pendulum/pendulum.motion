@@ -1,0 +1,6 @@
+Arm {
+    0s..1.2s: rotate: -35deg -> 35deg ease-in-out;
+    then:     rotate: 35deg -> -35deg ease-in-out;
+}
+
+Arm { 0s..1.2s: sound: Tick at end; then: sound: Tock at end; }    // at each end of the swing

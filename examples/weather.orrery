@@ -1,0 +1,38 @@
+@orrery 1
+
+@scene
+// A weather station on an overcast day: the vane swings with the gusts and the cups spin in the wind.
+Pole::Cylinder { radius: 8mm; height: 600mm; at: (0, 300mm, 0); }
+Box1::Box      { size: (90mm, 120mm, 70mm); at: (0, 160mm, 40mm); overlap: allow; }
+Vane::Group {
+  rod:   Box  { size: (260mm, 6mm, 6mm); }
+  tail:  Box  { size: (70mm, 60mm, 3mm); at: (-120mm, 0, 0); }
+  arrow: Cone { radius: 16mm; height: 40mm; orient: -90deg about z; at: (148mm, 0, 0); }
+  at: (0, 580mm, 0); overlap: allow;
+}
+Cups::Group {
+  hub:  Cylinder { radius: 10mm; height: 20mm; }
+  arm1: Box { size: (180mm, 4mm, 4mm); }
+  arm2: Box { size: (4mm, 4mm, 180mm); }
+  c1: Sphere { radius: 18mm; at: (90mm, 0, 0); }
+  c2: Sphere { radius: 18mm; at: (-90mm, 0, 0); }
+  c3: Sphere { radius: 18mm; at: (0, 0, 90mm); }
+  c4: Sphere { radius: 18mm; at: (0, 0, -90mm); }
+  at: (0, 440mm, 0); overlap: allow;
+}
+
+Observer { position: (520mm, 420mm, 760mm); look-at: (0, 380mm, 0); }
+Light    { kind: directional; direction: (-0.3, -1, -0.4); power: 0.45; }   // soft, flat light under cloud
+Scene    { duration: 9s; sky: overcast; ground: #4d5248; }
+
+@style
+Pole   { color: #9aa1a8; material: brushed; }
+Box1   { color: #e8e8e4; material: plastic; }
+Vane   { color: #2b3138; material: metal; }
+Vane.arrow { color: #b8442e; }
+Cups   { color: #d9dde2; material: plastic; }
+Cups.hub, Cups.arm1, Cups.arm2 { color: #5d6670; }
+
+@motion
+Vane { forever: rotate: 30deg * sin(t * 80deg/s) + 10deg * sin(t * 230deg/s) about y; }   // gusts: two waves added together
+Cups { forever: rotate: 220deg/s about y; }

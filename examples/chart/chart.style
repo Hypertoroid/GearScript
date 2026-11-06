@@ -1,0 +1,5 @@
+Wall  { color: #3a4048; }
+Coil  { color: steel; material: metal; }
+Mass  { color: #e0a63a; material: plastic; text: "1 kg"; text-side: front; font-weight: bold; }
+Wave  { color: #38bdf8; }
+Title { color: #ffffff; font-weight: 700; }

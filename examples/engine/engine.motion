@@ -1,0 +1,4 @@
+Flywheel { forever: rotate: 240deg/s; }
+
+// one firing every turn of the flywheel (240deg/s: one turn per 1.5 s)
+Flywheel { forever: sound: Putt every 1.5s; }

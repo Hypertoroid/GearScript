@@ -1,0 +1,11 @@
+Ground          { color: #9fb57a; material: matte; }
+.trunk          { color: #6e4a2f; material: matte; }
+.crown          { color: #3e6b3a; material: matte; }
+.rock           { color: #8b8f94; material: matte; }
+Trail           { color: #c9b98f; opacity: 0.6; }
+Mouse           { color: #8a7a6c; material: matte; }
+.ear            { color: #c9a38f; }
+Eagle           { color: #5a3d24; material: matte; }
+Eagle.head      { color: #f2efe6; }
+Eagle.beak      { color: #e0a63a; }
+.wing           { color: #4a3220; material: matte; outline: 1px #2a1b10; }

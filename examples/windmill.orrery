@@ -1,0 +1,29 @@
+@orrery 1
+
+@scene
+// A windmill at dawn: the sails turn in the morning breeze while the sun comes up over the horizon.
+Tower::Cone   { radius: 70mm; height: 360mm; at: (0, 180mm, 0); }
+Cap::Dome     { radius: 46mm; at: (0, 352mm, 0); overlap: allow; }
+Door::Box     { size: (34mm, 56mm, 4mm); at: (0, 28mm, 66mm); overlap: allow; }
+Sails::Group {
+  hub: Cylinder { radius: 14mm; height: 30mm; orient: 90deg about x; }
+  s1: Box { size: (26mm, 170mm, 4mm); at: (0, 98mm, 0); }
+  s2: Box { size: (26mm, 170mm, 4mm); at: (0, -98mm, 0); }
+  s3: Box { size: (170mm, 26mm, 4mm); at: (98mm, 0, 0); }
+  s4: Box { size: (170mm, 26mm, 4mm); at: (-98mm, 0, 0); }
+  at: (0, 320mm, 72mm); overlap: allow;
+}
+
+Observer { position: (430mm, 250mm, 920mm); look-at: (0, 210mm, 0); }
+Scene    { duration: 10s; sky: dawn; ground: #3b4a3a; sun: (-5deg, -35deg) #ffd59a; }   // the sun lights the scene from where it stands
+
+@style
+Tower  { color: #e2d6c2; material: matte; }
+Cap    { color: #6b3b2a; }
+Door   { color: #4a3426; }
+Sails  { color: #f3efe6; material: matte; }
+Sails.hub { color: #4a3b30; material: metal; }
+
+@motion
+Sails { forever: rotate: 50deg/s about z; }
+Scene { 0s..10s: sun: -5deg -> 10deg ease-in-out; }   // sunrise: from below the horizon to 10 degrees up

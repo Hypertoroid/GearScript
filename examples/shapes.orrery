@@ -1,0 +1,32 @@
+@orrery 1
+
+@scene
+// The shape library: every built-in part type, slowly turning on a turntable.
+Tube::Tube       { radius: 30mm; inner: 22mm; height: 60mm; at: (-240mm, 40mm, 0); }
+Pill::Capsule    { radius: 16mm; length: 80mm; at: (-160mm, 40mm, 0); }
+Hex::Prism       { sides: 6; radius: 28mm; height: 60mm; at: (-80mm, 40mm, 0); }
+Pyr::Pyramid     { sides: 4; radius: 34mm; height: 60mm; at: (0, 40mm, 0); }
+Cap::Dome        { radius: 32mm; at: (80mm, 10mm, 0); }
+Ramp::Wedge      { size: (70mm, 50mm, 40mm); at: (160mm, 35mm, 0); }
+Base::Plate      { size: (80mm, 60mm); thickness: 6mm; corner: 10mm; hole: 12mm; at: (240mm, 40mm, 0); }
+Girder::Beam     { length: 140mm; height: 30mm; width: 20mm; at: (-200mm, -70mm, 0); }
+Washer::Ring     { radius: 26mm; inner: 12mm; thickness: 5mm; at: (-80mm, -70mm, 0); }
+HexNut::Nut      { radius: 22mm; thickness: 16mm; at: (0, -70mm, 0); }
+Screw::Bolt      { radius: 8mm; length: 80mm; at: (80mm, -70mm, 0); }
+Lobe::Cam        { radius: 22mm; lift: 14mm; width: 14mm; at: (160mm, -70mm, 0); }
+Badge::Star      { points: 5; radius: 30mm; at: (240mm, -70mm, 0); }
+Floor::Plate     { size: (620mm, 260mm); thickness: 8mm; corner: 20mm; orient: 90deg about x; at: (0, -118mm, 0); }
+
+Observer { position: (0, 240mm, 620mm); look-at: (0, -20mm, 0); }
+Light    { kind: directional; direction: (-0.6, -1.4, -0.8); power: 0.9; }
+Scene    { duration: 6s; }
+
+@style
+Tube, Capsule, Prism, Pyramid, Dome, Wedge, Beam, Ring, Nut, Bolt { color: steel; material: metal; }
+Star, Cam   { color: brass; material: metal; }
+#Base       { color: copper; material: metal; }
+#Floor      { color: #2a3138; material: matte; }
+
+@motion
+// Everything but the floor turns at the same rate.
+Tube, Pill, Hex, Pyr, Cap, Ramp, Base, Girder, Washer, HexNut, Screw, Lobe, Badge { forever: rotate: 60deg/s about y; }

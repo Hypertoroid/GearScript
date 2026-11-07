@@ -4,6 +4,8 @@
 
 - Tours: a welcome card offers an **interactive tour** (recommended) or a quick one. The interactive tour walks through the whole workflow on a scratch crane project with a simulated AI: AI prompt, paste, Problems and Copy as JSON, the timeline and Copy state, then Export. The visitor clicks the real buttons; their project, settings and undo history come back afterwards.
 - A **?** button in the header opens the tours. The quick tour is down to seven stops and leads with AI prompt.
+- No length limit: animations and chapters can run as long as you like (W0503, which cut them at 120 s, is gone). Video exports run to 20 minutes at 30 fps, for a single animation as for a film.
+- `fixed: bottom-left margin 5%;` and a separate `margin: 5%;` (common in AI replies) now build, with W0232 and a one-click Fix to `fixed: bottom-left 5%;`. The AI prompt spells out the right form.
 
 ## 1.0 beta
 

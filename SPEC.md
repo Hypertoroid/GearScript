@@ -55,7 +55,7 @@ Crank { forever: rotate: 180deg/s; }
 
 ## Chapters
 
-A longer video is a project with chapters, always one `.orrery` file. Each chapter is a complete animation with its own `@scene`, `@style` and `@motion`, its time starting at 0 s (up to 120 s each). The studio's Film mode plays them in order and the export joins them into one video.
+A longer video is a project with chapters, always one `.orrery` file. Each chapter is a complete animation with its own `@scene`, `@style` and `@motion`, its time starting at 0 s. Chapters and single animations have no length limit. The studio's Film mode plays them in order and the export joins them into one video.
 
 ```
 @orrery 1
@@ -134,7 +134,7 @@ Scene    { sky: sunset; sun: (5deg, -30deg) #ffb36b; }         // a sun on the s
 - `orient: 90deg about x;` sets the starting rotation.
 - `repeat: 4 step (100mm, 0, 0);` makes copies `Name1` to `Name4`. `i` (0, 1, 2 …) can be used in any expression.
 - `scatter: 40 in plane xz (600mm, 400mm) seed 7 spin 360deg vary 20% apart;` makes 40 copies at random places, the same on every build. Areas: `in plane xz|xy|yz (w, d)`, `in plane "2x + y - z = 100mm" (w, d)` (any plane as an equation; the copies centre on the point of it nearest the part's `at`), `in plane normal (a, b, c) (w, d)` (a tilted plane through `at`), `along x|y|z length`, `in box (x, y, z)`, `in disc r`, `on circle r`, `in sphere r` (disc and circle take an optional `plane xy`). Options: `seed` (another layout), `spin` (a random turn about the plane's normal, up to the angle), `vary` (sizes vary by up to that share), `apart` (copies kept from touching; W0124 when there is no room). Flat shapes lie in the plane. A plane takes an optional third size, `(w, d, depth)`, that also spreads the copies along its normal, so they fill a slab instead of a sheet. Copies are `Name1` … `NameN` and keep the part's classes, so style and motion can target them as a `.class`.
-- `fixed: top-left;` keeps the part at one place on the screen, whatever the Observer does: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom` or `bottom-right`, then an optional margin (`fixed: bottom 8%;`, 5% by default), or `fixed: (x%, y%)` for the part's centre measured from the top-left corner. The part is drawn just in front of the camera at the size it has at the Observer's starting distance, so titles, logos and step counters stay readable while the camera moves, orbits, follows or zooms. It keeps its own motion (a spin, a fade) and casts no shadow. It goes on a whole part (E0231 on a group member) and takes no connection (E0231); fixed parts do not count in the scene's size, the overlap check or exploded views. E0230 for an unknown place.
+- `fixed: top-left;` keeps the part at one place on the screen, whatever the Observer does: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom` or `bottom-right`, then an optional margin written as a bare percentage (`fixed: bottom 8%;`, 5% by default; `fixed: bottom margin 8%;` and a separate `margin: 8%;` are read the same way with W0232, which offers the fix), or `fixed: (x%, y%)` for the part's centre measured from the top-left corner. The part is drawn just in front of the camera at the size it has at the Observer's starting distance, so titles, logos and step counters stay readable while the camera moves, orbits, follows or zooms. It keeps its own motion (a spin, a fade) and casts no shadow. It goes on a whole part (E0231 on a group member) and takes no connection (E0231); fixed parts do not count in the scene's size, the overlap check or exploded views. E0230 for an unknown place.
 - Points can be anchor arithmetic: `Frame.face.top + (0, 10mm, 0)`.
 
 ### Shapes and their anchors
@@ -349,7 +349,6 @@ Scene { 0s..1s: sound: VoiceOver; }
 | `hinge: end.b on Pivot.face.bottom` on a Rod for a pendulum | face anchors are lines along their normal. Use a Link, a Box edge, or a fixed point `(x, y, z)`. |
 | one piece driven twice (parts fused by attach or in a group that each have a motion rule, or a rule plus a hinge, mesh or belt) | E0400, listing every source; keep one. Several rules for the same part are fine: they add up |
 | a capitalised `let`, or a lower-case part name | E0100, W0211 |
-| an animation longer than 120 s | W0503 cuts it to 120 s; split it into chapters |
 | a title that drifts out of view while the Observer moves | `fixed: top-left;` on the Text keeps it on the screen |
 | a long spoken line over a one-second move | W0519; make the move last as long as the words |
 | a different `Scene { frame }` in each chapter | W0147; put the frame in `@common` |

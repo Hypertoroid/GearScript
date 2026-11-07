@@ -567,6 +567,8 @@ html.player.see, html.player.see body, html.player.see .bench, html.player.see .
 @media (max-width: 560px) { .welcome .wopts { grid-template-columns: 1fr; } .welcome { padding: 20px 18px 14px; } }
 @keyframes wFade { from { opacity: 0; } }
 @keyframes wRise { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+.ai-locked { margin: 4px 0 0; font-size: 11.5px; color: var(--warn); }
+#aiTask.locked { opacity: 0.85; cursor: default; border-style: dashed; }
 .tour-nudge { position: fixed; left: 16px; bottom: 16px; z-index: 45; display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px); padding: 10px 10px 10px 14px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-size: 13px; animation: wRise 0.25s ease-out; }
 
 /* Interactive tour: the card, the simulated AI chat */
@@ -873,6 +875,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
         <div class="note">Copies the Orrery syntax as instructions any chat assistant can follow, plus your request. Paste its three code blocks back into the tabs.</div>
         <label class="field" for="aiTask">What should it animate?</label>
         <textarea id="aiTask" rows="3" placeholder="For example: a crane that lifts a box with a pulley, then swings it 90 degrees"></textarea>
+        <p class="ai-locked" id="aiLocked" hidden>An example request, fixed for the tour. In real use you type your own.</p>
         <label class="check"><input type="checkbox" id="aiCode"> Include my current code, so it edits this project</label>
         <label class="check"><input type="checkbox" id="aiState"> <span id="aiStateLbl">Include the state at the current time: where every part is, so it can see what is wrong</span></label>
         <div class="row"><span>Reply format</span><span><b id="aiFmt"></b> · <button type="button" class="linkbtn" id="aiFmtSwitch"></button></span></div>
@@ -1119,7 +1122,7 @@ class Parser {
     }
     if (items.length > 1 && last.t === 'ref' && last.parts.length === 1 && EASINGS[last.parts[0]]) { easing = EASINGS[last.parts[0]]; items.pop(); }
     else if (items.length > 1 && last.t === 'call' && last.name === 'cubic-bezier') { easing = last.args.map(a => a.v); items.pop(); }
-    return { name: n.v, items, easing, line: n.line, col: n.col, file: this.file, pos: n.pos };
+    return { name: n.v, items, easing, line: n.line, col: n.col, file: this.file, pos: n.pos, end: this.t[this.i - 1].end };
   }
   isMember() {
     if (!(this.peek().type === 'id' && this.isP(':', 1) && this.peek(2).type === 'id' && /^[A-Z]/.test(this.peek(2).v))) return false;
@@ -1812,7 +1815,7 @@ function compile(files, opts) {
     const def = SHAPES[decl.type];
     if (decl.type === 'Sound') throw new Diag(decl, 'E0545', 'A Sound cannot be part of a group or a define.', 'Declare it on its own line in the scene: Knock::Sound { kind: knock; }');
     if (!def) throw new Diag(decl, 'E0201', `Unknown shape type "${decl.type}".`, `Available: ${Object.keys(SHAPES).join(', ')}.`);
-    for (const p of decl.props) if (!def.props.includes(p.name) && !COMMON_PROPS.includes(p.name)) nearFix(warn(p, 'W0202', `${decl.type} does not use "${p.name}".`, `${decl.type} properties: ${[...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')).join(', ')}.`), p.name, [...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')));
+    for (const p of decl.props) if (!def.props.includes(p.name) && !COMMON_PROPS.includes(p.name) && !(p.name === 'margin' && P.fixed)) nearFix(warn(p, 'W0202', `${decl.type} does not use "${p.name}".`, `${decl.type} properties: ${[...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')).join(', ')}.`), p.name, [...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')));
     const g = (k, d) => P[k] ? P[k].items[0] : null;
     const need = (k) => { if (!P[k]) throw new Diag(decl, 'E0203', `${decl.type} "${path}" needs "${k}".`, `Add ${k}: ...; to its block.`); return P[k].items[0]; };
     const leaf = { name: path, type: decl.type, decl, top, path, spec: {}, classes: decl.classes || [] };
@@ -2176,7 +2179,8 @@ function compile(files, opts) {
         }
         ent.hasAt = !!P.at; ent.frameQ = ent.node.quaternion.clone(); ent.defType = st.defType || null;
         if (P.fixed) {   /* fixed: the part stays at one place on the screen, whatever the camera does */
-          ent.fixed = fixedSpec(P.fixed);
+          ent.fixed = fixedSpec(P.fixed, (d) => diags.push(d));
+          if (P.margin) fixedMargin(ent, st, P, diags);
           const conn = ['hinge', 'slider', 'attach', 'mesh', 'couple', 'belt', 'pin'].find(k => P[k]);
           if (ent.fixed && conn) throw new Diag(P[conn], 'E0231', `A fixed part stays on the screen, so it cannot be joined to the scene with ${conn}.`, 'Remove fixed: (the part then moves with the scene), or remove the connection.');
         }
@@ -2519,10 +2523,28 @@ function sunAt(model, t) {
 }
 /* fixed: top-left | top | top-right | left | center | right | bottom-left | bottom | bottom-right [margin], or (x%, y%) from the frame's top-left */
 const FIXED_POS = ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'];
-function fixedSpec(p) {
+/* fixed: bottom-left; margin: 5%;  the margin written as its own property: use it, and offer to move it into fixed */
+function fixedMargin(ent, st, P, diags) {
+  const f = ent.fixed, m = P.margin, fx = P.fixed;
+  if (!f || !f.pos) { diags.push(new Diag(m, 'W0232', 'margin only goes with fixed at a named place, and is written inside it.', 'Write fixed: bottom-left 5%;', 'warning')); return; }
+  let v; try { v = num(m.items[0], {}, 'margin'); } catch (e) { diags.push(e); return; }
+  if (!(v >= 0 && v <= 0.45)) { diags.push(new Diag(m, 'E0230', 'The fixed margin is a percentage of the frame, from 0% to 45%.', `Write fixed: ${f.pos} 5%;`)); return; }
+  f.margin = v;
+  const i = st.props.indexOf(fx), j = st.props.indexOf(m), first = i < j ? fx : m, last = i < j ? m : fx;
+  const pct = `${+(v * 100).toFixed(2)}%`, d = new Diag(Math.abs(i - j) === 1 ? first : m, 'W0232', `The margin goes inside fixed, straight after the place: fixed: ${f.pos} ${pct};`, `Write fixed: ${f.pos} ${pct};  It is read that way now.`, 'warning');
+  if (Math.abs(i - j) === 1 && fx.line === m.line && first.pos != null && last.end != null && fx.items.length === 1) d.edit = { line: first.line, col: first.col, del: last.end - first.pos, ins: `fixed: ${f.pos} ${pct};` };
+  diags.push(d);
+}
+function fixedSpec(p, onWarn) {
   const it = p.items, a = it[0], bad = () => new Diag(p, 'E0230', 'fixed is a place on the screen: top-left, top, top-right, left, center, right, bottom-left, bottom or bottom-right, then an optional margin; or (x%, y%) from the top-left corner.', 'Write fixed: top-left;  or  fixed: bottom 8%;  or  fixed: (50%, 12%);');
   if (isKw(a, 'none')) return null;
   if (a && a.t === 'ref' && a.parts.length === 1 && FIXED_POS.includes(a.parts[0])) {
+    /* fixed: bottom-left margin 5%;  is a common slip (AI replies write it): read it, and offer to drop the word */
+    if (it[1] && it[1].t === 'ref' && it[1].parts.length === 1 && it[1].parts[0] === 'margin' && it[2]) {
+      const w = it[1], n = it[2], d = new Diag(w, 'W0232', 'The margin goes straight after the place, without the word "margin".', `Write fixed: ${a.parts[0]} 5%;  It is read that way now.`, 'warning');
+      if (n.line === w.line && n.col > w.col) d.edit = { line: w.line, col: w.col, del: n.col - w.col, ins: '' };
+      if (onWarn) onWarn(d); it.splice(1, 1);
+    }
     let margin = 0.05; if (it[1]) { margin = num(it[1], {}, 'fixed margin'); if (!(margin >= 0 && margin <= 0.45)) throw bad(); }
     if (it.length > 2) throw bad(); return { pos: a.parts[0], margin };
   }
@@ -2799,7 +2821,8 @@ function applyStyle(model, warn, tryDo) {
 }
 /* points a trail passes through, sampled across the whole animation */
 function trailPath(model, tr) {
-  const n = Math.max(60, Math.min(1500, Math.round(model.duration * 60))); const pts = [], times = [];
+  /* 60 points a second, up to 6000: full detail for 100 s, still 10 a second at 10 minutes, and a mistyped hour cannot stall the page */
+  const n = Math.max(60, Math.min(6000, Math.round(model.duration * 60))); const pts = [], times = [];
   const p = new THREE.Vector3(...tr.local);
   for (let i = 0; i <= n; i++) { const t = model.duration * i / n; times.push(t); pts.push(p.clone().applyMatrix4(solve(model, t).get(tr.ent))); }
   return { pts, times };
@@ -2857,7 +2880,6 @@ function compileMotion(model, ast, warn, tryDo) {
     });
   }
   model.duration = model.sceneOpts.duration || (maxEnd > 0 ? maxEnd + (hasForever && maxEnd > 0 ? 0 : 0) : 0) || (hasForever ? 6 : 4);
-  if (model.duration > 120) { warn(null, 'W0503', 'Animations longer than 120 s are cut to 120 s.', 'Split it into chapters (Chapters › Add a chapter): each chapter can be up to 120 s, and they export as one video.'); model.duration = 120; }
   /* Scene { explode: 0 -> 1 along y; }  the amount is a motion value; "along" is taken from the first rule that names it */
   model.sunTrack = model.sunTrack.map(p => {
     if (p.items.length > 1) tryDo(() => { throw new Diag(p, 'E0222', 'In motion, sun changes its height only.', 'Write Scene { 0s..8s: sun: -4deg -> 15deg ease-out; }  and set the direction in the scene: Scene { sun: (-4deg, -30deg); }'); });
@@ -3591,7 +3613,7 @@ function prepareLoops(model) {
     const pn = model.pins[model.loopGroups[a.group].pins[0]];
     throw new Diag(pn.st, 'E0352', `The loop cannot close: ${pn.label} stay ${a.err.toFixed(1)}mm apart at best.`, 'Check the lengths: the pinned points must be able to meet. Parts in the loop also need to lie in one plane.');
   }
-  const N = Math.max(2, Math.min(1500, Math.ceil(model.duration * 60))); const dt = model.duration / N;
+  const N = Math.max(2, Math.min(12000, Math.ceil(model.duration * 60))); const dt = model.duration / N;   /* small steps keep the loop on one branch; a budget keeps a mistyped hour cheap */
   const xs = [a.x]; let prev = a.x, prev2 = a.x;
   for (let k = 1; k <= N; k++) {
     const guess = prev.map((v, i) => 2 * v - prev2[i]);
@@ -3939,7 +3961,9 @@ repeat: 4 step (100mm, 0, 0); makes Name1..Name4 (i = 0, 1, 2 ... in expressions
 scatter: 40 in plane xz (600mm, 400mm) seed 7 spin 360deg vary 20% apart; random copies, the same every build (also: in plane "x + y + z = 300mm" (w, d), in plane normal (1, 1, 0) (w, d), along x 800mm, in box (x, y, z), in disc 300mm, on circle 300mm, in sphere 200mm). Flat shapes lie in the plane. Copies are Name1..NameN.
   A plane takes a third size for depth: in plane xz (600mm, 400mm, 200mm) also spreads copies 200mm along y, so a field of stars, bubbles or dust
   fills a volume instead of a flat sheet. Place a scatter clear of the moving parts (its own at:, or a depth), or it covers the animation.
-fixed: top-left | top | top-right | left | center | right | bottom-left | bottom | bottom-right [margin 5%]; or fixed: (x%, y%) from the top-left.
+fixed: top-left | top | top-right | left | center | right | bottom-left | bottom | bottom-right;   or fixed: (x%, y%) from the top-left.
+  A margin from the frame's edge is a bare percentage straight after the place: fixed: bottom-left 8%; (5% when left out).
+  There is no word "margin" and no margin: property:  fixed: bottom-left margin 5%;  and  fixed: bottom-left; margin: 5%;  are both wrong.
   The part stays at that place on the screen whatever the Observer does, at the size it has at the Observer's start. Use it for titles, logos,
   legends and step counters when the Observer moves (move, orbit, follow, zoom): a normal Text drifts out of view as the camera travels.
   A fixed part keeps its own motion (a spin, a fade) but takes no hinge, slider, attach or other connection, and goes on a whole part, not a group member.
@@ -4030,8 +4054,8 @@ The preview speaks with the browser's voice; captions are drawn in the picture a
 Without a Voice declared, say: "words" uses a default narrator.
 
 CHAPTERS (longer videos, made of parts)
-A project may hold chapters. Each chapter is a complete animation (its own @scene, @style, @motion) whose time starts at 0 s, up to 120 s each;
-the export joins them into one video. @common, before the first chapter, holds what every chapter shares (Scene { frame: ...; sky: ...; },
+A project may hold chapters. Each chapter is a complete animation (its own @scene, @style, @motion) whose time starts at 0 s, of any length;
+the export joins them into one video. Use chapters for parts of a story, not to fit a length. @common, before the first chapter, holds what every chapter shares (Scene { frame: ...; sky: ...; },
 styles, the Narrator voice). A chapter line: @chapter Name ["Title"] [extends Other] [cut | fade [time] [#colour] | crossfade [time]] [fade-out [time]]
 extends: the chapter starts from Other's scene and style (not its motion) and adds its own; a later Observer replaces the inherited one, and later
 style rules win. The transition says how this chapter starts: cut, fade (through black or the colour) or crossfade (blends with the previous chapter's end).
@@ -4071,10 +4095,10 @@ Assembly: parts start at opacity 0 and arrive with 0s..1s: opacity: 0 -> 1; move
 Captions: a Text (it faces the camera by default) faded in and out per step; a text-background panel only when it sits over busy detail. Engine cycles: let phase = 120deg/s * (t - 10s); then use max(0, sin(phase)) as a 0..1 window for opacity or luminosity.
 
 AVOID
-orient: 90deg; without "about x"  -  a title as a plain Text while the Observer moves (use fixed:)  -  a short move under a long spoken line  -  # comments  -  mesh/attach/hinge outside the moving part's block  -  rotate about ... on a hinged part
+orient: 90deg; without "about x"  -  a title as a plain Text while the Observer moves (use fixed:)  -  fixed: bottom-left margin 5%; or a margin: property (write fixed: bottom-left 5%;)  -  a short move under a long spoken line  -  # comments  -  mesh/attach/hinge outside the moving part's block  -  rotate about ... on a hinged part
 two sources of motion for one piece (two parts of one fused piece each with a rule; a rule plus a hinge, mesh or belt)  -  unknown targets (copies from repeat are Name1, Name2 or a .class)
 parts passing through each other (W0560: move one, connect them, or overlap: allow;)  -  more than 8 luminous parts  -  long label: tags covering the action
-a sun made from a Sphere (use Scene sun:)  -  spoken lines that overlap or run past the end  -  one chapter longer than 120 s (split it)  -  a different Scene { frame } in each chapter (put it in @common)
+a sun made from a Sphere (use Scene sun:)  -  spoken lines that overlap or run past the end  -  a different Scene { frame } in each chapter (put it in @common)
 `;
 const AI_FORMAT_FILM = `OUTPUT: reply with ONE fenced code block labelled orrery that holds the whole project with its chapters: the line @orrery 1,
 then @common (only if chapters share something) with its sections, then each chapter: a line @chapter Name [options], then its @scene, @style and
@@ -6477,7 +6501,7 @@ const SHAPE_DOC = {
 };
 const PROP_DOC = {
   overlap: ['overlap: allow;', 'Do not warn when this part passes through another (W0560)'],
-  fixed: ['fixed: top-left;', 'Keeps the part at one place on the screen whatever the Observer does: top-left, top, top-right, left, center, right, bottom-left, bottom, bottom-right, then an optional margin (5%); or (x%, y%) from the top-left. For titles and logos in a moving camera'],
+  fixed: ['fixed: top-left;', 'Keeps the part at one place on the screen whatever the Observer does: top-left, top, top-right, left, center, right, bottom-left, bottom, bottom-right, then an optional margin written as a bare percentage (fixed: bottom 8%;); or (x%, y%) from the top-left. For titles and logos in a moving camera'],
   sound: ['sound: Knock at end;', 'Play a Sound: at start, at end, at 2s or every 1s; then an optional volume like 60%'], pitch: ['pitch: 120%;', 'Higher or lower than normal (Sound)'], volume: ['volume: 60%;', 'How loud (Sound)'],
   size: ['size: (x, y, z);', 'Box size; Rect takes (w, h)'], radius: ['radius: 40mm;', 'Radius'], height: ['height: 100mm;', 'Height along the axis'],
   length: ['length: 120mm;', 'Length (Rod, Link: centre to centre)'], width: ['width: 10mm;', 'Width'], thickness: ['thickness: 4mm;', 'Thickness'],
@@ -9365,8 +9389,9 @@ function checkStale() {
   else if (n.dataset.done) { n.textContent = n.dataset.done; delete n.dataset.done; $('gifGo').textContent = S.exportFormat === 'html' ? 'Create' : 'Render'; }
 }
 const optList = (key) => SETTINGS_SCHEMA.flatMap(x => x.items).find(x => x.key === key).options;
-const FRAME_CAP = { gif: 300, mp4: 3600, webm: 3600, png: 1800, html: 1e9 };
-const FILM_FRAME_CAP = { gif: 300, mp4: 10800, webm: 10800, png: 3600, html: 1e9 };   /* a whole film may run to 6 minutes at 30 fps */
+/* animations have no length limit; these keep one export within a browser tab's memory (videos to 20 minutes at 30 fps) */
+const FRAME_CAP = { gif: 300, mp4: 36000, webm: 36000, png: 3600, html: 1e9 };
+const FILM_FRAME_CAP = FRAME_CAP;
 function syncExportUI() {
   const f = S.exportFormat || 'mp4', gif = f === 'gif', html = f === 'html';
   $('fmtSeg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.f === f)));
@@ -10288,12 +10313,12 @@ const STORY_STEPS = [
     act: 'Click <b>AI prompt</b>.', alt: 'Open it for me',
     enter(c) { c.on($('aiBtn'), 'click', () => setTimeout(() => c.done(), 60)); },
     doAlt() { $('aiBtn').click(); } },
-  { ch: 0, sel: '#aiSheet', place: 'left', allow: ['#aiTask', '#aiCopy'], title: 'Describe what you want',
-    text: 'Normally you type your own idea here. We have written one for you; change it if you like. The prompt teaches any AI assistant the Orrery language, then adds your request.',
+  { ch: 0, sel: '#aiSheet', place: 'left', allow: ['#aiCopy'], title: 'Describe what you want',
+    text: 'Normally you type your own idea here. For the tour it is a fixed example, because the simulated AI has only one answer. The prompt teaches any AI assistant the Orrery language, then adds your request.',
     act: 'Click <b>Copy prompt</b>.', alt: 'Copy it for me',
     enter(c) {
       $('aiCode').checked = false; $('aiState').checked = false;
-      c.type($('aiTask'), STORY_REQUEST, updateAiLen);
+      storyLockTask(true); c.type($('aiTask'), STORY_REQUEST, updateAiLen);
       const go = () => setTimeout(() => { $('aiSheet').hidden = true; c.done('Copied. The prompt is on your clipboard.'); }, 500);
       c.on($('aiCopy'), 'pointerdown', () => c.finishTyping()); c.on($('aiCopy'), 'keydown', () => c.finishTyping());
       c.on($('aiCopy'), 'click', go);
@@ -10304,7 +10329,7 @@ const STORY_STEPS = [
     act: 'Click <b>Copy code</b> in the chat.', alt: 'Copy it for me',
     enter(c) {
       const words = buildPrompt().split(/\s+/).length;
-      c.chat.user(`<div class="sc-attach"><b>Orrery instructions</b> + your request · ${words.toLocaleString()} words</div><p>${escH($('aiTask').value.trim() || STORY_REQUEST)}</p>`);
+      c.chat.user(`<div class="sc-attach"><b>Orrery instructions</b> + your request · ${words.toLocaleString()} words</div><p>${escH(STORY_REQUEST)}</p>`);
       c.chat.ai('<p>Here is your crane as one Orrery file. The jib swings round, the trolley runs out along it, and the hook lowers the crate.</p>', CRANE_B1, 'Copy code', () => c.done('Copied the code.'));
     },
     doAlt(c) { c.chat.copyLast(); } },
@@ -10415,6 +10440,8 @@ function storyKeep() {
     aiTask: $('aiTask').value, aiCode: $('aiCode').checked, aiState: $('aiState').checked,
   };
 }
+/* the simulated AI has one answer, so the tour's request cannot be edited */
+function storyLockTask(on) { const a = $('aiTask'); a.readOnly = on; a.classList.toggle('locked', on); $('aiLocked').hidden = !on; }
 function storyClearExport() { outBlob = null; outSig = null; $('gifSave').hidden = true; $('gifImg').hidden = true; $('vidOut').hidden = true; $('gifNote').textContent = ''; }
 function storyPutBack(k) {
   if (fp.on) filmStop(true);
@@ -10423,7 +10450,7 @@ function storyPutBack(k) {
   film = null; filmCache.clear(); box = 0;
   if (k.filmText) setFilmText(k.filmText, k.box); else files = { ...k.files };
   projName = k.name; projDirty = k.dirty; $('example').value = k.example; projId = k.id; fileHandle = k.handle; handleFmt = k.handleFmt;
-  $('aiTask').value = k.aiTask; $('aiCode').checked = k.aiCode; $('aiState').checked = k.aiState;
+  storyLockTask(false); $('aiTask').value = k.aiTask; $('aiCode').checked = k.aiCode; $('aiState').checked = k.aiState;
   $('aiSheet').hidden = true; $('sheet').hidden = true;
   storyClearExport();
   if (ta.restoreHistory) ta.restoreHistory(k.hist);
@@ -10652,7 +10679,7 @@ window.OrreryStudio = {
     const errs = apiLoad(project); if (errs.length) return { ok: false, diagnostics: errs };
     await textReady();
     const [W, H] = apiSize(opts, 1280, 16 / 9), fps = opts.fps || 30;
-    const n = opts.format === 'zip' ? Math.min(opts.maxFrames || 1800, Math.max(2, Math.round(exportDuration() * fps))) : 1;
+    const n = opts.format === 'zip' ? Math.min(opts.maxFrames || FRAME_CAP.png, Math.max(2, Math.round(exportDuration() * fps))) : 1;
     const blob = await withFilmExport(() => withExportSize(W, H, async () => {
       if (opts.format === 'zip') return encodePngZip(W, H, fps, n, () => {});
       let tt = Math.max(0, opts.time || 0);
@@ -10666,7 +10693,7 @@ window.OrreryStudio = {
     const errs = apiLoad(project); if (errs.length) return { ok: false, diagnostics: errs };
     await textReady();
     const f = opts.format === 'webm' ? 'webm' : 'mp4', [W, H] = apiSize(opts, 1280, 16 / 9, true), fps = opts.fps || 30;
-    const n = Math.min(opts.maxFrames || (filmExportOn() ? 10800 : 3600), Math.max(2, Math.round(exportDuration() * fps)));
+    const n = Math.min(opts.maxFrames || FRAME_CAP.mp4, Math.max(2, Math.round(exportDuration() * fps)));
     if (!('VideoEncoder' in window)) return { ok: false, error: 'This browser has no WebCodecs video encoder.' };
     window.__exportSound = opts.sound !== false; if (opts.speak !== undefined) S.exportSpeak = !!opts.speak;
     $('expSound').checked = opts.sound !== false;

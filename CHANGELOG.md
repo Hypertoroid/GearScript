@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Tours: a welcome card offers an **interactive tour** (recommended) or a quick one. The interactive tour walks through the whole workflow on a scratch crane project with a simulated AI: AI prompt, paste, Problems and Copy as JSON, the timeline and Copy state, then Export. The visitor clicks the real buttons; their project, settings and undo history come back afterwards.
+- A **?** button in the header opens the tours. The quick tour is down to seven stops and leads with AI prompt.
+
 ## 1.0 beta
 
 The first public release of the language (version 1) and the studio, for testing. Until 1.0 the

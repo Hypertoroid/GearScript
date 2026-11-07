@@ -542,6 +542,97 @@ html.player.see, html.player.see body, html.player.see .bench, html.player.see .
 .tour-card .acts { display: flex; gap: 8px; align-items: center; }
 .tour-card .acts .skip { margin-right: auto; border: 0; background: none; color: var(--muted); padding: 4px 2px; font-size: 12.5px; text-decoration: underline; }
 @media (prefers-reduced-motion: reduce) { .tour-spot, .tour-card { transition: none; } }
+/* Welcome: choose the interactive tour (recommended) or the quick one */
+.welcome-back { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; background: rgba(8, 12, 16, 0.62); animation: wFade 0.2s ease-out; }
+.welcome-back[hidden] { display: none; }
+.welcome { width: min(600px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 16px; padding: 26px 26px 18px; box-shadow: 0 24px 60px rgba(0,0,0,0.35); animation: wRise 0.25s ease-out; }
+.welcome .wmark { width: 40px; height: 40px; fill: none; stroke: var(--accent); stroke-width: 1.6; display: block; margin-bottom: 10px; }
+.welcome .wmark .dot { fill: var(--accent); stroke: none; }
+.welcome h2 { margin: 0 0 6px; font-size: calc(20px * var(--ui)); font-weight: 600; letter-spacing: -0.01em; }
+.welcome > p { margin: 0 0 18px; color: var(--muted); line-height: 1.5; }
+.welcome .wopts { display: grid; grid-template-columns: 1.15fr 1fr; gap: 12px; }
+.wopt { position: relative; display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 16px 16px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel-2); color: var(--fg); cursor: pointer; font: inherit; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s; }
+.wopt:hover { border-color: var(--accent); transform: translateY(-1px); }
+.wopt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wopt b { font-size: calc(15px * var(--ui)); font-weight: 600; }
+.wopt span { color: var(--muted); line-height: 1.45; font-size: 13px; }
+.wopt small { margin-top: auto; padding-top: 6px; font-family: var(--font-code); font-size: 11px; color: var(--muted); }
+.wopt .wbadge { display: none; align-self: flex-start; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 2px 8px; }
+.wopt.rec { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent) inset; }
+.wopt.rec .wbadge { display: inline-block; }
+.welcome .wsmall { margin: 12px 0 0; color: var(--muted); font-size: 12.5px; }
+.welcome .wfoot { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 12.5px; color: var(--muted); }
+.welcome .wfoot a { margin-left: auto; color: var(--muted); }
+.welcome .wfoot a:hover { color: var(--fg); }
+@media (max-width: 560px) { .welcome .wopts { grid-template-columns: 1fr; } .welcome { padding: 20px 18px 14px; } }
+@keyframes wFade { from { opacity: 0; } }
+@keyframes wRise { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+.tour-nudge { position: fixed; left: 16px; bottom: 16px; z-index: 45; display: flex; align-items: center; gap: 10px; max-width: calc(100vw - 32px); padding: 10px 10px 10px 14px; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); font-size: 13px; animation: wRise 0.25s ease-out; }
+
+/* Interactive tour: the card, the simulated AI chat */
+.story-block { background: rgba(8, 12, 16, 0.62); }
+.story-card { width: min(370px, calc(100vw - 24px)); z-index: 44; padding: 12px 14px 12px; }
+.story-card.finish { width: min(460px, calc(100vw - 24px)); padding: 18px 20px 16px; }
+.story-card .sc-top { display: flex; align-items: center; gap: 8px; }
+.story-card .sc-chaps { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
+.story-card .sc-chaps li { font-family: var(--font-code); font-size: 10.5px; letter-spacing: 0.03em; color: var(--muted); padding: 2px 7px; border-radius: 999px; border: 1px solid transparent; }
+.story-card .sc-chaps li.on { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.story-card .sc-chaps li.past { color: var(--fg); }
+.story-card .sc-chaps li.past::before { content: '✓ '; color: var(--ok); }
+.story-card .sc-x { border: 0; background: none; color: var(--muted); font-size: 13px; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+.story-card .sc-x:hover { color: var(--fg); background: var(--panel-2); }
+.story-card .sc-bar { height: 3px; border-radius: 3px; background: var(--line); margin: 9px 0 10px; overflow: hidden; }
+.story-card .sc-bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.35s ease; }
+.story-card h3 { margin: 0 0 6px; }
+.story-card .sc-text { line-height: 1.5; font-size: 13.5px; }
+.story-card .sc-text p { margin: 0 0 8px; }
+.story-card .sc-dim { color: var(--muted); font-size: 12.5px; }
+.story-card .sc-warn, .story-card .sc-tip { margin: 9px 0 2px; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; line-height: 1.45; }
+.story-card .sc-warn { background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); }
+.story-card .sc-tip { background: var(--panel-2); border: 1px solid var(--line); color: var(--muted); }
+.story-card .sc-loop { margin: 2px 0 8px; padding-left: 20px; display: grid; gap: 3px; }
+.story-card .sc-sim { display: flex; gap: 7px; align-items: flex-start; margin-top: 9px; font-size: 11.5px; line-height: 1.4; color: var(--warn); }
+.story-card .sc-sim svg { flex: none; width: 14px; height: 14px; margin-top: 1px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.story-card .sc-act { display: flex; gap: 8px; align-items: flex-start; margin-top: 10px; padding: 8px 10px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line); font-size: 13px; line-height: 1.45; }
+.story-card .sc-act svg { flex: none; width: 16px; height: 16px; margin-top: 1px; fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.story-card .sc-act.ok { border-color: color-mix(in srgb, var(--ok) 55%, transparent); background: color-mix(in srgb, var(--ok) 12%, transparent); }
+.story-card .sc-act.ok svg { stroke: var(--ok); }
+.story-card .sc-act.pulse { animation: scPulse 0.6s ease; }
+.story-card.nudge { animation: scShake 0.35s ease; }
+.story-card .sc-acts { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; }
+.story-card .sc-acts .linkbtn { margin-right: auto; font-size: 12.5px; color: var(--muted); }
+.story-card .sc-acts .linkbtn:hover:not(:disabled) { color: var(--fg); }
+.story-card .sc-acts .linkbtn:disabled { opacity: 0.4; }
+.story-card .sc-leave { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+.story-card .sc-leave p { margin: 0; font-size: 13px; line-height: 1.45; }
+.story-card .sc-fin { margin-top: 14px; flex-wrap: wrap; }
+@keyframes scPulse { 0% { box-shadow: 0 0 0 0 var(--accent); } 100% { box-shadow: 0 0 0 8px transparent; } }
+@keyframes scShake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+.story-chat { position: fixed; z-index: 43; display: flex; flex-direction: column; background: var(--panel); color: var(--fg); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 50px rgba(0,0,0,0.4); overflow: hidden; animation: wRise 0.25s ease-out; }
+.story-chat[hidden] { display: none; }
+.story-chat header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 13px; }
+.story-chat .sc-av { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 10px; font-weight: 700; }
+.story-chat .sim-pill { margin-left: auto; font-size: 10.5px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; }
+.story-chat .sc-log { flex: 1; min-height: 120px; overflow: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.story-chat footer { padding: 8px 12px; border-top: 1px solid var(--line); font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+.sc-msg { max-width: 92%; font-size: 13px; line-height: 1.5; border-radius: 12px; padding: 9px 11px; animation: wRise 0.2s ease-out; }
+.sc-msg p { margin: 0; } .sc-msg p + p, .sc-msg pre + p, .sc-msg div + p { margin-top: 6px; }
+.sc-msg code { font-family: var(--font-code); font-size: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.sc-msg.me { align-self: flex-end; background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
+.sc-msg.ai { align-self: flex-start; background: var(--panel-2); border: 1px solid var(--line); width: 92%; }
+.sc-msg.thinking { width: auto; }
+.sc-msg .sc-attach { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+.sc-msg .sc-paste { margin: 0; max-height: 110px; overflow: auto; font-family: var(--font-code); font-size: 11px; line-height: 1.45; white-space: pre; color: var(--muted); }
+.sc-dots { display: inline-flex; gap: 4px; padding: 2px 0; } .sc-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: scDot 1s infinite ease-in-out; }
+.sc-dots i:nth-child(2) { animation-delay: 0.15s; } .sc-dots i:nth-child(3) { animation-delay: 0.3s; }
+@keyframes scDot { 0%, 80%, 100% { opacity: 0.3; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-3px); } }
+.sc-code { margin-top: 8px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--panel); }
+.sc-code-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 6px 5px 10px; border-bottom: 1px solid var(--line); font-family: var(--font-code); font-size: 11px; color: var(--muted); }
+.sc-code-h .btn { padding: 3px 10px; font-size: 12px; }
+.sc-pre { padding: 8px 10px; overflow: auto; font-family: var(--font-code); font-size: 11.5px; line-height: 1.5; }
+.sc-code.tall .sc-pre { max-height: 230px; }
+.sc-pre .l { white-space: pre; min-height: 1.5em; }
+@media (prefers-reduced-motion: reduce) { .welcome-back, .welcome, .tour-nudge, .story-chat, .sc-msg, .story-card.nudge, .story-card .sc-act.pulse { animation: none; } .sc-dots i { animation: none; opacity: 0.7; } .story-card .sc-bar i { transition: none; } }
 /* Settings drawer */
 .scrim { position: fixed; inset: 0; background: rgba(10, 14, 18, 0.32); z-index: 30; }
 .drawer {
@@ -712,6 +803,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
       <div class="menu-foot" id="copyLine"></div>
     </div>
   </div>
+  <button class="btn icon" id="helpBtn" type="button" aria-haspopup="dialog" aria-label="Help and tours" title="Help: tours and the language guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r="0.6"/></svg></button>
   <a class="btn icon ghlink" id="ghLink" href="https://github.com/Hypertoroid/Orrery" target="_blank" rel="noopener" aria-label="Orrery on GitHub" title="Source code on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.23c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49l-.01-1.7c-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.36 9.36 0 0 1 12 6.98c.85 0 1.71.12 2.51.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9l-.01 2.81c0 .27.18.6.69.49A10.1 10.1 0 0 0 22 12.23C22 6.58 17.52 2 12 2z"/></svg></a>
   <input type="file" id="fileIn" accept=".orrery,.zip,.json" hidden>
   <input type="file" id="modelIn" accept=".stl,.glb,.gltf,.mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*" multiple hidden>
@@ -3794,6 +3886,8 @@ const $ = (id) => document.getElementById(id);
 /* player mode: a shared .html that only shows the animation */
 const PLAYER = window.ORRERY_PLAYER || null;
 if (PLAYER) document.documentElement.classList.add('player');
+/* the interactive tour works on a scratch project: while it runs nothing is saved over the visitor's own project or settings */
+let STORY_SANDBOX = false;
 
 /* ---------------- base prompt for AI assistants (the CLI's "prompt" command reads this too) ---------------- */
 const AI_FORMAT_FILES = `OUTPUT: reply with exactly three fenced code blocks labelled scene, style and motion, in that order, then one or two
@@ -5977,7 +6071,7 @@ const SETTINGS_SCHEMA = [
   { section: 'Layout', items: [
     { key: 'layout', label: 'Code panel', type: 'select', def: 'code-left', options: [['code-left', 'Left'], ['code-right', 'Right'], ['code-top', 'Top'], ['code-bottom', 'Bottom']] },
     { key: 'problems', label: 'Problems panel', type: 'toggle', def: true },
-    { key: 'tour', label: 'Guided tour', hint: 'A short walk through the studio, one feature at a time.', type: 'button', text: 'Start the tour' },
+    { key: 'tour', label: 'Tours', hint: 'Build, fix and export a crane step by step, or take a quick look at where things are.', type: 'button', text: 'Choose a tour' },
     { key: 'resetSizes', label: 'Panel sizes', hint: 'Drag the dividers to resize; double-click one to reset it.', type: 'button', text: 'Reset sizes' },
   ] },
   { section: 'Export', items: [
@@ -5996,7 +6090,7 @@ SDEF.codeSize = 0.44; SDEF.probH = 150;
 const S = (() => { let saved = {}; try { saved = PLAYER ? { ...PLAYER.settings, view: PLAYER.view, autoplay: true, loop: true } : JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; } catch (e) {} const s = { ...SDEF, ...saved };
   if (s.theme !== 'system' && s.theme !== 'light' && s.theme !== 'dark' && !THEMES[s.theme]) s.theme = 'dark';
   return s; })();
-const saveSettings = () => { if (PLAYER) return; try { localStorage.setItem(SKEY, JSON.stringify(S)); } catch (e) {} };
+const saveSettings = () => { if (PLAYER || STORY_SANDBOX) return; try { localStorage.setItem(SKEY, JSON.stringify(S)); } catch (e) {} };
 const darkNow = () => THEMES[S.theme] ? THEMES[S.theme].dark : S.theme === 'dark' || (S.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 const LH = () => Math.max(12, Math.round(S.fontSize * S.lineHeight));
 function applyCssSettings() {
@@ -6066,7 +6160,7 @@ else try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s
 if (!files) { files = { ...EXAMPLES.v8 }; $('example').value = 'v8'; }
 if (!projName) projName = $('example').value ? exampleName($('example').value) : 'untitled';
 let projId = (() => { try { const s = JSON.parse(store.getItem(KEY) || 'null'); return s && s.id; } catch (e) { return null; } })() || Math.random().toString(36).slice(2, 10);
-const persist = () => { if (PLAYER) return; try { store.setItem(KEY, JSON.stringify({ files, film: film ? projText() : null, box, tab: current, example: $('example').value, name: projName, dirty: projDirty, tabEx: TAB_KEY, id: projId })); } catch (e) {} if (typeof noteRecent === 'function') noteRecent(); };
+const persist = () => { if (PLAYER || STORY_SANDBOX) return; try { store.setItem(KEY, JSON.stringify({ files, film: film ? projText() : null, box, tab: current, example: $('example').value, name: projName, dirty: projDirty, tabEx: TAB_KEY, id: projId })); } catch (e) {} if (typeof noteRecent === 'function') noteRecent(); };
 
 /* ---------------- editor ---------------- */
 const taEl = $('src'), hl = $('hl'), gutter = $('gutter');
@@ -6286,6 +6380,10 @@ function makeCmEditor() {
     contains(el) { return view.dom.contains(el); },
     setDiagnostics(errs, wrns) { view.dispatch({ effects: setDiag.of({ errs, wrns }) }); },
     caret() { const r = view.coordsAtPos(sel().head) || view.coordsAtPos(Math.max(0, sel().head - 1)); return r; },
+    keepHistory() {   /* the interactive tour borrows the editor: keep every tab's state (and undo history) to put back afterwards */
+      const s = { ...states }; if (facade.key != null) s[facade.key] = view.state; return s;
+    },
+    restoreHistory(saved) { for (const k of Object.keys(states)) delete states[k]; Object.assign(states, saved || {}); facade.key = null; },
     checkpoint() {   /* forget every tab's undo history: Ctrl Z now stops here */
       for (const k of Object.keys(states)) delete states[k];
       const st = view.state; view.setState(C.EditorState.create({ doc: st.doc, selection: st.selection, extensions: ext }));
@@ -8889,6 +8987,7 @@ const RECENT_KEY = 'orrery.recent';
 const readRecent = () => { try { const r = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); return Array.isArray(r) ? r.filter(x => x && x.files && typeof x.files.scene === 'string') : []; } catch (e) { return []; } };
 function recentEntry() { return { id: projId, name: projName, view: S.view, files, film: film ? projText() : null, at: Date.now(), models: Object.keys(modelFiles || {}).length }; }
 function noteRecentNow() {
+  if (STORY_SANDBOX) return;
   clearTimeout(noteRecent.tm);
   if (PLAYER || TAB_SCOPED || !files || !(film ? projText() : files.scene + files.style + files.motion).trim()) return;
   const list = readRecent().filter(x => x.id !== projId); list.unshift(recentEntry());
@@ -9539,6 +9638,7 @@ async function saveExport() {
 /* after a saved export: a quiet thank-you with ways to support the project. The first save, then every fifth; never again once declined */
 const THANKS_KEY = 'orrery.thanks';
 function maybeSayThanks(ext) {
+  if (STORY_SANDBOX) return;
   if (PLAYER) return; let st = { n: 0, never: false };
   try { st = Object.assign(st, JSON.parse(localStorage.getItem(THANKS_KEY) || '{}')); } catch (e) {}
   st.n++; try { localStorage.setItem(THANKS_KEY, JSON.stringify(st)); } catch (e) {}
@@ -9725,7 +9825,7 @@ $('gifW').addEventListener('change', () => { S[S.exportFormat === 'gif' ? 'gifW'
 $('gifFps').addEventListener('change', () => { S[S.exportFormat === 'gif' ? 'gifFps' : 'vidFps'] = $('gifFps').value; saveSettings(); syncSettingsUI(); updateLen(); });
 
 /* ---------------- settings drawer ---------------- */
-const KEYS_HELP = [['Tour: next, previous, skip', '→ / ← / Esc'], ['Show type hints', 'Ctrl Space'], ['Pick a hint', '↑ ↓ then Enter or Tab'], ['Run the preview now', 'Ctrl Enter'], ['Play or pause', 'Space'], ['Switch file tab', 'Ctrl 1 / 2 / 3'], ['Save project', 'Ctrl S'], ['Save as…', 'Ctrl Shift S'], ['Open project', 'Ctrl O'], ['Find and replace', 'Ctrl F'], ['Select the next match too', 'Ctrl D'], ['Add a cursor', 'Ctrl click'], ['Column selection', 'Alt drag'], ['Fold or unfold a block', 'Ctrl Shift [ / ]'], ['Undo / redo', 'Ctrl Z / Ctrl Shift Z'], ['Settings', 'Ctrl ,'], ['Expand the preview', 'Ctrl Shift E'], ['Close panels, leave expanded view', 'Esc'], ['Resize a divider (when focused)', '← → ↑ ↓']];
+const KEYS_HELP = [['Quick tour: next, previous, skip', '→ / ← / Esc'], ['Show type hints', 'Ctrl Space'], ['Pick a hint', '↑ ↓ then Enter or Tab'], ['Run the preview now', 'Ctrl Enter'], ['Play or pause', 'Space'], ['Switch file tab', 'Ctrl 1 / 2 / 3'], ['Save project', 'Ctrl S'], ['Save as…', 'Ctrl Shift S'], ['Open project', 'Ctrl O'], ['Find and replace', 'Ctrl F'], ['Select the next match too', 'Ctrl D'], ['Add a cursor', 'Ctrl click'], ['Column selection', 'Alt drag'], ['Fold or unfold a block', 'Ctrl Shift [ / ]'], ['Undo / redo', 'Ctrl Z / Ctrl Shift Z'], ['Settings', 'Ctrl ,'], ['Expand the preview', 'Ctrl Shift E'], ['Close panels, leave expanded view', 'Esc'], ['Resize a divider (when focused)', '← → ↑ ↓']];
 function buildSettingsUI() {
   const body = $('settingsBody'); body.innerHTML = '';
   for (const sec of SETTINGS_SCHEMA) {
@@ -9746,7 +9846,7 @@ function buildSettingsUI() {
       if (it.type === 'toggle') inp.addEventListener('change', () => setSetting(it.key, inp.checked));
       if (it.type === 'range') inp.addEventListener('input', () => setSetting(it.key, +inp.value));
       if (it.type === 'swatch') row.querySelectorAll('button').forEach(b => b.addEventListener('click', () => setSetting(it.key, b.dataset.v)));
-      if (it.key === 'tour') inp.addEventListener('click', () => { closeSettings(); startTour(); });
+      if (it.key === 'tour') inp.addEventListener('click', () => { closeSettings(); openWelcome(); });
       if (it.key === 'resetSizes') inp.addEventListener('click', () => { S.codeSize = SDEF.codeSize; S.probH = SDEF.probH; saveSettings(); applyLiveSettings('sizes'); });
     }
     body.appendChild(el);
@@ -9950,28 +10050,72 @@ function track(name, props) {
   try { const body = JSON.stringify({ vid: getCookie('ms_vid'), name, props: props || {}, path: location.pathname }); if (navigator.sendBeacon) navigator.sendBeacon(SITE.apiBase + '/events', new Blob([body], { type: 'application/json' })); else fetch(SITE.apiBase + '/events', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body }); } catch (e) {}
 }
 
-/* ---------------- guided tour: dim the page, spotlight one feature, explain it ---------------- */
+/* ---------------- tours: a welcome card offers the interactive tour (recommended) or the quick one ---------------- */
 const TOUR_KEY = 'orrery.tour.done';
+const IS_MAC = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent || '');
+const MOD_KEY = IS_MAC ? '⌘' : 'Ctrl';
+const PASTE_KBD = `<kbd>${MOD_KEY}</kbd> <kbd>V</kbd>`;
+const smallScreen = () => innerWidth < 760 || (window.matchMedia && matchMedia('(pointer: coarse)').matches);
+const reducedMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+const markTourSeen = () => { try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {} };
+
+let welcomeEl = null, welcomeReturn = null;
+function openWelcome() {
+  if (story) return;
+  closeMenus(); if (typeof closeHints === 'function') closeHints();
+  if (tourAt >= 0) endTour();
+  dropTourNudge();
+  if (!welcomeEl) {
+    welcomeEl = document.createElement('div'); welcomeEl.className = 'welcome-back'; welcomeEl.hidden = true;
+    welcomeEl.innerHTML = `<div class="welcome" role="dialog" aria-modal="true" aria-labelledby="wTitle" aria-describedby="wSub">
+      <svg class="wmark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="5"/><ellipse cx="24" cy="24" rx="19" ry="8"/><ellipse cx="24" cy="24" rx="19" ry="8" transform="rotate(60 24 24)"/><circle cx="41" cy="20" r="2.6" class="dot"/></svg>
+      <h2 id="wTitle">Welcome to Orrery Studio</h2>
+      <p id="wSub">Describe a machine, let an AI write the code, and watch it move. How would you like to start?</p>
+      <div class="wopts">
+        <button type="button" class="wopt" data-k="story"><span class="wbadge">Recommended</span><b>Interactive tour</b><span>Build, fix and export a crane yourself, one click at a time. The AI in it is simulated, so nothing to set up.</span><small>About 4 minutes</small></button>
+        <button type="button" class="wopt" data-k="quick"><span class="wbadge">Recommended</span><b>Quick tour</b><span>Seven stops that show where everything is.</span><small>About 1 minute</small></button>
+      </div>
+      <p class="wsmall" id="wSmall" hidden>On a small screen the quick tour works best. The interactive one is easier on a computer.</p>
+      <div class="wfoot"><button type="button" class="linkbtn" data-k="skip" id="wSkip">Skip for now</button><span>Open this again with the <b>?</b> button at the top.</span><a href="help.html" target="_blank" rel="noopener">Language guide ↗</a></div>
+    </div>`;
+    document.body.appendChild(welcomeEl);
+    welcomeEl.addEventListener('click', (e) => { const b = e.target.closest('[data-k]'); if (b) chooseTour(b.dataset.k); });
+    welcomeEl.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); chooseTour('skip'); } else trapFocus(e, welcomeEl); });
+  }
+  const rec = smallScreen() ? 'quick' : 'story';
+  welcomeEl.querySelectorAll('.wopt').forEach(b => b.classList.toggle('rec', b.dataset.k === rec));
+  welcomeEl.querySelector('#wSmall').hidden = rec !== 'quick';
+  welcomeReturn = document.activeElement; welcomeEl.hidden = false;
+  setTimeout(() => welcomeEl.querySelector(`.wopt[data-k="${rec}"]`).focus(), 30);
+  track('tour_offer');
+}
+function chooseTour(k) {
+  if (!welcomeEl || welcomeEl.hidden) return;
+  welcomeEl.hidden = true; markTourSeen(); track('tour_choose', { kind: k });
+  if (k === 'story') startStory();
+  else if (k === 'quick') startTour(0);
+  else { if (welcomeReturn && welcomeReturn.focus) welcomeReturn.focus(); toast('You can take a tour any time from the ? button', 3200); }
+}
+/* a project opened from a link: a small offer instead of a card over someone's work */
+let tourNudge = null;
+function showTourNudge() {
+  tourNudge = document.createElement('div'); tourNudge.className = 'tour-nudge'; tourNudge.setAttribute('role', 'status');
+  tourNudge.innerHTML = '<span><b>New to Orrery?</b> Take the 4-minute hands-on tour.</span><button type="button" class="btn primary" data-a="go">Show me</button><button type="button" class="btn icon" data-a="x" aria-label="Dismiss">✕</button>';
+  document.body.appendChild(tourNudge);
+  tourNudge.addEventListener('click', (e) => { const a = e.target.closest('[data-a]'); if (!a) return; markTourSeen(); dropTourNudge(); if (a.dataset.a === 'go') openWelcome(); });
+}
+function dropTourNudge() { if (tourNudge) { tourNudge.remove(); tourNudge = null; } }
+$('helpBtn').addEventListener('click', () => openWelcome());
+
+/* ---------------- quick tour: dim the page, spotlight one area, explain it ---------------- */
 const TOUR = [
-  { title: 'Welcome to Orrery Studio', text: 'Describe a mechanism in code and the studio works out the motion: joints, gears, belts and linkages. This short tour shows where everything is. Use the arrow keys, or the buttons below.' },
-  { sel: '#examplesBtn', title: 'Examples', text: 'Start from a working project: a V8 engine, a steam locomotive, a walking robot, linkages, 2D charts and more. An example opens here (the studio asks first if your work is unsaved, and can open it in a new tab instead); Ctrl-click opens a new tab.' },
-  { sel: '#fileBtn', title: 'File', text: 'Start a new project from a blank page or a starting point (a Reel, an explainer, an assembly, a slide), open a file, reopen a recent project, or save in another format.' },
-  { sel: '.tools', title: 'Insert', text: 'Add a shape, text or a sky, a sound, or a 3D model. Each button explains itself when you point at it. The guide and the settings are in the ⋯ menu.' },
-  { sel: '.viewctl', title: 'Split or Combined', text: 'Split keeps the scene, style and motion in three tabs and saves them as a .zip. Combined puts them in one .orrery file with @scene, @style and @motion sections: the easiest to hand to an AI. Switch any time; nothing is lost.' },
-  { sel: '#chapBtn', title: 'Chapters', text: 'Split a longer video into chapters. Each one is a complete animation that starts at 0 s; Film under the preview plays them in order, with fades and crossfades, and Export joins them into one video.' },
-  { sel: '#chapBar', title: 'Chapters', text: 'Click a chapter to edit it, double-click for its settings (name, title, transition), and use + to add one that continues where this one ends. The × deletes a chapter (Shift skips the question; Undo brings it back). common holds what every chapter shares.' },
-  { sel: '#tracksBtn', title: 'Tracks', text: 'Every motion rule, spoken line and sound on a time axis. Click a bar to jump to that moment and to its line in the code.' },
-  { sel: '.editor', title: 'The editor', text: 'Type here and the preview rebuilds as you go. Type hints suggest shapes, properties, anchors and units for where the caret is; press <kbd>Ctrl</kbd> <kbd>Space</kbd> to open them any time.' },
-  { sel: '#checkpointBtn', title: 'Checkpoint', text: 'Clears the undo history of the whole project, so <kbd>Ctrl</kbd> <kbd>Z</kbd> stops here. Set one when a version works, then experiment freely. Shift-click skips the question. Beautify, beside it, tidies the layout of the code.' },
-  { sel: '.problems', title: 'Problems', text: 'Every problem names its line and says what to do. Click one to jump to it; <b>Fix</b> corrects the ones the studio knows how to (with the site\'s AI on, <b>Fix with AI</b> handles the rest). <b>Copy as JSON</b> hands the list to an AI agent.' },
-  { sel: '#soundBtn', title: 'Sounds', text: 'Hear the animation\'s sounds, mute them, or add one at the current moment. Every sound is generated by the studio, so it is free to use anywhere.' },
-  { sel: '.stage', title: 'The live preview', text: 'Click any part to jump to its code. <b>Observer</b> shows your camera; <b>Free</b> lets you drag to look around. The corner button expands the preview to the whole window.' },
-  { sel: '.timeline', title: 'Timeline', text: 'Play, pause (or press <kbd>Space</kbd>) and drag to scrub through the animation.' },
-  { sel: '#splitMain', title: 'Resize the panels', text: 'Drag this divider to give the code or the preview more room. Double-click it to reset. The code panel can also sit right, top or bottom (Settings › Layout).', pad: 6 },
-  { sel: '#aiBtn', title: 'AI prompt', text: 'Copies the Orrery syntax as instructions for any chat assistant, plus your request. It asks for three code blocks or one file, matching the Split or Combined view you are in.' },
-  { sel: '#exportBtn', title: 'Export', text: 'Save the animation as an MP4 or WebM video (up to 1080p, 60 fps), a GIF, or a 3D player: one .html file anyone can open to watch and orbit it.' },
-  { sel: '.splitbtn', title: 'Save', text: 'Save your project (<kbd>Ctrl</kbd> <kbd>S</kbd>). The arrow saves in another format: one .orrery file, a .zip, three loose files or JSON. In Chrome and Edge, Save keeps writing to the same file after the first time.' },
-  { sel: '#menuBtn', title: 'Everything else', text: 'Open projects (<kbd>Ctrl</kbd> <kbd>O</kbd>), 3D models, the language guide, settings (<kbd>Ctrl</kbd> <kbd>,</kbd>), this tour, cookie preferences, and the privacy policy and terms.' },
+  { sel: '.editor', title: 'The editor', text: 'Your animation is written here as short, readable code. Type hints suggest shapes, properties and units as you go; <kbd>Ctrl</kbd> <kbd>Space</kbd> opens them any time.' },
+  { sel: '.stage', title: 'The live preview', text: 'Rebuilds every time the code changes. Click a part to jump to its code; <b>Free</b> lets you drag to look around.' },
+  { sel: '.timeline', title: 'The timeline', text: 'Play, pause and scrub. The last button copies the <b>state</b> at this moment (where every part is), ready to paste into an AI chat when something moves wrongly.' },
+  { sel: '#aiBtn', title: 'AI prompt: the fastest way in', text: 'Describe what you want, copy the prompt, and paste it into any AI assistant. It teaches the assistant Orrery; paste its reply back into the editor.' },
+  { sel: '.problems', title: 'Problems', text: 'Every problem names its line and what to do. <b>Fix</b> handles simple slips; <b>Copy as JSON</b> hands the rest to your AI assistant.' },
+  { sel: '#exportBtn', title: 'Export', text: 'Save the animation as an MP4 or WebM video, a GIF, or a 3D player: one .html file anyone can open and orbit.' },
+  { sel: '#helpBtn', title: 'Help is here', text: 'Come back here for the <b>interactive tour</b>, which walks you through building, fixing and exporting a crane, or for the language guide. Everything else explains itself when you point at it.' },
 ];
 let tourAt = -1, tourEls = null, tourReturn = null;
 const tourVisible = (el) => { if (!el) return false; const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(el).visibility !== 'hidden'; };
@@ -9996,43 +10140,483 @@ function startTour(at = 0) {
     window.addEventListener('resize', () => { if (tourAt >= 0) tourShow(); });
   }
   tourReturn = document.activeElement; tourEls.block.hidden = tourEls.spot.hidden = tourEls.card.hidden = false;
-  tourAt = at; tourShow(); setTimeout(() => $('tourNext').focus(), 30);
+  tourAt = at; if (TOUR[at].sel && !tourVisible(document.querySelector(TOUR[at].sel))) { tourAt = -1; tourGo(at + 1); } else tourShow();
+  setTimeout(() => $('tourNext').focus(), 30); track('tour_start', { kind: 'quick' });
 }
 function tourGo(d) {
   let i = tourAt + d;
   while (i > 0 && i < TOUR.length && TOUR[i].sel && !tourVisible(document.querySelector(TOUR[i].sel))) i += d;   /* skip features hidden in this layout */
   tourAt = Math.max(0, Math.min(TOUR.length - 1, i)); tourShow();
 }
+/* where a card goes next to a highlighted area: the preferred side first, then any side with room, else inside it */
+function placeCard(card, r, pref) {
+  const vw = innerWidth, vh = innerHeight, cw = card.offsetWidth, ch = card.offsetHeight, gap = 14;
+  const fits = {
+    below: () => vh - r.bottom >= ch + gap && [r.left + r.width / 2 - cw / 2, r.bottom + gap],
+    above: () => r.top >= ch + gap && [r.left + r.width / 2 - cw / 2, r.top - gap - ch],
+    right: () => vw - r.right >= cw + gap && [r.right + gap, r.top + r.height / 2 - ch / 2],
+    left: () => r.left >= cw + gap && [r.left - gap - cw, r.top + r.height / 2 - ch / 2],
+  };
+  let xy = null;
+  for (const k of [pref, 'below', 'above', 'right', 'left']) if (k && fits[k] && (xy = fits[k]())) break;
+  if (!xy) xy = [(vw - cw) / 2, Math.max(12, vh - ch - 12)];   /* big target: float inside it */
+  card.style.left = Math.round(Math.max(12, Math.min(vw - cw - 12, xy[0]))) + 'px';
+  card.style.top = Math.round(Math.max(12, Math.min(vh - ch - 12, xy[1]))) + 'px';
+}
+function spotOn(spot, el, pad = 6) {
+  const vw = innerWidth, vh = innerHeight;
+  if (!el) { spot.classList.add('center'); Object.assign(spot.style, { left: vw / 2 + 'px', top: vh / 2 + 'px', width: '0px', height: '0px' }); return null; }
+  spot.classList.remove('center');
+  const r = el.getBoundingClientRect();
+  const L = Math.max(4, r.left - pad), T = Math.max(4, r.top - pad), R = Math.min(vw - 4, r.right + pad), B = Math.min(vh - 4, r.bottom + pad);
+  Object.assign(spot.style, { left: L + 'px', top: T + 'px', width: Math.max(0, R - L) + 'px', height: Math.max(0, B - T) + 'px' });
+  return { left: L, top: T, right: R, bottom: B, width: R - L, height: B - T };
+}
 function tourShow() {
-  const st = TOUR[tourAt], { spot, card } = tourEls; const vw = innerWidth, vh = innerHeight;
+  const st = TOUR[tourAt], { spot, card } = tourEls;
   $('tourStep').textContent = `${tourAt + 1} of ${TOUR.length}`; $('tourTitle').textContent = st.title; $('tourText').innerHTML = st.text;
   $('tourDots').innerHTML = TOUR.map((_, i) => `<i class="${i === tourAt ? 'on' : ''}"></i>`).join('');
   $('tourPrev').disabled = tourAt === 0; $('tourNext').textContent = tourAt === TOUR.length - 1 ? 'Finish' : 'Next';
   const el = st.sel && document.querySelector(st.sel);
-  const cw = card.offsetWidth, ch = card.offsetHeight;
-  if (!el || !tourVisible(el)) {
-    spot.classList.add('center'); Object.assign(spot.style, { left: vw / 2 + 'px', top: vh / 2 + 'px', width: '0px', height: '0px' });
-    Object.assign(card.style, { left: Math.round((vw - cw) / 2) + 'px', top: Math.round((vh - ch) / 2) + 'px' }); return;
-  }
-  spot.classList.remove('center');
-  const r = el.getBoundingClientRect(), pad = st.pad != null ? st.pad : 6;
-  const L = Math.max(4, r.left - pad), T = Math.max(4, r.top - pad), R = Math.min(vw - 4, r.right + pad), B = Math.min(vh - 4, r.bottom + pad);
-  Object.assign(spot.style, { left: L + 'px', top: T + 'px', width: (R - L) + 'px', height: (B - T) + 'px' });
-  const gap = 14; let x, y;
-  if (vh - B >= ch + gap) { y = B + gap; x = r.left + r.width / 2 - cw / 2; }            /* below */
-  else if (T >= ch + gap) { y = T - gap - ch; x = r.left + r.width / 2 - cw / 2; }       /* above */
-  else if (vw - R >= cw + gap) { x = R + gap; y = r.top + r.height / 2 - ch / 2; }       /* right */
-  else if (L >= cw + gap) { x = L - gap - cw; y = r.top + r.height / 2 - ch / 2; }       /* left */
-  else { x = (vw - cw) / 2; y = Math.max(12, vh - ch - 12); }                            /* big target: float inside it */
-  Object.assign(card.style, { left: Math.round(Math.max(12, Math.min(vw - cw - 12, x))) + 'px', top: Math.round(Math.max(12, Math.min(vh - ch - 12, y))) + 'px' });
+  if (el && tourVisible(el)) el.scrollIntoView({ block: 'nearest' });
+  const r = spotOn(spot, el && tourVisible(el) ? el : null, st.pad != null ? st.pad : 6);
+  if (!r) { card.style.left = Math.round((innerWidth - card.offsetWidth) / 2) + 'px'; card.style.top = Math.round((innerHeight - card.offsetHeight) / 2) + 'px'; return; }
+  placeCard(card, r);
 }
 function endTour() {
-  if (!tourEls) return; tourEls.block.hidden = tourEls.spot.hidden = tourEls.card.hidden = true; tourAt = -1;
-  try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {}
-  track('tour_end');
+  if (!tourEls || tourAt < 0) return; tourEls.block.hidden = tourEls.spot.hidden = tourEls.card.hidden = true; tourAt = -1;
+  markTourSeen(); track('tour_end');
   if (tourReturn && tourReturn.focus) tourReturn.focus();
 }
-$('tourBtn').addEventListener('click', () => { closeMenus(); startTour(); });
+$('tourBtn').addEventListener('click', () => { closeMenus(); openWelcome(); });
+
+/* ---------------- interactive tour: build, fix and export a crane on a scratch project, with a simulated AI ----------------
+   The visitor clicks the real buttons. The AI's replies are written in advance (CRANE_*): two mistakes, one that stops the
+   build (found with Copy as JSON) and one that builds but moves wrongly (found with the timeline and Copy state).
+   The visitor's project, undo history, settings and save target are kept aside and put back when the tour ends. */
+const STORY_REQUEST = 'A tower crane that swings round, runs its trolley out and lowers a crate to the ground';
+const CRANE_B1 = `@orrery 1
+
+@scene
+// A tower crane: it swings round, runs the trolley out and lowers a crate to the ground.
+Base::Box { size: (700mm, 120mm, 700mm); at: (0, 60mm, 0); }
+
+Crane::Group {
+    slew:    Cylinder { radius: 200mm; height: 80mm; at: (0, 160mm, 0); }
+    mast:    Box  { size: (140mm, 1800mm, 140mm); at: (0, 1100mm, 0); }
+    cab:     Box  { size: (200mm, 180mm, 180mm); at: (0, 1910mm, 160mm); }
+    jib:     Beam { length: 1900mm; height: 90mm; width: 110mm; at: (450mm, 2045mm, 0); }
+    counter: Box  { size: (240mm, 200mm, 200mm); at: (-380mm, 1900mm, 0); }
+    rail:    Rod  { length: 100mm; radius: 2mm; orient: -90deg about z; at: (450mm, 1975mm, 0); }   // the trolley's track
+    at: (0, 0, 0);
+}
+
+Trolley::Box { size: (120mm, 50mm, 120mm); slider: com.x on Crane.rail.axis; overlap: allow; }
+Hook::Box    { size: (70mm, 60mm, 70mm); slider: com.y on Trolley.com.y; overlap: allow; }
+Cable::Rod   { length: 1800mm; radius: 4mm; attach: end.a to Hook.face.top; overlap: allow; }
+Crate::Box   { size: (260mm, 220mm, 260mm); attach: face.top to Hook.face.bottom; }
+
+// sounds: generated by Orrery, free to use
+Motor::Sound { kind: servo; length: 2.5s; volume: 40%; }
+Land::Sound  { kind: thud; }
+
+Observer { position: (3700mm, 2500mm, 3900mm); look-at: (450mm, 950mm, 450mm); }
+Light { kind: directional; direction: (-1, -2, -1.2); power: 0.9; }
+Scene { ground: #2b3138 at 0mm; duration: 8s; }
+
+@style
+Base          { color: #8a8f96; material: matte; }
+Crane         { color: #f2b632; material: plastic; outline: 1px #6b4c0c; }
+Crane.counter { color: #5b6470; }
+Crane.cab     { color: #e8eef4; }
+Crane.rail    { opacity: 0; }
+Cable         { color: #2b3138; material: metal; cut: y 1960mm; }   // hide the cable above the trolley
+Trolley, Hook { color: #3d4652; material: metal; }
+Crate         { color: oak; material: matte; outline: 1px #4a3420; }
+
+@motion
+Crane   { 0s..2.5s: rotate: 0deg -> -90deg around y ease-in-out; }
+Trolley { forever: move: -200mm;  2.5s..4.5s: move: -200mm -> 500mm ease-in-out; }
+Hook    { forever: move: -150mm;  4.5s..7s: move: -150mm -> -1840mm ease-in-out; }
+
+Crane   { 0s..2.5s: sound: Motor; }
+Hook    { 4.5s..7s: sound: Land at end; }
+`;
+const CRANE_BAD1 = 'Crane   { 0s..2.5s: rotate: 0deg -> -90deg around y ease-in-out; }';
+const CRANE_FIX1 = 'Crane   { 0s..2.5s: rotate: 0deg -> -90deg about y ease-in-out; }';
+const CRANE_BAD2 = 'Hook    { forever: move: -150mm;  4.5s..7s: move: -150mm -> -1840mm ease-in-out; }';
+const CRANE_FIX2 = 'Hook    { forever: move: -150mm;  4.5s..7s: move: -150mm -> -1725mm ease-in-out; }';
+const CRANE_B2 = CRANE_B1.replace(CRANE_BAD1, CRANE_FIX1), CRANE_OK = CRANE_B2.replace(CRANE_BAD2, CRANE_FIX2);
+const LANDED_AT = 7.1;   /* the crate reaches the end of its move at 7 s */
+const STORY_CHAPTERS = ['Ask', 'Fix', 'Debug', 'Export'];
+
+let story = null;
+const lineOf = (text, needle) => { const i = text.indexOf(needle); return i < 0 ? 0 : text.slice(0, i).split('\n').length; };
+/* put text into the editor the way a paste would: one undoable change, then rebuild at once */
+function storyEdit(from, to, text) {
+  if (ta.isCm) { ta.focus(); cmView.dispatch({ changes: { from, to, insert: text }, selection: { anchor: from + text.length }, userEvent: 'input.paste', scrollIntoView: true }); }
+  else { taEl.focus(); taEl.setRangeText(text, from, to, 'end'); onEdit(); }
+  clearTimeout(tmr); build();
+  requestAnimationFrame(() => { ta.scrollLeft = 0; });
+}
+function storyReplaceLine(bad, good, whole) {
+  const v = ta.value, i = v.indexOf(bad);
+  if (i >= 0) storyEdit(i, i + bad.length, good); else storyEdit(0, v.length, whole);
+}
+function storySelectLine(needle) {
+  const v = ta.value, i = v.indexOf(needle); if (i < 0) return;
+  goTo('project', lineOf(v, needle), 1, i + needle.length);
+}
+const storyErrors = () => lastDiags.filter(d => d.sev === 'error');
+/* the copied state is a wide table: the chat shows its first line and the boxes of the hook and the crate */
+function storyStateExcerpt() {
+  if (!model) return '';
+  const lines = frameState(t).split('\n'), head = lines.find(l => /^name\s/.test(l)) || '';
+  const at = (k) => head.indexOf(k), cut = (row, a, b) => row.slice(at(a), b ? at(b) : undefined).trim();
+  const rows = lines.filter(l => /^(Hook|Crate)\s/.test(l)).map(r => `${r.split(/\s+/)[0].padEnd(6)} box min ${cut(r, 'box min', 'box max')}  max ${cut(r, 'box max', 'joint').replace(/\s+slider.*$/, '')}`);
+  return [lines[0], '…', ...rows, '…'].join('\n');
+}
+function storyPause(at) { if (playing) setPlay(false); if (at != null) { t = at; frame(t); $('scrub').value = t; } }
+
+/* the steps. sel: what to light up; allow: what can be clicked; enter: wires the step and calls ctx.done when the visitor has done it */
+const STORY_STEPS = [
+  { ch: 0, sel: '.code', place: 'right', title: 'This is the editor', text: 'Every Orrery animation is a short piece of readable code, written here. It starts empty in this tour.', next: 'Next' },
+  { ch: 0, sel: '.stage', place: 'left', title: 'This is the live preview', text: 'Whatever the code describes is built and played here, and rebuilt every time the code changes.', next: 'Next' },
+  { ch: 0, sel: '.timeline', place: 'above', title: 'This is the timeline', text: 'Play, pause and drag through time. Later you will use it to find the moment something goes wrong.', next: 'Next' },
+  { ch: 0, sel: '#aiBtn', allow: ['#aiBtn'], title: 'Ask an AI to write it',
+    text: 'Orrery is made to work with an AI assistant: you describe the machine, the AI writes the code, Orrery runs it.<div class="sc-warn"><b>The AI in this tour is simulated.</b> Its replies are written in advance so you can see how the pieces fit. When you work for real, paste the prompt into your own AI assistant.</div>',
+    act: 'Click <b>AI prompt</b>.', alt: 'Open it for me',
+    enter(c) { c.on($('aiBtn'), 'click', () => setTimeout(() => c.done(), 60)); },
+    doAlt() { $('aiBtn').click(); } },
+  { ch: 0, sel: '#aiSheet', place: 'left', allow: ['#aiTask', '#aiCopy'], title: 'Describe what you want',
+    text: 'Normally you type your own idea here. We have written one for you; change it if you like. The prompt teaches any AI assistant the Orrery language, then adds your request.',
+    act: 'Click <b>Copy prompt</b>.', alt: 'Copy it for me',
+    enter(c) {
+      $('aiCode').checked = false; $('aiState').checked = false;
+      c.type($('aiTask'), STORY_REQUEST, updateAiLen);
+      const go = () => setTimeout(() => { $('aiSheet').hidden = true; c.done('Copied. The prompt is on your clipboard.'); }, 500);
+      c.on($('aiCopy'), 'pointerdown', () => c.finishTyping()); c.on($('aiCopy'), 'keydown', () => c.finishTyping());
+      c.on($('aiCopy'), 'click', go);
+    },
+    doAlt() { this._c && this._c.finishTyping(); $('aiCopy').click(); } },
+  { ch: 0, chat: true, sim: true, title: 'The AI writes the code',
+    text: 'This is where you would paste the prompt into your assistant. Here a simulated one has answered with the whole project as one file.',
+    act: 'Click <b>Copy code</b> in the chat.', alt: 'Copy it for me',
+    enter(c) {
+      const words = buildPrompt().split(/\s+/).length;
+      c.chat.user(`<div class="sc-attach"><b>Orrery instructions</b> + your request · ${words.toLocaleString()} words</div><p>${escH($('aiTask').value.trim() || STORY_REQUEST)}</p>`);
+      c.chat.ai('<p>Here is your crane as one Orrery file. The jib swings round, the trolley runs out along it, and the hook lowers the crate.</p>', CRANE_B1, 'Copy code', () => c.done('Copied the code.'));
+    },
+    doAlt(c) { c.chat.copyLast(); } },
+  { ch: 0, sel: '.code', place: 'right', allow: ['.editor'], title: 'Paste it into the editor',
+    text: 'The editor is ready for it.', act: `Press ${PASTE_KBD} to paste.`, alt: 'Paste it for me',
+    enter(c) { c.chat.hide(); ta.focus(); ta.setSelectionRange(0, ta.value.length); },
+    paste(c) { storyEdit(0, ta.value.length, CRANE_B1); setTimeout(() => c.done('Pasted.'), 150); } },
+  { ch: 0, sel: '.problems', place: 'right', allow: ['#probList'], title: 'Something went wrong',
+    text: 'Nothing appeared in the preview. AI code is not always right the first time, and the <b>Problems</b> panel says why: each problem names its line and what to do.',
+    act: 'Click the problem to jump to its line.', alt: 'Show me',
+    enter(c) { c.on($('probList'), 'click', (e) => { if (e.target.closest('li')) setTimeout(() => c.done(), 80); }); },
+    doAlt() { const li = $('probList').querySelector('li'); if (li) li.click(); } },
+
+  { ch: 1, sel: '#copyJson', allow: ['#copyJson'], title: 'Hand the problem to the AI',
+    text: '<b>Fix</b> repairs simple slips by itself, but this one needs a real change. Give the AI the exact problem list: its code, line and suggested fix.',
+    act: 'Click <b>Copy as JSON</b>.', alt: 'Copy it for me',
+    enter(c) { c.on($('copyJson'), 'click', () => c.done('Copied the problem list.')); },
+    doAlt() { $('copyJson').click(); } },
+  { ch: 1, chat: true, sim: true, title: 'The AI explains the fix',
+    text: 'You would paste the list into your assistant. The simulated one has found the mistake and sent back the corrected line.',
+    act: 'Click <b>Copy fix</b> in the chat.', alt: 'Copy it for me',
+    enter(c) {
+      const json = JSON.stringify(storyErrors().map(d => d.json()), null, 2);
+      const line = lineOf(ta.value, CRANE_BAD1) || 41;
+      c.chat.user(`<pre class="sc-paste">${escH(json.length > 700 ? json.slice(0, 700) + '\n…' : json)}</pre><p>Fix this, please.</p>`);
+      c.chat.ai(`<p>Orrery does not know <code>around</code>: the axis of a rotation comes after <b>about</b>. Replace line ${line} with:</p>`, CRANE_FIX1, 'Copy fix', () => c.done('Copied the fix.'));
+    },
+    doAlt(c) { c.chat.copyLast(); } },
+  { ch: 1, sel: '.code', place: 'right', allow: ['.editor'], title: 'Paste the fix',
+    text: 'The line to replace is selected.', act: `Press ${PASTE_KBD}.`, alt: 'Paste it for me',
+    enter(c) { c.chat.hide(); storySelectLine(CRANE_BAD1); },
+    paste(c) { storyReplaceLine(CRANE_BAD1, CRANE_FIX1, CRANE_B2); storyPause(0); setTimeout(() => c.done(storyErrors().length ? 'Pasted.' : 'Fixed. No problems left.'), 200); } },
+  { ch: 1, sel: '.view', place: 'left', allow: ['#play'], title: 'Watch it run',
+    text: 'It builds now, and the crane is in the preview. Play it and keep an eye on the crate as it comes down.',
+    act: 'Click <b>Play</b>.', alt: 'Play it for me',
+    enter(c) { storyPause(0); c.every(() => { if (playing && t >= LANDED_AT) { storyPause(); c.done('Did you see that? The crate sinks into the ground.', 2200); } }); },
+    doAlt() { if (!playing) $('play').click(); } },
+
+  { ch: 2, sel: '.view', place: 'left', allow: ['#scrub'], title: 'No error, but it looks wrong',
+    text: 'The code is valid, so Problems stays empty. When something moves wrongly, show the AI the exact moment instead.',
+    act: 'Drag the timeline to about <b>7 s</b>, where the crate stops.', alt: 'Move it for me',
+    enter(c) {
+      storyPause(3);
+      c.on($('scrub'), 'input', () => { if (t < 6.6) c.act(`${t.toFixed(1)} s: the crate is still on its way. Keep going right, to about <b>7 s</b>.`); else c.act(`${t.toFixed(1)} s: let go here.`); });
+      c.on($('scrub'), 'change', () => { if (t >= 6.6) c.done(`${t.toFixed(1)} s: the crate is half under the ground.`); });
+    },
+    doAlt() { storyPause(7.2); this._c && this._c.done('7.2 s: the crate is half under the ground.'); } },
+  { ch: 2, sel: '#copyState', allow: ['#copyState'], title: 'Copy what the preview shows',
+    text: 'An AI cannot see your screen. This button copies where every part is at this moment: positions, rotations and boxes.<div class="sc-tip">Tip: the <b>AI prompt</b> dialog has two boxes that send your code and this state together, in one prompt.</div>',
+    act: 'Click the <b>copy state</b> button.', alt: 'Copy it for me',
+    enter(c) { c.on($('copyState'), 'click', () => c.done(`Copied the state at ${t.toFixed(2)} s.`)); },
+    doAlt() { $('copyState').click(); } },
+  { ch: 2, chat: true, sim: true, title: 'The AI finds the cause',
+    text: 'With the state, the simulated assistant can see where the crate really is, and why.',
+    act: 'Click <b>Copy fix</b> in the chat.', alt: 'Copy it for me',
+    enter(c) {
+      const line = lineOf(ta.value, CRANE_BAD2) || 43;
+      c.chat.user(`<pre class="sc-paste">${escH(storyStateExcerpt())}</pre><p>The crate goes into the ground here.</p>`);
+      c.chat.ai(`<p>Your state shows the crate's box going below the ground at y = 0, so the hook lowers too far. Stop the move at −1725 mm, where the crate just touches down. Replace line ${line} with:</p>`, CRANE_FIX2, 'Copy fix', () => c.done('Copied the fix.'));
+    },
+    doAlt(c) { c.chat.copyLast(); } },
+  { ch: 2, sel: '.code', place: 'right', allow: ['.editor'], title: 'Paste the fix',
+    text: 'The hook\'s line is selected.', act: `Press ${PASTE_KBD}.`, alt: 'Paste it for me',
+    enter(c) { c.chat.hide(); storySelectLine(CRANE_BAD2); },
+    paste(c) { storyReplaceLine(CRANE_BAD2, CRANE_FIX2, CRANE_OK); storyPause(0); setTimeout(() => c.done('Pasted.'), 200); } },
+  { ch: 2, sel: '.view', place: 'left', allow: ['#play'], title: 'Try again',
+    text: 'Play it once more.', act: 'Click <b>Play</b>.', alt: 'Play it for me',
+    enter(c) { storyPause(0); c.every(() => { if (playing && t >= LANDED_AT) { storyPause(); c.done('The crate lands on the ground.', 1400); } }); },
+    doAlt() { if (!playing) $('play').click(); } },
+  { ch: 2, sel: '.stage', place: 'left', title: 'That\'s the loop',
+    text: '<ol class="sc-loop"><li><b>Describe</b> it and copy the prompt.</li><li><b>Paste</b> the AI\'s code.</li><li><b>Fix</b>: Copy as JSON when it will not build, copy the state when it moves wrongly.</li></ol>Repeat until it looks right. One last thing: make a file.', next: 'Next' },
+
+  { ch: 3, sel: '#exportBtn', allow: ['#exportBtn'], title: 'Make a file',
+    text: 'Export turns the animation into a file you can share or post.', act: 'Click <b>Export</b>.', alt: 'Open it for me',
+    enter(c) { c.on($('exportBtn'), 'click', () => setTimeout(() => c.done(), 80)); },
+    doAlt() { $('exportBtn').click(); } },
+  { ch: 3, sel: '#sheet', place: 'left', allow: ['#fmtSeg'], title: 'Pick a format',
+    text: '<b>MP4</b> and <b>WebM</b> are videos, <b>GIF</b> plays anywhere an image does, <b>PNG frames</b> are for video editors, and <b>3D player</b> is one .html file anyone can open and orbit.',
+    act: 'Choose <b>GIF</b>: it is the quickest to make.', alt: 'Choose for me',
+    enter(c) { c.on($('fmtSeg'), 'click', (e) => { const b = e.target.closest('button[data-f]'); if (b) setTimeout(() => c.done(`${b.textContent.trim()} it is.`), 80); }); },
+    doAlt() { const b = $('fmtSeg').querySelector('[data-f="gif"]'); if (b) b.click(); } },
+  { ch: 3, sel: '#sheet', place: 'left', allow: ['#expAspect', '#gifW', '#gifFps', '#vidQ', '#expSound', '#gifGo'], title: 'Render it',
+    text: 'Shape, width and frame rate are here; the defaults are fine, and a smaller width renders faster.',
+    act: 'Click <b>Render</b>.', alt: 'Render it for me',
+    enter(c) {
+      let busy = false;
+      c.every(() => {
+        if ($('gifGo').disabled && !busy) { busy = true; }
+        if (busy) { const w = parseFloat($('gifBar').firstElementChild.style.width) || 0; c.act(`Rendering… ${Math.round(w)}%`); }
+        if (!$('gifSave').hidden && !$('gifGo').disabled) c.done('Rendered.');
+      });
+    },
+    doAlt() { $('gifGo').click(); } },
+  { ch: 3, sel: '#sheet', place: 'left', allow: ['#gifSave'], title: 'Download it',
+    text: 'The preview in the panel is the real file.', act: 'Click <b>Save</b> to download it.', alt: 'Finish without downloading',
+    enter(c) { c.on($('gifSave'), 'click', () => setTimeout(() => c.done('Saved.'), 300)); },
+    doAlt() { this._c && this._c.done(); } },
+  { ch: 3, finish: true, title: 'You have done the whole loop',
+    text: '<p>Describe, paste, fix, export: that is how Orrery is meant to be used.</p><div class="sc-warn"><b>When you work for real</b>, the AI is your own: <b>AI prompt</b> copies everything your assistant needs, and its reply goes back into the editor.</div><p class="sc-dim">Everything else explains itself when you point at it. The <b>?</b> button brings these tours back.</p>' },
+];
+
+/* ---------------- the tour's machinery ---------------- */
+function storyKeep() {
+  return {
+    files: { ...files }, filmText: film ? projText() : null, box, current, t, playing,
+    name: projName, dirty: projDirty, example: $('example').value, id: projId, handle: fileHandle, handleFmt,
+    S: JSON.parse(JSON.stringify(S)), hist: ta.keepHistory ? ta.keepHistory() : null,
+    aiTask: $('aiTask').value, aiCode: $('aiCode').checked, aiState: $('aiState').checked,
+  };
+}
+function storyClearExport() { outBlob = null; outSig = null; $('gifSave').hidden = true; $('gifImg').hidden = true; $('vidOut').hidden = true; $('gifNote').textContent = ''; }
+function storyPutBack(k) {
+  if (fp.on) filmStop(true);
+  for (const key of Object.keys(S)) if (!(key in k.S)) delete S[key];
+  Object.assign(S, k.S);
+  film = null; filmCache.clear(); box = 0;
+  if (k.filmText) setFilmText(k.filmText, k.box); else files = { ...k.files };
+  projName = k.name; projDirty = k.dirty; $('example').value = k.example; projId = k.id; fileHandle = k.handle; handleFmt = k.handleFmt;
+  $('aiTask').value = k.aiTask; $('aiCode').checked = k.aiCode; $('aiState').checked = k.aiState;
+  $('aiSheet').hidden = true; $('sheet').hidden = true;
+  storyClearExport();
+  if (ta.restoreHistory) ta.restoreHistory(k.hist);
+  STORY_SANDBOX = false;
+  syncSettingsUI(); applyView(); selectTab(k.current); renderChapters(); renderTitle();
+  t = k.t; build(); setPlay(k.playing); persist();
+}
+function startStory() {
+  if (story) return;
+  if (tourAt >= 0) endTour();
+  closeMenus(); if (typeof closeHints === 'function') closeHints(); if (bench.dataset.focus) setFocus(null);
+  $('aiSheet').hidden = true; $('sheet').hidden = true; dropTourNudge();
+  const keep = storyKeep(); storyClearExport();
+  /* a scratch project in the Combined view: one paste fills it */
+  STORY_SANDBOX = true; fileHandle = null; handleFmt = null;
+  if (fp.on) filmStop(true);
+  film = null; filmCache.clear(); box = 0; files = { scene: '', style: '', motion: '' };
+  projName = 'crane'; projDirty = false; aiUndo = null;
+  S.view = 'single'; if (S.delay === 'manual') S.delay = '300'; S.exportFormat = 'gif';
+  applyView(); selectTab('project'); renderChapters(); renderTitle();
+  storyPause(0); build();
+
+  const spot = document.createElement('div'); spot.className = 'tour-spot story-spot';
+  const card = document.createElement('div'); card.className = 'tour-card story-card'; card.setAttribute('role', 'dialog'); card.setAttribute('aria-labelledby', 'scTitle');
+  card.innerHTML = `<div class="sc-top"><ol class="sc-chaps" aria-label="Tour chapters">${STORY_CHAPTERS.map((n, i) => `<li data-i="${i}">${n}</li>`).join('')}</ol><button type="button" class="sc-x" id="scX" aria-label="Leave the tour" title="Leave the tour (Esc)">✕</button></div>
+    <div class="sc-bar" aria-hidden="true"><i id="scBar"></i></div>
+    <h3 id="scTitle"></h3><div class="sc-text" id="scText"></div>
+    <div class="sc-sim" id="scSim" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg><span>Simulated AI for this tour. When you work, use your own AI assistant.</span></div>
+    <div class="sc-act" id="scAct" aria-live="polite"></div>
+    <div class="sc-acts" id="scActs"><button type="button" class="linkbtn" id="scAlt"></button><button type="button" class="btn primary" id="scNext">Next</button></div>
+    <div class="sc-leave" id="scLeave" hidden><p><b>Leave the tour?</b> Your own project comes back just as it was.</p><div class="sc-acts"><button type="button" class="btn" id="scStay">Keep going</button><button type="button" class="btn primary" id="scGo">Leave the tour</button></div></div>
+    <div class="sc-acts sc-fin" id="scFin" hidden><button type="button" class="btn" id="scKeep">Open the crane in a new tab</button><button type="button" class="btn primary" id="scDone">Back to my project</button></div>`;
+  const chat = document.createElement('aside'); chat.className = 'story-chat'; chat.hidden = true; chat.setAttribute('aria-label', 'Simulated AI assistant');
+  chat.innerHTML = '<header><span class="sc-av" aria-hidden="true">AI</span><b>AI assistant</b><span class="sim-pill">Simulated</span></header><div class="sc-log" id="scLog" aria-live="polite"></div><footer>This chat is part of the tour. When you work, paste the prompt into your own AI assistant.</footer>';
+  document.body.append(spot, card, chat);
+
+  story = { i: -1, keep, spot, card, chat, offs: [], ticks: [], doneT: 0, last: null, raf: 0, returnFocus: document.activeElement };
+  const q = (id) => card.querySelector('#' + id);
+  q('scNext').addEventListener('click', () => { const st = STORY_STEPS[story.i]; if (st.next) storyGo(story.i + 1); });
+  q('scAlt').addEventListener('click', () => { const st = STORY_STEPS[story.i]; if (st.paste) st.paste(story.ctx); else if (st.doAlt) st.doAlt.call(st, story.ctx); });
+  q('scX').addEventListener('click', () => storyAskLeave(true));
+  q('scStay').addEventListener('click', () => storyAskLeave(false));
+  q('scGo').addEventListener('click', () => endStory('left'));
+  q('scDone').addEventListener('click', () => endStory('done'));
+  q('scKeep').addEventListener('click', () => { openProjectTab(CRANE_OK, 'crane'); endStory('done'); });
+
+  /* only the step's own controls work while it runs: other clicks are held, and the card says what to do */
+  story.guard = (e) => {
+    const tg = e.target; if (!e.isTrusted || !tg || !tg.closest) return;   /* the studio's own clicks (a download link) go through */
+    if (tg.closest('.story-card, .story-chat, .toast')) return;
+    const st = STORY_STEPS[story.i]; const allow = (st && st.allow) || [];
+    if (allow.some(sel => { const el = document.querySelector(sel); return el && el.contains(tg); })) return;
+    e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+    if (e.type === 'pointerdown' || e.type === 'touchstart') storyNudge();
+  };
+  story.keys = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); storyAskLeave(!q('scLeave').hidden ? false : true); return; }
+    if (e.ctrlKey || e.metaKey) { const k = e.key.toLowerCase(); if (!['v', 'c', 'a'].includes(k) || e.altKey || e.shiftKey) { e.preventDefault(); e.stopPropagation(); } }
+  };
+  story.paste = (e) => {
+    const st = STORY_STEPS[story.i];
+    if (st && st.paste) { e.preventDefault(); e.stopPropagation(); if (!story.doneT) st.paste(story.ctx); return; }
+    if (!(e.target && e.target.closest && e.target.closest('#aiTask'))) { e.preventDefault(); e.stopPropagation(); }   /* no stray pastes into the code */
+  };
+  for (const ev of ['pointerdown', 'mousedown', 'mouseup', 'click', 'dblclick', 'auxclick', 'contextmenu', 'touchstart']) window.addEventListener(ev, story.guard, { capture: true, passive: false });
+  window.addEventListener('wheel', story.wheel = (e) => { if (e.target.closest && e.target.closest('.stage') && !e.target.closest('.story-chat')) { e.preventDefault(); e.stopPropagation(); } }, { capture: true, passive: false });
+  window.addEventListener('keydown', story.keys, true);
+  window.addEventListener('paste', story.paste, true);
+  window.addEventListener('drop', story.drop = (e) => { e.preventDefault(); e.stopPropagation(); }, true);
+  track('tour_start', { kind: 'interactive' });
+  storyGo(0); storyLoop();
+}
+/* each frame: keep the spotlight, card and chat on their targets, and run the step's checks */
+function storyLoop() {
+  if (!story) return;
+  const st = STORY_STEPS[story.i];
+  if (st) {
+    if (!story.chat.hidden) storyPlaceChat();
+    const el = st.chat ? story.chat : st.sel ? document.querySelector(st.sel) : null;
+    const vis = el && tourVisible(el) ? el : null;
+    const r = vis ? vis.getBoundingClientRect() : null;
+    const sig = (r ? [r.left, r.top, r.width, r.height].map(Math.round).join(',') : 'c') + '|' + innerWidth + 'x' + innerHeight + '|' + story.card.offsetHeight;
+    if (sig !== story.last) {
+      story.last = sig;
+      const sr = spotOn(story.spot, vis, st.chat ? 4 : 6);
+      if (sr) placeCard(story.card, sr, st.place || (st.chat ? 'left' : null));
+      else { story.card.style.left = Math.round((innerWidth - story.card.offsetWidth) / 2) + 'px'; story.card.style.top = Math.round((innerHeight - story.card.offsetHeight) / 2) + 'px'; }
+    }
+    if (!story.doneT) for (const fn of story.ticks) fn();
+  }
+  story.raf = requestAnimationFrame(storyLoop);
+}
+function storyPlaceChat() {
+  const v = document.querySelector('.view'), c = story.chat; const r = v.getBoundingClientRect();
+  const narrow = r.width < 380 || innerWidth < 760;
+  const w = narrow ? Math.min(innerWidth - 24, 460) : Math.min(440, r.width - 32);
+  const left = narrow ? (innerWidth - w) / 2 : r.right - w - 16;
+  const top = narrow ? 12 : Math.max(12, r.top + 14), maxH = narrow ? innerHeight * 0.55 : Math.max(240, Math.min(r.bottom, innerHeight) - top - 70);
+  c.style.left = Math.round(left) + 'px'; c.style.top = Math.round(top) + 'px'; c.style.width = Math.round(w) + 'px'; c.style.maxHeight = Math.round(maxH) + 'px';
+}
+function storyNudge() {
+  const c = story.card; c.classList.remove('nudge'); void c.offsetWidth; c.classList.add('nudge');
+  const a = c.querySelector('#scAct'); a.classList.remove('pulse'); void a.offsetWidth; a.classList.add('pulse');
+}
+function storyAskLeave(show) {
+  if (!story) return; const q = (id) => story.card.querySelector('#' + id); const st = STORY_STEPS[story.i];
+  if (st && st.finish) { endStory('done'); return; }
+  q('scLeave').hidden = !show; q('scActs').hidden = show; q('scAct').hidden = show;
+  story.last = null; setTimeout(() => (show ? q('scStay') : q('scNext').hidden ? q('scAlt') : q('scNext')).focus(), 20);
+}
+function storyGo(i) {
+  if (!story) return;
+  for (const off of story.offs) off(); story.offs = []; story.ticks = []; clearTimeout(story.doneTm); story.doneT = 0;
+  if (story.typer) story.typer.finish();
+  story.i = i; const st = STORY_STEPS[i]; if (!st) { endStory('done'); return; }
+  const q = (id) => story.card.querySelector('#' + id);
+  story.card.querySelectorAll('.sc-chaps li').forEach(li => { const n = +li.dataset.i; li.className = n < st.ch ? 'past' : n === st.ch ? 'on' : ''; li.setAttribute('aria-current', n === st.ch ? 'step' : 'false'); });
+  q('scBar').style.width = Math.round(i / (STORY_STEPS.length - 1) * 100) + '%';
+  q('scTitle').textContent = st.title; q('scText').innerHTML = st.text;
+  q('scSim').hidden = !st.sim;
+  const touch = !!(window.matchMedia && matchMedia('(pointer: coarse)').matches);
+  const actText = st.paste && touch ? 'On a touch screen, tap <b>Paste it for me</b> below.' : st.act;
+  const act = q('scAct'); act.className = 'sc-act'; act.innerHTML = actText ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12M13 7l5 5-5 5"/></svg><span>${actText}</span>` : ''; act.hidden = !actText;
+  q('scLeave').hidden = true; q('scActs').hidden = !!st.finish; q('scFin').hidden = !st.finish;
+  q('scNext').hidden = !st.next; q('scNext').textContent = st.next || 'Next';
+  q('scAlt').hidden = !st.alt; q('scAlt').textContent = st.alt || ''; q('scAlt').disabled = false;
+  story.card.classList.toggle('finish', !!st.finish); story.spot.hidden = !!st.finish;
+  story.card.querySelector('.sc-x').hidden = !!st.finish;
+  if (st.finish) { story.chat.hidden = true; $('sheet').hidden = true; story.blockEl = story.blockEl || Object.assign(document.createElement('div'), { className: 'tour-block story-block' }); document.body.insertBefore(story.blockEl, story.card); }
+  const ctx = story.ctx = {
+    on(el, ev, fn) { el.addEventListener(ev, fn); story.offs.push(() => el.removeEventListener(ev, fn)); },
+    every(fn) { story.ticks.push(fn); },
+    act(html) { if (story.doneT) return; act.querySelector('span') ? act.querySelector('span').innerHTML = html : (act.innerHTML = html); },
+    done(msg, ms = 900) {
+      if (!story || story.doneT || story.i !== i) return; story.doneT = performance.now();
+      act.hidden = false; act.className = 'sc-act ok'; act.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>${msg || 'Done.'}</span>`;
+      q('scAlt').disabled = true; story.last = null;
+      story.doneTm = setTimeout(() => storyGo(i + 1), reducedMotion() ? Math.max(ms, 1200) : ms);
+      track('tour_step', { step: i });
+    },
+    type(el, text, after) {
+      const tick = reducedMotion() ? 0 : 22; let n = 0; el.value = ''; if (after) after();
+      const finish = () => { clearInterval(story.typer.tm); el.value = text; if (after) after(); story.typer = null; };
+      story.typer = { finish, tm: tick ? setInterval(() => { n += 2; el.value = text.slice(0, n); if (after) after(); if (n >= text.length) finish(); }, tick) : 0 };
+      if (!tick) finish();
+    },
+    finishTyping() { if (story.typer) story.typer.finish(); },
+    chat: storyChatApi(),
+  };
+  st._c = ctx;
+  /* the code can be typed in only when the step is about the editor */
+  if (!(st.allow || []).includes('.editor') && editorEl.contains(document.activeElement)) document.activeElement.blur();
+  if (st.chat) story.chat.hidden = false;
+  if (st.enter) st.enter(ctx);
+  story.last = null;
+  const el = st.sel && document.querySelector(st.sel); if (el && tourVisible(el)) el.scrollIntoView({ block: 'nearest' });
+  /* the card takes focus only when the step has nothing else to do; otherwise the visitor's next click is on the page */
+  if (st.next || st.finish) setTimeout(() => (st.finish ? q('scDone') : q('scNext')).focus(), 30);
+}
+function storyChatApi() {
+  const log = () => story.chat.querySelector('#scLog');
+  const scroll = () => { const l = log(); l.scrollTop = l.scrollHeight; };
+  return {
+    hide() { story.chat.hidden = true; },
+    user(html) { const m = document.createElement('div'); m.className = 'sc-msg me'; m.innerHTML = html; log().appendChild(m); scroll(); },
+    ai(html, code, label, onCopy) {
+      const m = document.createElement('div'); m.className = 'sc-msg ai thinking'; m.innerHTML = '<span class="sc-dots" aria-label="Thinking"><i></i><i></i><i></i></span>'; log().appendChild(m); scroll();
+      const btnId = 'scCopy' + log().children.length;
+      const show = () => {
+        if (!story) return; m.classList.remove('thinking');
+        const lines = code.split('\n').length;
+        m.innerHTML = `${html}<div class="sc-code${lines > 3 ? ' tall' : ''}"><div class="sc-code-h"><span>${lines > 3 ? 'orrery · ' + lines + ' lines' : 'orrery'}</span><button type="button" class="btn primary" id="${btnId}">${label}</button></div><div class="sc-pre">${highlightProject(code, new Set())}</div></div>`;
+        const b = m.querySelector('#' + btnId);
+        b.addEventListener('click', () => { copyText(code).then(ok => { b.textContent = ok ? 'Copied' : 'Copied for the tour'; }); b.disabled = true; onCopy(); });
+        story.lastCopy = b; scroll(); story.last = null;
+      };
+      story.lastCopy = null;
+      setTimeout(show, reducedMotion() ? 0 : 1100);
+    },
+    copyLast() { if (story.lastCopy && !story.lastCopy.disabled) story.lastCopy.click(); },
+  };
+}
+function endStory(why) {
+  if (!story) return; const s = story; story = null;
+  cancelAnimationFrame(s.raf); clearTimeout(s.doneTm); for (const off of s.offs) off(); if (s.typer) s.typer.finish();
+  for (const ev of ['pointerdown', 'mousedown', 'mouseup', 'click', 'dblclick', 'auxclick', 'contextmenu', 'touchstart']) window.removeEventListener(ev, s.guard, { capture: true });
+  window.removeEventListener('wheel', s.wheel, { capture: true }); window.removeEventListener('keydown', s.keys, true); window.removeEventListener('paste', s.paste, true); window.removeEventListener('drop', s.drop, true);
+  s.spot.remove(); s.card.remove(); s.chat.remove(); if (s.blockEl) s.blockEl.remove();
+  storyPutBack(s.keep); markTourSeen();
+  track('tour_end', { kind: 'interactive', why, step: s.i });
+  toast(why === 'left' ? 'Tour closed. Your project is back as it was.' : 'Your project is back. The ? button brings the tours back any time.', 3600);
+  if (s.returnFocus && s.returnFocus.focus && document.contains(s.returnFocus)) s.returnFocus.focus();
+}
 
 /* headless hook used by the command-line tool: load a project, render a GIF, return base64 */
 /* export size for the command line: what it asks for, else the scene's frame, else the default */
@@ -10108,7 +10692,7 @@ if (!PLAYER && innerWidth < 700 && !navigator.webdriver) {
     d.addEventListener('click', (e) => { const a = e.target.closest('[data-a]'); if (!a) return; if (a.dataset.a === 'watch') setFocus('view'); try { localStorage.setItem('orrery.phone', '1'); } catch (x) {} d.remove(); });
   }, 900);
 }
-/* first visit: offer the tour once (not in automated browsers) */
+/* first visit: offer the tours once (not in automated browsers) */
 if (PLAYER) {
   document.title = projName + ' · Orrery';
   const badge = document.createElement('div'); badge.className = 'pbadge'; badge.innerHTML = '<b></b><span>Made with Orrery · drag with Free to orbit · right-click for options</span>'; setTimeout(() => { if (model && model.soundEvents && model.soundEvents.length) { const sp = badge.querySelector('span'); sp.textContent += ' · click for sound'; } }, 300); badge.firstChild.textContent = projName; $('stage').appendChild(badge);
@@ -10118,7 +10702,13 @@ if (PLAYER) {
 (() => {
   if (navigator.webdriver || PLAYER) return;   /* automated browsers and shared players: no banner, no tour */
   let done = false; try { done = localStorage.getItem(TOUR_KEY) === '1'; } catch (e) { done = true; }
-  const tour = () => { if (!done) setTimeout(() => startTour(), 500); };
+  /* a first visit gets the welcome card; a project opened from a link, or a phone, gets a small offer instead */
+  const tour = () => {
+    if (done) return;
+    if (TAB_SCOPED) { setTimeout(showTourNudge, 1500); return; }
+    if (innerWidth < 700) { let n = 0; const wait = () => { if (document.querySelector('.phonebar') && n++ < 120) setTimeout(wait, 1000); else showTourNudge(); }; setTimeout(wait, 1500); return; }
+    setTimeout(openWelcome, 500);
+  };
   /* the cookie banner appears only where the server collects statistics; a copy opened on its own sets no cookies */
   Promise.resolve(typeof serverReady !== 'undefined' ? serverReady : false).then((on) => { if (on && !getConsent()) { consentWaiter = tour; setTimeout(() => showConsent(false), 400); } else setTimeout(tour, 600); });
 })();

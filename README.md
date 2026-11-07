@@ -1,20 +1,25 @@
-<p align="center"><img src="brand/logo-mark-512.png" width="96" alt="Orrery logo"></p>
+# Orrery
 
-<h1 align="center">Orrery</h1>
 
-<p align="center"><b>Describe a mechanism in CSS-like code. Watch it move correctly.</b><br>
-A small language and a browser studio for animated mechanisms: linkages, gears, engines, robots and 2D explainers.<br>
-Built so that people and AI models can both write it.</p>
+**Describe mechanisms in a CSS-like language. Watch them move.**
 
-<p align="center"><i>An orrery is a clockwork model of the solar system: wind one gear and every planet moves in step. Orrery does the same for any machine you describe.</i></p>
+Orrery is a small language and browser-based studio for describing and animating mechanisms, from linkages and gears to engines, robots and 2D explainers. Its syntax is designed to be approachable for people and predictable for AI models.
 
-<p align="center">
-<a href="LICENSE"><img alt="Licence: Apache 2.0" src="https://img.shields.io/badge/licence-Apache_2.0-16264a"></a>
-<img alt="Runs in the browser" src="https://img.shields.io/badge/runs_in-the_browser-ffb84d">
-<img alt="Version 1.0 beta" src="https://img.shields.io/badge/version-1.0_beta-26323c">
-</p>
+An orrery is a clockwork model of the solar system: turn one gear, and every planet moves in step. Orrery brings that same idea to the machines you describe.
 
-<p align="center"><img src="docs/linkage.gif" width="420" alt="A four-bar linkage: the crank turns and the coupler and rocker follow"> <img src="docs/v8.gif" width="420" alt="A V8 engine: eight pistons driven from one crankshaft"></p>
+[![Licence: Apache 2.0](https://img.shields.io/badge/licence-Apache_2.0-16264a?style=flat-square)](LICENSE)
+![Runs in the browser](https://img.shields.io/badge/runs_in-the_browser-ffb84d?style=flat-square)
+[![Version 1.0 beta](https://img.shields.io/badge/version-1.0_beta-26323c?style=flat-square)](CHANGELOG.md)
+[![Checks](https://img.shields.io/github/actions/workflow/status/Hypertoroid/Orrery.github.io/ci.yml?branch=master&label=checks&style=flat-square)](https://github.com/Hypertoroid/Orrery.github.io/actions/workflows/ci.yml)
+
+---
+
+## In motion
+
+| Four-bar linkage | V8 engine |
+|:--|:--|
+| ![Four-bar linkage](docs/linkage.gif) | ![V8 engine](docs/v8.gif) |
+| Crank, coupler and rocker moving together. | Eight pistons driven by a single crankshaft. |
 
 ---
 

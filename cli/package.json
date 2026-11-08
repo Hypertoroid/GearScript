@@ -1,9 +1,9 @@
 {
-  "name": "orrery-cli",
+  "name": "gearscript-cli",
   "version": "1.0.0-beta",
-  "description": "Check, sample and render Orrery projects from the command line, or serve them to AI agents over MCP.",
-  "bin": { "orrery": "orrery.js" },
-  "main": "orrery.js",
+  "description": "Check, sample and render GearScript projects from the command line, or serve them to AI agents over MCP.",
+  "bin": { "gearscript": "gearscript.js" },
+  "main": "gearscript.js",
   "license": "Apache-2.0",
   "private": true,
   "engines": { "node": ">=18" },

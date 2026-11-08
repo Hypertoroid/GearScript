@@ -1,6 +1,6 @@
-/* Orrery site settings: edit these before you publish.
+/* GearScript site settings: edit these before you publish.
    The studio, the guide and the legal pages all read this one file. */
-window.ORRERY_SITE = {
+window.GEARSCRIPT_SITE = {
   owner: 'Sivaprasad Murali',                         // shown in the copyright line and the legal pages
   contactEmail: 'hello@example.com',           // for privacy requests, security reports and support
   coffeeUrl: 'https://www.buymeacoffee.com/yourname',   // your Buy Me a Coffee page

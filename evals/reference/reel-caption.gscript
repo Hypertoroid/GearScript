@@ -1,0 +1,10 @@
+@gearscript 1
+@scene
+Hero::Gear  { teeth: 24; module: 6mm; width: 20mm; }
+Title::Text { text: "How a gear turns"; size: 30mm; at: (0, 260mm, 0); facing: camera; }
+Scene { duration: 6s; frame: reel; sky: studio; }
+@style
+Hero  { color: #e0a63a; material: metal; }
+Title { color: #ffffff; font-weight: 700; }
+@motion
+Hero { forever: rotate: 45deg/s; }

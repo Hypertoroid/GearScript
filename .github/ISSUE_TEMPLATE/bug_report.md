@@ -6,7 +6,7 @@ labels: bug
 
 **What happened, and what did you expect?**
 
-**The smallest project that shows it** (paste the `.orrery` code, or attach the file):
+**The smallest project that shows it** (paste the `.gscript` code, or attach the file):
 
 ```
 ```

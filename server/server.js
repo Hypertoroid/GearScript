@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Orrery server (optional).
+/* GearScript server (optional).
    Serves the landing page, the studio and the guide, and keeps opt-in usage statistics.
    There are no accounts: the studio works the same with or without this server.
    No dependencies beyond Node 22.13+ (node:sqlite).
@@ -13,7 +13,7 @@
      requests, counted under a salted hash of the IP address that changes every day (kept two days), and the site has a daily total.
 
    Environment:
-     PORT=8080  DB=./orrery.db  TRUST_PROXY=1 (behind a reverse proxy)  ADMIN_TOKEN=<long random string>
+     PORT=8080  DB=./gearscript.db  TRUST_PROXY=1 (behind a reverse proxy)  ADMIN_TOKEN=<long random string>
      PUBLIC_URL=https://your.domain   (optional; used to check where POSTs come from)
      SECURE_COOKIES=1                 (send HSTS; set it behind HTTPS)
      ANTHROPIC_API_KEY=<key>          (optional: turns AI on)   AI_MODEL=claude-sonnet-5-5   AI_MAX_TOKENS=8000
@@ -30,7 +30,7 @@ try { ({ DatabaseSync } = require('node:sqlite')); } catch (e) { console.error('
 const env = process.env;
 const PORT = +env.PORT || 8080;
 const ROOT = path.resolve(env.STATIC_ROOT || path.join(__dirname, '..'));
-const DB_FILE = env.DB || path.join(__dirname, 'orrery.db');
+const DB_FILE = env.DB || path.join(__dirname, 'gearscript.db');
 const SECURE = env.SECURE_COOKIES === '1';
 const ADMIN_TOKEN = env.ADMIN_TOKEN || '';
 const EVENT_NAMES = new Set(['page_view', 'example_open', 'export_gif', 'ai_prompt_copy', 'tour_end', 'view_change', 'chapters_start', 'film_play', 'ai_run']);
@@ -146,7 +146,7 @@ async function ai(req, res) {
   try {
     r = await fetch(AI_URL, { method: 'POST', signal: AbortSignal.timeout(170e3), headers: { 'content-type': 'application/json', 'x-api-key': AI_KEY, 'anthropic-version': '2026-10-21' },
       body: JSON.stringify({ model: AI_MODEL, max_tokens: AI_MAX_TOKENS, metadata: { user_id: who },
-        system: 'You write animations in the Orrery language for the Orrery Studio web app. Follow the instructions and the output format in the user message exactly. Reply with the code block(s) it asks for and one or two plain sentences, nothing else.',
+        system: 'You write animations in the GearScript language for the GearScript Studio web app. Follow the instructions and the output format in the user message exactly. Reply with the code block(s) it asks for and one or two plain sentences, nothing else.',
         messages: [{ role: 'user', content: prompt }] }) });
   } catch (e) { return send(res, 502, { error: 'The AI could not be reached. Try again, or use Copy prompt.' }); }
   if (!r.ok) { console.error('claude api', r.status, (await r.text().catch(() => '')).slice(0, 300)); return send(res, 502, { error: r.status === 429 || r.status === 529 ? 'The AI is busy right now. Try again in a minute.' : 'The AI could not answer this time. Try again, or use Copy prompt.' }); }
@@ -158,27 +158,37 @@ async function ai(req, res) {
 
 /* ---------- static files ---------- */
 const TYPES = { '.webmanifest': 'application/manifest+json', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.gif': 'image/gif', '.pdf': 'application/pdf', '.md': 'text/markdown; charset=utf-8', '.ms': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
-const PUBLIC = /^\/(index\.html|studio\.html|manifest\.webmanifest|sw\.js|help\.html|privacy\.html|terms\.html|site-config\.js|SPEC\.md|LICENSE|NOTICE|TRADEMARKS\.md|Orrery_Syntax_Reference\.pdf|brand\/[\w.-]+|docs\/[\w.-]+|vendor\/[\w.-]+|examples\/[\w.-]+|examples\/[\w-]+\/[\w.-]+)$/;
+const PUBLIC = /^\/(index\.html|404\.html|studio\.html|manifest\.webmanifest|sw\.js|help\.html|privacy\.html|terms\.html|site-config\.js|SPEC\.md|LICENSE|NOTICE|TRADEMARKS\.md|GearScript_Syntax_Reference\.pdf|brand\/[\w.-]+|docs\/[\w.-]+|vendor\/[\w.-]+|examples\/[\w.-]+|examples\/[\w-]+\/[\w.-]+)$/;
+/* a missing page: the 404 page for a browser, plain text for anything else */
+function notFound(req, res) {
+  if (!/text\/html/.test(req.headers.accept || '')) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }
+  fs.readFile(path.join(ROOT, '404.html'), (err, data) => {
+    if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }
+    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache' }); res.end(req.method === 'HEAD' ? undefined : data);
+  });
+}
 function serveStatic(req, res, url) {
   let p; try { p = decodeURIComponent(url.pathname); } catch (e) { res.writeHead(400); return res.end(); }
   if (p === '/') p = '/index.html';
-  if (!PUBLIC.test(p)) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }
+  if (!PUBLIC.test(p)) return notFound(req, res);
   const file = path.join(ROOT, p); if (!file.startsWith(ROOT + path.sep)) { res.writeHead(403); return res.end(); }
   fs.readFile(file, (err, data) => {
-    if (err) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }
+    if (err) return notFound(req, res);
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file)] || (/\/(LICENSE|NOTICE)$/.test(file) ? 'text/plain; charset=utf-8' : 'application/octet-stream'), 'Cache-Control': p.endsWith('.html') || p === '/sw.js' ? 'no-cache' : 'public, max-age=3600' });
     res.end(req.method === 'HEAD' ? undefined : data);
   });
 }
 
 /* ---------- server ---------- */
+/* the neural voice for video exports (Piper, in the browser) compiles WebAssembly ('wasm-unsafe-eval'), may start workers, fetches its runtime
+   from the CDNs and the voice model from huggingface.co (connect-src) */
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Frame-Options': 'SAMEORIGIN',
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'",
+  'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://huggingface.co https://*.huggingface.co https://*.hf.co; frame-ancestors 'self'; base-uri 'self'; form-action 'self'",
 };
 const server = http.createServer(async (req, res) => {
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) res.setHeader(k, v);
@@ -194,7 +204,7 @@ const server = http.createServer(async (req, res) => {
   }
 });
 if (require.main === module) server.listen(PORT, () => {
-  console.log(`Orrery server on http://localhost:${PORT}  (database ${DB_FILE})`);
+  console.log(`GearScript server on http://localhost:${PORT}  (database ${DB_FILE})`);
   console.log(`Usage statistics: on, for visitors who allow them${ADMIN_TOKEN ? '' : '  (set ADMIN_TOKEN to read them)'}`);
   console.log(AI_KEY ? `AI: on (${AI_MODEL}, ${AI_PER_VISITOR} requests per visitor and ${AI_PER_SITE} for the site each day)` : 'AI: off (set ANTHROPIC_API_KEY to turn on Generate and Fix with AI)');
 });

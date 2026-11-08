@@ -1,6 +1,6 @@
-# Orrery language 1: reference for AI agents
+# GearScript language 1: reference for AI agents
 
-Orrery describes mechanisms as parts, the connections between them and a few motion rules.
+GearScript describes mechanisms as parts, the connections between them and a few motion rules.
 The compiler places the parts, solves joints, gear trains and closed loops, and renders video, GIF or a 3D player.
 Write relations, not coordinates, wherever you can.
 
@@ -12,20 +12,20 @@ A project has three files:
 
 ## Workflow
 
-1. Write the three files, or one `.orrery` file with `@scene`, `@style` and `@motion` sections.
-2. Run `orrery check <project> --json`, or call the MCP tool `orrery_check`, and fix every error. Each diagnostic has a `code`, a `line`, a `message` and a `fix`.
-3. Verify the motion with numbers: `orrery sample <project> --at 0,1 --points Crank.end.b`, or the MCP tool `orrery_sample`.
-4. Render with `orrery render <project> -o out.gif`, or the MCP tool `orrery_render`.
+1. Write the three files, or one `.gscript` file with `@scene`, `@style` and `@motion` sections.
+2. Run `gearscript check <project> --json`, or call the MCP tool `gearscript_check`, and fix every error. Each diagnostic has a `code`, a `line`, a `message` and a `fix`.
+3. Verify the motion with numbers: `gearscript sample <project> --at 0,1 --points Crank.end.b`, or the MCP tool `gearscript_sample`.
+4. Render with `gearscript render <project> -o out.gif`, or the MCP tool `gearscript_render`.
 
 ## Versions and stability
 
 This is version 1 of the language. A project may say which version it was written for in its first line:
 
 ```
-@orrery 1
+@gearscript 1
 ```
 
-The line is optional (the studio and `orrery join` write it). This is the 1.0 beta: details may still change before 1.0. From 1.0 on, within version 1:
+The line is optional (the studio and `gearscript join` write it). This is the 1.0 beta: details may still change before 1.0. From 1.0 on, within version 1:
 
 - A project that compiles keeps compiling, and keeps moving the same way. New properties, shapes, sounds and warnings may be added; existing ones keep their meaning.
 - Error and warning codes are stable: a code always means the same mistake, so tools and AI agents can rely on them. New codes may appear; old ones are not reused.
@@ -34,10 +34,10 @@ The line is optional (the studio and `orrery join` write it). This is the 1.0 be
 
 ## One file or three
 
-A project can be three files (`.scene`, `.style`, `.motion`) or one `.orrery` file in which a line `@scene`, `@style` or `@motion` starts each section (after the optional `@orrery 1` line). Both describe exactly the same thing, and the tools convert either way.
+A project can be three files (`.scene`, `.style`, `.motion`) or one `.gscript` file in which a line `@scene`, `@style` or `@motion` starts each section (after the optional `@gearscript 1` line). Both describe exactly the same thing, and the tools convert either way.
 
 ```
-@orrery 1
+@gearscript 1
 
 @scene
 Crank::Link { length: 40mm; hinge: end.a on (0, 0, 0); }
@@ -51,14 +51,14 @@ Crank { forever: rotate: 180deg/s; }
 
 - The single file is the easiest to review and edit in one pass. Diagnostics report lines in the single file, with `"file": "project"` and a `"section"` field.
 - A marker stands alone on its line; a comment may follow it. Each section appears once. Parts before the first marker are read as `@scene` with W0148, which offers to add the line (the same under `@common` or a `@chapter` line); other text before the first marker is error E0105, an unknown section E0106, a repeated section E0107.
-- Conversion: `orrery join <folder> -o project.orrery` and `orrery split project.orrery <folder>`. The MCP tools accept `project` (the single file) in place of `scene`, `style` and `motion`.
+- Conversion: `gearscript join <folder> -o project.gscript` and `gearscript split project.gscript <folder>`. The MCP tools accept `project` (the single file) in place of `scene`, `style` and `motion`.
 
 ## Chapters
 
-A longer video is a project with chapters, always one `.orrery` file. Each chapter is a complete animation with its own `@scene`, `@style` and `@motion`, its time starting at 0 s. Chapters and single animations have no length limit. The studio's Film mode plays them in order and the export joins them into one video.
+A longer video is a project with chapters, always one `.gscript` file. Each chapter is a complete animation with its own `@scene`, `@style` and `@motion`, its time starting at 0 s. Chapters and single animations have no length limit. The studio's Film mode plays them in order and the export joins them into one video.
 
 ```
-@orrery 1
+@gearscript 1
 @common
 @scene
 Scene { frame: youtube; sky: studio; }        // what every chapter shares
@@ -85,17 +85,17 @@ G1 { forever: rotate: 40deg/s; }
 - One video has one shape: put `Scene { frame: … }` in `@common` (W0147 when chapters differ).
 - A title written without quotes (`@chapter Atomic Numbers`) is read as the title with W0149, which offers `@chapter Atomic "Atomic Numbers"`. Each chapter sees only `@common`, the chapters it extends and its own sections: a part, Voice or style rule from another chapter is unknown there.
 - Errors: E0140 a missing or bad chapter name, E0141 an unknown word on the chapter line, E0142 two chapters with one name, E0143 extends a chapter that does not exist, E0144 chapters that extend each other in a circle, E0145 a second or late `@common`, E0146 `@common` without a chapter.
-- Diagnostics report lines in the `.orrery` file, with `"chapter"` (or `"@common"`) and `"section"` fields. `orrery check` covers every chapter, `orrery sample --chapter Name` samples one, `orrery test` snapshots every chapter, and `orrery render` makes the whole film. `orrery prompt --chapters` gives the reply format for chapters.
+- Diagnostics report lines in the `.gscript` file, with `"chapter"` (or `"@common"`) and `"section"` fields. `gearscript check` covers every chapter, `gearscript sample --chapter Name` samples one, `gearscript test` snapshots every chapter, and `gearscript render` makes the whole film. `gearscript prompt --chapters` gives the reply format for chapters.
 
 ## Lexical rules
 
-- Comments are `// to the end of the line` or `/* … */` blocks, as in CSS. `#` followed directly by letters or digits is a colour (`#38bdf8`) or an id (`#G2`). A line that starts with `# ` is read as a comment with warning W0108, which `orrery check --fix` turns into `//`.
+- Comments are `// to the end of the line` or `/* … */` blocks, as in CSS. `#` followed directly by letters or digits is a colour (`#38bdf8`) or an id (`#G2`). A line that starts with `# ` is read as a comment with warning W0108, which `gearscript check --fix` turns into `//`.
 - Part names start with a capital letter (`Crank`). `let` names and parameters are lower case.
 - Every property ends with `;`. As in CSS, the last property in a block may leave it out.
 - Some other names are understood with warning W0203 and a fix: `position` → `at` and `rotation` → `orient` in the scene, `colour` → `color` and `font-color` → `text-color` in style, `rotation` → `rotate` and `translate` → `move` in motion. Easings written `ease_in_out` or `easeInOut` get W0513 and become `ease-in-out`.
-- A problem (warning or error) that can be corrected by machine carries an `edit` in `orrery check --json`: replace `del` characters at `line`:`col` with `ins`. A **sure** edit writes what is read anyway (a `#` comment, another name for a property, an ignored property, `true` for `on`). An edit with `"guess": true` is a likely correction: the message ends with *Did you mean …?* (exactly one known name within one or two letters, a swap counting as one; a name declared further down is not treated as a typo), or a value outside its range written back inside it, or as a percentage when that fits (`opacity: 40` → `40%`). An edit with `old` names the text it replaces; when that text is not at `line`:`col`, the same word elsewhere on the line is used, and otherwise the edit is skipped. An edit that removes a whole property also removes the line when it leaves it empty.
+- A problem (warning or error) that can be corrected by machine carries an `edit` in `gearscript check --json`: replace `del` characters at `line`:`col` with `ins`. A **sure** edit writes what is read anyway (a `#` comment, another name for a property, an ignored property, `true` for `on`). An edit with `"guess": true` is a likely correction: the message ends with *Did you mean …?* (exactly one known name within one or two letters, a swap counting as one; a name declared further down is not treated as a typo), or a value outside its range written back inside it, or as a percentage when that fits (`opacity: 40` → `40%`). An edit with `old` names the text it replaces; when that text is not at `line`:`col`, the same word elsewhere on the line is used, and otherwise the edit is skipped. An edit that removes a whole property also removes the line when it leaves it empty.
 - Parse slips carry sure edits too: `Door:Box` and `Door Box {` become `Door::Box`; a near-miss symbol is replaced (`,` for `;` between properties, `=` for `:`); a `;`, `}` or `)` missing at the end of a line is added after the last token; a `:` missing after a property name is added; a `;` missing between two properties on one line (`teeth: 10 module: 2mm`) is added. A block never closed gets a guess that closes it at the end.
-- `orrery check --fix` applies sure edits, round after round; `--fix --suggestions` also applies guesses, after the sure ones in each round. The studio's Problems panel has a **Fix** button with the same choices (Fix all, Apply suggestions, Fix as much as possible).
+- `gearscript check --fix` applies sure edits, round after round; `--fix --suggestions` also applies guesses, after the sure ones in each round. The studio's Problems panel has a **Fix** button with the same choices (Fix all, Apply suggestions, Fix as much as possible).
 - Numbers carry units, with no space before the unit.
 
 ## Units decide meaning
@@ -334,16 +334,16 @@ Crank { 0s..3s: rotate: 0deg -> 180deg; say: Narrator "The crank turns half a re
 Scene { 0s..1s: sound: VoiceOver; }
 ```
 
-`neural: en_GB-alan-medium;` on a Voice picks the voice for exports (below). `say: Voice "words" [at end | at 1.5s];` speaks a line (the voice can be left out when there is only one) and shows it as a caption until the words are likely spoken or the voice's next line starts; `captions: off;` speaks without them. Lines are spoken with the browser's own voices in the preview and in the 3D player. A video file cannot record those voices, so captions are drawn into MP4, WebM, GIF and PNG exports and the export panel saves them as `.srt` or `.vtt`. For speech in MP4 and WebM, keep **Speak them into the video** ticked, as it is by default (or `orrery render --speak`, which stays opt-in): each line is generated by a Piper neural voice running in the browser (experimental; the voice, 20 to 70 MB, downloads from huggingface.co the first time and is kept for offline use). Or add a voice-over recorded or made with any text-to-speech tool as an audio file. Audio files (MP3, WAV, OGG, M4A, up to 25 MB) are added with Insert › 3D models and audio, play with `sound:` like any Sound, are mixed into video exports and saved in the project `.zip`.
+`neural: en_GB-alan-medium;` on a Voice picks the voice for exports (below). `say: Voice "words" [at end | at 1.5s];` speaks a line (the voice can be left out when there is only one) and shows it as a caption until the words are likely spoken or the voice's next line starts; `captions: off;` speaks without them. Lines are spoken with the browser's own voices in the preview and in the 3D player. A video file cannot record those voices, so captions are drawn into MP4, WebM, GIF and PNG exports and the export panel saves them as `.srt` or `.vtt`. For speech in MP4 and WebM, keep **Speak them into the video** ticked, as it is by default (or `gearscript render --speak`, which stays opt-in): each line is generated by a Piper neural voice running in the browser (experimental; the voice, 20 to 70 MB, downloads from huggingface.co the first time and is kept for offline use). Or add a voice-over recorded or made with any text-to-speech tool as an audio file. Audio files (MP3, WAV, OGG, M4A, up to 25 MB) are added with Insert › 3D models and audio, play with `sound:` like any Sound, are mixed into video exports and saved in the project `.zip`.
 - Captions are shown like subtitles: a spoken line is split into parts of at most about 84 characters (two short lines), at sentence ends, then at clause marks, then between words, with short neighbours joined; each part shows for its share of the line's speaking time, the last until the caption ends. Exports and .srt/.vtt files use the same parts. W0550: a line is still being spoken when the next line of the same voice starts. W0551: a line of more than 40 words. W0625: a Text of more than 16 words.
 
 **Timing lines:** a voice speaks about 2.6 words a second at `rate: 100%`. Leave that long before the next line of the same voice (a new line ends the caption), make the block or `Scene { duration }` long enough for the last line, and keep each line to one idea of 4 to 14 words. W0519 warns when a line takes longer to say than the motion lasts (everything has stopped and no `forever` rule runs), or when it runs past the end of the animation: stretch the motion over the words, rather than a quick move followed by a still picture.
 
 ## Tools for AI agents
 
-- `orrery schema` (and the MCP tool `orrery_schema`) prints the language as JSON: every shape with its properties, required properties and anchors, the style, motion and block properties with examples, units, easings, sound kinds, sky and frame presets. `docs/orrery-schema.json` is the same file.
-- `orrery check --json` lists every problem with a fix in words, and an `edit` for those that can be applied by machine; `orrery check --fix` applies the sure ones, and `--fix --suggestions` the guesses too.
-- `orrery eval evals/tasks.json <answers>` scores a folder of AI answers against the task set.
+- `gearscript schema` (and the MCP tool `gearscript_schema`) prints the language as JSON: every shape with its properties, required properties and anchors, the style, motion and block properties with examples, units, easings, sound kinds, sky and frame presets. `docs/gearscript-schema.json` is the same file.
+- `gearscript check --json` lists every problem with a fix in words, and an `edit` for those that can be applied by machine; `gearscript check --fix` applies the sure ones, and `--fix --suggestions` the guesses too.
+- `gearscript eval evals/tasks.json <answers>` scores a folder of AI answers against the task set.
 
 ## Common mistakes
 

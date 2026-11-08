@@ -1,8 +1,8 @@
 {
   "id": "./studio.html",
-  "name": "Orrery Studio",
-  "short_name": "Orrery",
-  "description": "Describe parts and how they connect; Orrery solves the motion. Works offline once installed.",
+  "name": "GearScript Studio",
+  "short_name": "GearScript",
+  "description": "Describe parts and how they connect; GearScript solves the motion. Works offline once installed.",
   "start_url": "studio.html",
   "scope": "./",
   "display": "standalone",
@@ -36,7 +36,7 @@
       "action": "./studio.html",
       "accept": {
         "text/plain": [
-          ".orrery"
+          ".gscript"
         ],
         "application/zip": [
           ".zip"

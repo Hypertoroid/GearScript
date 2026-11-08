@@ -1,21 +1,23 @@
-# Running Orrery
+# Running GearScript
 
-Orrery is static files. There are no accounts and nothing to configure.
+GearScript is static files. There are no accounts and nothing to configure.
 
 ## Just the studio
 
 Open `index.html` (the landing page) or `studio.html` in a browser, or put these on any web host:
 
 ```
-index.html  studio.html  help.html  privacy.html  terms.html  site-config.js
-manifest.webmanifest  sw.js  vendor/  brand/  docs/  LICENSE  NOTICE  Orrery_Syntax_Reference.pdf
+index.html  studio.html  help.html  privacy.html  terms.html  404.html  site-config.js
+manifest.webmanifest  sw.js  vendor/  brand/  docs/  LICENSE  NOTICE  GearScript_Syntax_Reference.pdf
 ```
 
 On its own the studio sets no cookies, shows no cookie banner and sends nothing anywhere. Its libraries (three.js, CodeMirror, glTF support, the video muxers) are in `vendor/`; a public CDN is used only if those files are missing. Fonts come from Google Fonts, with system fonts as the fallback.
 
 **Offline and installable.** Served over HTTPS, the studio registers `sw.js`, so it keeps working without a connection once it has been opened, and Chrome and Edge show their own install icon in the address bar; the studio's **More › Download Studio** asks the same question. Installation needs HTTPS (or localhost). When you publish a new version, change `VERSION` in `sw.js` so installed copies fetch the new files. Where a browser cannot install, Download Studio offers the whole studio as one HTML file instead, which runs from disk with no internet.
 
-**Project links:** the guide's "Try it" buttons open a project packed into the address after `#p=`; they work from your site as it is.
+**A page for missing addresses:** `404.html`. GitHub Pages, Netlify, Cloudflare Pages and Vercel use it on their own; on nginx add `error_page 404 /404.html;`, on Apache `ErrorDocument 404 /404.html`. It finds the site's folder by itself, so its links work wherever the site is published. The bundled server sends it too.
+
+**Project links:** the documentation's "Try it" buttons open a project packed into the address after `#p=`; they work from your site as it is.
 
 **Before you publish**, run `node scripts/release-check.js`: it lists placeholders left in `site-config.js`, the legal templates, and version numbers that disagree.
 
@@ -43,7 +45,7 @@ Run it behind HTTPS (a reverse proxy such as Caddy or nginx) with:
 
 ```
 PORT=8080
-DB=/var/lib/orrery/orrery.db   # back this file up
+DB=/var/lib/gearscript/gearscript.db   # back this file up
 TRUST_PROXY=1                              # read the client IP from X-Forwarded-For, for rate limits
 SECURE_COOKIES=1                           # send HSTS
 ADMIN_TOKEN=<long random string>
@@ -70,8 +72,8 @@ Requests and replies are not stored. Daily counts are kept under a salted hash o
 
 ## A public instance
 
-If you run Orrery for other people:
+If you run GearScript for other people:
 
-- Give your site its own name and logo (see TRADEMARKS.md). "Powered by Orrery" is welcome.
+- Give your site its own name and logo (see TRADEMARKS.md). "Powered by GearScript" is welcome.
 - Put your details in `site-config.js`: owner, contact email, repository link, site address. Links with placeholder addresses stay hidden until you do.
 - Replace the `[placeholders]` in `privacy.html` and `terms.html` with policies that fit your service, have them reviewed by someone qualified, and delete the yellow notice.

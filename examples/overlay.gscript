@@ -1,0 +1,21 @@
+@gearscript 1
+
+@scene
+// A spinning badge for video overlays. The background is transparent: export PNG frames (or a GIF) and only the badge remains.
+// Video files have no transparency, so MP4 and WebM fill the background.
+Ring::Torus { radius: 120mm; tube: 12mm; }
+Cog::Gear   { teeth: 24; module: 6mm; width: 20mm; }
+Word::Text  { text: "LIVE"; size: 46mm; at: (0, -200mm, 0); facing: camera; }
+
+Observer { position: (0, 0, 760mm); look-at: (0, -30mm, 0); }
+Scene    { duration: 4s; background: transparent; frame: square; }
+
+@style
+Ring { color: #ffd27a; material: gold; }
+Cog  { color: #3fb8c9; material: metal; }
+Word { color: #ffffff; font-weight: bold; }
+
+@motion
+Cog  { forever: rotate: 90deg/s; }
+Ring { 0s..4s: rotate: 0deg -> 360deg about y ease-in-out; }
+Word { 0s..0.6s: opacity: 0 -> 1; }

@@ -1,0 +1,562 @@
+@gearscript 1
+
+@scene
+// A skeleton wall clock, assembled step by step and then started.
+// ---- the case ----
+Backboard::Plate { size: (400mm, 1380mm); thickness: 24mm; corner: 30mm; at: (0, 0, -52mm); }
+Crown::Box  { size: (450mm, 44mm, 104mm); at: (0, 712mm, -40mm); }
+Crown2::Box { size: (410mm, 22mm, 86mm); at: (0, 745mm, -40mm); }
+Finial::Sphere { radius: 17mm; at: (0, 772mm, -40mm); overlap: allow; }   // set into the crown
+Plinth::Box  { size: (450mm, 44mm, 104mm); at: (0, -712mm, -40mm); }
+Plinth2::Box { size: (410mm, 22mm, 86mm); at: (0, -745mm, -40mm); }
+TagBoard::Sphere { radius: 1mm; at: (150mm, -250mm, 0); }
+TagCrown::Sphere { radius: 1mm; at: (160mm, 790mm, -40mm); }
+TagPlinth::Sphere { radius: 1mm; at: (160mm, -650mm, -40mm); }
+// ---- the movement frame ----
+BackPlate::Plate { size: (270mm, 300mm); thickness: 5mm; corner: 26mm; at: (0, 340mm, -15mm); overlap: allow; }   // pillars and arbors are set into it
+Pillar1::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (-118mm, 208mm, 5mm); overlap: allow; }
+Pillar2::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (118mm, 208mm, 5mm); overlap: allow; }
+Pillar3::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (-118mm, 472mm, 5mm); overlap: allow; }
+Pillar4::Cylinder { radius: 5mm; height: 40mm; orient: 90deg about x; at: (118mm, 472mm, 5mm); overlap: allow; }
+TagBack::Sphere { radius: 1mm; at: (175mm, 210mm, 0); }
+TagPillars::Sphere { radius: 1mm; at: (140mm, 510mm, 10mm); }
+// ---- the gear train: each wheel spins on its own arbor ----
+GreatWheel::Group { wheel: Gear { teeth: 64; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 14.08mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (-59.65mm, 244.81mm, 5mm); orient: 52.81deg about z; }
+TagGreatWheel::Sphere { radius: 1mm; at: (-150mm, 170mm, 30mm); }
+CentreWheel::Group { wheel: Gear { teeth: 40; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 8.8mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 330mm, 5mm); orient: 0deg about z; }
+TagCentreWheel::Sphere { radius: 1mm; at: (95mm, 290mm, 30mm); }
+ThirdWheel::Group { wheel: Gear { teeth: 30; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 6.6mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (45mm, 383.62mm, 5mm); orient: 218.67deg about z; }
+TagThirdWheel::Sphere { radius: 1mm; at: (120mm, 430mm, 30mm); }
+EscapeWheel::Group { wheel: Gear { teeth: 24; module: 2mm; width: 5mm; at: (0, 0, 0); } arbor: Cylinder { radius: 2.6mm; height: 38mm; orient: 90deg about x; at: (0, 0, 2mm); } hub: Cylinder { radius: 6mm; height: 9mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 413.48mm, 5mm); orient: 318.64deg about z; }
+TagEscapeWheel::Sphere { radius: 1mm; at: (-100mm, 470mm, 30mm); }
+// ---- the escapement: the anchor rocks with the pendulum ----
+Anchor::Group { arm1: Link { length: 42mm; width: 8mm; thickness: 5mm; orient: -55deg about z; at: (12.05mm, -17.2mm, 0); } arm2: Link { length: 42mm; width: 8mm; thickness: 5mm; orient: -125deg about z; at: (-12.05mm, -17.2mm, 0); } boss: Cylinder { radius: 7mm; height: 10mm; orient: 90deg about x; at: (0, 0, 0); } crutch: Cylinder { radius: 2mm; height: 40mm; orient: 90deg about x; at: (0, 0, -18mm); } at: (0, 459.48mm, 5mm); overlap: allow; }   // its pallets enter the escape wheel; its crutch holds the pendulum rod
+TagAnchor::Sphere { radius: 1mm; at: (90mm, 499.48mm, 20mm); }
+FrontPlate::Group { top: Beam { length: 270mm; height: 22mm; width: 5mm; thickness: 5mm; at: (0, 155mm, 0); } bottom: Beam { length: 270mm; height: 22mm; width: 5mm; thickness: 5mm; at: (0, -135mm, 0); } left: Box { size: (22mm, 290mm, 5mm); at: (-125mm, 10mm, 0); } right: Box { size: (22mm, 290mm, 5mm); at: (125mm, 10mm, 0); } at: (0, 330mm, 25mm); overlap: allow; }
+TagFront::Sphere { radius: 1mm; at: (170mm, 500mm, 30mm); }
+// ---- the dial ----
+ChapterRing::Ring { radius: 150mm; inner: 112mm; thickness: 4mm; at: (0, 330mm, 42mm); }
+TagRing::Sphere { radius: 1mm; at: (190mm, 430mm, 45mm); }
+Mark0::Box { size: (6mm, 22mm, 2mm); orient: 0deg about z; at: (0, 461mm, 45mm); }
+Mark1::Box { size: (3mm, 13mm, 2mm); orient: -30deg about z; at: (65.5mm, 443.45mm, 45mm); }
+Mark2::Box { size: (3mm, 13mm, 2mm); orient: -60deg about z; at: (113.45mm, 395.5mm, 45mm); }
+Mark3::Box { size: (6mm, 22mm, 2mm); orient: -90deg about z; at: (131mm, 330mm, 45mm); }
+Mark4::Box { size: (3mm, 13mm, 2mm); orient: -120deg about z; at: (113.45mm, 264.5mm, 45mm); }
+Mark5::Box { size: (3mm, 13mm, 2mm); orient: -150deg about z; at: (65.5mm, 216.55mm, 45mm); }
+Mark6::Box { size: (6mm, 22mm, 2mm); orient: -180deg about z; at: (0, 199mm, 45mm); }
+Mark7::Box { size: (3mm, 13mm, 2mm); orient: -210deg about z; at: (-65.5mm, 216.55mm, 45mm); }
+Mark8::Box { size: (3mm, 13mm, 2mm); orient: -240deg about z; at: (-113.45mm, 264.5mm, 45mm); }
+Mark9::Box { size: (6mm, 22mm, 2mm); orient: -270deg about z; at: (-131mm, 330mm, 45mm); }
+Mark10::Box { size: (3mm, 13mm, 2mm); orient: -300deg about z; at: (-113.45mm, 395.5mm, 45mm); }
+Mark11::Box { size: (3mm, 13mm, 2mm); orient: -330deg about z; at: (-65.5mm, 443.45mm, 45mm); }
+TagMarks::Sphere { radius: 1mm; at: (-200mm, 390mm, 45mm); }
+Cannon::Cylinder { radius: 3mm; height: 34mm; orient: 90deg about x; at: (0, 330mm, 38mm); overlap: allow; }   // the hands and the centre arbor turn on it
+HourHand::Group { blade: Box { size: (8mm, 72mm, 2mm); at: (0, 34mm, 0); } tip: Prism { sides: 4; radius: 9mm; height: 2mm; orient: 90deg about x; at: (0, 72mm, 0); } boss: Cylinder { radius: 9mm; height: 3mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 330mm, 49mm); }
+MinuteHand::Group { blade: Box { size: (5mm, 112mm, 2mm); at: (0, 50mm, 0); } tail: Box { size: (5mm, 26mm, 2mm); at: (0, -13mm, 0); } boss: Cylinder { radius: 7mm; height: 3mm; orient: 90deg about x; at: (0, 0, 0); } at: (0, 330mm, 53mm); }
+TagHour::Sphere { radius: 1mm; at: (-150mm, 410mm, 55mm); }
+TagMinute::Sphere { radius: 1mm; at: (140mm, 440mm, 58mm); }
+// ---- the pendulum: a seconds pendulum, one beat per second ----
+Pendulum::Group { spring: Box { size: (14mm, 22mm, 1mm); at: (0, -11mm, 0); } rod: Cylinder { radius: 3mm; height: 760mm; at: (0, -400mm, 0); } bob: Cylinder { radius: 58mm; height: 16mm; orient: 90deg about x; at: (0, -790mm, 0); } nut: Cylinder { radius: 6mm; height: 12mm; at: (0, -858mm, 0); } at: (0, 483.48mm, -30mm); }
+TagPendulum::Sphere { radius: 1mm; at: (150mm, -306.52mm, -30mm); }
+// ---- the weights: they power the clock as they fall ----
+PulleyL::Pulley { radius: 14mm; width: 6mm; at: (-168mm, 205mm, -14mm); overlap: allow; }
+CordL::Cylinder { radius: 1.2mm; height: 330mm; at: (-168mm, 40mm, -14mm); overlap: allow; }
+WeightL::Tube { radius: 27mm; inner: 22mm; height: 180mm; at: (-168mm, -215mm, -14mm); }
+CapL::Cylinder { radius: 27mm; height: 6mm; at: (-168mm, -122mm, -14mm); overlap: allow; }   // closes the weight's tube
+HookL::Torus { radius: 6mm; tube: 1.5mm; at: (-168mm, -114mm, -14mm); overlap: allow; }
+PulleyR::Pulley { radius: 14mm; width: 6mm; at: (168mm, 205mm, -14mm); overlap: allow; }
+CordR::Cylinder { radius: 1.2mm; height: 330mm; at: (168mm, 40mm, -14mm); overlap: allow; }
+WeightR::Tube { radius: 27mm; inner: 22mm; height: 180mm; at: (168mm, -215mm, -14mm); }
+CapR::Cylinder { radius: 27mm; height: 6mm; at: (168mm, -122mm, -14mm); overlap: allow; }   // closes the weight's tube
+HookR::Torus { radius: 6mm; tube: 1.5mm; at: (168mm, -114mm, -14mm); overlap: allow; }
+
+
+TagWeights::Sphere { radius: 1mm; at: (-260mm, -240mm, -14mm); }
+Bezel::Ring { radius: 156mm; inner: 148mm; thickness: 8mm; at: (0, 330mm, 58mm); }
+Glass::Disc { radius: 150mm; thickness: 2mm; at: (0, 330mm, 60mm); }
+// ---- the camera looks at Aim, which glides between points of interest ----
+// ---- sounds: generated by GearScript, so free to use ----
+Thud::Sound   { kind: thud; volume: 80%; }
+Knock::Sound  { kind: knock; volume: 75%; }
+Tap::Sound    { kind: tap; pitch: 130%; volume: 45%; }
+Clank::Sound  { kind: clank; pitch: 80%; volume: 45%; }
+Snap::Sound   { kind: snap; volume: 55%; }
+Latch::Sound  { kind: latch; volume: 70%; }
+Click::Sound  { kind: click; volume: 60%; }
+Ding::Sound   { kind: ding; pitch: 150%; volume: 40%; }
+Whoosh::Sound { kind: whoosh; length: 1.6s; volume: 30%; }
+Tick::Sound   { kind: tick; volume: 80%; }
+Tock::Sound   { kind: tock; volume: 80%; }
+Chime::Sound  { kind: chime; volume: 45%; }
+Aim::Sphere { radius: 1mm; at: (0, 0, 0); }
+Observer { position: (900mm, 250mm, 2900mm); fov: 34deg; }
+Light { kind: directional; direction: (-0.55, -0.7, -1); power: 0.95; }
+Light { kind: point; at: (420mm, 700mm, 650mm); power: 0.32; color: #ffe2b8; }
+Light { kind: point; at: (-500mm, 300mm, 900mm); power: 0.3; color: #cfe0ff; }
+Scene { duration: 110s; background: #0b0f14; }
+
+@style
+Backboard { color: #5b3a24; material: plastic; }
+Crown, Crown2, Plinth, Plinth2 { color: #4a2e1c; material: plastic; }
+Finial { color: #d9a84a; material: gold; }
+TagBoard { color: transparent; label: "Walnut backboard"; }
+TagCrown { color: transparent; label: "Crown and finial"; }
+TagPlinth { color: transparent; label: "Plinth"; }
+BackPlate { color: #5e4422; material: metal; }
+Pillar1, Pillar2, Pillar3, Pillar4 { color: #e2c070; material: gold; }
+TagBack { color: transparent; label: "Back plate"; }
+TagPillars { color: transparent; label: "Pillars hold the plates apart"; }
+TagGreatWheel { color: transparent; label: "Great wheel · driven by the weights"; }
+TagCentreWheel { color: transparent; label: "Centre wheel · one turn per hour"; }
+TagThirdWheel { color: transparent; label: "Third wheel"; }
+TagEscapeWheel { color: transparent; label: "Escape wheel · lets one tooth go per tick"; }
+GreatWheel, CentreWheel, ThirdWheel { color: #e2b04e; material: metal; outline: 1px #5a3f12; }
+EscapeWheel { color: #c8ced6; material: chrome; outline: 1px #3a4048; }
+GreatWheel.arbor, CentreWheel.arbor, ThirdWheel.arbor, EscapeWheel.arbor { color: #c8ced6; material: chrome; }
+Anchor { color: #c8ced6; material: chrome; outline: 1px #3a4048; }
+TagAnchor { color: transparent; label: "Anchor · rocks with the pendulum"; }
+FrontPlate { color: #a8812f; material: metal; }
+TagFront { color: transparent; label: "Front plate"; }
+ChapterRing { color: #e6dabd; material: matte; outline: 1px #a89a78; }
+TagRing { color: transparent; label: "Chapter ring"; }
+Mark0, Mark1, Mark2, Mark3, Mark4, Mark5, Mark6, Mark7, Mark8, Mark9, Mark10, Mark11 { color: #1b1f24; material: matte; }
+TagMarks { color: transparent; label: "Hour marks"; }
+Cannon { color: #c8ced6; material: chrome; }
+HourHand, MinuteHand { color: #22406e; material: metal; }
+TagHour { color: transparent; label: "Hour hand"; }
+TagMinute { color: transparent; label: "Minute hand"; }
+Pendulum { color: #c8ced6; material: chrome; }
+Pendulum.bob { color: #d9a945; material: metal; }
+TagPendulum { color: transparent; label: "Pendulum · one beat per second"; }
+PulleyL, PulleyR { color: #c99a3e; material: brushed; }
+CordL, CordR { color: #2b2b2b; material: matte; }
+WeightL, WeightR, CapL, CapR { color: #d9a945; material: metal; }
+HookL, HookR { color: #c8ced6; material: chrome; }
+TagWeights { color: transparent; label: "Drive weights · the clock's power"; }
+Bezel { color: #e3b650; material: gold; }
+Glass { color: #cfe6f0; material: glass; }
+Aim { color: transparent; }
+
+@motion
+Backboard {
+    0s..1s: move: (0, -500mm, 0); opacity: 0;
+    1s..3.4s: move: (0, -500mm, 0) -> (0, 0, 0) ease-out;
+    1s..1.6s: opacity: 0 -> 1;
+    1s..2.49s: sound: Thud at end;
+    1s..3.4s: sound: Whoosh;
+}
+
+Crown {
+    0s..4.6s: move: (0, 260mm, 0); opacity: 0;
+    4.6s..6.4s: move: (0, 260mm, 0) -> (0, 0, 0) ease-out;
+    4.6s..5.2s: opacity: 0 -> 1;
+    4.6s..5.72s: sound: Knock at end;
+}
+
+Crown2 {
+    0s..5s: move: (0, 260mm, 0); opacity: 0;
+    5s..6.8s: move: (0, 260mm, 0) -> (0, 0, 0) ease-out;
+    5s..5.6s: opacity: 0 -> 1;
+    5s..6.12s: sound: Knock at end;
+}
+
+Finial {
+    0s..5.5s: move: (0, 220mm, 0); opacity: 0;
+    5.5s..7.3s: move: (0, 220mm, 0) -> (0, 0, 0) ease-out;
+    5.5s..6.1s: opacity: 0 -> 1;
+    5.5s..6.62s: sound: Tap at end;
+}
+
+Plinth {
+    0s..6.6s: move: (0, -260mm, 0); opacity: 0;
+    6.6s..8.4s: move: (0, -260mm, 0) -> (0, 0, 0) ease-out;
+    6.6s..7.2s: opacity: 0 -> 1;
+    6.6s..7.72s: sound: Knock at end;
+}
+
+Plinth2 {
+    0s..7s: move: (0, -260mm, 0); opacity: 0;
+    7s..8.8s: move: (0, -260mm, 0) -> (0, 0, 0) ease-out;
+    7s..7.6s: opacity: 0 -> 1;
+    7s..8.12s: sound: Knock at end;
+}
+
+TagBoard { 0s..2.2s: opacity: 0; 2.2s..2.65s: opacity: 0 -> 1; 5s..5.6s: opacity: 1 -> 0; }
+
+TagCrown { 0s..5.6s: opacity: 0; 5.6s..6.05s: opacity: 0 -> 1; 8.2s..8.8s: opacity: 1 -> 0; }
+
+TagPlinth { 0s..7.6s: opacity: 0; 7.6s..8.05s: opacity: 0 -> 1; 10.2s..10.8s: opacity: 1 -> 0; }
+
+BackPlate {
+    0s..12.6s: move: (0, 0, 320mm); opacity: 0;
+    12.6s..14.6s: move: (0, 0, 320mm) -> (0, 0, 0) ease-out;
+    12.6s..13.2s: opacity: 0 -> 1;
+    12.6s..13.84s: sound: Clank at end;
+    12.6s..14.6s: sound: Whoosh;
+}
+
+Pillar1 {
+    0s..15.2s: move: (0, 0, 170mm); opacity: 0;
+    15.2s..16.4s: move: (0, 0, 170mm) -> (0, 0, 0) ease-out;
+    15.2s..15.8s: opacity: 0 -> 1;
+    15.2s..15.94s: sound: Snap at end;
+}
+
+Pillar2 {
+    0s..15.55s: move: (0, 0, 170mm); opacity: 0;
+    15.55s..16.75s: move: (0, 0, 170mm) -> (0, 0, 0) ease-out;
+    15.55s..16.15s: opacity: 0 -> 1;
+    15.55s..16.29s: sound: Snap at end;
+}
+
+Pillar3 {
+    0s..15.9s: move: (0, 0, 170mm); opacity: 0;
+    15.9s..17.1s: move: (0, 0, 170mm) -> (0, 0, 0) ease-out;
+    15.9s..16.5s: opacity: 0 -> 1;
+    15.9s..16.64s: sound: Snap at end;
+}
+
+Pillar4 {
+    0s..16.25s: move: (0, 0, 170mm); opacity: 0;
+    16.25s..17.45s: move: (0, 0, 170mm) -> (0, 0, 0) ease-out;
+    16.25s..16.85s: opacity: 0 -> 1;
+    16.25s..16.99s: sound: Snap at end;
+}
+
+TagBack { 0s..13.6s: opacity: 0; 13.6s..14.05s: opacity: 0 -> 1; 16.4s..17s: opacity: 1 -> 0; }
+
+TagPillars { 0s..16.6s: opacity: 0; 16.6s..17.05s: opacity: 0 -> 1; 20s..20.6s: opacity: 1 -> 0; }
+
+GreatWheel {
+    0s..23s: move: (-260mm, -80mm, 160mm); opacity: 0;
+    23s..25s: move: (-260mm, -80mm, 160mm) -> (0, 0, 0) ease-out;
+    23s..23.6s: opacity: 0 -> 1;
+    95.5s..110s: rotate: 2.8125deg * (floor(t - 95.5) + min(1, (t - 95.5 - floor(t - 95.5)) * 6)) about z;
+    23s..24.24s: sound: Latch at end;
+    23s..25s: sound: Whoosh;
+}
+
+TagGreatWheel { 0s..24s: opacity: 0; 24s..24.45s: opacity: 0 -> 1; 27.4s..28s: opacity: 1 -> 0; }
+
+CentreWheel {
+    0s..28.4s: move: (0, 0, 260mm); opacity: 0;
+    28.4s..30.4s: move: (0, 0, 260mm) -> (0, 0, 0) ease-out;
+    28.4s..29s: opacity: 0 -> 1;
+    95.5s..110s: rotate: -4.5deg * (floor(t - 95.5) + min(1, (t - 95.5 - floor(t - 95.5)) * 6)) about z;
+    28.4s..29.64s: sound: Latch at end;
+    28.4s..30.4s: sound: Whoosh;
+}
+
+TagCentreWheel { 0s..29.4s: opacity: 0; 29.4s..29.85s: opacity: 0 -> 1; 32.8s..33.4s: opacity: 1 -> 0; }
+
+ThirdWheel {
+    0s..33.8s: move: (240mm, 60mm, 160mm); opacity: 0;
+    33.8s..35.8s: move: (240mm, 60mm, 160mm) -> (0, 0, 0) ease-out;
+    33.8s..34.4s: opacity: 0 -> 1;
+    95.5s..110s: rotate: 6deg * (floor(t - 95.5) + min(1, (t - 95.5 - floor(t - 95.5)) * 6)) about z;
+    33.8s..35.04s: sound: Latch at end;
+    33.8s..35.8s: sound: Whoosh;
+}
+
+TagThirdWheel { 0s..34.8s: opacity: 0; 34.8s..35.25s: opacity: 0 -> 1; 38.2s..38.8s: opacity: 1 -> 0; }
+
+EscapeWheel {
+    0s..39.2s: move: (0, 240mm, 160mm); opacity: 0;
+    39.2s..41.2s: move: (0, 240mm, 160mm) -> (0, 0, 0) ease-out;
+    39.2s..39.8s: opacity: 0 -> 1;
+    95.5s..110s: rotate: -7.5deg * (floor(t - 95.5) + min(1, (t - 95.5 - floor(t - 95.5)) * 6)) about z;
+    39.2s..40.44s: sound: Latch at end;
+    39.2s..41.2s: sound: Whoosh;
+}
+
+TagEscapeWheel { 0s..40.2s: opacity: 0; 40.2s..40.65s: opacity: 0 -> 1; 43.6s..44.2s: opacity: 1 -> 0; }
+
+Anchor {
+    0s..46.6s: move: (0, 170mm, 120mm); opacity: 0;
+    46.6s..48.4s: move: (0, 170mm, 120mm) -> (0, 0, 0) ease-out;
+    46.6s..47.2s: opacity: 0 -> 1;
+    96s..110s: rotate: -4deg * sin((t - 96) * 3.1416) about z;
+    46.6s..47.72s: sound: Latch at end;
+    46.6s..48.4s: sound: Whoosh;
+}
+
+TagAnchor { 0s..47.6s: opacity: 0; 47.6s..48.05s: opacity: 0 -> 1; 51s..51.6s: opacity: 1 -> 0; }
+
+FrontPlate {
+    0s..51.6s: move: (0, 0, 240mm); opacity: 0;
+    51.6s..53.4s: move: (0, 0, 240mm) -> (0, 0, 0) ease-out;
+    51.6s..52.2s: opacity: 0 -> 1;
+    51.6s..52.72s: sound: Clank at end;
+    51.6s..53.4s: sound: Whoosh;
+}
+
+TagFront { 0s..52.4s: opacity: 0; 52.4s..52.85s: opacity: 0 -> 1; 55.2s..55.8s: opacity: 1 -> 0; }
+
+ChapterRing {
+    0s..56.6s: move: (0, 0, 320mm); opacity: 0;
+    56.6s..58.6s: move: (0, 0, 320mm) -> (0, 0, 0) ease-out;
+    56.6s..57.2s: opacity: 0 -> 1;
+    56.6s..57.84s: sound: Knock at end;
+    56.6s..58.6s: sound: Whoosh;
+}
+
+TagRing { 0s..57.6s: opacity: 0; 57.6s..58.05s: opacity: 0 -> 1; 60.6s..61.2s: opacity: 1 -> 0; }
+
+Mark0 {
+    0s..60.6s: move: (0, 0, 90mm); opacity: 0;
+    60.6s..61.5s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    60.6s..61s: opacity: 0 -> 1;
+    60.6s..61.16s: sound: Tap at end;
+}
+
+Mark1 {
+    0s..60.84s: move: (0, 0, 90mm); opacity: 0;
+    60.84s..61.74s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    60.84s..61.24s: opacity: 0 -> 1;
+    60.84s..61.4s: sound: Tap at end;
+}
+
+Mark2 {
+    0s..61.08s: move: (0, 0, 90mm); opacity: 0;
+    61.08s..61.98s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    61.08s..61.48s: opacity: 0 -> 1;
+    61.08s..61.64s: sound: Tap at end;
+}
+
+Mark3 {
+    0s..61.32s: move: (0, 0, 90mm); opacity: 0;
+    61.32s..62.22s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    61.32s..61.72s: opacity: 0 -> 1;
+    61.32s..61.88s: sound: Tap at end;
+}
+
+Mark4 {
+    0s..61.56s: move: (0, 0, 90mm); opacity: 0;
+    61.56s..62.46s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    61.56s..61.96s: opacity: 0 -> 1;
+    61.56s..62.12s: sound: Tap at end;
+}
+
+Mark5 {
+    0s..61.8s: move: (0, 0, 90mm); opacity: 0;
+    61.8s..62.7s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    61.8s..62.2s: opacity: 0 -> 1;
+    61.8s..62.36s: sound: Tap at end;
+}
+
+Mark6 {
+    0s..62.04s: move: (0, 0, 90mm); opacity: 0;
+    62.04s..62.94s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    62.04s..62.44s: opacity: 0 -> 1;
+    62.04s..62.6s: sound: Tap at end;
+}
+
+Mark7 {
+    0s..62.28s: move: (0, 0, 90mm); opacity: 0;
+    62.28s..63.18s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    62.28s..62.68s: opacity: 0 -> 1;
+    62.28s..62.84s: sound: Tap at end;
+}
+
+Mark8 {
+    0s..62.52s: move: (0, 0, 90mm); opacity: 0;
+    62.52s..63.42s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    62.52s..62.92s: opacity: 0 -> 1;
+    62.52s..63.08s: sound: Tap at end;
+}
+
+Mark9 {
+    0s..62.76s: move: (0, 0, 90mm); opacity: 0;
+    62.76s..63.66s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    62.76s..63.16s: opacity: 0 -> 1;
+    62.76s..63.32s: sound: Tap at end;
+}
+
+Mark10 {
+    0s..63s: move: (0, 0, 90mm); opacity: 0;
+    63s..63.9s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    63s..63.4s: opacity: 0 -> 1;
+    63s..63.56s: sound: Tap at end;
+}
+
+Mark11 {
+    0s..63.24s: move: (0, 0, 90mm); opacity: 0;
+    63.24s..64.14s: move: (0, 0, 90mm) -> (0, 0, 0) ease-out;
+    63.24s..63.64s: opacity: 0 -> 1;
+    63.24s..63.8s: sound: Tap at end;
+}
+
+TagMarks { 0s..61.2s: opacity: 0; 61.2s..61.65s: opacity: 0 -> 1; 63.8s..64.4s: opacity: 1 -> 0; }
+
+Cannon {
+    0s..64.4s: move: (0, 0, 120mm); opacity: 0;
+    64.4s..65.4s: move: (0, 0, 120mm) -> (0, 0, 0) ease-out;
+    64.4s..65s: opacity: 0 -> 1;
+    64.4s..65.02s: sound: Click at end;
+}
+
+HourHand {
+    0s..66.2s: move: (0, 0, 160mm); opacity: 0;
+    66.2s..67.8s: move: (0, 0, 160mm) -> (0, 0, 0) ease-out;
+    66.2s..66.8s: opacity: 0 -> 1;
+    0s..95.5s: rotate: 55deg about z;
+    95.5s..110s: rotate: 55deg + -0.375deg * (floor(t - 95.5) + min(1, (t - 95.5 - floor(t - 95.5)) * 6)) about z;
+    66.2s..67.19s: sound: Snap at end;
+    66.2s..67.8s: sound: Whoosh;
+}
+
+MinuteHand {
+    0s..69.2s: move: (0, 0, 160mm); opacity: 0;
+    69.2s..70.8s: move: (0, 0, 160mm) -> (0, 0, 0) ease-out;
+    69.2s..69.8s: opacity: 0 -> 1;
+    0s..95.5s: rotate: -60deg about z;
+    95.5s..110s: rotate: -60deg + -4.5deg * (floor(t - 95.5) + min(1, (t - 95.5 - floor(t - 95.5)) * 6)) about z;
+    69.2s..70.19s: sound: Snap at end;
+    69.2s..70.8s: sound: Whoosh;
+}
+
+TagHour { 0s..67.2s: opacity: 0; 67.2s..67.65s: opacity: 0 -> 1; 70s..70.6s: opacity: 1 -> 0; }
+
+TagMinute { 0s..70.2s: opacity: 0; 70.2s..70.65s: opacity: 0 -> 1; 73.2s..73.8s: opacity: 1 -> 0; }
+
+Pendulum {
+    0s..75.6s: move: (-900mm, 0, 0); opacity: 0;
+    75.6s..78.6s: move: (-900mm, 0, 0) -> (0, 0, 0) ease-out;
+    75.6s..76.4s: opacity: 0 -> 1;
+    96s..110s: rotate: 6deg * sin((t - 96) * 3.1416) about z;
+    95.5s..110s: sound: Tick every 2s;      // tick at one end of the swing,
+    96.5s..110s: sound: Tock every 2s;      // tock at the other
+    75.6s..77.46s: sound: Thud at end;
+    75.6s..78.6s: sound: Whoosh;
+}
+
+TagPendulum { 0s..78s: opacity: 0; 78s..78.45s: opacity: 0 -> 1; 82s..82.6s: opacity: 1 -> 0; }
+
+PulleyL {
+    0s..86.2s: move: (0, 0, 120mm); opacity: 0;
+    86.2s..87.2s: move: (0, 0, 120mm) -> (0, 0, 0) ease-out;
+    86.2s..86.8s: opacity: 0 -> 1;
+    86.2s..86.82s: sound: Click at end;
+}
+
+CordL {
+    0s..86.6s: move: (0, 500mm, 0); opacity: 0;
+    86.6s..88.2s: move: (0, 500mm, 0) -> (0, 0, 0) ease-out;
+    86.6s..87.2s: opacity: 0 -> 1;
+}
+
+WeightL {
+    0s..86.9s: move: (0, 640mm, 0); opacity: 0;
+    86.9s..88.9s: move: (0, 640mm, 0) -> (0, 0, 0) ease-out;
+    86.9s..87.5s: opacity: 0 -> 1;
+    96s..110s: move: (0, -0.6mm/s, 0);
+    86.9s..88.14s: sound: Thud at end;
+    86.9s..88.9s: sound: Whoosh;
+}
+
+CapL {
+    0s..86.9s: move: (0, 640mm, 0); opacity: 0;
+    86.9s..88.9s: move: (0, 640mm, 0) -> (0, 0, 0) ease-out;
+    86.9s..87.5s: opacity: 0 -> 1;
+    96s..110s: move: (0, -0.6mm/s, 0);
+}
+
+HookL {
+    0s..86.9s: move: (0, 640mm, 0); opacity: 0;
+    86.9s..88.9s: move: (0, 640mm, 0) -> (0, 0, 0) ease-out;
+    86.9s..87.5s: opacity: 0 -> 1;
+    96s..110s: move: (0, -0.6mm/s, 0);
+}
+
+PulleyR {
+    0s..87.4s: move: (0, 0, 120mm); opacity: 0;
+    87.4s..88.4s: move: (0, 0, 120mm) -> (0, 0, 0) ease-out;
+    87.4s..88s: opacity: 0 -> 1;
+    87.4s..88.02s: sound: Click at end;
+}
+
+CordR {
+    0s..87.8s: move: (0, 500mm, 0); opacity: 0;
+    87.8s..89.4s: move: (0, 500mm, 0) -> (0, 0, 0) ease-out;
+    87.8s..88.4s: opacity: 0 -> 1;
+}
+
+WeightR {
+    0s..88.1s: move: (0, 640mm, 0); opacity: 0;
+    88.1s..90.1s: move: (0, 640mm, 0) -> (0, 0, 0) ease-out;
+    88.1s..88.7s: opacity: 0 -> 1;
+    96s..110s: move: (0, -0.6mm/s, 0);
+    88.1s..89.34s: sound: Thud at end;
+    88.1s..90.1s: sound: Whoosh;
+}
+
+CapR {
+    0s..88.1s: move: (0, 640mm, 0); opacity: 0;
+    88.1s..90.1s: move: (0, 640mm, 0) -> (0, 0, 0) ease-out;
+    88.1s..88.7s: opacity: 0 -> 1;
+    96s..110s: move: (0, -0.6mm/s, 0);
+}
+
+HookR {
+    0s..88.1s: move: (0, 640mm, 0); opacity: 0;
+    88.1s..90.1s: move: (0, 640mm, 0) -> (0, 0, 0) ease-out;
+    88.1s..88.7s: opacity: 0 -> 1;
+    96s..110s: move: (0, -0.6mm/s, 0);
+}
+
+TagWeights { 0s..88.6s: opacity: 0; 88.6s..89.05s: opacity: 0 -> 1; 92.2s..92.8s: opacity: 1 -> 0; }
+
+Bezel {
+    0s..93.4s: move: (0, 0, 200mm); opacity: 0;
+    93.4s..95s: move: (0, 0, 200mm) -> (0, 0, 0) ease-out;
+    93.4s..94s: opacity: 0 -> 1;
+    93.4s..94.39s: sound: Snap at end;
+}
+
+Glass {
+    0s..94.2s: move: (0, 0, 200mm); opacity: 0;
+    94.2s..95.8s: move: (0, 0, 200mm) -> (0, 0, 0) ease-out;
+    94.2s..95.4s: opacity: 0 -> 0.14;
+    94.2s..95.19s: sound: Ding at end;
+}
+
+Scene { sound: Chime at 94.8s; }   // the moment it is wound
+
+Aim {
+    0s..11.5s: move: (0, 30mm, 0) -> (0, 20mm, 0) ease-in-out;
+    11.5s..14s: move: (0, 20mm, 0) -> (0, 330mm, 0) ease-in-out;
+    14s..21.5s: move: (0, 330mm, 0) -> (0, 330mm, 0) ease-in-out;
+    21.5s..24s: move: (0, 330mm, 0) -> (0, 330mm, 0) ease-in-out;
+    24s..45s: move: (0, 330mm, 0) -> (0, 350mm, 0) ease-in-out;
+    45s..47.5s: move: (0, 350mm, 0) -> (0, 420mm, 0) ease-in-out;
+    47.5s..55s: move: (0, 420mm, 0) -> (0, 390mm, 0) ease-in-out;
+    55s..57.5s: move: (0, 390mm, 0) -> (0, 330mm, 30mm) ease-in-out;
+    57.5s..73.5s: move: (0, 330mm, 30mm) -> (0, 330mm, 30mm) ease-in-out;
+    73.5s..76.5s: move: (0, 330mm, 30mm) -> (0, 60mm, 0) ease-in-out;
+    76.5s..85.5s: move: (0, 60mm, 0) -> (0, 20mm, 0) ease-in-out;
+    85.5s..88s: move: (0, 20mm, 0) -> (0, -60mm, 0) ease-in-out;
+    88s..92.5s: move: (0, -60mm, 0) -> (0, -20mm, 0) ease-in-out;
+    92.5s..95s: move: (0, -20mm, 0) -> (0, 330mm, 40mm) ease-in-out;
+    95s..99.5s: move: (0, 330mm, 40mm) -> (0, 330mm, 40mm) ease-in-out;
+    99.5s..110s: move: (0, 330mm, 40mm) -> (0, 205mm, 0) ease-in-out;
+}
+
+Observer {
+    forever: look-at: Aim;
+    0s..11.5s: position: (900mm, 250mm, 2900mm) -> (700mm, 120mm, 2550mm) ease-in-out;
+    11.5s..14s: position: (700mm, 120mm, 2550mm) -> (360mm, 470mm, 700mm) ease-in-out;
+    14s..21.5s: position: (360mm, 470mm, 700mm) -> (260mm, 420mm, 600mm) ease-in-out;
+    21.5s..24s: position: (260mm, 420mm, 600mm) -> (240mm, 330mm, 520mm) ease-in-out;
+    24s..45s: position: (240mm, 330mm, 520mm) -> (-230mm, 380mm, 520mm) ease-in-out;
+    45s..47.5s: position: (-230mm, 380mm, 520mm) -> (170mm, 560mm, 440mm) ease-in-out;
+    47.5s..55s: position: (170mm, 560mm, 440mm) -> (120mm, 470mm, 520mm) ease-in-out;
+    55s..57.5s: position: (120mm, 470mm, 520mm) -> (40mm, 330mm, 700mm) ease-in-out;
+    57.5s..73.5s: position: (40mm, 330mm, 700mm) -> (-70mm, 300mm, 560mm) ease-in-out;
+    73.5s..76.5s: position: (-70mm, 300mm, 560mm) -> (700mm, 200mm, 2700mm) ease-in-out;
+    76.5s..85.5s: position: (700mm, 200mm, 2700mm) -> (520mm, 100mm, 2450mm) ease-in-out;
+    85.5s..88s: position: (520mm, 100mm, 2450mm) -> (-620mm, -40mm, 1800mm) ease-in-out;
+    88s..92.5s: position: (-620mm, -40mm, 1800mm) -> (-520mm, 0, 1650mm) ease-in-out;
+    92.5s..95s: position: (-520mm, 0, 1650mm) -> (0, 330mm, 760mm) ease-in-out;
+    95s..99.5s: position: (0, 330mm, 760mm) -> (0, 330mm, 760mm) ease-in-out;
+    99.5s..110s: position: (0, 330mm, 760mm) -> (480mm, 330mm, 1950mm) ease-in-out;
+}

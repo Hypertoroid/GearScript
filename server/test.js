@@ -4,7 +4,7 @@ const os = require('node:os'), path = require('node:path'), fs = require('node:f
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ms-'));
 /* a stand-in for the Claude API, so the AI route is tested without a real key */
 const STUB_PORT = 40000 + Math.floor(Math.random() * 20000), seenAi = [];
-const stub = require('node:http').createServer((q, s) => { let b = ''; q.on('data', c => b += c); q.on('end', () => { seenAi.push({ headers: q.headers, body: JSON.parse(b) }); s.writeHead(200, { 'Content-Type': 'application/json' }); s.end(JSON.stringify({ content: [{ type: 'text', text: '```orrery\n@scene\nA::Box { size: (10mm, 10mm, 10mm); }\n```\nA box.' }], stop_reason: 'end_turn' })); }); }).listen(STUB_PORT);
+const stub = require('node:http').createServer((q, s) => { let b = ''; q.on('data', c => b += c); q.on('end', () => { seenAi.push({ headers: q.headers, body: JSON.parse(b) }); s.writeHead(200, { 'Content-Type': 'application/json' }); s.end(JSON.stringify({ content: [{ type: 'text', text: '```gearscript\n@scene\nA::Box { size: (10mm, 10mm, 10mm); }\n```\nA box.' }], stop_reason: 'end_turn' })); }); }).listen(STUB_PORT);
 Object.assign(process.env, { DB: path.join(dir, 't.db'), ADMIN_TOKEN: 'admin-secret-token', PUBLIC_URL: '', ANTHROPIC_API_KEY: 'test-key', ANTHROPIC_BASE_URL: `http://127.0.0.1:${STUB_PORT}`, AI_DAILY_PER_VISITOR: '2', AI_PER_MINUTE: '50' });
 
 const { server } = require('./server.js');
@@ -18,11 +18,11 @@ server.listen(0, async () => {
   try {
     let r = await fetch(base + '/'); const landing = await r.text();
     ok(r.status === 200 && /studio\.html/.test(landing), 'serves the landing page, which links to the studio');
-    r = await fetch(base + '/studio.html'); ok(r.status === 200 && /Orrery Studio/.test(await r.text()), 'serves the studio');
+    r = await fetch(base + '/studio.html'); ok(r.status === 200 && /GearScript Studio/.test(await r.text()), 'serves the studio');
     ok(r.headers.get('x-content-type-options') === 'nosniff' && /default-src 'self'/.test(r.headers.get('content-security-policy') || ''), 'security headers are set');
     for (const p of ['/help.html', '/vendor/codemirror6.js', '/LICENSE', '/NOTICE', '/site-config.js']) { r = await fetch(base + p); ok(r.status === 200, `serves ${p}`); }
     r = await fetch(base + '/LICENSE'); ok(/text\/plain/.test(r.headers.get('content-type')), 'LICENSE is plain text');
-    for (const p of ['/server/server.js', '/server/t.db', '/../etc/passwd', '/%2e%2e/server/server.js', '/cli/orrery.js', '/.git/config']) { r = await fetch(base + p); ok(r.status === 404 || r.status === 403 || r.status === 400, `refuses ${p}`); }
+    for (const p of ['/server/server.js', '/server/t.db', '/../etc/passwd', '/%2e%2e/server/server.js', '/cli/gearscript.js', '/.git/config']) { r = await fetch(base + p); ok(r.status === 404 || r.status === 403 || r.status === 400, `refuses ${p}`); }
     r = await fetch(base + '/studio.html', { method: 'POST' }); ok(r.status === 405, 'static files are GET only');
 
     const { DatabaseSync } = require('node:sqlite'); const look = new DatabaseSync(process.env.DB);

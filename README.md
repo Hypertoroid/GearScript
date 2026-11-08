@@ -1,11 +1,11 @@
-# Orrery
+# GearScript
 
 
 **Describe mechanisms in a CSS-like language. Watch them move.**
 
-Orrery is a small language and browser-based studio for describing and animating mechanisms, from linkages and gears to engines, robots and 2D explainers. Its syntax is designed to be approachable for people and predictable for AI models.
+GearScript is a small language and browser-based studio for describing and animating mechanisms, from linkages and gears to engines, robots and 2D explainers. Its syntax is designed to be approachable for people and predictable for AI models.
 
-An orrery is a clockwork model of the solar system: turn one gear, and every planet moves in step. Orrery brings that same idea to the machines you describe.
+The name says what it does: a script for machines. Write how the parts connect, turn one gear, and everything moves in step.
 
 [![Licence: Apache 2.0](https://img.shields.io/badge/licence-Apache_2.0-16264a?style=flat-square)](LICENSE)
 ![Runs in the browser](https://img.shields.io/badge/runs_in-the_browser-ffb84d?style=flat-square)
@@ -39,7 +39,7 @@ Rocker  { color: #2f6f8f; }
 Crank { forever: rotate: 180deg/s; }   // drive one part; the solver moves the rest
 ```
 
-You drive only the crank. Orrery solves the closed loop at every frame, so the coupler and rocker follow the way real parts would. When something can't be built, you get an error that says why and what to write instead.
+You drive only the crank. GearScript solves the closed loop at every frame, so the coupler and rocker follow the way real parts would. When something can't be built, you get an error that says why and what to write instead.
 
 ## What makes it different
 
@@ -53,8 +53,8 @@ You drive only the crank. Orrery solves the closed loop at every frame, so the c
 - **Cutaways and exploded views.** `cut: z 0mm;` opens a part with a section plane, `material: ghost;` sees through a casing, and `explode: 0 -> 1` pulls an assembly apart.
 - **Words, charts and narration.** Text on parts or as parts (flat or solid 3D letters), `Plot` charts that draw themselves on, and `say:` lines spoken by the browser with captions burned into exports and saved as .srt or .vtt. Audio files work as voice-overs and music.
 - **Any format.** `frame: reel;` (or youtube-short, tiktok, slides, 4k, a ratio or pixels) shows the exact picture with its safe area; `sky: dusk;` wraps the scene in a sky.
-- **Many outputs.** MP4, WebM, GIF, PNG frames (with transparency), a self-contained `.html` 3D player, and the project itself as one `.orrery` file or three files.
-- **Made for AI.** A short syntax prompt (and, on a server with an API key, Generate and Fix with AI in the studio), a JSON schema of the language (`orrery schema`), `check --fix`, an MCP server for agents, a command-line checker, "copy the state at time t" to show an AI exactly what went wrong, and an evaluation set.
+- **Many outputs.** MP4, WebM, GIF, PNG frames (with transparency), a self-contained `.html` 3D player, and the project itself as one `.gscript` file or three files.
+- **Made for AI.** A short syntax prompt (and, on a server with an API key, Generate and Fix with AI in the studio), a JSON schema of the language (`gearscript schema`), `check --fix`, an MCP server for agents, a command-line checker, "copy the state at time t" to show an AI exactly what went wrong, and an evaluation set.
 
 ## Quick start
 
@@ -64,33 +64,33 @@ You drive only the crank. Orrery solves the closed loop at every frame, so the c
 
 ```sh
 cd cli && npm install
-node orrery.js check   ../examples/linkage.orrery
-node orrery.js sample  ../examples/linkage.orrery --at 0,1,2 --parts Rocker
-node orrery.js render  ../examples/linkage.orrery -o linkage.mp4     # also .webm .gif .png frames.zip sound.wav
-node orrery.js format  ../examples/linkage.orrery --write            # beautify: lay the code out like CSS
-node orrery.js test                                              # every example still moves as saved
-node orrery.js prompt  "a pendulum clock"                        # the AI syntax prompt
-node orrery.js mcp                                               # an MCP server for AI agents
+node gearscript.js check   ../examples/linkage.gscript
+node gearscript.js sample  ../examples/linkage.gscript --at 0,1,2 --parts Rocker
+node gearscript.js render  ../examples/linkage.gscript -o linkage.mp4     # also .webm .gif .png frames.zip sound.wav
+node gearscript.js format  ../examples/linkage.gscript --write            # beautify: lay the code out like CSS
+node gearscript.js test                                              # every example still moves as saved
+node gearscript.js prompt  "a pendulum clock"                        # the AI syntax prompt
+node gearscript.js mcp                                               # an MCP server for AI agents
 ```
 
 Rendering drives the studio in a headless browser, so it needs Playwright or a local Chrome.
 
 ## Documentation
 
-| File / Directory | Description |
+| | |
 |---|---|
-| [`help.html`](help.html) | The guide: every shape, anchor, joint, motion rule, and error, with runnable snippets. |
-| [`SPEC.md`](SPEC.md) | The language specification, condensed into a few pages for AI agents. |
-| [`OSR.pdf`](Orrery_Syntax_Reference.pdf) | A 21-page reference with a quick-reference card. |
-| [`examples/`](examples) | 33 examples, each provided as one `.orrery` file and, except for the chapters example, three additional files. |
-| [`evals/`](evals) | 12 tasks with reference answers for testing AI models. |
+| [`help.html`](help.html) | The documentation: every shape, anchor, joint, motion rule and error, with runnable snippets |
+| [`SPEC.md`](SPEC.md) | The language on a few pages, written for AI agents |
+| [`GearScript_Syntax_Reference.pdf`](GearScript_Syntax_Reference.pdf) | A 21-page reference with a quick-reference card |
+| [`examples/`](examples) | 33 examples, each as one `.gscript` file and (apart from the chapters example) as three files |
+| [`evals/`](evals) | 12 tasks with reference answers, for testing AI models |
 
 ## Repository layout
 
 ```
 index.html       landing page
 studio.html      the studio: the language core (<script id="core">) and the app (<script id="app">)
-help.html        the guide
+help.html        the documentation
 vendor/          CodeMirror 6, bundled
 cli/             command-line tool and MCP server
 server/          optional server: serves the site and keeps opt-in usage statistics
@@ -104,7 +104,7 @@ The studio is one HTML file with no build step. Edit it, reload, done.
 
 ## Running a public instance
 
-The studio works fully without the server, and there are no accounts anywhere. The optional `server/` serves the site and counts which features are used, only for visitors who allow it. See [SELF-HOSTING.md](SELF-HOSTING.md). If you run a public instance, call it something other than "Orrery" (see [TRADEMARKS.md](TRADEMARKS.md)), and replace the templates in `privacy.html`, `terms.html` and `site-config.js` with your own.
+The studio works fully without the server, and there are no accounts anywhere. The optional `server/` serves the site and counts which features are used, only for visitors who allow it. See [SELF-HOSTING.md](SELF-HOSTING.md). If you run a public instance, call it something other than "GearScript" (see [TRADEMARKS.md](TRADEMARKS.md)), and replace the templates in `privacy.html`, `terms.html` and `site-config.js` with your own.
 
 ## Contributing
 
@@ -114,10 +114,10 @@ Please follow the [code of conduct](CODE_OF_CONDUCT.md). To report a security pr
 
 ## Licence
 
-Orrery is open source under the [Apache License 2.0](LICENSE). You may use it, change it and ship it, including commercially. Keep the licence and the [NOTICE](NOTICE) file with copies.
+GearScript is open source under the [Apache License 2.0](LICENSE). You may use it, change it and ship it, including commercially. Keep the licence and the [NOTICE](NOTICE) file with copies.
 
-Created by **Sivaprasad Murali**. Animations, videos and `.orrery` projects you make with Orrery are yours. The licence covers the software, not what you create with it.
+Created by **Sivaprasad Murali**. Animations, videos and `.gscript` projects you make with GearScript are yours. The licence covers the software, not what you create with it.
 
-The name "Orrery" and the logo are not covered by the code licence. See [TRADEMARKS.md](TRADEMARKS.md).
+The name "GearScript" and the logo are not covered by the code licence. See [TRADEMARKS.md](TRADEMARKS.md).
 
 Third-party parts keep their own licences: three.js, CodeMirror 6 (bundled in `vendor/`), mp4-muxer and webm-muxer are MIT. See [NOTICE](NOTICE).

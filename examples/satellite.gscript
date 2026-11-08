@@ -1,0 +1,28 @@
+@gearscript 1
+
+@scene
+// A satellite in space: Earth turns while the satellite circles it among the stars.
+Earth::Sphere { radius: 260mm; }
+Satellite::Group {
+  body:   Box { size: (40mm, 40mm, 60mm); }
+  panelL: Box { size: (140mm, 4mm, 44mm); at: (-92mm, 0, 0); }
+  panelR: Box { size: (140mm, 4mm, 44mm); at: (92mm, 0, 0); }
+  dish:   Dome { radius: 18mm; at: (0, -24mm, 0); orient: 180deg about x; }
+  at: (440mm, 0, 0); overlap: allow;
+}
+Moon::Sphere { radius: 50mm; at: (-1000mm, 380mm, -1500mm); }
+
+Observer { position: (0, 430mm, 1300mm); look-at: (0, 0, 0); }
+Light    { kind: directional; direction: (-1, -0.2, -0.4); power: 0.95; }   // the Sun, off to the right
+Scene    { duration: 12s; sky: space; }
+
+@style
+Earth { color: gradient(#1d4f91, #3fa66b, axis: y); roughness: 0.75; }
+Satellite { color: #c9ced6; material: metal; }
+Satellite.panelL, Satellite.panelR { color: #1c3f7a; metalness: 0.6; roughness: 0.3; }
+Satellite.dish { color: #eeeeee; }
+Moon { color: #bfc4cc; roughness: 1; }
+
+@motion
+Earth     { forever: rotate: 15deg/s about y; }
+Satellite { forever: orbit: Earth 30deg/s; }

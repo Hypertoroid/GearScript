@@ -1,0 +1,51 @@
+@gearscript 1
+// How a gearbox works, in three chapters. Each chapter is a full animation that starts at 0 s;
+// Film (under the preview) plays them in order, and Export makes them one video.
+@common
+@scene
+// what every chapter shares: the picture, the narrator and the gearbox itself
+Scene    { frame: youtube; sky: studio; ground: #262b31; }
+Narrator::Voice { voice: en-GB; rate: 95%; }
+Back::Plate  { size: (320mm, 220mm); thickness: 8mm; corner: 14mm; at: (6mm, 0, -40mm); }
+Cover::Plate { size: (320mm, 220mm); thickness: 8mm; corner: 14mm; at: (6mm, 0, 40mm); }
+PostA::Cylinder.post { radius: 6mm; height: 72mm; orient: 90deg about x; at: (-140mm, -95mm, 0); repeat: 2 step (292mm, 0, 0); overlap: allow; }
+PostB::Cylinder.post { radius: 6mm; height: 72mm; orient: 90deg about x; at: (-140mm, 95mm, 0); repeat: 2 step (292mm, 0, 0); overlap: allow; }
+Input::Gear  { teeth: 40; module: 3mm; width: 14mm; at: (-42mm, 0, 0); }
+Output::Gear { teeth: 16; module: 3mm; width: 14mm; mesh: Input; }
+InShaft::Rod  { length: 150mm; radius: 6mm; orient: 90deg about x; attach: center to Input.center; overlap: allow; }
+OutShaft::Rod { length: 150mm; radius: 5mm; orient: 90deg about x; attach: center to Output.center; overlap: allow; }
+Observer { position: (230mm, 170mm, 560mm); look-at: (10mm, 0, 0); }
+Light    { kind: directional; direction: (-0.5, -1, -0.7); power: 0.8; }
+@style
+Back, Cover, .post { color: #3a4048; material: matte; }
+Input  { color: #c9a43a; material: metal; }
+Output { color: #bf7a4b; material: metal; }
+InShaft, OutShaft { color: steel; material: brushed; }
+
+@chapter Intro "What a gearbox does" fade 1s
+@scene
+Scene { duration: 5s; }
+@motion
+Input { forever: rotate: 45deg/s; }
+Scene { 0.4s..4.5s: say: Narrator "A gearbox changes how fast a shaft turns."; }
+
+@chapter Inside "Inside the case" extends Intro crossfade 1s
+@scene
+Scene { duration: 8s; }
+Observer { position: (120mm, 120mm, 470mm); look-at: (0, 0, 0); }
+@style
+Cover { cut: x 170mm; cut-color: #8a3b2b; }   // a section plane sweeps across the cover
+@motion
+Input { forever: rotate: 45deg/s; }
+Cover { 0s..3s: cut: 170mm -> -170mm ease-in-out; }
+Scene { 1.2s..5.5s: say: Narrator "Forty teeth drive sixteen, so the output turns two and a half times as fast."; }
+
+@chapter Parts "Every part" extends Inside crossfade 1s fade-out 1s
+@scene
+Scene { duration: 6s; }
+Observer { position: (520mm, 260mm, 420mm); look-at: (0, 0, 0); }
+@style
+Cover { cut: none; material: ghost; }
+@motion
+Input { forever: rotate: 30deg/s; }
+Scene { 0.5s..3s: explode: 0 -> 1.6 along z ease-in-out; 1s..5.5s: say: Narrator "Taken apart: a back plate, two gears on their shafts, and a cover."; }

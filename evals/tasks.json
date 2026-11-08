@@ -1,7 +1,7 @@
 {
- "format": "orrery-eval",
+ "format": "gearscript-eval",
  "version": "1.0",
- "note": "Give an agent each prompt (with SPEC.md), save its answer as <answers>/<id>.orrery (one file with @scene, @style and @motion) or <answers>/<id>/<id>.scene/.style/.motion, then run: orrery eval tasks.json <answers>",
+ "note": "Give an agent each prompt (with SPEC.md), save its answer as <answers>/<id>.gscript (one file with @scene, @style and @motion) or <answers>/<id>/<id>.scene/.style/.motion, then run: gearscript eval tasks.json <answers>",
  "tasks": [
   {
    "id": "gear-pair",

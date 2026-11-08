@@ -14,15 +14,15 @@ jobs:
         run: |
           cd cli
           fail=0
-          for f in ../examples/*.orrery; do node orrery.js check "$f" > /dev/null || { echo "FAILED: $f"; fail=1; }; done
+          for f in ../examples/*.gscript; do node gearscript.js check "$f" > /dev/null || { echo "FAILED: $f"; fail=1; }; done
           exit $fail
       - name: Every example still moves as saved (tests/motion)
-        run: cd cli && node orrery.js test
+        run: cd cli && node gearscript.js test
       - name: Beautify keeps every example the same
         run: |
           cd cli
-          for f in ../examples/*.orrery; do node orrery.js format "$f" > /tmp/f.orrery && node orrery.js check /tmp/f.orrery > /dev/null || { echo "FORMAT BROKE: $f"; exit 1; }; done
+          for f in ../examples/*.gscript; do node gearscript.js format "$f" > /tmp/f.gscript && node gearscript.js check /tmp/f.gscript > /dev/null || { echo "FORMAT BROKE: $f"; exit 1; }; done
       - name: Evaluation set
-        run: cd cli && node orrery.js eval ../evals/tasks.json ../evals/reference
+        run: cd cli && node gearscript.js eval ../evals/tasks.json ../evals/reference
       - name: Server tests
         run: cd server && npm test

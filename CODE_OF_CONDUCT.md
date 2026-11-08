@@ -1,6 +1,6 @@
 # Code of conduct
 
-Orrery is built by people with very different backgrounds: engineers, teachers, students, animators, hobbyists. We want everyone to feel welcome to ask questions and share work.
+GearScript is built by people with very different backgrounds: engineers, teachers, students, animators, hobbyists. We want everyone to feel welcome to ask questions and share work.
 
 ## Expected
 

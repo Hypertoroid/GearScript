@@ -1,6 +1,6 @@
-/* Orrery offline support. Pages come from the network when it is there (so updates arrive at once) and from
+/* GearScript offline support. Pages come from the network when it is there (so updates arrive at once) and from
    this cache when it is not; the bundled libraries come from the cache first. Bump VERSION to replace the cache. */
-const VERSION = 'orrery-1.0.0-beta';
+const VERSION = 'gearscript-1.0.0-beta';
 const CORE = ['studio.html', 'index.html', 'help.html', 'privacy.html', 'terms.html', 'site-config.js', 'manifest.webmanifest',
   'vendor/three.min.js', 'vendor/OrbitControls.js', 'vendor/codemirror6.js', 'vendor/GLTFLoader.js', 'vendor/mp4-muxer.js', 'vendor/webm-muxer.js', 'vendor/fonts3d.js',
   'brand/app-192.png', 'brand/app-512.png'];

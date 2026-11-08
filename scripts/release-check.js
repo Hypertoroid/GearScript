@@ -5,14 +5,14 @@ const fs = require('fs'), path = require('path'), root = path.join(__dirname, '.
 const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
 const problems = [], notes = [];
 /* site settings */
-global.window = {}; new Function('window', read('site-config.js'))(global.window); const S = global.window.ORRERY_SITE || {};
+global.window = {}; new Function('window', read('site-config.js'))(global.window); const S = global.window.GEARSCRIPT_SITE || {};
 if (!S.owner) problems.push('site-config.js: owner is empty');
 if (!S.contactEmail || /example\.(com|org)$/.test(S.contactEmail)) problems.push(`site-config.js: contactEmail is a placeholder (${S.contactEmail})`);
 if (!S.coffeeUrl || /yourname/.test(S.coffeeUrl)) notes.push('site-config.js: coffeeUrl is a placeholder, so the coffee links stay hidden');
 if (!S.repoUrl || /your-org/.test(S.repoUrl)) problems.push('site-config.js: repoUrl is a placeholder (' + (S.repoUrl || 'empty') + '); the header GitHub button links to it');
 /* one version everywhere */
 const v = (read('studio.html').match(/version: '([\w.-]+)'/) || [])[1];
-const cli = JSON.parse(read('cli/package.json')).version, sw = (read('sw.js').match(/orrery-([\w.-]+)'/) || [])[1], log = ((read('CHANGELOG.md').match(/^## ([\d.]+(?: beta)?)/m) || [])[1] || '').replace(/^(\d+\.\d+) beta$/, '$1.0-beta');
+const cli = JSON.parse(read('cli/package.json')).version, sw = (read('sw.js').match(/gearscript-([\w.-]+)'/) || [])[1], log = ((read('CHANGELOG.md').match(/^## ([\d.]+(?: beta)?)/m) || [])[1] || '').replace(/^(\d+\.\d+) beta$/, '$1.0-beta');
 const same = (a, b) => a && b && (a === b || b.startsWith(a + '.') || a.startsWith(b + '.'));
 if (!same(v, cli)) problems.push(`versions differ: studio ${v}, cli/package.json ${cli}`);
 if (!same(v, sw)) problems.push(`versions differ: studio ${v}, sw.js cache ${sw} (bump it, or installed apps keep the old files)`);

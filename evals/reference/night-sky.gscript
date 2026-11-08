@@ -1,0 +1,10 @@
+@gearscript 1
+@scene
+Tower::Cylinder { radius: 40mm; height: 300mm; at: (0, 150mm, 0); }
+Lamp::Sphere { radius: 20mm; at: (0, 330mm, 0); }
+Scene { duration: 8s; sky: night; ground: #141a22; }
+@style
+Tower { color: #e8e4dc; }
+Lamp  { color: #fff1c4; luminosity: 120%; }
+@motion
+Lamp { forever: rotate: 30deg/s about y; }

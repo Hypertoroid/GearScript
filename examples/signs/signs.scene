@@ -9,7 +9,7 @@ Step1::Text     { text: "A motor turns the 36-tooth driver"; size: 15mm; at: (0,
 Step2::Text     { text: "The idler only changes direction"; size: 15mm; at: (0, -190mm, 30mm); facing: camera; }
 Step3::Text     { text: "12 teeth: the output turns 3 times as fast"; size: 15mm; at: (0, -190mm, 30mm); facing: camera; }
 Plaque::Text    { text: "MODEL 3-1\nmodule 4 mm"; size: 15mm; at: (170mm, -86mm, -32mm); }   // printed on the board
-Brand::Text     { text: "ORRERY"; size: 26mm; at: (150mm, 84mm, -30mm); }   // solid letters standing on the board
+Brand::Text     { text: "GEARSCRIPT"; size: 26mm; at: (150mm, 84mm, -30mm); }   // solid letters standing on the board
 
 Observer { position: (240mm, 120mm, 900mm); look-at: (0, 20mm, 0); fov: 36deg; }
 Light    { kind: directional; direction: (-0.4, -0.8, -1); power: 0.75; }

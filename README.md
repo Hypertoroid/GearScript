@@ -77,13 +77,13 @@ Rendering drives the studio in a headless browser, so it needs Playwright or a l
 
 ## Documentation
 
-| | |
+| File / Directory | Description |
 |---|---|
-| [`help.html`](help.html) | The guide: every shape, anchor, joint, motion rule and error, with runnable snippets |
-| [`SPEC.md`](SPEC.md) | The language on a few pages, written for AI agents |
-| [`Orrery_Syntax_Reference.pdf`](Orrery_Syntax_Reference.pdf) | A 21-page reference with a quick-reference card |
-| [`examples/`](examples) | 33 examples, each as one `.orrery` file and (apart from the chapters example) as three files |
-| [`evals/`](evals) | 12 tasks with reference answers, for testing AI models |
+| [`help.html`](help.html) | The guide: every shape, anchor, joint, motion rule, and error, with runnable snippets. |
+| [`SPEC.md`](SPEC.md) | The language specification, condensed into a few pages for AI agents. |
+| [`OSR.pdf`](Orrery_Syntax_Reference.pdf) | A 21-page reference with a quick-reference card. |
+| [`examples/`](examples) | 33 examples, each provided as one `.orrery` file and, except for the chapters example, three additional files. |
+| [`evals/`](evals) | 12 tasks with reference answers for testing AI models. |
 
 ## Repository layout
 

@@ -66,10 +66,13 @@ function fromSingle(text) {
 const plain = (p) => ({ scene: p.scene || '', style: p.style || '', motion: p.motion || '' });
 
 /* the base prompt the studio's AI prompt button copies, in the three-file or one-file reply format */
-function aiPrompt(single, chapters) {
+function aiPrompt(single, chapters, task) {
   const html = fs.readFileSync(STUDIO, 'utf8');
   const get = (name) => { const m = html.match(new RegExp('const ' + name + ' = `([\\s\\S]*?)`;')); return m ? m[1].replace(/\\`/g, '`').replace(/\\\\/g, '\\') : ''; };
-  return get('AI_PROMPT').trim() + '\n\n' + get(chapters ? 'AI_FORMAT_FILM' : single ? 'AI_FORMAT_SINGLE' : 'AI_FORMAT_FILES');
+  /* as in the studio: narration and chapters only when the task asks for them (with no task words, both, as a full reference) */
+  const rx = (name) => { const m = html.match(new RegExp(name + ' = (/.*?/i)')); try { return m ? new Function('return ' + m[1])() : null; } catch (e) { return null; } };
+  const narr = !task || (rx('AI_NARR_RX') || /narrat/i).test(task), chap = chapters || !task || (rx('AI_CHAP_RX') || /chapter/i).test(task);
+  return [get('AI_PROMPT').trim(), narr ? get('AI_NARRATION').trim() : '', chap ? get('AI_CHAPTERS').trim() : '', get('AI_CHECK').trim(), get(chapters ? 'AI_FORMAT_FILM' : single ? 'AI_FORMAT_SINGLE' : 'AI_FORMAT_FILES')].filter(Boolean).join('\n\n');
 }
 
 /* ---------- schema: the language as data, for editors and AI tools ---------- */
@@ -107,7 +110,7 @@ function checkFilm(project) {
       const j = d.json(), L = j.file && M.layerOf(cf.layers, j.file, j.line); let b = i, line = j.line;
       if (L) { b = L.box; const bx = L.box < 0 ? f.common : f.chapters[L.box]; line = bx.start[j.file] ? bx.start[j.file] + L.line - 1 : j.line; }
       const out = { ...j, section: j.file || undefined, chapter: b < 0 ? '@common' : f.chapters[b].name, file: 'project', line };
-      if (out.edit) out.edit = { ...out.edit, line };
+      if (out.edit) out.edit = { ...out.edit, line: line + (out.edit.line - j.line) };
       const k = [out.code, out.line, out.col, out.message].join('|'); if (seen.has(k)) continue; seen.add(k); diagnostics.push(out);
     }
     models.push(m);
@@ -126,7 +129,7 @@ function check(project) {
   let diagnostics = m.diags.map(d => d.json());
   if (project.single) {   /* report lines in the single file, and say which section each one is in */
     const sp = project.single;
-    diagnostics = [...sp.issues.map(d => d.json()), ...diagnostics.map(d => ({ ...d, section: d.file, file: 'project', line: core().projectLine(sp, d.file, d.line) }))];
+    diagnostics = [...sp.issues.map(d => d.json()), ...diagnostics.map(d => { const line = core().projectLine(sp, d.file, d.line); return { ...d, section: d.file, file: 'project', line, ...(d.edit ? { edit: { ...d.edit, line: line + (d.edit.line - d.line) } } : {}) }; })];
   }
   const sounds = (m.soundEvents || []).map(e => ({ t: Math.round(e.t * 1000) / 1000, sound: e.sound, kind: m.sounds.get(e.sound).kind, volume: Math.round(e.volume * 100) / 100, target: e.target }));
   return { ok: !diagnostics.some(d => d.severity === 'error'), duration: m.duration, parts: m.order.map(e => e.name), sounds, diagnostics, model: m };
@@ -146,26 +149,35 @@ function sourcePaths(p) {
   for (const k of ['scene', 'style', 'motion']) if (fs.existsSync(base + '.' + k)) out[k] = base + '.' + k;
   return out;
 }
-/* apply the machine edits that warnings carry (W0108 # comments, W0203 property names, W0513 easings), repeatedly until none are left */
-function fixProject(p) {
+/* apply the machine edits problems carry, repeatedly until none are left. Sure edits only (# comments, other names for a property,
+   easings, ignored properties …); with guesses, the likely corrections too ("Did you mean …?", a value back in its range), each round
+   after the sure ones. Stops when a round changes nothing, when the project comes back to a text it already had, or after 10 rounds */
+function fixProject(p, guesses) {
   const where = sourcePaths(p); if (!where) throw usage('--fix works on .orrery files and .scene/.style/.motion files.');
-  let applied = 0;
-  for (let round = 0; round < 6; round++) {
-    const c = check(readProject(p)); const eds = c.diagnostics.filter(d => d.edit);
-    if (!eds.length) return { applied, check: c };
+  let applied = 0; const changes = [], seenText = new Set();
+  const snapshot = () => Object.values(where).map(f => fs.readFileSync(f, 'utf8')).join('\u0000');
+  seenText.add(snapshot());
+  for (let round = 0; round < 10; round++) {
+    const c = check(readProject(p)); const fixable = c.diagnostics.filter(d => d.edit);
+    let eds = fixable.filter(d => !d.edit.guess);
+    if (!eds.length && guesses) eds = fixable.filter(d => d.edit.guess);
+    if (!eds.length) return { applied, changes, check: c };
     const byFile = new Map();
     for (const d of eds) { const f = where.project ? 'project' : d.file; if (!where[f]) continue; if (!byFile.has(f)) byFile.set(f, []); byFile.get(f).push(d); }
-    if (!byFile.size) return { applied, check: c };
+    let n = 0;
     for (const [f, list] of byFile) {
-      const lines = fs.readFileSync(where[f], 'utf8').split('\n');
-      list.sort((a, b) => b.line - a.line || b.col - a.col);
-      for (const d of list) { const L = lines[d.line - 1]; if (L == null) continue; lines[d.line - 1] = L.slice(0, d.col - 1) + d.edit.ins + L.slice(d.col - 1 + d.edit.del); applied++; }
-      fs.writeFileSync(where[f], lines.join('\n'));
+      const r = core().applyEdits(fs.readFileSync(where[f], 'utf8'), list);
+      if (!r.applied.length) continue;
+      fs.writeFileSync(where[f], r.text); n += r.applied.length;
+      for (const x of r.changes) changes.push(`${x.d.code} line ${x.line}: ${x.was ? JSON.stringify(x.was.trim()) + (x.ins ? ' → ' + JSON.stringify(x.ins.trim()) : ' removed') : 'added ' + JSON.stringify(x.ins.trim())}${x.d.edit.guess ? '  (guess)' : ''}`);
     }
+    applied += n;
+    const now = snapshot(); if (!n || seenText.has(now)) return { applied, changes, check: check(readProject(p)) };
+    seenText.add(now);
   }
-  return { applied, check: check(readProject(p)) };
+  return { applied, changes, check: check(readProject(p)) };
 }
-function fmtDiag(d) { return `${d.severity === 'error' ? 'error' : 'warning'} ${d.code} ${d.file || ''}:${d.line}:${d.col}${d.chapter || d.section ? ' (' + [d.chapter, d.section].filter(Boolean).join(' › ') + ')' : ''}  ${d.message}${d.fix ? '\n    fix: ' + d.fix : ''}`; }
+function fmtDiag(d) { return `${d.severity === 'error' ? 'error' : 'warning'} ${d.code} ${d.file || ''}:${d.line}:${d.col}${d.chapter || d.section ? ' (' + [d.chapter, d.section].filter(Boolean).join(' › ') + ')' : ''}  ${d.message}${d.edit ? (d.edit.guess ? '  [--fix --suggestions]' : '  [--fix]') : ''}${d.fix ? '\n    fix: ' + d.fix : ''}`; }
 
 /* ---------- sample: numbers an agent can assert on ---------- */
 const r3 = v => v.map(x => Math.round(x * 1000) / 1000);
@@ -418,7 +430,7 @@ function mcp() {
     const text = (o) => ({ content: [{ type: 'text', text: typeof o === 'string' ? o : pretty(o) }] });
     if (name === 'orrery_check') { const c = check(project); return text({ ok: c.ok, duration: c.duration, parts: c.parts, diagnostics: c.diagnostics }); }
     if (name === 'orrery_sample') return text(sample(project, { at: a.at, points: a.points, parts: a.parts, chapter: a.chapter }));
-    if (name === 'orrery_prompt') return text(aiPrompt(!!a.single, !!a.chapters));
+    if (name === 'orrery_prompt') return text(aiPrompt(!!a.single, !!a.chapters, a.task || ''));
     if (name === 'orrery_spec') return text(fs.readFileSync(path.join(__dirname, '..', 'SPEC.md'), 'utf8'));
     if (name === 'orrery_schema') return text(schema());
     if (name === 'orrery_render') {
@@ -440,7 +452,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-o' || a === '--out') o.out = argv[++i];
-    else if (a.startsWith('--')) { const k = a.slice(2); const v = !['single', 'json', 'write', 'update', 'fix', 'speak', 'chapters'].includes(k) && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true; o[k] = v; }
+    else if (a.startsWith('--')) { const k = a.slice(2); const v = !['single', 'json', 'write', 'update', 'fix', 'suggestions', 'speak', 'chapters'].includes(k) && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true; o[k] = v; }
     else pos.push(a);
   }
   return { pos, o };
@@ -451,7 +463,7 @@ async function main() {
   const [cmd, ...rest] = process.argv.slice(2); const { pos, o } = parseArgs(rest);
   switch (cmd) {
     case 'check': {
-      if (o.fix) { const r = fixProject(pos[0]); console.log(`fixed ${r.applied} problem${r.applied === 1 ? '' : 's'}`); }
+      if (o.fix) { const r = fixProject(pos[0], !!o.suggestions); if (!o.json) { for (const x of r.changes) console.log('  ' + x); console.log(`fixed ${r.applied} problem${r.applied === 1 ? '' : 's'}`); } }
       const c = check(readProject(pos[0]));
       if (o.json) console.log(JSON.stringify({ ok: c.ok, duration: c.duration, ...(c.chapters ? { chapters: c.chapters } : {}), parts: c.parts, sounds: c.sounds, diagnostics: c.diagnostics }, null, 2));
       else { for (const d of c.diagnostics) console.log(fmtDiag(d)); console.log(c.ok ? `ok: ${c.chapters ? c.chapters.length + ' chapters, ' : ''}${c.parts.length} parts, ${c.duration} s${c.sounds.length ? `, ${c.sounds.length} sound event${c.sounds.length === 1 ? '' : 's'}` : ''}` : 'failed'); }
@@ -513,7 +525,7 @@ async function main() {
     }
     case 'prompt': {
       const task = pos.join(' ').trim();
-      console.log(aiPrompt(!!o.single, !!o.chapters) + (task ? '\n\nTASK\n' + task : '')); break;
+      console.log(aiPrompt(!!o.single, !!o.chapters, task) + (task ? '\n\nTASK\n' + task : '')); break;
     }
     case 'mcp': mcp(); break;
     case 'schema': console.log(JSON.stringify(schema(), null, 1)); break;
@@ -521,8 +533,10 @@ async function main() {
     default:
       console.log(`Orrery ${core().version} command-line tool
 
-  orrery check    <project> [--json] [--fix] compile and list problems (exit code 1 on errors);
-                                            --fix applies the fixes that warnings carry
+  orrery check    <project> [--json] [--fix [--suggestions]]
+                                            compile and list problems (exit code 1 on errors);
+                                            --fix applies the sure fixes problems carry, until none are left;
+                                            --suggestions also applies the guesses ("Did you mean …?")
   orrery schema                             print the language as JSON: shapes, properties, values
   orrery sample   <project> [--at 0,1,2] [--points Crank.end.b] [--parts A,B] [--chapter Name]
                                             solve the motion and print positions as JSON

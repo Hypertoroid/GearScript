@@ -50,7 +50,7 @@ Crank { forever: rotate: 180deg/s; }
 ```
 
 - The single file is the easiest to review and edit in one pass. Diagnostics report lines in the single file, with `"file": "project"` and a `"section"` field.
-- A marker stands alone on its line; a comment may follow it. Each section appears once. Text before the first marker is error E0105, an unknown section E0106, a repeated section E0107.
+- A marker stands alone on its line; a comment may follow it. Each section appears once. Parts before the first marker are read as `@scene` with W0148, which offers to add the line (the same under `@common` or a `@chapter` line); other text before the first marker is error E0105, an unknown section E0106, a repeated section E0107.
 - Conversion: `orrery join <folder> -o project.orrery` and `orrery split project.orrery <folder>`. The MCP tools accept `project` (the single file) in place of `scene`, `style` and `motion`.
 
 ## Chapters
@@ -72,6 +72,7 @@ G2::Gear { teeth: 12; mesh: G1; }
 G1 { 0s..4s: rotate: 0deg/s -> 40deg/s; say: Narrator "Two gears, one driving the other."; }
 
 @chapter Ratio extends Intro crossfade 1s fade-out 1s
+- A reply or paste with chapters is merged into a project with chapters by chapter name: a chapter with a name already there replaces it, a new name is added after the pasted chapter before it, chapters the paste leaves out are kept, and `@common` is replaced only when the paste has one. The studio lists the chapters first when a paste would change more than one.
 @scene
 Observer { position: (0, 60mm, 420mm); look-at: G2; }
 @motion
@@ -82,6 +83,7 @@ G1 { forever: rotate: 40deg/s; }
 - The chapter line: `@chapter Name ["Title"] [extends Other] [cut | fade [time] [#colour] | crossfade [time]] [fade-out [time] [#colour]]`. The name starts with a capital letter. The transition says how the chapter starts: `cut`, `fade` (through black or the colour, 0.8 s by default) or `crossfade` (blends over the end of the chapter before, 1 s by default, so the two overlap). `fade-out` fades the chapter's end.
 - `extends Other` takes Other's scene and style, not its motion. A later `Observer` replaces the inherited one, and later style rules win.
 - One video has one shape: put `Scene { frame: … }` in `@common` (W0147 when chapters differ).
+- A title written without quotes (`@chapter Atomic Numbers`) is read as the title with W0149, which offers `@chapter Atomic "Atomic Numbers"`. Each chapter sees only `@common`, the chapters it extends and its own sections: a part, Voice or style rule from another chapter is unknown there.
 - Errors: E0140 a missing or bad chapter name, E0141 an unknown word on the chapter line, E0142 two chapters with one name, E0143 extends a chapter that does not exist, E0144 chapters that extend each other in a circle, E0145 a second or late `@common`, E0146 `@common` without a chapter.
 - Diagnostics report lines in the `.orrery` file, with `"chapter"` (or `"@common"`) and `"section"` fields. `orrery check` covers every chapter, `orrery sample --chapter Name` samples one, `orrery test` snapshots every chapter, and `orrery render` makes the whole film. `orrery prompt --chapters` gives the reply format for chapters.
 
@@ -91,7 +93,9 @@ G1 { forever: rotate: 40deg/s; }
 - Part names start with a capital letter (`Crank`). `let` names and parameters are lower case.
 - Every property ends with `;`. As in CSS, the last property in a block may leave it out.
 - Some other names are understood with warning W0203 and a fix: `position` → `at` and `rotation` → `orient` in the scene, `colour` → `color` and `font-color` → `text-color` in style, `rotation` → `rotate` and `translate` → `move` in motion. Easings written `ease_in_out` or `easeInOut` get W0513 and become `ease-in-out`.
-- Every warning that carries a fix lists it as `edit` in `orrery check --json`; `orrery check --fix` applies them, and the studio's Problems panel has a **Fix** button.
+- A problem (warning or error) that can be corrected by machine carries an `edit` in `orrery check --json`: replace `del` characters at `line`:`col` with `ins`. A **sure** edit writes what is read anyway (a `#` comment, another name for a property, an ignored property, `true` for `on`). An edit with `"guess": true` is a likely correction: the message ends with *Did you mean …?* (exactly one known name within one or two letters, a swap counting as one; a name declared further down is not treated as a typo), or a value outside its range written back inside it, or as a percentage when that fits (`opacity: 40` → `40%`). An edit with `old` names the text it replaces; when that text is not at `line`:`col`, the same word elsewhere on the line is used, and otherwise the edit is skipped. An edit that removes a whole property also removes the line when it leaves it empty.
+- Parse slips carry sure edits too: `Door:Box` and `Door Box {` become `Door::Box`; a near-miss symbol is replaced (`,` for `;` between properties, `=` for `:`); a `;`, `}` or `)` missing at the end of a line is added after the last token; a `:` missing after a property name is added; a `;` missing between two properties on one line (`teeth: 10 module: 2mm`) is added. A block never closed gets a guess that closes it at the end.
+- `orrery check --fix` applies sure edits, round after round; `--fix --suggestions` also applies guesses, after the sure ones in each round. The studio's Problems panel has a **Fix** button with the same choices (Fix all, Apply suggestions, Fix as much as possible).
 - Numbers carry units, with no space before the unit.
 
 ## Units decide meaning
@@ -135,6 +139,8 @@ Scene    { sky: sunset; sun: (5deg, -30deg) #ffb36b; }         // a sun on the s
 - `repeat: 4 step (100mm, 0, 0);` makes copies `Name1` to `Name4`. `i` (0, 1, 2 …) can be used in any expression.
 - `scatter: 40 in plane xz (600mm, 400mm) seed 7 spin 360deg vary 20% apart;` makes 40 copies at random places, the same on every build. Areas: `in plane xz|xy|yz (w, d)`, `in plane "2x + y - z = 100mm" (w, d)` (any plane as an equation; the copies centre on the point of it nearest the part's `at`), `in plane normal (a, b, c) (w, d)` (a tilted plane through `at`), `along x|y|z length`, `in box (x, y, z)`, `in disc r`, `on circle r`, `in sphere r` (disc and circle take an optional `plane xy`). Options: `seed` (another layout), `spin` (a random turn about the plane's normal, up to the angle), `vary` (sizes vary by up to that share), `apart` (copies kept from touching; W0124 when there is no room). Flat shapes lie in the plane. A plane takes an optional third size, `(w, d, depth)`, that also spreads the copies along its normal, so they fill a slab instead of a sheet. Copies are `Name1` … `NameN` and keep the part's classes, so style and motion can target them as a `.class`.
 - `fixed: top-left;` keeps the part at one place on the screen, whatever the Observer does: `top-left`, `top`, `top-right`, `left`, `center`, `right`, `bottom-left`, `bottom` or `bottom-right`, then an optional margin written as a bare percentage (`fixed: bottom 8%;`, 5% by default; `fixed: bottom margin 8%;` and a separate `margin: 8%;` are read the same way with W0232, which offers the fix), or `fixed: (x%, y%)` for the part's centre measured from the top-left corner. The part is drawn just in front of the camera at the size it has at the Observer's starting distance, so titles, logos and step counters stay readable while the camera moves, orbits, follows or zooms. It keeps its own motion (a spin, a fade) and casts no shadow. It goes on a whole part (E0231 on a group member) and takes no connection (E0231); fixed parts do not count in the scene's size, the overlap check or exploded views. E0230 for an unknown place.
+- `fixed: band;` puts a part at the top of the caption band (the bottom when there is none). Parts at the same named place that are showing at the same time stack: down from the top and the middle, up from the bottom. A part faded to opacity 0 leaves its place free.
+- `Scene { caption-band: 18%; }` keeps a strip at the bottom of the picture clear: the Observer's view is drawn smaller (zoom × (1 − band)) and raised by half the band, in the preview and in exports (the Free camera ignores it). 0 to 40%; `on` is 18%, `off` is 0; outside the range, W0624. Narration captions sit at the bottom of the band.
 - Points can be anchor arithmetic: `Frame.face.top + (0, 10mm, 0)`.
 
 ### Shapes and their anchors
@@ -329,13 +335,14 @@ Scene { 0s..1s: sound: VoiceOver; }
 ```
 
 `neural: en_GB-alan-medium;` on a Voice picks the voice for exports (below). `say: Voice "words" [at end | at 1.5s];` speaks a line (the voice can be left out when there is only one) and shows it as a caption until the words are likely spoken or the voice's next line starts; `captions: off;` speaks without them. Lines are spoken with the browser's own voices in the preview and in the 3D player. A video file cannot record those voices, so captions are drawn into MP4, WebM, GIF and PNG exports and the export panel saves them as `.srt` or `.vtt`. For speech in MP4 and WebM, tick **Speak the lines into the video** (or `orrery render --speak`): each line is generated by a Piper neural voice running in the browser (experimental; the voice, 20 to 70 MB, downloads from huggingface.co the first time and is kept for offline use). Or add a voice-over recorded or made with any text-to-speech tool as an audio file. Audio files (MP3, WAV, OGG, M4A, up to 25 MB) are added with Insert › 3D models and audio, play with `sound:` like any Sound, are mixed into video exports and saved in the project `.zip`.
+- Captions are shown like subtitles: a spoken line is split into parts of at most about 84 characters (two short lines), at sentence ends, then at clause marks, then between words, with short neighbours joined; each part shows for its share of the line's speaking time, the last until the caption ends. Exports and .srt/.vtt files use the same parts. W0550: a line is still being spoken when the next line of the same voice starts. W0551: a line of more than 40 words. W0625: a Text of more than 16 words.
 
 **Timing lines:** a voice speaks about 2.6 words a second at `rate: 100%`. Leave that long before the next line of the same voice (a new line ends the caption), make the block or `Scene { duration }` long enough for the last line, and keep each line to one idea of 4 to 14 words. W0519 warns when a line takes longer to say than the motion lasts (everything has stopped and no `forever` rule runs), or when it runs past the end of the animation: stretch the motion over the words, rather than a quick move followed by a still picture.
 
 ## Tools for AI agents
 
 - `orrery schema` (and the MCP tool `orrery_schema`) prints the language as JSON: every shape with its properties, required properties and anchors, the style, motion and block properties with examples, units, easings, sound kinds, sky and frame presets. `docs/orrery-schema.json` is the same file.
-- `orrery check --json` lists every problem with a fix in words, and an `edit` for those that can be applied by machine; `orrery check --fix` applies them.
+- `orrery check --json` lists every problem with a fix in words, and an `edit` for those that can be applied by machine; `orrery check --fix` applies the sure ones, and `--fix --suggestions` the guesses too.
 - `orrery eval evals/tasks.json <answers>` scores a folder of AI answers against the task set.
 
 ## Common mistakes
@@ -352,3 +359,6 @@ Scene { 0s..1s: sound: VoiceOver; }
 | a title that drifts out of view while the Observer moves | `fixed: top-left;` on the Text keeps it on the screen |
 | a long spoken line over a one-second move | W0519; make the move last as long as the words |
 | a different `Scene { frame }` in each chapter | W0147; put the frame in `@common` |
+| a group member written `A::Sphere { … }` | W0109 reads it as `A: Sphere { … }` and offers the fix |
+| a block opened inside another block (`Nucleus { … }` in a block) | E0100 says blocks do not nest |
+| style rules or timed motion in the scene | E0200 says which section it belongs in |

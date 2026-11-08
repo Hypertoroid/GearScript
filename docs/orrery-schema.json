@@ -1564,7 +1564,7 @@
   {
    "name": "fixed",
    "example": "fixed: top-left;",
-   "doc": "Keeps the part at one place on the screen whatever the Observer does: top-left, top, top-right, left, center, right, bottom-left, bottom, bottom-right, then an optional margin (5%); or (x%, y%) from the top-left. For titles and logos in a moving camera"
+   "doc": "Keeps the part at one place on the screen whatever the Observer does: top-left, top, top-right, left, center, right, bottom-left, bottom, bottom-right, then an optional margin written as a bare percentage (fixed: bottom 8%;); or (x%, y%) from the top-left. For titles and logos in a moving camera"
   }
  ],
  "blocks": {
@@ -1632,6 +1632,11 @@
     "name": "frame",
     "example": "frame: reel;  or  frame: 9:16;  or  frame: 1080x1920;",
     "doc": "The picture's shape and size: the preview shows it exactly, and exports use it"
+   },
+   {
+    "name": "caption-band",
+    "example": "caption-band: 18%;  or  caption-band: on;",
+    "doc": "Scene: keeps a strip at the bottom clear of the scene, for captions and fixed: band; texts"
    },
    {
     "name": "sky",

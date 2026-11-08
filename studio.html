@@ -198,18 +198,61 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 
 .problems { flex: none; height: min(var(--prob-h), 45%); display: flex; flex-direction: column; background: var(--panel-2); min-height: 0; }
 .code.no-problems .problems, .code.no-problems .split.h { display: none; }
-.problems header { display: flex; align-items: center; gap: 8px; padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-.problems header .btn { margin-left: auto; padding: 2px 8px; font-size: 11px; text-transform: none; letter-spacing: 0; }
+.problems header { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.problems header .probacts { margin-left: auto; display: flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; }
+.problems header .btn { padding: 2px 8px; font-size: 11px; text-transform: none; letter-spacing: 0; }
+/* the Fix button and the row Fix buttons: tinted with the accent so they read as the thing to press on a dark panel */
+.problems .fixmain, .problems .rowfix { border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--line)); background: color-mix(in srgb, var(--accent) 16%, var(--panel)); color: var(--accent); font-weight: 600; }
+.problems .fixmain:hover, .problems .rowfix:hover { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.problems .fixsplit > .btn:first-child { gap: 5px; }
+.problems .fixsplit > .btn:nth-child(2) { border-left: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); padding-left: 3px; padding-right: 3px; }
+.problems .fixsplit svg, .problems .copysplit svg { width: 13px; height: 13px; }
+.problems .copysplit > .btn:nth-child(2) { padding-left: 3px; padding-right: 3px; }
+.problems .copysplit > .btn:first-child[data-copy="code"]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-right: 5px; display: inline-block; vertical-align: 1px; }
+.menu.up { top: auto; bottom: calc(100% + 6px); }
+.fixmenu { width: min(360px, calc(100vw - 24px)); }
+.fixmenu [role^="menuitem"] { align-items: flex-start; }
+.fixmenu [role^="menuitem"] svg { margin-top: 2px; }
+.fixmenu [role^="menuitem"] span { display: grid; grid-template-columns: auto 1fr; column-gap: 6px; row-gap: 1px; align-items: baseline; min-width: 0; }
+.fixmenu [role^="menuitem"] b { font-weight: 500; }
+.fixmenu [role^="menuitem"] small { color: var(--muted); font-family: var(--font-code); font-size: 11px; }
+.fixmenu [role^="menuitem"] i { grid-column: 1 / -1; font-style: normal; color: var(--muted); font-size: 11.5px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+
+.fixmenu [role^="menuitem"][aria-disabled="true"] { opacity: .5; cursor: default; }
+.fixmenu [role^="menuitem"][aria-disabled="true"]:hover { background: none; }
+.fixmenu [role^="menuitem"] kbd:empty { display: none; }
 .problems ul { list-style: none; margin: 0; padding: 0 6px 8px; overflow: auto; }
-.problems li { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; padding: 6px 8px; border-radius: var(--radius); cursor: pointer; }
+.problems li { display: grid; grid-template-columns: 8.5em minmax(0, 1fr) 82px; gap: 2px 10px; padding: 6px 8px; border-radius: var(--radius); cursor: pointer; }
+.problems .probchips { display: flex; gap: 4px; text-transform: none; letter-spacing: 0; }
+.problems .probchips button { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 1px 8px; font: inherit; font-size: 11px; cursor: pointer; }
+.problems .probchips button i { font-style: normal; font-family: var(--font-code); }
+.problems .probchips [data-pf="error"] i { color: var(--err); } .problems .probchips [data-pf="warning"] i { color: var(--warn); } .problems .probchips [data-pf="fixable"] i { color: var(--accent); }
+.problems .probchips button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--fg); }
+.problems .act { grid-column: 3; grid-row: 1 / span 2; align-self: center; justify-self: stretch; }
+.problems .msg .sugg { font-family: var(--font-code); font-weight: 600; color: var(--accent); font-size: inherit; margin: 0; }
+.problems .msg .more { border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 999px; padding: 0 7px; font: inherit; font-family: var(--font-code); font-size: 11px; cursor: pointer; margin-left: 4px; }
+.problems .msg .more:hover, .problems .msg .more[aria-expanded="true"] { color: var(--fg); border-color: var(--accent); }
+.problems .locs { grid-column: 2; display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.problems .locchip { border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 5px; padding: 0 6px; font-family: var(--font-code); font-size: 11px; cursor: pointer; }
+.problems .locchip:hover { color: var(--accent); border-color: var(--accent); }
 .problems li:hover { background: var(--accent-soft); }
-.problems .loc { font-family: var(--font-code); font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+.problems .loc { font-family: var(--font-code); font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .problems .msg { min-width: 0; }
-.problems .msg b { font-family: var(--font-code); font-weight: 500; font-size: 11px; margin-right: 6px; }
-.problems li.e b { color: var(--err); } .problems li.w b { color: var(--warn); }
+.problems .msg b.pcode { font-family: var(--font-code); font-weight: 500; font-size: 11px; margin-right: 6px; }
+.problems li.e b.pcode { color: var(--err); } .problems li.w b.pcode { color: var(--warn); }
 .problems .fix { grid-column: 2; color: var(--muted); font-size: 12px; }
-.problems .rowfix { grid-column: 3; grid-row: 1 / span 2; align-self: center; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 2px 9px; font: inherit; font-size: 11.5px; cursor: pointer; white-space: nowrap; }
-.problems .rowfix:hover { border-color: var(--accent); color: var(--accent); }
+.problems .rowfix { width: 100%; justify-content: center; position: relative; display: inline-flex; align-items: center; gap: 5px; border-radius: 6px; padding: 3px 8px; font: inherit; font-size: 11.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.problems .rowfix svg { width: 13px; height: 13px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.problems .rowfix span { overflow: hidden; text-overflow: ellipsis; }
+.problems .rowfix .q { position: absolute; top: -6px; right: -5px; width: 14px; height: 14px; border-radius: 50%; background: var(--warn); color: var(--bg); font-style: normal; font-size: 10px; font-weight: 700; line-height: 14px; text-align: center; }
+.problems .rowfix.ai { border-color: var(--line); background: var(--panel); color: var(--fg); }
+.problems .rowfix.ai:hover { border-color: var(--accent); background: var(--panel); color: var(--accent); }
+.fixlist { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 12.5px; max-height: 50vh; overflow: auto; }
+.fixlist li { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; }
+.fixlist .loc { color: var(--muted); font-family: var(--font-code); font-size: 11.5px; white-space: nowrap; min-width: 6.5em; }
+.fixlist code { font-family: var(--font-code); font-size: 12px; overflow-wrap: anywhere; }
+.fixlist del { color: var(--err); text-decoration: line-through; } .fixlist ins { color: var(--ok, #3fb950); text-decoration: none; }
+.fixlist .g { grid-column: 2; color: var(--muted); font-size: 11.5px; }
 .problems .rowfix[disabled] { opacity: .5; cursor: default; }
 .problems .none { padding: 4px 14px 10px; color: var(--muted); font-size: 12px; }
 
@@ -321,6 +364,17 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 .chip[aria-selected="true"] i { background: var(--accent); color: var(--accent-ink); }
 .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--err); } .chip .dot.w { background: var(--warn); }
 .chip.playing { box-shadow: inset 0 -2px 0 var(--ok); }
+/* the chapter strip is a timeline: each chapter is as wide as it is long (within limits), with its length and how it starts */
+.chapbar .chips { align-items: stretch; }
+.chip.tl { flex: var(--g, 1) 1 0; min-width: 132px; max-width: 320px; border-radius: 8px; justify-content: flex-start; position: relative; overflow: hidden; }
+.chip.tl .len { margin-left: auto; font-family: var(--font-code); }
+.chip.tl .tr { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--muted); opacity: .6; }
+.chip.tl .tr.fade { background: linear-gradient(var(--fg), transparent); } .chip.tl .tr.crossfade { background: var(--accent); }
+.chip.tl .ph { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--ok); width: 0; }
+.chip.tl.dragging { opacity: .5; } .chip.tl.dropbefore { box-shadow: inset 3px 0 0 var(--accent); } .chip.tl.dropafter { box-shadow: inset -3px 0 0 var(--accent); }
+.mergelist { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
+.mergelist li { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.mergelist .k { font-size: 12px; color: var(--muted); } .mergelist .k.changed { color: var(--warn); } .mergelist .k.added { color: var(--ok, #3fb950); }
 .chipadd, .chipmore { flex: none; border: 1px dashed var(--line); background: none; color: var(--muted); border-radius: 999px; height: calc(24px * var(--ui)); min-width: calc(24px * var(--ui)); padding: 0 8px; display: inline-grid; place-items: center; font-size: 13px; }
 .chipmore { border-style: solid; }
 .chipadd:hover, .chipmore:hover { color: var(--fg); border-color: var(--accent); }
@@ -698,14 +752,22 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
   <circle cx="52.91" cy="15.40" r="1.9" fill="#e9eef6"/></svg><b>Orrery <em>Studio</em></b><span>v1.0 beta</span></a>
   <div class="menuwrap"><button class="btn filebtn" id="fileBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="fileMenu" title="New, open, recent and save (Ctrl Alt N, Ctrl O, Ctrl S)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>File<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button><div class="menu ctx" id="fileMenu" role="menu" aria-label="File" hidden></div></div>
   <button class="btn" id="examplesBtn" type="button" title="Browse the examples"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>Examples</button>
-  <span class="status" id="status"><i></i><span>Compiling</span></span>
-  <span class="spacer"></span>
+  <span class="tsep" aria-hidden="true"></span>
   <div class="tools" role="toolbar" aria-label="Insert">
     <span class="tlabel">Insert</span>
     <button class="btn icon" id="tbShape" type="button" aria-label="Insert a shape" title="Insert a shape, text or sky"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 8v8M8 12h8"/></svg></button>
     <button class="btn icon" id="tbSound" type="button" aria-label="Add a sound" title="Add a sound"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M20 12h0"/></svg></button>
     <button class="btn icon" id="tbModel" type="button" aria-label="3D models" title="Add a 3D model (STL, GLB, glTF) or an audio file (MP3, WAV)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></button>
   </div>
+  <span class="tsep" aria-hidden="true"></span>
+  <div class="ctl viewctl">
+    <div class="seg" role="group" aria-label="Editing view: three files or one file">
+      <button type="button" id="viewFiles" aria-pressed="true" title="Three files: .scene, .style and .motion in three tabs. Saves as a .zip">Three files</button>
+      <button type="button" id="viewSingle" aria-pressed="false" title="One file: a single .orrery file with @scene, @style and @motion sections. Easiest to review or hand to an AI">One file</button>
+    </div>
+  </div>
+  <span class="spacer"></span>
+  <span class="status" id="status"><i></i><span>Compiling</span></span>
   <span class="tsep" aria-hidden="true"></span>
   <label class="ctl" for="example" hidden><span class="lbl">Example</span>
     <select id="example">
@@ -763,14 +825,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
       </optgroup>
     </select>
   </label>
-  <div class="ctl viewctl">
-    <div class="seg" role="group" aria-label="Editing view: Split or Combined">
-      <button type="button" id="viewFiles" aria-pressed="true" title="Split: .scene, .style and .motion in three tabs. Saves as a .zip">Split</button>
-      <button type="button" id="viewSingle" aria-pressed="false" title="Combined: one .orrery file with @scene, @style and @motion sections. Easiest to review or hand to an AI">Combined</button>
-    </div>
-  </div>
-  <span class="tsep" aria-hidden="true"></span>
-  <button class="btn" id="aiBtn" type="button" title="Copy a prompt that teaches an AI assistant Orrery">AI prompt</button>
+  <button class="btn" id="aiBtn" type="button" title="Write a prompt for any AI assistant (ChatGPT, Claude, Gemini…): it teaches Orrery and carries your request, your code and its problems">Prompt AI</button>
   <div class="splitbtn">
     <button class="btn" id="saveProject" type="button" title="Save (Ctrl S)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></svg>Save</button><button class="btn" id="saveMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="saveMenu" aria-label="Save as" title="Save as…"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
     <div class="menu" id="saveMenu" role="menu" hidden>
@@ -847,7 +902,23 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
     </div>
     <div class="split h" id="splitProb" role="separator" aria-orientation="horizontal" aria-label="Resize the problems panel" tabindex="0" title="Drag to resize. Double-click to reset."></div>
     <div class="problems">
-      <header><span id="probTitle">Problems</span><button class="btn" id="fixAll" type="button" hidden title="Apply the fixes the warnings suggest (comments written with #, other names for a property or an easing)">Fix</button><button class="btn" id="aiFix" type="button" hidden title="Ask the AI to fix the errors in this chapter">Fix with AI</button><button class="btn" id="copyJson" type="button">Copy as JSON</button></header>
+      <header><span id="probTitle">Problems</span><div class="probchips" id="probChips" role="group" aria-label="Show only" hidden><button type="button" data-pf="error" aria-pressed="false"><i></i> <span>errors</span></button><button type="button" data-pf="warning" aria-pressed="false"><i></i> <span>warnings</span></button><button type="button" data-pf="fixable" aria-pressed="false"><i></i> <span>fixable</span></button></div><div class="probacts">
+        <div class="splitbtn fixsplit" id="fixSplit" hidden>
+          <button class="btn fixmain" id="fixMain" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 7.5l2 2 4.3-4.3a6 6 0 0 1-8 8l-6.6 6.6a2.1 2.1 0 0 1-3-3l6.6-6.6a6 6 0 0 1 8-8z"/></svg><span id="fixLabel">Fix all</span></button><button class="btn fixmain" id="fixMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="fixMenu" aria-label="More ways to fix" title="More ways to fix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
+          <div class="menu up fixmenu" id="fixMenu" role="menu" hidden>
+            <button role="menuitem" type="button" data-fix="sure"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 7.5l2 2 4.3-4.3a6 6 0 0 1-8 8l-6.6 6.6a2.1 2.1 0 0 1-3-3l6.6-6.6a6 6 0 0 1 8-8z"/></svg><span><b>Fix all</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
+            <button role="menuitem" type="button" data-fix="guess"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg><span><b>Apply suggestions</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
+            <button role="menuitem" type="button" data-fix="max"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><span><b>Fix as much as possible</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
+            <hr data-ai>
+            <button role="menuitem" type="button" data-fix="ai" data-ai><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span><b>Fix with AI</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
+          </div>
+        </div><div class="splitbtn copysplit" id="copySplit">
+          <button class="btn" id="copyJson" type="button" data-copy="json">Copy as JSON</button><button class="btn" id="copyMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="copyMenu" aria-label="More ways to copy the problems" title="More ways to copy the problems"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
+          <div class="menu up fixmenu" id="copyMenu" role="menu" hidden>
+            <button role="menuitem" type="button" data-copy="json"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H6a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2"/></svg><span><b>Copy as JSON</b><small></small><i>Just the problems, for an AI that already has your code</i></span><kbd data-k></kbd></button>
+            <button role="menuitem" type="button" data-copy="code"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span><b>Copy with code</b><small></small><i>A message ready to send: what to fix, the problems and your current code</i></span><kbd data-k></kbd></button>
+          </div>
+        </div></div></header>
       <ul id="probList"></ul>
     </div>
   </section>
@@ -877,7 +948,9 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
         <textarea id="aiTask" rows="3" placeholder="For example: a crane that lifts a box with a pulley, then swings it 90 degrees"></textarea>
         <p class="ai-locked" id="aiLocked" hidden>An example request, fixed for the tour. In real use you type your own.</p>
         <label class="check"><input type="checkbox" id="aiCode"> Include my current code, so it edits this project</label>
+        <label class="check"><input type="checkbox" id="aiProbs"> <span id="aiProbsLbl">Include the problems, so it fixes them first</span></label>
         <label class="check"><input type="checkbox" id="aiState"> <span id="aiStateLbl">Include the state at the current time: where every part is, so it can see what is wrong</span></label>
+        <div class="row" id="aiScopeRow" hidden><span id="aiScopeLbl">Ask about</span><div class="seg" role="group" aria-labelledby="aiScopeLbl" id="aiScope"><button type="button" data-s="chapter" aria-pressed="true">This chapter</button><button type="button" data-s="film" aria-pressed="false">Whole film</button></div></div>
         <div class="row"><span>Reply format</span><span><b id="aiFmt"></b> · <button type="button" class="linkbtn" id="aiFmtSwitch"></button></span></div>
         <div class="row"><span>Size</span><span id="aiLen" class="time"></span></div>
         <div class="aiwork" id="aiWork" hidden><div class="aistat" id="aiStat" role="status" aria-live="polite"></div><div class="bar" id="aiBar" hidden><i style="width:35%"></i></div></div>
@@ -961,21 +1034,87 @@ const THREE = root.THREE;
 class Diag extends Error {
   constructor(at, code, msg, fix, sev) {
     super(msg);
-    this.file = at && at.file || null; this.line = at && at.line || 1; this.col = at && at.col || 1;
+    this.file = at && at.file || null; this.line = at && at.line || 1; this.col = at && at.col || 1; this.line0 = this.line;   /* line0: the line it was found on, before the studio maps it to the line shown; an edit's line is relative to it */
     this.code = code; this.fix = fix || ''; this.sev = sev || 'error';
   }
   json() { const j = { severity: this.sev, code: this.code, file: this.file ? this.file + '' : null, line: this.line, col: this.col, message: this.message, fix: this.fix }; if (this.edit) j.edit = this.edit; return j; }
 }
-/* a warning that comes with a machine edit, so orrery check --fix (and an AI agent) can apply it: replace del characters at line:col with ins */
-/* a misspelt name: when exactly one known name is within two letters, the problem gets a machine fix that renames it */
-function editDist(a, b) { const m = a.length, n = b.length; if (Math.abs(m - n) > 2) return 9; let prev = Array.from({ length: n + 1 }, (_, j) => j); for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[n]; }
-function nearFix(d, name, list) {
-  if (!d || !name || !d.line) return d;
-  const sc = [...new Set(list)].map(k => [k, editDist(name.toLowerCase(), k)]).filter(([, v]) => v <= Math.min(2, Math.max(1, name.length >> 2))).sort((a, b) => a[1] - b[1]);
-  if (!sc.length || (sc[1] && sc[1][1] === sc[0][1])) return d;
-  d.message += ` Did you mean ${sc[0][0]}?`; d.edit = { line: d.line, col: d.col, del: name.length, ins: sc[0][0] }; return d;
+/* a problem that comes with a machine edit, so orrery check --fix (and an AI agent) can apply it: replace del characters at line:col with ins.
+   A sure edit is what the problem says will be read anyway (a # comment, another name for a property); a guess (edit.guess) is a likely
+   correction, such as the one close name to a misspelt one. Fix all applies sure edits only; Apply suggestions applies the guesses. */
+/* a misspelt name: when exactly one known name is within two letters, the problem gets "Did you mean …?" and an edit that renames it.
+   where: the place of the name when it is not where the problem points (a type after ::, a value after a property name) */
+function editDist(a, b) { const m = a.length, n = b.length; if (Math.abs(m - n) > 2) return 9; const D = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) D[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) { D[i][j] = Math.min(D[i - 1][j] + 1, D[i][j - 1] + 1, D[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) D[i][j] = Math.min(D[i][j], D[i - 2][j - 2] + 1); } return D[m][n]; }   /* letters added, dropped, changed or swapped */
+function nearName(name, list) {
+  if (!name) return null; const low = name.toLowerCase();
+  const sc = [...new Set(list)].filter(k => k && k !== name).map(k => [k, editDist(low, k.toLowerCase())]).filter(([, v]) => v <= Math.min(2, Math.max(1, name.length >> 2))).sort((a, b) => a[1] - b[1]);
+  if (!sc.length || (sc[1] && sc[1][1] === sc[0][1])) return null;
+  return sc[0][0];
 }
+function nearFix(d, name, list, where) {
+  if (!d || !name || !d.line || d.edit) return d;
+  const to = nearName(name, list); if (!to) return d;
+  const at = where && where.line ? where : d;
+  d.message += ` Did you mean ${to}?`; d.edit = { line: at.line, col: at.col, del: name.length, ins: to, old: name, guess: true }; return d;
+}
+/* a sure edit on a problem that is already made (an error, or a warning built elsewhere) */
+function sureFix(d, at, del, ins, old) { if (d && at && at.line && !d.edit) { d.edit = { line: at.line, col: at.col, del, ins }; if (old != null) d.edit.old = old; } return d; }
 function fixable(at, code, msg, fix, del, ins) { const d = new Diag(at, code, msg, fix, 'warning'); d.edit = { line: d.line, col: d.col, del, ins }; return d; }
+/* remove a whole property (name: value;) and the space after it; a line it leaves empty goes too (see applyEdits) */
+function dropProp(d, p) { if (d && p && p.pos != null && p.end != null && p.endLine === p.line && !d.edit) d.edit = { line: p.line, col: p.col, del: (p.nextLine === p.line ? p.next : p.end) - p.pos, ins: '' }; return d; }
+/* a keyword setting written with another word: true, yes, false, no … are read as the right word (a sure edit); a misspelt one gets a guess */
+function kwFix(d, p, k, syn, list) {
+  const it = p && p.items && p.items[0]; if (!d || !it || it.t !== 'ref' || it.parts.length !== 1) return d;
+  const w = it.parts[0], to = syn[w.toLowerCase()];
+  if (to) { d.message += ` Write ${to}, not ${w}.`; return sureFix(d, it, w.length, to, w); }
+  return nearFix(d, w, list, it);
+}
+/* a number outside its range is read as the nearest end of the range. Offer that, or, for a plain number that fits as a percentage
+   (opacity: 40 when 40% was meant), the percentage. Both are guesses */
+function rangeFix(d, n, lo, hi) {
+  if (!d || !n || n.t !== 'num' || !n.text || d.edit || (n.unit && n.unit !== '%')) return d;
+  const r = (x) => String(+x.toFixed(4));
+  let ins;
+  if (!n.unit && n.v > hi && hi <= 4 && n.v / 100 >= lo && n.v / 100 <= hi) ins = `${r(n.v)}%`;
+  else { const c = Math.max(lo, Math.min(hi, n.v)); ins = n.unit === '%' ? `${r(c * 100)}%` : r(c); }
+  if (ins === n.text) return d;
+  d.message += ` Did you mean ${ins}?`; d.edit = { line: n.line, col: n.col, del: n.text.length, ins, old: n.text, guess: true }; return d;
+}
+/* apply edits to a text. lineOf(d) is the line the edit is on (its own line by default).
+   An edit with old checks the text first: when the name is not at line:col, the same word elsewhere on the line is used, and if it is
+   not on the line the edit is skipped. Edits that overlap a later one are skipped. A removal that empties its line removes the line.
+   Returns { text, applied: [the problems whose edits went in], changes: [{ d, line, was, ins }] }. */
+function applyEdits(text, list, lineOf) {
+  lineOf = lineOf || (d => d.edit.line);
+  const starts = [0]; for (let i = 0; i < text.length; i++) if (text[i] === '\n') starts.push(i + 1);
+  const isW = (c) => !!c && /[A-Za-z0-9_-]/.test(c);
+  const placed = [];
+  for (const d of list) {
+    const e = d.edit; if (!e) continue; const ln = lineOf(d); if (!(ln >= 1 && ln <= starts.length)) continue;
+    const ls = starts[ln - 1], le = ln < starts.length ? starts[ln] - 1 : text.length;
+    let off = ls + (e.col - 1);
+    if (off > le) continue;
+    if (e.old != null && text.slice(off, off + e.del) !== e.old) {
+      const line = text.slice(ls, le), hits = [];
+      for (let k = line.indexOf(e.old); k >= 0; k = line.indexOf(e.old, k + 1)) if (!isW(line[k - 1]) && !isW(line[k + e.old.length])) hits.push(ls + k);
+      const after = hits.find(h => h >= off); off = after != null ? after : hits.length ? hits[0] : -1;
+      if (off < 0) continue;
+    }
+    placed.push({ d, off, del: e.del, ins: e.ins, line: ln });
+  }
+  placed.sort((a, b) => b.off - a.off);
+  const applied = [], changes = []; let floor = Infinity, seen = new Set();
+  for (const x of placed) {
+    const key = x.off + ':' + x.del + ':' + x.ins; if (seen.has(key)) { applied.push(x.d); continue; }
+    if (x.off + x.del > floor) continue;
+    const ls = text.lastIndexOf('\n', x.off - 1) + 1; let le = text.indexOf('\n', x.off + x.del); if (le < 0) le = text.length;
+    const wasBlank = !text.slice(ls, le).trim(); changes.push({ d: x.d, line: x.line, was: text.slice(x.off, x.off + x.del), ins: x.ins });
+    text = text.slice(0, x.off) + x.ins + text.slice(x.off + x.del);
+    let gone = false; if (!x.ins && x.del && !wasBlank) { let e2 = text.indexOf('\n', x.off); if (e2 < 0) e2 = text.length; if (!text.slice(ls, e2).trim()) { text = text.slice(0, ls) + text.slice(e2 < text.length ? e2 + 1 : e2); gone = true; } }
+    floor = gone ? ls : x.off; seen.add(key); applied.push(x.d);
+  }
+  return { text, applied, changes };
+}
 
 /* ---------- lexer ---------- */
 const UNITS = { mm: ['len', 1], cm: ['len', 10], m: ['len', 1000], deg: ['ang', Math.PI / 180], rad: ['ang', 1], turn: ['ang', Math.PI * 2], s: ['time', 1], ms: ['time', 0.001], px: ['px', 1], '%': ['frac', 0.01] };
@@ -995,7 +1134,7 @@ function lex(src, file, notes) {
     const c = src[i];
     if (c === ' ' || c === '\t' || c === '\r' || c === '\n') { adv(1); continue; }
     if (c === '/' && src[i + 1] === '/') { while (i < src.length && src[i] !== '\n') adv(1); continue; }
-    if (c === '/' && src[i + 1] === '*') { const L = line, C = col; adv(2); while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) adv(1); if (i >= src.length) throw new Diag({ file, line: L, col: C }, 'E0101', 'This comment is never closed.', 'Add */ to end the comment.'); adv(2); continue; }
+    if (c === '/' && src[i + 1] === '*') { const L = line, C = col, s0 = i; adv(2); while (i < src.length && !(src[i] === '*' && src[i + 1] === '/')) adv(1); if (i >= src.length) { const d = new Diag({ file, line: L, col: C }, 'E0101', 'This comment is never closed.', 'Add */ to end the comment.'); const st0 = s0; const le = src.indexOf('\n', st0) < 0 ? src.length : src.indexOf('\n', st0); const rest = src.slice(st0 + 2, le).replace(/\s+$/, ''); if (rest.trim() && src.slice(le).trim()) { d.message += ' Did you mean to end it on this line?'; d.edit = { line: L, col: C + 2 + rest.length, del: 0, ins: ' */', guess: true }; } throw d; } adv(2); continue; }
     const L = line, C = col, pos = i; let m;
     { const pv = toks[toks.length - 1]; if (pv && pv.type === 'p' && pv.v === ':' && /\d/.test(c)) { const fm = at(/\d+(?:\.\d+)?[:x]\d+(?:\.\d+)?(?![\w.:])/y); if (fm) { adv(fm.length); toks.push({ type: 'id', v: fm, line: L, col: C, pos, end: i, file }); continue; } } }   /* frame: 9:16 or 1080x1920 */
     if ((c === '3') && /^[dD]$/.test(src[i + 1] || '') && !/[\w.]/.test(src[i + 2] || '') && !/[\w.]/.test(src[i - 1] || '')) { adv(2); toks.push({ type: 'id', v: '3d', line: L, col: C, pos, end: i, file }); continue; }   /* font-style: 3d */
@@ -1003,7 +1142,7 @@ function lex(src, file, notes) {
       adv(m.length); let unit = null, rate = 0, val = parseFloat(m), kind = 'num';
       const u = at(RX.unit);
       if (u) { RX.unit.lastIndex = i; const um = RX.unit.exec(src); unit = um[1]; rate = um[2] === '/s2' ? 2 : um[2] ? 1 : 0; val *= UNITS[unit][1]; kind = UNITS[unit][0]; adv(u.length); }
-      else if (/[A-Za-z_]/.test(src[i] || '')) { const bad = at(RX.id); throw new Diag({ file, line: L, col: C }, 'E0102', `Unknown unit "${bad}".`, 'Use one of: mm, cm, m, deg, rad, turn, s, ms, %, a speed such as mm/s, or an acceleration such as m/s2.'); }
+      else if (/[A-Za-z_]/.test(src[i] || '')) { const bad = at(RX.id); throw nearFix(new Diag({ file, line: L, col: C }, 'E0102', `Unknown unit "${bad}".`, 'Use one of: mm, cm, m, deg, rad, turn, s, ms, %, a speed such as mm/s, or an acceleration such as m/s2.'), bad, Object.keys(UNITS).filter(u => u.length > 1 || bad.length === 1), { line, col }); }
       toks.push({ type: 'num', v: val, unit, kind, rate, text: src.slice(pos, i), line: L, col: C, pos, end: i, file }); continue;
     }
     if ((m = at(RX.str))) { adv(m.length); toks.push({ type: 'str', v: m.slice(1, -1), line: L, col: C, pos, end: i, file }); continue; }
@@ -1031,7 +1170,29 @@ class Parser {
   isId(v, k = 0) { const t = this.peek(k); return t.type === 'id' && (v === undefined || t.v === v); }
   fail(tok, msg, fix, code) { throw new Diag(tok, code || 'E0100', msg, fix); }
   desc(t) { return t.type === 'eof' ? 'the end of the file' : `"${t.text || t.v}"`; }
-  expectP(v, fix) { const t = this.peek(); if (!this.isP(v)) this.fail(t, `Expected "${v}" but found ${this.desc(t)}.`, fix || `Add "${v}".`); return this.next(); }
+  expectP(v, fix) { const t = this.peek(); if (!this.isP(v)) { const d = new Diag(t, 'E0100', `Expected "${v}" but found ${this.desc(t)}.`, fix || `Add "${v}".`); this.mend(d, v, t); throw d; } return this.next(); }
+  /* the end of a token, as a place to insert after it (null for a token that spans lines) */
+  after(tok) { if (!tok || tok.end == null || tok.type === 'eof') return null; const len = tok.end - tok.pos; return (tok.text || '').includes('\n') ? null : { line: tok.line, col: tok.col + len }; }
+  /* a sure edit for an "Expected …" slip: a near-miss symbol (: for ::, , for ;, = for :) is replaced; a ; or closer missing at the end of a
+     line is added after the last token; a : missing after a property name is added; a ; missing between two properties on a line is added */
+  mend(d, v, t) {
+    const prev = this.i > 0 ? this.t[this.i - 1] : null, prev2 = this.i > 1 ? this.t[this.i - 2] : null;
+    const SWAP = { '::': [':'], ';': [','], ':': ['=', '::'], '=': [':'], ',': [';'] };
+    if (t.type === 'p' && (SWAP[v] || []).includes(t.v)) { d.message += ` Write ${v} here.`; d.edit = { line: t.line, col: t.col, del: t.v.length, ins: v, old: t.v }; return; }
+    const at = this.after(prev); if (!at) return;
+    if ([';', '}', ')', ']'].includes(v) && (t.type === 'eof' || t.line > prev.line)) { d.edit = { line: at.line, col: at.col, del: 0, ins: v }; return; }
+    if (v === ':' && t.line === prev.line && prev.type === 'id' && (['id', 'num', 'str', 'hash'].includes(t.type) || (t.type === 'p' && t.v === '('))) { d.edit = { line: at.line, col: at.col, del: 0, ins: ':' }; return; }
+    if (v === ';') this.mendSemi(d, t);
+  }
+  /* a property name read as a value because the ; before it is missing: "teeth: 10 module: 2mm" */
+  mendSemi(d, t) {
+    const prev = this.t[this.i - 1], prev2 = this.t[this.i - 2];
+    if (!(t.type === 'p' && t.v === ':' && prev && prev.type === 'id' && prev2)) return;
+    if (prev2.type === 'p' && prev2.v === ',') { d.message += ` Write ; instead of the comma before "${prev.v}".`; d.edit = { line: prev2.line, col: prev2.col, del: 1, ins: ';', old: ',' }; return; }
+    if (prev2.type === 'p' && ![')', ']'].includes(prev2.v)) return;
+    const a2 = this.after(prev2); if (!a2) return;
+    d.message += ` Is a ; missing before "${prev.v}"?`; d.edit = { line: a2.line, col: a2.col, del: 0, ins: ';' };
+  }
   expectId(what) { const t = this.peek(); if (t.type !== 'id') this.fail(t, `Expected ${what} but found ${this.desc(t)}.`); return this.next(); }
   recover() {
     let d = 0;
@@ -1089,7 +1250,7 @@ class Parser {
   }
   primary() {
     const t = this.peek(), pos = { line: t.line, col: t.col, file: this.file };
-    if (t.type === 'num') { this.next(); return { t: 'num', v: t.v, unit: t.unit, kind: t.kind, rate: t.rate, ...pos }; }
+    if (t.type === 'num') { this.next(); return { t: 'num', v: t.v, unit: t.unit, kind: t.kind, rate: t.rate, text: t.text, ...pos }; }
     if (t.type === 'hash') { this.next(); return { t: 'color', v: t.v, ...pos }; }
     if (t.type === 'str') { this.next(); return { t: 'str', v: t.v, ...pos }; }
     if (this.isP('(')) { this.next(); const items = this.list(')'); if (items.length === 1 && items[0].t !== 'named') return items[0]; return { t: 'tuple', items, ...pos }; }
@@ -1103,11 +1264,13 @@ class Parser {
       }
       return { t: 'ref', parts, ...pos };
     }
-    this.fail(t, `Expected a value but found ${this.desc(t)}.`, 'Values are numbers with units (40mm), vectors (0, 1, 0), names (Door.edge.left), colours (#ff8800) or calls (gradient(...)).');
+    { const d = new Diag(t, 'E0100', `Expected a value but found ${this.desc(t)}.`, 'Values are numbers with units (40mm), vectors (0, 1, 0), names (Door.edge.left), colours (#ff8800) or calls (gradient(...)).'); this.mendSemi(d, t); throw d; }
   }
   /* property: name: v1 v2, v3 [easing]; */
   prop() {
-    const n = this.expectId('a property name'); this.expectP(':', `Write "${n.v}: value;".`);
+    const n = this.expectId('a property name');
+    if (this.isP('{')) this.fail(this.peek(), `"${n.v} {" opens a block inside another block, and blocks do not nest.`, `Close this block with "}" first and give ${n.v} its own block.`);
+    this.expectP(':', `Write "${n.v}: value;".`);
     const items = [];
     while (!this.isP(';') && !this.isP('}') && this.peek().type !== 'eof') {
       items.push(this.expr());
@@ -1122,11 +1285,29 @@ class Parser {
     }
     if (items.length > 1 && last.t === 'ref' && last.parts.length === 1 && EASINGS[last.parts[0]]) { easing = EASINGS[last.parts[0]]; items.pop(); }
     else if (items.length > 1 && last.t === 'call' && last.name === 'cubic-bezier') { easing = last.args.map(a => a.v); items.pop(); }
-    return { name: n.v, items, easing, line: n.line, col: n.col, file: this.file, pos: n.pos, end: this.t[this.i - 1].end };
+    const nx = this.peek(); return { name: n.v, items, easing, line: n.line, col: n.col, file: this.file, pos: n.pos, end: this.t[this.i - 1].end, endLine: this.t[this.i - 1].line, next: nx.pos, nextLine: nx.line };
   }
   isMember() {
     if (!(this.peek().type === 'id' && this.isP(':', 1) && this.peek(2).type === 'id' && /^[A-Z]/.test(this.peek(2).v))) return false;
     let k = 3; while (this.isP('.', k) && this.peek(k + 1).type === 'id') k += 2;
+    if (this.isP('(', k)) { let d = 0; do { if (this.isP('(', k)) d++; else if (this.isP(')', k)) d--; k++; if (this.peek(k).type === 'eof') return false; } while (d > 0); while (this.isP('.', k) && this.peek(k + 1).type === 'id') k += 2; }
+    return this.isP('{', k);
+  }
+  blockLooksLike() {   /* at "{": a block of motion (times, forever, then) or of style keys, written in the scene by mistake */
+    let k = 1, depth = 1, keys = [], time = false;
+    for (; depth > 0 && this.peek(k).type !== 'eof' && k < 400; k++) {
+      const a = this.peek(k);
+      if (a.type === 'p' && a.v === '{') depth++; else if (a.type === 'p' && a.v === '}') depth--;
+      else if (depth === 1 && a.type === 'num' && a.kind === 'time' && (this.isP('..', k + 1) || this.isP(':', k + 1))) time = true;
+      else if (depth === 1 && a.type === 'id' && ['forever', 'then'].includes(a.v)) time = true;
+      else if (depth === 1 && a.type === 'id' && this.isP(':', k + 1) && !(this.peek(k - 1).type === 'p' && this.peek(k - 1).v === ':')) keys.push(a.v);
+    }
+    if (time) return 'motion';
+    const ST = ['color', 'material', 'outline', 'opacity', 'luminosity', 'label', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'text-color', 'font-size', 'font-weight', 'font-family', 'background', 'cut'];
+    return keys.length && keys.every(x => ST.includes(x)) ? 'style' : null;
+  }
+  memberAhead(k) {   /* after Type: optional .classes and (args), then "{" */
+    while (this.isP('.', k) && this.peek(k + 1).type === 'id') k += 2;
     if (this.isP('(', k)) { let d = 0; do { if (this.isP('(', k)) d++; else if (this.isP(')', k)) d--; k++; if (this.peek(k).type === 'eof') return false; } while (d > 0); while (this.isP('.', k) && this.peek(k + 1).type === 'id') k += 2; }
     return this.isP('{', k);
   }
@@ -1140,15 +1321,23 @@ class Parser {
     this.expectP('{', 'Open the block with "{".');
     const props = [], members = [], anchors = [];
     while (!this.isP('}')) {
-      if (this.peek().type === 'eof') this.fail(this.peek(), 'This block is never closed.', 'Add "}" to close it.');
+      if (this.peek().type === 'eof') { const d = new Diag(this.peek(), 'E0100', 'This block is never closed.', 'Add "}" to close it.'), at = this.after(this.t[this.i - 1]); if (at) { d.message += ' Did you mean to close it at the end?'; d.edit = { line: at.line, col: at.col, del: 0, ins: ' }', guess: true }; } throw d; }
       if (this.isId('anchor') && this.peek(1).type === 'id' && this.isP(':', 2)) {
         this.next(); const n = this.next(); this.next(); const val = this.expr(); this.expectP(';', 'End the anchor with a semicolon.');
         anchors.push({ name: n.v, val, line: n.line, col: n.col, file: this.file }); continue;
       }
+      if (this.peek().type === 'id' && this.isP('::', 1) && this.peek(2).type === 'id' && /^[A-Z]/.test(this.peek(2).v) && this.memberAhead(3)) {   /* A::Sphere { } inside a group: a member written like a part */
+        const c = this.peek(1); this.diags.push(fixable(c, 'W0109', `Inside a group, a member is written ${this.peek().v}: ${this.peek(2).v} { … } with one colon.`, 'It is read that way now.', 2, ': '));
+        this.t[this.i + 1] = { ...c, v: ':' };
+      }
+      if (this.peek().type === 'id' && this.isP('{', 1)) {
+        const n = this.peek(), low = n.v[0].toLowerCase() + n.v.slice(1);
+        this.fail(this.peek(1), `"${n.v} {" opens a block inside another block, and blocks do not nest.`, `In a group, a member needs a type: ${low}: Sphere { … }. Anywhere else, close this block with "}" first and give ${n.v} its own block.`);
+      }
       if (this.isMember()) {
         const n = this.next(); this.next(); const ty = this.next(); const { classes, args } = this.typeTail();
         const b = this.block();
-        members.push({ name: n.v, type: ty.v, classes, args, ...b, line: n.line, col: n.col, file: this.file, pos: n.pos, end: this.t[this.i - 1].end }); continue;
+        members.push({ name: n.v, type: ty.v, tline: ty.line, tcol: ty.col, classes, args, ...b, line: n.line, col: n.col, file: this.file, pos: n.pos, end: this.t[this.i - 1].end }); continue;
       }
       props.push(this.prop());
     }
@@ -1178,12 +1367,13 @@ class Parser {
     const ty = this.expectId('a shape type'); const classes = [];
     while (this.isP('.')) { this.next(); classes.push(this.expectId('a class name').v); }
     const b = this.block();
-    return { kind: 'define', name: n.v, params, type: ty.v, classes, ...b, line: n.line, col: n.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
+    return { kind: 'define', name: n.v, params, type: ty.v, tline: ty.line, tcol: ty.col, classes, ...b, line: n.line, col: n.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
   }
   scene() {
     return this.loop(() => {
       const t = this.peek();
       if (this.isId('let') && this.peek(1).type === 'id') return this.letStmt();
+      if (t.type === 'p' && t.v === '.' && this.peek(1).type === 'id') this.fail(t, `".${this.peek(1).v}" is a style rule, and style rules go in @style.`, 'Is the @style line missing above it? In one file, write @scene, @style and @motion each on its own line before their parts.');
       if (t.type !== 'id') this.fail(t, `Expected a declaration but found ${this.desc(t)}.`, 'Start with a part, such as Door::Box { ... }, or a let.');
       if (t.v === 'import') this.fail(t, '"import" is not in Orrery 1.', 'Keep everything in one project.', 'E0110');
       if (t.v === 'define' && this.peek(1).type === 'id') return this.defineStmt();
@@ -1191,14 +1381,22 @@ class Parser {
       if (this.isP('::')) {
         this.next(); const ty = this.expectId('a shape type'); const { classes, args } = this.typeTail();
         const b = this.isP(';') ? (this.next(), { props: [], members: [], anchors: [] }) : this.block();
-        return { kind: 'entity', name: t.v, type: ty.v, classes, args, ...b, line: t.line, col: t.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
+        return { kind: 'entity', name: t.v, type: ty.v, tline: ty.line, tcol: ty.col, classes, args, ...b, line: t.line, col: t.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
       }
       if (this.isP('{')) {
-        if (!['Observer', 'Light', 'Scene'].includes(t.v)) this.fail(t, `"${t.v}" needs a type.`, `Write ${t.v}::Box { ... } (or another shape). Observer, Light and Scene are the only blocks without a type.`, 'E0200');
+        if (!['Observer', 'Light', 'Scene'].includes(t.v)) {
+          const kind = this.blockLooksLike();
+          if (kind) this.fail(t, `"${t.v} { … }" looks like ${kind === 'motion' ? 'motion (it has times such as 0s..2s)' : 'a style rule'}, but it is in the scene.`, `Move it under @${kind}. In one file, write @scene, @style and @motion each on its own line; a missing line puts everything after it in the wrong section.`, 'E0200');
+          this.fail(t, `"${t.v}" needs a type.`, `Write ${t.v}::Box { ... } (or another shape). Observer, Light and Scene are the only blocks without a type.`, 'E0200');
+        }
         const b = this.block();
         return { kind: 'special', name: t.v, ...b, line: t.line, col: t.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
       }
-      this.fail(this.peek(), `Expected "::" after "${t.v}".`, `Write ${t.v}::Type { ... }.`);
+      { const nx = this.peek(), d = new Diag(nx, 'E0100', `Expected "::" after "${t.v}".`, `Write ${t.v}::Type { ... }.`);
+        if (nx.type === 'p' && nx.v === ':') d.edit = { line: nx.line, col: nx.col, del: 1, ins: '::', old: ':' };   /* Door:Box */
+        else if (nx.type === 'id' && nx.line === t.line && /^[A-Z]/.test(nx.v) && (this.isP('{', 1) || this.isP(';', 1))) d.edit = { line: t.line, col: t.col + t.v.length, del: nx.pos - t.end, ins: '::' };   /* Door Box { */
+        if (d.edit) d.message += ` Write ${t.v}::${nx.type === 'id' ? nx.v : 'Type'}.`;
+        throw d; }
     });
   }
   style() {
@@ -1239,7 +1437,7 @@ class Parser {
       const blocks = []; let cur = null;
       while (!this.isP('}')) {
         const k = this.peek();
-        if (k.type === 'eof') this.fail(k, 'This rule is never closed.', 'Add "}".');
+        if (k.type === 'eof') { const d = new Diag(k, 'E0100', 'This rule is never closed.', 'Add "}".'), at = this.after(this.t[this.i - 1]); if (at) { d.message += ' Did you mean to close it at the end?'; d.edit = { line: at.line, col: at.col, del: 0, ins: ' }', guess: true }; } throw d; }
         if (this.isId('forever') && this.isP(':', 1)) { this.next(); this.next(); cur = { kind: 'forever', props: [], line: k.line, col: k.col }; blocks.push(cur); continue; }
         if (this.isId('then')) { this.next(); let dur = null; if (!this.isP(':')) dur = this.add(); this.expectP(':', 'Write "then:" or "then 2s:".'); cur = { kind: 'then', dur, props: [], line: k.line, col: k.col }; blocks.push(cur); continue; }
         if (k.type === 'num' || this.isP('(') || this.isP('-')) {
@@ -1633,7 +1831,7 @@ function shapeAnchor(leaf, parts, at) {
     const keys = list.map(x => x[0]); let uniq = [...new Set(keys.filter(k => !/^edge\.\w+-\w+$/.test(k) && !/^corner\./.test(k)))];
     if (keys.some(k => /^edge\.\w+-\w+$/.test(k))) uniq.push('edge.<face>-<face> such as edge.left-front');
     if (keys.some(k => /^corner\./.test(k))) uniq.push('corner.<x>-<y>-<z> such as corner.left-top-front');
-    throw new Diag(at, 'E0310', `${leaf.type} has no anchor "${name || '(none)'}".`, `Anchors on ${leaf.type}: ${uniq.join(', ')}.`);
+    throw nearFix(new Diag(at, 'E0310', `${leaf.type} has no anchor "${name || '(none)'}".`, `Anchors on ${leaf.type}: ${uniq.join(', ')}.`), name, keys);
   }
   return { p: hit[1].slice(), d: hit[2] ? hit[2].slice() : null };
 }
@@ -1814,7 +2012,7 @@ function compile(files, opts) {
     const P = propMap(decl.props), env = { vars: {} };
     const def = SHAPES[decl.type];
     if (decl.type === 'Sound') throw new Diag(decl, 'E0545', 'A Sound cannot be part of a group or a define.', 'Declare it on its own line in the scene: Knock::Sound { kind: knock; }');
-    if (!def) throw new Diag(decl, 'E0201', `Unknown shape type "${decl.type}".`, `Available: ${Object.keys(SHAPES).join(', ')}.`);
+    if (!def) throw nearFix(new Diag(decl, 'E0201', `Unknown shape type "${decl.type}".`, `Available: ${Object.keys(SHAPES).join(', ')}.`), decl.type, [...Object.keys(SHAPES), ...defs.keys()], decl.tline ? { line: decl.tline, col: decl.tcol } : null);
     for (const p of decl.props) if (!def.props.includes(p.name) && !COMMON_PROPS.includes(p.name) && !(p.name === 'margin' && P.fixed)) nearFix(warn(p, 'W0202', `${decl.type} does not use "${p.name}".`, `${decl.type} properties: ${[...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')).join(', ')}.`), p.name, [...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')));
     const g = (k, d) => P[k] ? P[k].items[0] : null;
     const need = (k) => { if (!P[k]) throw new Diag(decl, 'E0203', `${decl.type} "${path}" needs "${k}".`, `Add ${k}: ...; to its block.`); return P[k].items[0]; };
@@ -1941,9 +2139,10 @@ function compile(files, opts) {
       }
       case 'Text': {   /* text in the scene: flat, or solid with font-style: 3d. The mesh is an invisible box the size of the text; the app draws the letters */
         const tv = g('text'); leaf.spec.text = tv ? textValue(tv, env) : '';
+        { const nw = leaf.spec.text.split(/\s+/).filter(Boolean).length; if (nw > 16) warn(P.text || decl, 'W0625', `This Text holds ${nw} words; a block of text that long covers the animation.`, 'Keep a Text to a title or a label (about a dozen words). Put longer words in narration (say:), which shows them as captions a line at a time, or split them into several Texts that take turns. With Scene { caption-band: 18%; }, fixed: band; puts a Text below the picture.'); }
         leaf.spec.fontSize = g('size') ? num(g('size'), env, 'size') : 20;
         const fk = g('facing'); leaf.spec.facing = fk ? (fk.t === 'ref' ? fk.parts[0] : '?') : 'camera';   /* text turns to the viewer unless told to stay put */
-        if (!['front', 'camera'].includes(leaf.spec.facing)) throw new Diag(P.facing, 'E0312', 'facing is front or camera.', 'Write facing: camera;  to keep the text turned to the viewer, or facing: front;  to keep it fixed in the scene.');
+        if (!['front', 'camera'].includes(leaf.spec.facing)) throw nearFix(new Diag(P.facing, 'E0312', 'facing is front or camera.', 'Write facing: camera;  to keep the text turned to the viewer, or facing: front;  to keep it fixed in the scene.'), leaf.spec.facing, ['front', 'camera'], P.facing.items[0]);
         leaf.proxy = true; leaf.spec.size = textBox(leaf.spec.text, leaf.spec.fontSize, 0, 1.2); geom = new THREE.BoxGeometry(...leaf.spec.size); break;
       }
       case 'Plot': {   /* a chart: a function of x (and t) or data points, drawn as a line, bars, points or an area, on axes with ticks */
@@ -1968,7 +2167,7 @@ function compile(files, opts) {
         for (const A of [X, Y]) { A.label = A.label || null; if (!A.step) { const raw = (A.hi - A.lo) / 5, mag = Math.pow(10, Math.floor(Math.log10(raw))); A.step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => s >= raw) || raw; } }
         if (P['x-label']) X.label = textValue(P['x-label'].items[0], env); if (P['y-label']) Y.label = textValue(P['y-label'].items[0], env);
         const kindN = P.kind && P.kind.items[0], kind = kindN && kindN.t === 'ref' ? kindN.parts[0] : data ? 'bars' : 'line';
-        if (!['line', 'bars', 'points', 'area'].includes(kind)) throw new Diag(P.kind, 'E0314', `"${kind}" is not a plot kind.`, 'Write kind: line | bars | points | area;');
+        if (!['line', 'bars', 'points', 'area'].includes(kind)) throw nearFix(new Diag(P.kind, 'E0314', `"${kind}" is not a plot kind.`, 'Write kind: line | bars | points | area;'), kind, ['line', 'bars', 'points', 'area'], P.kind.items[0]);
         const stroke = g('stroke') ? num(g('stroke'), env) : Math.max(1.5, Math.min(W, H) * 0.012);
         const showAxes = !(P.axes && P.axes.items[0].t === 'ref' && ['none', 'off'].includes(P.axes.items[0].parts[0]));
         const showGrid = !(P.grid && P.grid.items[0].t === 'ref' && ['none', 'off'].includes(P.grid.items[0].parts[0]));
@@ -2060,7 +2259,7 @@ function compile(files, opts) {
         const srcV = need('src'); const src = srcV.t === 'str' ? srcV.v : null;
         if (!src) throw new Diag(srcV, 'E0209', 'src is the model file name, in quotes.', 'Write src: "piston.stl";');
         const sz = vec3(need('size'), env, 'size'); const fitV = g('fit'); const fit = fitV && fitV.t === 'ref' ? fitV.parts[0] : 'contain';
-        if (!['contain', 'stretch'].includes(fit)) throw new Diag(fitV, 'E0210', 'fit is contain or stretch.', 'Write fit: contain;');
+        if (!['contain', 'stretch'].includes(fit)) throw nearFix(new Diag(fitV, 'E0210', 'fit is contain or stretch.', 'Write fit: contain;'), String(fit), ['contain', 'stretch'], fitV);
         leaf.spec = { size: sz, src, fit };
         const a = ASSETS[src];
         if (a) { geom = fitGeometry(a, sz, fit); leaf.spec.com = meshCentroid(geom); }
@@ -2104,7 +2303,10 @@ function compile(files, opts) {
 
 
   /* --- top entities --- */
-  const topRef = (parts, at) => { const e = model.ents.get(parts[0]); if (!e) throw new Diag(at, 'E0320', `There is no entity called "${parts[0]}" above this line.`, 'Declare it first, or check the spelling. Names are case-sensitive.'); return e; };
+  /* every part named in the scene, declared above a line or below it: a name declared further down is not a typo */
+  const sceneNames = () => sceneAst.filter(x => x && x.name && (x.kind === 'entity' || x.kind === 'special')).map(x => x.name);
+  const nearEnt = (d, name) => sceneNames().includes(name) ? d : nearFix(d, name, sceneNames().filter(n => !['Observer', 'Light', 'Scene'].includes(n)));
+  const topRef = (parts, at) => { const e = model.ents.get(parts[0]); if (!e) throw nearEnt(new Diag(at, 'E0320', `There is no entity called "${parts[0]}" above this line.`, 'Declare it first, or check the spelling. Names are case-sensitive.'), parts[0]); return e; };
   /* local anchor inside a top entity's frame */
   function localAnchor(ent, rest, at) {
     if (ent.kind === 'group') {
@@ -2112,7 +2314,7 @@ function compile(files, opts) {
       if (rest[0] === 'center-of-mass' || rest[0] === 'com') { const p = ent.com || [0, 0, 0], ax = rest[1]; if (rest.length === 1 || rest[0] === 'center-of-mass') return { p, d: null }; if (['x', 'y', 'z'].includes(ax)) return { p, d: [ax === 'x' ? 1 : 0, ax === 'y' ? 1 : 0, ax === 'z' ? 1 : 0] }; }
       const cust = ent.anchors.get(rest[0]); if (cust && rest.length === 1) return cust;
       const m = ent.members.get(rest[0]);
-      if (!m) throw new Diag(at, 'E0311', `${ent.name} has no member or anchor "${rest[0]}".`, `Members: ${[...ent.members.keys()].join(', ') || 'none'}. Anchors: center, com (center-of-mass), com.x, com.y, com.z${ent.anchors.size ? ', ' + [...ent.anchors.keys()].join(', ') : ''}.`);
+      if (!m) throw nearFix(new Diag(at, 'E0311', `${ent.name} has no member or anchor "${rest[0]}".`, `Members: ${[...ent.members.keys()].join(', ') || 'none'}. Anchors: center, com (center-of-mass), com.x, com.y, com.z${ent.anchors.size ? ', ' + [...ent.anchors.keys()].join(', ') : ''}.`), rest[0], [...ent.members.keys(), ...ent.anchors.keys(), 'center', 'com', 'center-of-mass']);
       const a = shapeAnchor(m, rest.slice(1), at); m.node.updateMatrix();
       const p = new THREE.Vector3(...a.p).applyMatrix4(m.node.matrix); const d = a.d ? new THREE.Vector3(...a.d).applyQuaternion(m.node.quaternion) : null;
       return { p: p.toArray(), d: d ? d.toArray() : null };
@@ -2200,9 +2402,9 @@ function compile(files, opts) {
           model.observer = o;
         } else if (st.name === 'Light') {
           const l = { power: P.power ? num(P.power.items[0], {}) : 0.8, kind: 'directional', decl: st };
-          if (l.power < 0 || l.power > 1) warn(P.power, 'W0214', 'Light power runs from 0 to 1.', 'Use a value such as 0.8.');
+          if (l.power < 0 || l.power > 1) rangeFix(warn(P.power, 'W0214', 'Light power runs from 0 to 1.', 'Use a value such as 0.8.'), P.power.items[0], 0, 1);
           const k = P.kind && P.kind.items[0]; if (k && k.t === 'ref') l.kind = k.parts[0];
-          if (!['directional', 'point'].includes(l.kind)) throw new Diag(P.kind, 'E0215', `Unknown light kind "${l.kind}".`, 'Use kind: directional; or kind: point;');
+          if (!['directional', 'point'].includes(l.kind)) throw nearFix(new Diag(P.kind, 'E0215', `Unknown light kind "${l.kind}".`, 'Use kind: directional; or kind: point;'), l.kind, ['directional', 'point'], P.kind.items[0]);
           if (P.direction) l.direction = vec3(P.direction.items[0], {}, 'direction');
           if (P.at) l.at = vec3(P.at.items[0], placeEnv, 'at');
           if (P.color) l.color = P.color.items[0];
@@ -2218,6 +2420,15 @@ function compile(files, opts) {
             else if (k && /^\d+x\d+$/.test(k)) { const [w, h] = k.split('x').map(Number); if (w >= 16 && h >= 16 && w <= 7680 && h <= 7680) fr = { w, h, safe: [0.05, 0.05, 0.05, 0.05], px: true }; }
             if (!fr) throw new Diag(P.frame, 'E0220', 'frame is a preset, a ratio or a size in pixels.', `Write frame: 9:16;  frame: 1080x1920;  or a preset: ${Object.keys(FRAME_PRESETS).join(', ')}.`);
             fr.aspect = fr.w / fr.h; model.sceneOpts.frame = fr;
+          }
+          /* caption-band: a strip at the bottom kept clear of the scene, for captions and fixed: band; texts. The picture is drawn smaller,
+             above it. on is 18% of the height; off or 0 removes it */
+          if (P['caption-band']) {
+            const it = P['caption-band'].items[0]; let v;
+            if (it && it.t === 'ref' && it.parts.length === 1 && ['on', 'off', 'none'].includes(it.parts[0])) v = it.parts[0] === 'on' ? 0.18 : 0;
+            else v = num(it, {}, 'caption-band');
+            if (!(v >= 0 && v <= 0.4)) { rangeFix(warn(P['caption-band'], 'W0624', 'caption-band runs from 0 to 40% of the picture height.', 'Write caption-band: 18%;  (or on, which is 18%)'), it, 0, 0.4); v = Math.max(0, Math.min(0.4, v)); }
+            model.sceneOpts.band = v;
           }
           if (P.grid) { const g = P.grid.items[0]; model.sceneOpts.grid = g.t === 'ref' ? g.parts[0] : 'floor'; }
           /* sun: a sun drawn on the sky at a height above the horizon and a compass direction; it also aims the main light */
@@ -2289,7 +2500,7 @@ function compile(files, opts) {
     tryDo(() => {
       if (st.kind === 'mesh') {
         const A = model.ents.get(st.a), B = model.ents.get(st.b);
-        if (!A || !B) throw new Diag(st, 'E0320', `There is no entity called "${!A ? st.a : st.b}".`, 'Check the spelling. Names are case-sensitive.');
+        if (!A || !B) throw nearEnt(new Diag(st, 'E0320', `There is no entity called "${!A ? st.a : st.b}".`, 'Check the spelling. Names are case-sensitive.'), !A ? st.a : st.b);
         if (A.type !== 'Gear' || B.type !== 'Gear') throw new Diag(st, 'E0410', `mesh needs two gears; ${A.type !== 'Gear' ? st.a : st.b} is a ${A.type !== 'Gear' ? A.type : B.type}.`, 'Declare both as Name::Gear { teeth: ..; module: ..; }.');
         const ga = A.leaf.spec, gb = B.leaf.spec;
         if (Math.abs(ga.module - gb.module) > 1e-6) throw new Diag(st, 'E0411', `${st.a} has module ${ga.module}mm but ${st.b} has ${gb.module}mm; meshed gears need the same module.`, `Set module: ${ga.module}mm; on ${st.b}.`);
@@ -2404,7 +2615,7 @@ function compile(files, opts) {
     tryDo(() => {
       if (st.kind !== 'couple' && st.kind !== 'belt') return;
       const A = model.ents.get(st.a), B = model.ents.get(st.b);
-      if (!A || !B) throw new Diag(st, 'E0320', `There is no entity called "${!A ? st.a : st.b}".`, 'Check the spelling. Names are case-sensitive.');
+      if (!A || !B) throw nearEnt(new Diag(st, 'E0320', `There is no entity called "${!A ? st.a : st.b}".`, 'Check the spelling. Names are case-sensitive.'), !A ? st.a : st.b);
       for (const e of [A, B]) { let ok = false; try { ok = !!localAnchor(e, ['axis'], st).d; } catch (x) {} if (!ok) throw new Diag(st, 'E0415', `${e.name} has no axis to turn about.`, 'Couple or belt round parts: Gear, Pulley, Wheel, Disc, Cylinder or Rod.'); }
       if (find(st.a) === find(st.b)) throw new Diag(st, 'E0413', `${st.a} and ${st.b} are attached to each other.`, 'Remove the attach or this line.');
       if (st.kind === 'couple') { const r = num(st.ratio, {}, 'ratio'); if (r === 0) throw new Diag(st, 'E0416', 'A ratio of 0 means the second part never turns.', 'Use a non-zero ratio such as 1/12.'); model.spinEdges.push({ a: st.a, b: st.b, r, st, kind: 'couple' }); }
@@ -2477,6 +2688,7 @@ function compile(files, opts) {
     catch (e) { if (e instanceof Diag) diags.push(e); else diags.push(new Diag(null, 'E0998', 'The animation could not be simulated: ' + e.message, 'Check the last motion rule you changed.')); }
   }
   /* the same problem found several times (once per repeat copy, say) is listed once */
+  if (layered) for (const d of diags) if (['E0500', 'E0548', 'W0601'].includes(d.code) && !/each chapter/.test(d.fix)) d.fix += ' In a film, each chapter sees only @common, the chapters it extends and its own sections: declare what several chapters use (a Voice, a shared part) in @common.';
   { const seen = new Set(), keep = diags.filter(d => { const k = [d.code, d.file, d.line, d.col, d.message].join('|'); if (seen.has(k)) return false; seen.add(k); return true; }); diags.length = 0; diags.push(...keep); }
   return model;
 }
@@ -2522,7 +2734,7 @@ function sunAt(model, t) {
   return { el, az: s.az, color: s.color, dir: [Math.sin(s.az) * Math.cos(el), Math.sin(el), -Math.cos(s.az) * Math.cos(el)] };
 }
 /* fixed: top-left | top | top-right | left | center | right | bottom-left | bottom | bottom-right [margin], or (x%, y%) from the frame's top-left */
-const FIXED_POS = ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'];
+const FIXED_POS = ['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right', 'band'];   /* band: the top of the caption band, above the captions (the bottom without a band) */
 /* fixed: bottom-left; margin: 5%;  the margin written as its own property: use it, and offer to move it into fixed */
 function fixedMargin(ent, st, P, diags) {
   const f = ent.fixed, m = P.margin, fx = P.fixed;
@@ -2617,7 +2829,7 @@ function liveStyle(model, t) {
 /* a colour value -> THREE.Color with .alpha (0..1): #rgb #rgba #rrggbb #rrggbbaa, rgb()/rgba()/hsl()/hsla(), transparent, CSS and named finishes */
 function colorOf(v, at) {
   const c = new THREE.Color(); c.alpha = 1;
-  const bad = () => new Diag(at, 'E0600', 'Unknown colour.', `Use #rrggbb (or #rrggbbaa with alpha), rgb(r, g, b), rgba(r, g, b, a), transparent, a CSS colour name, or one of: ${Object.keys(NAMED_COLORS).join(', ')}.`);
+  const bad = () => { const d = new Diag(at, 'E0600', 'Unknown colour.', `Use #rrggbb (or #rrggbbaa with alpha), rgb(r, g, b), rgba(r, g, b, a), transparent, a CSS colour name, or one of: ${Object.keys(NAMED_COLORS).join(', ')}.`); return v && v.ref && v.ref.length === 1 ? nearFix(d, v.ref[0], [...Object.keys(NAMED_COLORS), ...Object.keys(THREE.Color.NAMES || {}), 'transparent']) : d; };
   if (v && v.color) {
     const h = v.color.slice(1);
     if (!/^[0-9a-fA-F]+$/.test(h) || ![3, 4, 6, 8].includes(h.length)) throw bad();
@@ -2649,9 +2861,9 @@ function textStyle(leaf, st, warn) {
   const words = (p) => p.items.map(n => n.t === 'ref' ? n.parts.join('.') : n.t === 'str' ? n.v : n.t === 'num' ? String(n.v) : '?');
   if (st['text-side']) {
     const w = words(st['text-side']); const bad = w.find(x => x !== 'all' && !TEXT_SIDES.includes(x));
-    if (bad) throw new Diag(st['text-side'], 'E0620', `"${bad}" is not a side.`, `Write text-side: ${TEXT_SIDES.join(' | ')} | all;  several sides are fine: text-side: front back;`);
+    if (bad) throw nearFix(new Diag(st['text-side'], 'E0620', `"${bad}" is not a side.`, `Write text-side: ${TEXT_SIDES.join(' | ')} | all;  several sides are fine: text-side: front back;`), bad, [...TEXT_SIDES, 'all']);
     if (!isText) T.sides = w.includes('all') ? TEXT_SIDES.slice() : [...new Set(w)];
-    else warn(st['text-side'], 'W0621', 'A Text has no sides; text-side is ignored.', 'A Text already turns to the viewer; facing: front; keeps it fixed in the scene.');
+    else dropProp(warn(st['text-side'], 'W0621', 'A Text has no sides; text-side is ignored.', 'A Text already turns to the viewer; facing: front; keeps it fixed in the scene.'), st['text-side']);
   }
   if (st['font-family']) {
     const n = st['font-family'].items[0]; const name = n.t === 'str' ? n.v : words(st['font-family']).join(' ');
@@ -2666,18 +2878,18 @@ function textStyle(leaf, st, warn) {
   }
   if (st['font-style']) for (const w of words(st['font-style'])) {
     if (w === 'italic' || w === 'oblique') T.italic = true; else if (w === '3d' || w === 'solid') T.solid = true; else if (w !== 'normal' && w !== 'flat')
-      throw new Diag(st['font-style'], 'E0622', `"${w}" is not a font style.`, 'Write font-style: normal | italic | 3d;  or both: font-style: italic 3d;');
+      throw nearFix(new Diag(st['font-style'], 'E0622', `"${w}" is not a font style.`, 'Write font-style: normal | italic | 3d;  or both: font-style: italic 3d;'), w, ['normal', 'italic', 'oblique', 'solid', 'flat']);
   }
   if (st['font-size']) {
     const n = st['font-size'].items[0];
     if (n.t === 'num' && n.kind === 'len') T.size = n.v; else if (n.t === 'num' && n.unit === '%') T.sizePct = n.v;
-    else { const v = num(n, {}, 'font-size'); if (n.t === 'num' && !n.unit) warn(st['font-size'], 'W0622', 'font-size needs a unit.', 'Write font-size: 24mm;  (or a share of the face: 40%)'); T.size = v; }
+    else { const v = num(n, {}, 'font-size'); if (n.t === 'num' && !n.unit) { const d = warn(st['font-size'], 'W0622', 'font-size needs a unit.', 'Write font-size: 24mm;  (or a share of the face: 40%). It is read in mm now.'); if (n.text) sureFix(d, { line: n.line, col: n.col + n.text.length }, 0, 'mm'); } T.size = v; }
     if (isText && T.size) leaf.spec.fontSize = T.size;
   }
   if (st['text-depth']) { T.depth = num(st['text-depth'].items[0], {}, 'text-depth'); if (!T.solid) T.solid = true; }
   if (st['line-height']) { const v = num(st['line-height'].items[0], {}, 'line-height'); T.lineHeight = Math.max(0.6, Math.min(4, v)); }
   if (st['text-padding']) T.padding = num(st['text-padding'].items[0], {}, 'text-padding');
-  if (st['text-align']) { const k = kwOf(st['text-align']); if (!['left', 'center', 'right'].includes(k)) throw new Diag(st['text-align'], 'E0623', 'text-align is left, center or right.', 'Write text-align: left;'); T.align = k; }
+  if (st['text-align']) { const k = kwOf(st['text-align']); if (!['left', 'center', 'right'].includes(k)) throw nearFix(new Diag(st['text-align'], 'E0623', 'text-align is left, center or right.', 'Write text-align: left;'), k, ['left', 'center', 'right']); T.align = k; }
   const col = (p) => { const c = colorOf(evalE(p.items[0], {}), p.items[0]); return { hex: '#' + c.getHexString(), alpha: c.alpha === undefined ? 1 : c.alpha }; };
   if (st['text-color']) T.color = col(st['text-color']); else if (isText && st.color) T.color = col(st.color);
   if (st['text-background'] && kwOf(st['text-background']) !== 'none') T.background = col(st['text-background']);
@@ -2714,7 +2926,7 @@ function applyStyle(model, warn, tryDo) {
   const expandStyle = (name, at, chain) => {
     if (expanded.has(name)) return expanded.get(name);
     const d = sdefs.get(name);
-    if (!d) throw new Diag(at, 'E0612', `There is no style called "${name}".`, sdefs.size ? `Styles: ${[...sdefs.keys()].join(', ')}.` : `Define it in the style section: ${name}::Style { color: steel; material: metal; }`);
+    if (!d) throw nearFix(new Diag(at, 'E0612', `There is no style called "${name}".`, sdefs.size ? `Styles: ${[...sdefs.keys()].join(', ')}.` : `Define it in the style section: ${name}::Style { color: steel; material: metal; }`), name, [...sdefs.keys()]);
     if (chain.includes(name)) throw new Diag(at, 'E0613', `The styles ${[...chain, name].join(' → ')} use each other in a circle.`, 'Remove one of the use: lines.');
     const out = [];
     for (const p of d.props) { if (p.name === 'use') out.push(...useList(p, [...chain, name])); else out.push(p); }
@@ -2739,9 +2951,9 @@ function applyStyle(model, warn, tryDo) {
       for (let o = leaf.mesh; o; o = o.parent) if (o.visible === false) { leaf.hidden = true; break; }   /* visible: false in the scene */
       if (st.material) {
         const m = st.material.items[0].parts && st.material.items[0].parts[0];
-        ({ metal: () => { metal = 0.45; rough = 0.36; leaf.reflective = 0.7; }, chrome: () => { metal = 1; rough = 0.14; leaf.reflective = 1.2; }, brushed: () => { metal = 0.92; rough = 0.42; leaf.reflective = 1; }, gold: () => { metal = 1; rough = 0.25; leaf.reflective = 1.1; }, matte: () => { metal = 0; rough = 0.95; }, plastic: () => { metal = 0; rough = 0.45; }, glass: () => { metal = 0; rough = 0.1; mat.transparent = true; mat.opacity = 0.45; }, flat: () => { metal = 0; rough = 1; mat.flatShading = true; }, glow: () => { metal = 0; rough = 1; leaf.glow = true; }, ghost: () => { metal = 0; rough = 0.5; leaf.ghost = true; } }[m] || (() => { throw new Diag(st.material, 'E0603', `Unknown material "${m}".`, 'Use flat, matte, metal, chrome, brushed, gold, plastic, glass, ghost or glow.'); }))();
+        ({ metal: () => { metal = 0.45; rough = 0.36; leaf.reflective = 0.7; }, chrome: () => { metal = 1; rough = 0.14; leaf.reflective = 1.2; }, brushed: () => { metal = 0.92; rough = 0.42; leaf.reflective = 1; }, gold: () => { metal = 1; rough = 0.25; leaf.reflective = 1.1; }, matte: () => { metal = 0; rough = 0.95; }, plastic: () => { metal = 0; rough = 0.45; }, glass: () => { metal = 0; rough = 0.1; mat.transparent = true; mat.opacity = 0.45; }, flat: () => { metal = 0; rough = 1; mat.flatShading = true; }, glow: () => { metal = 0; rough = 1; leaf.glow = true; }, ghost: () => { metal = 0; rough = 0.5; leaf.ghost = true; } }[m] || (() => { throw nearFix(new Diag(st.material, 'E0603', `Unknown material "${m}".`, 'Use flat, matte, metal, chrome, brushed, gold, plastic, glass, ghost or glow.'), m, ['flat', 'matte', 'metal', 'chrome', 'brushed', 'gold', 'plastic', 'glass', 'ghost', 'glow']); }))();
       }
-      const unit01 = (p, what) => { const v = num(p.items[0], {}, what); if (v < 0 || v > 1) warn(p, 'W0608', `${what} runs from 0 to 1.`, `Write ${what}: 0.3;  or  ${what}: 30%;`); return Math.max(0, Math.min(1, v)); };
+      const unit01 = (p, what) => { const v = num(p.items[0], {}, what); if (v < 0 || v > 1) rangeFix(warn(p, 'W0608', `${what} runs from 0 to 1.`, `Write ${what}: 0.3;  or  ${what}: 30%;`), p.items[0], 0, 1); return Math.max(0, Math.min(1, v)); };
       if (st.metalness) metal = unit01(st.metalness, 'metalness');
       if (st.roughness) rough = unit01(st.roughness, 'roughness');
       if (st.metalness && metal > 0.5 && !leaf.reflective) leaf.reflective = metal;
@@ -2764,27 +2976,27 @@ function applyStyle(model, warn, tryDo) {
         const L = { level: 1, color: null, range: null };
         for (const n of st.luminosity.items) {
           if (n.t === 'num' && n.kind === 'len') { L.range = n.v; continue; }
-          if (n.t === 'num' || (n.t !== 'color' && n.t !== 'ref')) { const v = num(n, {}, 'luminosity'); if (v < 0 || v > 4) warn(st.luminosity, 'W0609', 'luminosity runs from 0 (dark) to 100% (bright); up to 400% for a strong light.', 'Write luminosity: 60%;'); L.level = Math.max(0, Math.min(4, v)); continue; }
+          if (n.t === 'num' || (n.t !== 'color' && n.t !== 'ref')) { const v = num(n, {}, 'luminosity'); if (v < 0 || v > 4) rangeFix(warn(st.luminosity, 'W0609', 'luminosity runs from 0 (dark) to 100% (bright); up to 400% for a strong light.', 'Write luminosity: 60%;'), n, 0, 4); L.level = Math.max(0, Math.min(4, v)); continue; }
           try { L.color = colorOf(evalE(n, {}), n); } catch (e) { throw new Diag(n, 'E0607', 'luminosity takes a level, then optionally a colour and a range.', 'Write luminosity: 80%;  or  luminosity: 80% #ffd27a 400mm;'); }
         }
         leaf.lum = L;
       }
       if (leaf.glow && !leaf.lum) leaf.lum = { level: 0.6, color: null, range: null };   /* material: glow is shorthand for luminosity: 60% */
-      if (st.shadow) { const k = kwOf(st.shadow); if (k !== 'none' && k !== 'cast') throw new Diag(st.shadow, 'E0608', 'shadow is none or cast.', 'Write shadow: none;  to stop the part casting a shadow.'); leaf.noShadow = k === 'none'; }
-      if (st.wireframe) { const k = kwOf(st.wireframe); if (!['on', 'off'].includes(k)) throw new Diag(st.wireframe, 'E0608', 'wireframe is on or off.', 'Write wireframe: on;'); mat.wireframe = k === 'on'; }
+      if (st.shadow) { const k = kwOf(st.shadow); if (k !== 'none' && k !== 'cast') throw kwFix(new Diag(st.shadow, 'E0608', 'shadow is none or cast.', 'Write shadow: none;  to stop the part casting a shadow.'), st.shadow, k, { false: 'none', no: 'none', off: 'none', true: 'cast', yes: 'cast', on: 'cast' }, ['none', 'cast']); leaf.noShadow = k === 'none'; }
+      if (st.wireframe) { const k = kwOf(st.wireframe); if (!['on', 'off'].includes(k)) throw kwFix(new Diag(st.wireframe, 'E0608', 'wireframe is on or off.', 'Write wireframe: on;'), st.wireframe, k, { true: 'on', yes: 'on', false: 'off', no: 'off', none: 'off' }, ['on', 'off']); mat.wireframe = k === 'on'; }
       if (st['label-color']) leaf.labelColor = colorOf(evalE(st['label-color'].items[0], {}), st['label-color'].items[0]);
-      if (st['label-size']) { const v = num(st['label-size'].items[0], {}, 'label-size'); if (v <= 0 || v > 4) warn(st['label-size'], 'W0608', 'label-size is a scale: 100% is normal.', 'Write label-size: 140%;'); leaf.labelScale = Math.max(0.2, Math.min(4, v)); }
+      if (st['label-size']) { const v = num(st['label-size'].items[0], {}, 'label-size'); if (v <= 0 || v > 4) rangeFix(warn(st['label-size'], 'W0608', 'label-size is a scale: 100% is normal.', 'Write label-size: 140%;'), st['label-size'].items[0], 0.2, 4); leaf.labelScale = Math.max(0.2, Math.min(4, v)); }
       /* a label is bare text unless it asks for a panel behind it */
       if (st['label-background']) { const n = st['label-background'].items[0]; leaf.labelBg = isKw(n, 'none') ? null : colorOf(evalE(n, {}), n); }
       /* cut: a section plane through the part, in scene coordinates. The side the axis points to is cut away */
       if (st.cut) leaf.cut = cutSpec(st.cut);
       if (st['cut-color']) leaf.cutColor = colorOf(evalE(st['cut-color'].items[0], {}), st['cut-color'].items[0]);
       /* explode: how far this part moves when the Scene explodes (1 is normal, 0 stays put) */
-      if (st.explode && leaf.top) { const n = st.explode.items[0]; const v = isKw(n, 'none') ? 0 : num(n, {}, 'explode'); if (v < 0 || v > 10) warn(st.explode, 'W0617', 'explode on a part is a weight from 0 (stays put) to 10.', 'Write explode: 0;  or  explode: 2;'); leaf.top.explodeW = Math.max(0, Math.min(10, v)); }
+      if (st.explode && leaf.top) { const n = st.explode.items[0]; const v = isKw(n, 'none') ? 0 : num(n, {}, 'explode'); if (v < 0 || v > 10) rangeFix(warn(st.explode, 'W0617', 'explode on a part is a weight from 0 (stays put) to 10.', 'Write explode: 0;  or  explode: 2;'), n, 0, 10); leaf.top.explodeW = Math.max(0, Math.min(10, v)); }
       if (st.text || leaf.type === 'Text') leaf.text = textStyle(leaf, st, warn);
       if (leaf.type === 'Plot' && st['text-color']) { const c = colorOf(evalE(st['text-color'].items[0], {}), st['text-color'].items[0]); leaf.plotTextColor = '#' + c.getHexString(); }
       if (st.label) { const v = evalE(st.label.items[0], {}); leaf.label = typeof v === 'string' ? v : (v && v.ref ? v.ref.join('.') : String(v)); }
-      if (st.opacity) { const o = num(st.opacity.items[0], {}, 'opacity'); if (o < 0 || o > 1) warn(st.opacity, 'W0607', 'opacity runs from 0 (invisible) to 1 (solid).', 'Write opacity: 0.4;  or  opacity: 40%;'); leaf.opacity = Math.max(0, Math.min(1, o)); }
+      if (st.opacity) { const o = num(st.opacity.items[0], {}, 'opacity'); if (o < 0 || o > 1) rangeFix(warn(st.opacity, 'W0607', 'opacity runs from 0 (invisible) to 1 (solid).', 'Write opacity: 0.4;  or  opacity: 40%;'), st.opacity.items[0], 0, 1); leaf.opacity = Math.max(0, Math.min(1, o)); }
       /* ghost: an x-ray look. The faces are faint and the edges stay clear, so the parts inside read through it */
       if (leaf.ghost) { if (leaf.opacity === undefined) leaf.opacity = 0.16; leaf.ghostRef = Math.max(0.02, leaf.opacity); if (!st.outline) leaf.outline = { color: null, alpha: 0.9 }; leaf.noShadow = true; }
       setOpacity(leaf, leaf.opacity);
@@ -2836,7 +3048,7 @@ function compileMotion(model, ast, warn, tryDo) {
   const expandT = (r0) => r0.targets.flatMap(tg => {
     if (tg.length === 1 && tg[0][0] === '.') {
       const cls = tg[0].slice(1); const hits = model.order.filter(e => (e.classes || []).includes(cls)).map(e => [e.name]);
-      if (!hits.length) { warn(r0, 'W0505', `No entity has the class "${cls}".`, 'Check the class name in the scene file.'); }
+      if (!hits.length) { nearFix(warn(r0, 'W0505', `No entity has the class "${cls}".`, 'Check the class name in the scene file.'), cls, model.order.flatMap(e => e.classes || [])); }
       return hits;
     }
     if (tg.length === 1 && model.defs && model.defs.has(tg[0])) {
@@ -2857,7 +3069,7 @@ function compileMotion(model, ast, warn, tryDo) {
       else if (rule.target.length > 1 && model.ents.has(rule.target[0])) throw new Diag(rule, 'E0501', `Motion rules move whole entities; "${name}" is a part of ${rule.target[0]}.`, `Move ${rule.target[0]}, or declare ${rule.target[rule.target.length - 1]} as its own entity and attach it.`);
       else if (model.voices.has(name)) throw new Diag(rule, 'E0546', `${name} is a voice; it speaks from another rule.`, `Write say: ${name} "words"; inside a rule, or Scene { 2s..3s: say: ${name} "words"; }`);
       else if (model.sounds.has(name)) throw new Diag(rule, 'E0546', `${name} is a sound; it plays from another rule.`, `Write sound: ${name}; inside the rule of the part it belongs to, or in Scene { sound: ${name} at 2s; }`);
-      else throw new Diag(rule, 'E0500', `There is nothing called "${name}" to move.`, `Targets: ${[...new Set([...model.ents.keys(), ...jointByName.keys(), 'Observer', 'Scene'])].join(', ')}.`);
+      else throw nearFix(new Diag(rule, 'E0500', `There is nothing called "${name}" to move.`, `Targets: ${[...new Set([...model.ents.keys(), ...jointByName.keys(), 'Observer', 'Scene'])].join(', ')}.`), name, [...model.ents.keys(), ...jointByName.keys(), 'Observer', 'Scene']);
       let prevEnd = 0, prevDur = 0; const blocks = [];
       for (const b of rule.blocks) {
         let s, e;
@@ -2871,7 +3083,7 @@ function compileMotion(model, ast, warn, tryDo) {
         const snd = b.props.filter(p => p.name === 'sound'), rest = b.props.filter(p => p.name !== 'sound' && p.name !== 'say');
         for (const p of snd) soundProps.push({ p, s, e, target: name });
         for (const p of b.props) if (p.name === 'say') sayProps.push({ p, s, e, target: name });
-        if (target.kind === 'scene') for (const p of rest) { if (p.name === 'explode') { model.explodeTrack.push(p); continue; } if (p.name === 'sun') { model.sunTrack.push(p); continue; } warn(p, 'W0516', `Scene rules play sounds, speak, move the sun and explode the model; "${p.name}" is ignored.`, 'Move the part itself instead, or write sound: Name at 2s;  or  explode: 0 -> 1;'); }
+        if (target.kind === 'scene') for (const p of rest) { if (p.name === 'explode') { model.explodeTrack.push(p); continue; } if (p.name === 'sun') { model.sunTrack.push(p); continue; } dropProp(warn(p, 'W0516', `Scene rules play sounds, speak, move the sun and explode the model; "${p.name}" is ignored.`, 'Move the part itself instead, or write sound: Name at 2s;  or  explode: 0 -> 1;'), p); }
         blocks.push({ s, e, props: target.kind === 'scene' ? [] : rest, src: b });
         { const moves = target.kind === 'scene' ? rest.some(p => p.name === 'explode') : rest.length > 0; if (moves) { if (isFinite(e)) motionEnd = Math.max(motionEnd, e); else motionForever = true; } }
       }
@@ -2902,7 +3114,16 @@ function compileMotion(model, ast, warn, tryDo) {
     else if (isFinite(model.duration) && model.duration > 0 && need > model.duration + 0.4) warn(ev.p, 'W0519', `This line takes about ${sec(ev.est)} s to say, so it runs past the end of the animation (${sec(model.duration)} s).`, `Make the animation last until about ${sec(need)} s, or say less.`);
   }
   /* a caption shows until its words are likely spoken, or the next line of the same voice starts */
-  model.sayEvents.forEach((ev, i) => { const nx = model.sayEvents.slice(i + 1).find(x => x.voice === ev.voice); ev.end = Math.min(nx ? nx.t : Infinity, ev.t + ev.est + 0.6, model.duration + 0.5); });
+  model.sayEvents.forEach((ev, i) => {
+    const nx = model.sayEvents.slice(i + 1).find(x => x.voice === ev.voice), sec = (x) => (Math.ceil(x * 2) / 2).toFixed(1).replace(/\.0$/, '');
+    ev.end = Math.min(nx ? nx.t : Infinity, ev.t + ev.est + 0.6, model.duration + 0.5);
+    ev.cues = captionCues(ev.text, ev.t, Math.max(0.5, Math.min(ev.est, ev.end - ev.t)), ev.end);
+    /* the next line starts before this one is said: its caption is cut off and the voices talk over each other */
+    if (nx && ev.t + ev.est > nx.t + 0.3) warn(ev.p, 'W0550', `This line takes about ${sec(ev.est)} s to say, but the next line starts at ${sec(nx.t)} s, so it is cut off.`, `Start the next line at about ${sec(ev.t + ev.est)} s or later, or say less here.`);
+    /* a paragraph in one line: shown in parts, but hard to follow and hard to time with the picture */
+    const words = ev.text.split(/\s+/).filter(Boolean).length;
+    if (words > 40) warn(ev.p, 'W0551', `This line is ${words} words long; its caption is shown in ${ev.cues.length} parts, one after another.`, 'Long narration is easier to follow as several say: lines of one or two sentences, each in the time block it describes.');
+  });
   if (model.soundEvents.length > 4000) { warn(null, 'W0544', `${model.soundEvents.length} sound events; only the first 4000 play.`, 'Use a longer "every" period.'); model.soundEvents.length = 4000; }
 
   /* several rules for one part add up, like CSS rules for one element: an arrival in one rule and a spin in another are one source of motion */
@@ -2947,7 +3168,7 @@ function compileMotion(model, ast, warn, tryDo) {
           const rad = sp ? (ent.type === 'Gear' ? sp.module * sp.teeth / 2 : sp.radius) : null;
           if (!rad) tryDo(() => { throw new Diag(p, 'E0530', `${j.movingEnt} has no radius to roll on.`, 'roll works on Wheel, Pulley, Disc, Cylinder, Sphere or Gear.'); });
           const gnd = p.items.find(x => x.t === 'ref' && x.parts[0] !== 'on');
-          if (gnd && !model.ents.has(gnd.parts[0])) tryDo(() => { throw new Diag(gnd, 'E0320', `There is no entity called "${gnd.parts[0]}".`, 'Name the ground part, as in roll: Road;'); });
+          if (gnd && !model.ents.has(gnd.parts[0])) tryDo(() => { throw nearFix(new Diag(gnd, 'E0320', `There is no entity called "${gnd.parts[0]}".`, 'Name the ground part, as in roll: Road;'), gnd.parts[0], [...model.ents.keys()]); });
           j.roll = { radius: rad, p }; continue;
         }
         if (p.name !== key) { warn(p, 'W0504', `${j.name} is on a ${j.type.toLowerCase()}, so its motion rule takes "${key}"${j.type === 'Hinge' ? ' or "roll"' : ''}; "${p.name}" is ignored.`, j.type === 'Slider' ? 'Write move: 0mm -> 120mm;  (a number along the slider)' : 'Write rotate: 0deg -> 90deg;'); continue; }
@@ -2958,7 +3179,7 @@ function compileMotion(model, ast, warn, tryDo) {
         }
       }
       j.rule = j.rule ? { ...r, props: [...j.rule.props, ...r.props] } : r; j.key = key;   /* several rules for one joint add their blocks together */
-      if (j.roll && r.props.some(p => p.name === key)) warn(j.roll.p, 'W0531', `${j.name} has both roll and ${key}; roll wins.`, `Remove the ${key} line.`);
+      if (j.roll && r.props.some(p => p.name === key)) dropProp(warn(j.roll.p, 'W0531', `${j.name} has both roll and ${key}; roll wins.`, `Remove the ${key} line.`), r.props.find(p => p.name === key));
     }
     if (r.target.kind === 'observer') { model.obsRule = r; for (const p of r.props) if (!OBSERVER_PROPS.includes(p.name)) nearFix(warn(p, 'W0515', `"${p.name}" is not a camera property.`, `Camera properties: ${OBSERVER_PROPS.join(', ')}.`), p.name, OBSERVER_PROPS); }
   }
@@ -3362,9 +3583,9 @@ function compileSoundDecl(model, st, warn) {
   if (!P.kind) throw new Diag(st, 'E0203', `${st.name} needs "kind".`, `Write ${st.name}::Sound { kind: knock; }  or an audio file: ${st.name}::Sound { src: "voice.mp3"; }  Kinds: ${Object.keys(SOUND_KINDS).join(', ')}.`);
   const kn = P.kind.items[0]; const kind = kn && kn.t === 'ref' ? kn.parts.join('.') : null;
   if (!SOUND_KINDS[kind]) throw new Diag(P.kind, 'E0541', `"${kind || '?'}" is not a built-in sound.`, `Kinds: ${Object.keys(SOUND_KINDS).join(', ')}.`);
-  const frac = (p, what, lo, hi, def) => { if (!p) return def; const v = num(p.items[0], {}, what); if (v < lo || v > hi) warn(p, 'W0547', `${what} runs from ${lo} to ${hi}.`, what === 'pitch' ? 'Write pitch: 80%; (lower) or pitch: 120%; (higher).' : 'Write volume: 60%;'); return Math.max(lo, Math.min(hi, v)); };
+  const frac = (p, what, lo, hi, def) => { if (!p) return def; const v = num(p.items[0], {}, what); if (v < lo || v > hi) rangeFix(warn(p, 'W0547', `${what} runs from ${lo} to ${hi}.`, what === 'pitch' ? 'Write pitch: 80%; (lower) or pitch: 120%; (higher).' : 'Write volume: 60%;'), p.items[0], lo, hi); return Math.max(lo, Math.min(hi, v)); };
   const snd = { name: st.name, kind, pitch: frac(P.pitch, 'pitch', 0.25, 4, 1), volume: frac(P.volume, 'volume', 0, 1, 1), length: P.length ? num(P.length.items[0], {}, 'length') : null, decl: st };
-  if (P.length && !SOUND_KINDS[kind].sustain) warn(P.length, 'W0548', `A ${kind} has a fixed length; "length" is ignored.`, `length works for ${Object.keys(SOUND_KINDS).filter(k => SOUND_KINDS[k].sustain).join(', ')}.`);
+  if (P.length && !SOUND_KINDS[kind].sustain) dropProp(warn(P.length, 'W0548', `A ${kind} has a fixed length; "length" is ignored.`, `length works for ${Object.keys(SOUND_KINDS).filter(k => SOUND_KINDS[k].sustain).join(', ')}.`), P.length);
   model.sounds.set(st.name, snd);
 }
 /* a narrator: the browser speaks its lines in the preview and the 3D player; captions can show them in the picture */
@@ -3374,16 +3595,41 @@ function compileVoiceDecl(model, st, warn) {
   const v = { name: st.name, voice: null, rate: 1, pitch: 1, volume: 1, captions: true, decl: st };
   if (P.voice) { const n = P.voice.items[0]; v.voice = n.t === 'str' ? n.v : n.t === 'ref' ? n.parts.join('.') : null; }
   if (P.neural) { const n = P.neural.items[0]; v.neural = n.t === 'str' ? n.v : n.t === 'ref' ? n.parts.join('.') : null; }
-  const frac = (k, lo, hi) => { if (!P[k]) return null; const x = num(P[k].items[0], {}, k); if (x < lo || x > hi) warn(P[k], 'W0547', `${k} runs from ${Math.round(lo * 100)}% to ${Math.round(hi * 100)}%.`, `Write ${k}: 100%;`); return Math.max(lo, Math.min(hi, x)); };
+  const frac = (k, lo, hi) => { if (!P[k]) return null; const x = num(P[k].items[0], {}, k); if (x < lo || x > hi) rangeFix(warn(P[k], 'W0547', `${k} runs from ${Math.round(lo * 100)}% to ${Math.round(hi * 100)}%.`, `Write ${k}: 100%;`), P[k].items[0], lo, hi); return Math.max(lo, Math.min(hi, x)); };
   v.rate = frac('rate', 0.5, 2) ?? 1; v.pitch = frac('pitch', 0.5, 2) ?? 1; v.volume = frac('volume', 0, 1) ?? 1;
-  if (P.captions) { const k = kwOf(P.captions); if (!['on', 'off'].includes(k)) throw new Diag(P.captions, 'E0549', 'captions is on or off.', 'Write captions: off;  to speak without showing the words.'); v.captions = k === 'on'; }
+  if (P.captions) { const k = kwOf(P.captions); if (!['on', 'off'].includes(k)) throw kwFix(new Diag(P.captions, 'E0549', 'captions is on or off.', 'Write captions: off;  to speak without showing the words.'), P.captions, k, { true: 'on', yes: 'on', false: 'off', no: 'off', none: 'off' }, ['on', 'off']); v.captions = k === 'on'; }
   model.voices.set(st.name, v);
 }
 /* say: [Voice] "words" [at start | at end | at 2s] */
+/* captions the way subtitles work: a spoken line is shown in parts of at most two short lines (about 84 characters), split at sentence
+   ends, then at commas and other clause marks, then between words; short neighbours are joined. Each part shows for its share of the
+   time the line takes to say; the last one stays until the line's caption ends */
+const CUE_MAX = 84;
+function captionCues(text, t0, dur, end) {
+  const parts = [];
+  const sentences = (String(text).match(/[^.!?…]+[.!?…]+["'’”)\]]*|[^.!?…]+$/g) || [String(text)]).map(x => x.trim()).filter(Boolean);
+  for (let x of sentences) {
+    while (x.length > CUE_MAX) {
+      /* even parts: aim at length / parts, at a clause mark near that point if there is one, else at the nearest space */
+      const n = Math.ceil(x.length / CUE_MAX), aim = x.length / n, lo = aim * 0.6;
+      let cut = -1, best = Infinity; const re = /[,;:—–]\s/g; let m;
+      while ((m = re.exec(x))) { const at = m.index + 1; if (at >= lo && at <= CUE_MAX && Math.abs(at - aim) < best) { best = Math.abs(at - aim); cut = at; } }
+      if (cut < 0) { for (let k = 0; k < x.length; k++) if (x[k] === ' ' && k <= CUE_MAX && Math.abs(k - aim) < best) { best = Math.abs(k - aim); cut = k; } }
+      if (cut <= 0) break;
+      parts.push(x.slice(0, cut).trim()); x = x.slice(cut).trim();
+    }
+    if (x) parts.push(x);
+  }
+  const cues = [];
+  for (const q of parts) { const last = cues[cues.length - 1]; if (last && last.length + 1 + q.length <= CUE_MAX && (last.length < 28 || q.length < 28)) cues[cues.length - 1] = last + ' ' + q; else cues.push(q); }
+  if (!cues.length) return [];
+  const total = cues.reduce((a, c) => a + c.length, 0) || 1; let t = t0;
+  return cues.map((c, i) => { const d = dur * c.length / total, r = { t, end: i === cues.length - 1 ? Math.max(end, t + d) : t + d, text: c }; t += d; return r; });
+}
 function sayEventOf(model, sp, warn) {
   const { p, s } = sp, it = p.items.slice(); const usage = 'Write say: Narrator "The valve opens";  or  say: Narrator "Done" at end;';
   let v = null;
-  if (it[0] && it[0].t === 'ref' && it[0].parts.length === 1) { v = model.voices.get(it[0].parts[0]); if (!v) throw new Diag(it[0], 'E0548', `There is no voice called "${it[0].parts[0]}".`, model.voices.size ? `Voices: ${[...model.voices.keys()].join(', ')}.` : `Declare one in the scene: ${it[0].parts[0]}::Voice { voice: en-GB; }`); it.shift(); }
+  if (it[0] && it[0].t === 'ref' && it[0].parts.length === 1) { v = model.voices.get(it[0].parts[0]); if (!v) throw nearFix(new Diag(it[0], 'E0548', `There is no voice called "${it[0].parts[0]}".`, model.voices.size ? `Voices: ${[...model.voices.keys()].join(', ')}.` : `Declare one in the scene: ${it[0].parts[0]}::Voice { voice: en-GB; }`), it[0].parts[0], [...model.voices.keys()]); it.shift(); }
   else { if (model.voices.size > 1) throw new Diag(p, 'E0548', 'Several voices: say which one speaks.', usage); v = model.voices.values().next().value || null; }
   if (!it[0] || it[0].t !== 'str') throw new Diag(p, 'E0548', 'say takes the words in quotes.', usage);
   const text = it.shift().v.replace(/\\n/g, ' ').trim(); let t = s;
@@ -3398,7 +3644,7 @@ function soundEventsOf(model, sp, warn) {
   const usage = 'Write sound: Knock;  sound: Knock at end;  sound: Tick every 1s;  or sound: Bell at 2s 60%;';
   const nm = it[0]; if (!nm || nm.t !== 'ref' || nm.parts.length !== 1) throw new Diag(p, 'E0542', 'sound takes the name of a Sound first.', usage);
   const snd = model.sounds.get(nm.parts[0]);
-  if (!snd) throw new Diag(nm, 'E0540', `There is no sound called "${nm.parts[0]}".`, model.sounds.size ? `Sounds: ${[...model.sounds.keys()].join(', ')}.` : `Declare it in the scene: ${nm.parts[0]}::Sound { kind: ${SOUND_KINDS[nm.parts[0].toLowerCase()] ? nm.parts[0].toLowerCase() : 'knock'}; }`);
+  if (!snd) throw nearFix(new Diag(nm, 'E0540', `There is no sound called "${nm.parts[0]}".`, model.sounds.size ? `Sounds: ${[...model.sounds.keys()].join(', ')}.` : `Declare it in the scene: ${nm.parts[0]}::Sound { kind: ${SOUND_KINDS[nm.parts[0].toLowerCase()] ? nm.parts[0].toLowerCase() : 'knock'}; }`), nm.parts[0], [...model.sounds.keys()]);
   let when = 'start', at = 0, every = 0, vol = 1;
   for (let i = 1; i < it.length; i++) {
     const x = it[i], word = x.t === 'ref' && x.parts.length === 1 ? x.parts[0] : null;
@@ -3460,7 +3706,7 @@ function compileDriver(model, r) {
       g.items.push({ p, n: it[0] }); g.s = Math.min(g.s, p.s);
     } else if (p.name === 'orbit') {
       if (it.length !== 2 || it[0].t !== 'ref') throw new Diag(p, 'E0522', 'orbit is a center part, then an angle or a rate.', 'Write orbit: Sun 30deg/s;');
-      const c = it[0]; if (!model.ents.has(c.parts[0])) throw new Diag(c, 'E0320', `There is no entity called "${c.parts[0]}".`, 'Orbit around a part, as in orbit: Sun 30deg/s;');
+      const c = it[0]; if (!model.ents.has(c.parts[0])) throw nearFix(new Diag(c, 'E0320', `There is no entity called "${c.parts[0]}".`, 'Orbit around a part, as in orbit: Sun 30deg/s;'), c.parts[0], [...model.ents.keys()]);
       if (c.parts[0] === ent.name) throw new Diag(c, 'E0523', 'A part cannot orbit itself.', 'Name another part as the center.');
       group(out.orbits, c.parts.join('.'), () => ({ center: c })).items.push({ p, n: it[1] });
     } else if (p.name === 'move') {
@@ -3644,7 +3890,7 @@ function loopValue(model, t, j) {
 function anchorAt(model, mats, node, t) {
   if (node.t === 'tuple') return new THREE.Vector3(...vec3(node, {}));
   if (node.t !== 'ref') throw new Diag(node, 'E0520', 'Expected a part, an anchor or a point.', 'Write Door.center or (0, 0, 0).');
-  const ent = model.ents.get(node.parts[0]); if (!ent) throw new Diag(node, 'E0320', `There is no entity called "${node.parts[0]}".`, 'Check the spelling. Names are case-sensitive.');
+  const ent = model.ents.get(node.parts[0]); if (!ent) throw nearFix(new Diag(node, 'E0320', `There is no entity called "${node.parts[0]}".`, 'Check the spelling. Names are case-sensitive.'), node.parts[0], [...model.ents.keys()]);
   const la = model.localAnchor(ent, node.parts.slice(1), node);
   return new THREE.Vector3(...la.p).applyMatrix4(mats.get(ent.name));
 }
@@ -3758,11 +4004,13 @@ function splitProject(text) {
     const m = ln.match(MARKER);
     if (m) {
       const k = m[1].toLowerCase();
-      if (!SECTIONS.includes(k)) { issues.push(new Diag(at(i + 1), 'E0106', `"@${m[1]}" is not a section.`, 'Sections are @scene, @style and @motion.')); cur = null; skipping = true; return; }
+      if (!SECTIONS.includes(k)) { issues.push(nearFix(new Diag(at(i + 1), 'E0106', `"@${m[1]}" is not a section.`, 'Sections are @scene, @style and @motion.'), m[1], SECTIONS)); cur = null; skipping = true; return; }
       if (k in start) { issues.push(new Diag(at(i + 1), 'E0107', `@${k} appears more than once.`, `Keep one @${k} section and move its lines there.`)); cur = null; skipping = true; return; }
       start[k] = i + 2; cur = k; skipping = false; return;
     }
     if (cur) { buf[cur].push(ln); return; }
+    /* parts before any marker: the @scene line was left out (common in AI replies). Read them as the scene, and offer the line */
+    if (!skipping && ln.trim() && !/^\s*\/\//.test(ln) && !Object.keys(start).length) { issues.push(fixable(at(i + 1), 'W0148', 'The @scene line is missing above the parts.', 'Write @scene on its own line first. These lines are read as the scene now.', 0, '@scene\n')); start.scene = i + 1; cur = 'scene'; buf.scene.push(ln); return; }
     if (!skipping && ln.trim() && !/^\s*\/\//.test(ln)) { issues.push(new Diag(at(i + 1), 'E0105', 'This line comes before any section marker.', 'Start the file with @scene, and put @style and @motion before those parts.')); skipping = true; }
   });
   for (const k of SECTIONS) { const t = buf[k].join('\n').replace(/\s+$/, ''); files[k] = t ? t + '\n' : ''; }
@@ -3787,9 +4035,11 @@ function chapterHeader(rest, at) {
   if (!toks.length) { issues.push(new Diag(at, 'E0140', 'A chapter needs a name.', 'Write @chapter Intro  (a name that starts with a capital letter).')); return { ...out, issues }; }
   if (!/^[A-Z][A-Za-z0-9_]*$/.test(toks[0])) issues.push(new Diag(at, 'E0140', `"${toks[0]}" is not a chapter name.`, 'Chapter names start with a capital letter and hold letters, digits and _ (Intro, Valves2).'));
   out.name = toks[i++];
+  const words = [];   /* @chapter Atomic Numbers: a title written without quotes */
   while (i < toks.length) {
     const k = toks[i++];
     if (k === ',') continue;
+    if (i - 1 === 1 + words.length && /^[A-Za-z][A-Za-z0-9'’-]*$/.test(k) && !['extends', 'cut', 'fade', 'crossfade', 'fade-out'].includes(k)) { words.push(k); continue; }
     if (k[0] === '"') { out.title = k.slice(1, -1).replace(/\\(.)/g, '$1'); continue; }
     if (k === 'extends') { const n = toks[i++]; if (!n || !/^[A-Z]\w*$/.test(n)) err('extends needs the name of another chapter.', 'Write @chapter Valves extends Crank'); else out.ext = n; continue; }
     if (k === 'cut' || k === 'fade' || k === 'crossfade') {
@@ -3803,6 +4053,12 @@ function chapterHeader(rest, at) {
       continue;
     }
     err(`"${k}" is not part of a chapter line.`, 'Write @chapter Name "Title" extends Other fade 0.8s  (each part is optional after the name).');
+  }
+  if (words.length) {
+    if (!out.title) out.title = [out.name, ...words].join(' ');
+    const fixed = chapterHeaderText(out), d = new Diag(at, 'W0149', `A chapter title goes in quotes: ${fixed}`, 'The words after the name are read as the title now.', 'warning');
+    if (at.len) d.edit = { line: at.line, col: 1, del: at.len, ins: fixed };
+    issues.push(d);
   }
   return { ...out, issues };
 }
@@ -3830,19 +4086,24 @@ function splitFilm(text) {
     if (cm) {
       cur = null; skipping = false;
       if (cm[1].toLowerCase() === 'common') { if (sawCommon || chapters.length) issues.push(new Diag(at(i + 1), 'E0145', '@common comes once, before the first chapter.', 'Move what every chapter shares into the one @common at the top.')); sawCommon = true; common.line = i + 1; box = common; return; }
-      const h = chapterHeader(cm[2], at(i + 1)); issues.push(...h.issues);
+      const h = chapterHeader(cm[2], { ...at(i + 1), len: ln.length }); issues.push(...h.issues);
       box = Object.assign(mkBox('chapter', i + 1), { name: h.name || 'Chapter' + (chapters.length + 1), title: h.title, ext: h.ext, trans: h.trans, fadeOut: h.fadeOut });
       chapters.push(box); return;
     }
     const m = ln.match(MARKER);
     if (m) {
       const k = m[1].toLowerCase();
-      if (!SECTIONS.includes(k)) { issues.push(new Diag(at(i + 1), 'E0106', `"@${m[1]}" is not a section.`, 'Sections are @scene, @style and @motion; chapters start with @chapter Name.')); cur = null; skipping = true; return; }
+      if (!SECTIONS.includes(k)) { issues.push(nearFix(new Diag(at(i + 1), 'E0106', `"@${m[1]}" is not a section.`, 'Sections are @scene, @style and @motion; chapters start with @chapter Name.'), m[1], [...SECTIONS, 'chapter', 'common'])); cur = null; skipping = true; return; }
       if (k in box.start) { issues.push(new Diag(at(i + 1), 'E0107', `@${k} appears more than once in ${box.kind === 'common' ? '@common' : 'chapter ' + box.name}.`, `Keep one @${k} section per chapter.`)); cur = null; skipping = true; return; }
       box.start[k] = i + 2; cur = k; skipping = false; return;
     }
     if (cur) { box.buf[cur].push(ln); return; }
     if (!skipping && (!ln.trim() || /^\s*\/\//.test(ln))) { box.lead.push(ln); return; }   /* comments before the first section stay with their chapter */
+    /* parts straight under @common or @chapter: the @scene line was left out. Read them as the scene, and offer the line */
+    if (!skipping && !Object.keys(box.start).length && (box.kind === 'chapter' || sawCommon)) {
+      issues.push(fixable(at(i + 1), 'W0148', `The @scene line is missing under ${box.kind === 'chapter' ? '@chapter ' + box.name : '@common'}.`, 'Write @scene on its own line first. These lines are read as the scene now.', 0, '@scene\n'));
+      box.start.scene = i + 1; cur = 'scene'; box.buf.scene.push(ln); return;
+    }
     if (!skipping && ln.trim() && !/^\s*\/\//.test(ln)) { issues.push(new Diag(at(i + 1), 'E0105', 'This line comes before any section marker.', box.kind === 'chapter' ? `Put @scene, @style or @motion under @chapter ${box.name}.` : 'Start with @scene, @style or @motion.')); skipping = true; }
   });
   const fin = (b) => { const f = {}; for (const k of SECTIONS) { const t = b.buf[k].join('\n').replace(/\s+$/, ''); f[k] = t ? t + '\n' : ''; } b.files = f; delete b.buf; b.lead = b.lead.join('\n').replace(/^\s+|\s+$/g, ''); return b; };
@@ -3850,7 +4111,7 @@ function splitFilm(text) {
   const seen = new Map();
   for (const c of chapters) { if (seen.has(c.name)) issues.push(new Diag(at(c.line), 'E0142', `Two chapters are called ${c.name}.`, 'Give each chapter its own name.')); seen.set(c.name, c); }
   for (const c of chapters) if (c.ext) {
-    if (!seen.has(c.ext)) { issues.push(new Diag(at(c.line), 'E0143', `There is no chapter called ${c.ext} to extend.`, `Chapters: ${chapters.map(x => x.name).join(', ')}.`)); continue; }
+    if (!seen.has(c.ext)) { issues.push(nearFix(new Diag(at(c.line), 'E0143', `There is no chapter called ${c.ext} to extend.`, `Chapters: ${chapters.map(x => x.name).join(', ')}.`), c.ext, chapters.map(x => x.name).filter(n => n !== c.name))); continue; }
     const chain = [c.name]; let x = seen.get(c.ext); while (x) { if (chain.includes(x.name)) { issues.push(new Diag(at(c.line), 'E0144', `The chapters ${[...chain, x.name].join(' → ')} extend each other in a circle.`, 'Remove one of the extends.')); break; } chain.push(x.name); x = x.ext ? seen.get(x.ext) : null; }
   }
   if (!chapters.length) issues.push(new Diag(at(1), 'E0146', 'There is @common but no chapter.', 'Add a chapter: @chapter Intro, then its @scene, @style and @motion.'));
@@ -3863,6 +4124,24 @@ function joinFilm(film) {
   const cs = sec(film.common.files); if (cs) parts.push('@common\n' + cs);
   for (const c of film.chapters) { const s = sec(c.files); parts.push(chapterHeaderText(c) + '\n' + lead(c) + s); }
   return parts.join('\n');
+}
+/* a pasted project with chapters, merged into the current one by chapter name: a chapter with a name that is there replaces it, a new
+   name is added (after the pasted chapter before it), and chapters the paste leaves out are kept. @common is replaced only when the
+   paste has one. Returns the merged film and what happened to each chapter: changed, added, same or kept */
+function mergeFilm(cur, pasted) {
+  const sig = (c) => JSON.stringify([c.title || '', c.ext || null, c.trans || null, c.fadeOut || null, SECTIONS.map(k => String(c.files[k] || '').trim()), (c.lead || '').trim()]);
+  const csig = (b) => JSON.stringify(SECTIONS.map(k => String(b.files[k] || '').trim()));
+  const hasCommon = SECTIONS.some(k => String(pasted.common.files[k] || '').trim());
+  const common = hasCommon ? pasted.common : cur.common;
+  const commonState = !hasCommon ? 'kept' : csig(pasted.common) === csig(cur.common) ? 'same' : 'changed';
+  const chapters = cur.chapters.slice(), changes = new Map(cur.chapters.map(c => [c.name, 'kept']));
+  let after = -1;
+  for (const pc of pasted.chapters) {
+    const i = chapters.findIndex(c => c.name === pc.name);
+    if (i >= 0) { changes.set(pc.name, sig(chapters[i]) === sig(pc) ? 'same' : 'changed'); chapters[i] = pc; after = i; }
+    else { const at = after >= 0 ? after + 1 : chapters.length; chapters.splice(at, 0, pc); changes.set(pc.name, 'added'); after = at; }
+  }
+  return { film: { ...cur, common, chapters }, common: commonState, changes: chapters.map(c => ({ name: c.name, kind: changes.get(c.name) })) };
 }
 /* what a chapter compiles: @common, then the chapters it extends (their scene and style), then its own sections.
    layers says which box every line came from, so a problem can be shown where it was written. box: -1 is @common */
@@ -3896,7 +4175,7 @@ function filmTimes(chapters, durs) {
   const total = out.length ? out[out.length - 1].s + out[out.length - 1].d : 0;
   return { list: out, total };
 }
-root.Orrery = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, EASINGS, version: '1.0.0-beta' };
+root.Orrery = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, EASINGS, version: '1.0.0-beta' };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -3913,7 +4192,8 @@ let STORY_SANDBOX = false;
 
 /* ---------------- base prompt for AI assistants (the CLI's "prompt" command reads this too) ---------------- */
 const AI_FORMAT_FILES = `OUTPUT: reply with exactly three fenced code blocks labelled scene, style and motion, in that order, then one or two
-sentences on what you built. Example of the shape of a reply:
+sentences on what you built. The scene block holds only parts (Name::Type { }), lets and the Observer, Light and Scene blocks: style rules
+go in the style block and anything with times (0s..2s:, forever:) in the motion block. Example of the shape of a reply:
 \`\`\`scene
 G1::Gear { teeth: 36; at: (0, 0, 0); }
 G2::Gear { teeth: 12; mesh: G1; }
@@ -3926,6 +4206,8 @@ G1 { forever: rotate: 30deg/s; }
 \`\`\``;
 const AI_FORMAT_SINGLE = `OUTPUT: reply with ONE fenced code block labelled orrery that holds the whole project as a single file: the line @orrery 1,
 then a line @scene and the scene; a line @style and the style; a line @motion and the motion. Then one or two sentences on what you built.
+Each of @scene, @style and @motion is a line of its own; never leave one out or replace it with a heading. Without it, everything after
+it lands in the wrong section.
 Example of the shape of a reply:
 \`\`\`orrery
 @orrery 1
@@ -4038,13 +4320,44 @@ Section views: style cut: z 0mm; slices a part with a plane in scene coordinates
 Sound: scene Knock::Sound { kind: knock; }  kinds: tick tock ratchet clank latch gear spring rattle footstep clang chug hiss rumble knock thud click snap pop tap whoosh swish whirr servo slide creak squeak chime bell ding beep blip success alert hum
   motion: sound: Knock;  sound: Knock at end;  sound: Tick every 1s;  sound: Bell at 2s 60%;  Scene { 4s..5s: sound: Bell; }
 
-NARRATION (spoken lines and captions)
+NARRATION AND CHAPTERS, in short (the full rules are included when a task needs them)
+- Spoken lines: Narrator::Voice { voice: en-GB; } in the scene, then say: Narrator "One idea, one or two sentences."; in the motion block it describes.
+- Chapters: @chapter Name "Title" lines split a long video into parts that each start at 0 s; shared things go in @common.
+
+DESIGN (what makes a video look finished)
+- Set the stage: sky + ground (dawn, dusk, sunset outdoors; studio for products) or a plain dark background: #0d1117 for diagrams. Never a bare default.
+- Colour: 2 or 3 main colours plus one accent for the part that matters; materials matter (metal, brushed, plastic). Avoid rainbow parts.
+- Frame: the subject fills about 60% of the picture, a little above centre; set frame: youtube (or a phone format) in Scene.
+- Text: a short title with fixed: top (font-weight: 600, no background); a few in-scene Text words beside the parts they name; no labels.
+  Bare text reads best; add text-background only when text sits over busy detail. A Text is a title or a label: a dozen words at most.
+- Keep words off the animation: with narration or explanations, Scene { caption-band: 18%; } draws the picture above a clear strip; captions sit
+  at its bottom and Texts with fixed: band; at its top. Texts at the same fixed: place stack instead of covering each other.
+- Camera: one slow move per idea (ease-in-out, 3 to 6 s): push in on the detail, orbit to show depth, pull back to finish. Hold still while things move.
+- Story: show the whole, then how it works (assemble with opacity and move, or cut: / material: ghost; to look inside), then the result. Hold 1 s at the end.
+- Long videos: chapters, one idea each; narration paced as in PACING. shadow: none; on small or floating parts that throw messy shadows.
+
+PATTERNS
+Assembly: parts start at opacity 0 and arrive with 0s..1s: opacity: 0 -> 1; move: (0, 120mm, 0) -> (0, 0, 0) ease-out; sound: Thud at end;
+Captions: a Text (it faces the camera by default) faded in and out per step; a text-background panel only when it sits over busy detail. Engine cycles: let phase = 120deg/s * (t - 10s); then use max(0, sin(phase)) as a 0..1 window for opacity or luminosity.
+
+AVOID
+leaving out the @scene, @style or @motion line  -  style rules (Name { color: … }, .class { … }) or timed motion written in the scene  -  a block inside a block
+(in a group, a member is name: Type { … } with one colon, never A::Sphere { … }; everywhere else blocks sit side by side)  -  an unquoted chapter title
+a chapter using a part, Voice or style rule from another chapter  -  light power above 1 (it runs 0 to 1)  -  stars: without a sky
+Name:Type or Name Type (always Name::Type)  -  a paragraph in one Text or one say: line  -  orient: 90deg; without "about x"  -  a title as a plain Text while the Observer moves (use fixed:)  -  fixed: bottom-left margin 5%; or a margin: property (write fixed: bottom-left 5%;)  -  a short move under a long spoken line  -  # comments  -  mesh/attach/hinge outside the moving part's block  -  rotate about ... on a hinged part
+two sources of motion for one piece (two parts of one fused piece each with a rule; a rule plus a hinge, mesh or belt)  -  unknown targets (copies from repeat are Name1, Name2 or a .class)
+parts passing through each other (W0560: move one, connect them, or overlap: allow;)  -  more than 8 luminous parts  -  long label: tags covering the action
+a sun made from a Sphere (use Scene sun:)  -  spoken lines that overlap or run past the end  -  a different Scene { frame } in each chapter (put it in @common)
+`;
+const AI_NARRATION = `NARRATION (spoken lines and captions)
 Declare a voice in the scene: Narrator::Voice { voice: en-GB; rate: 95%; captions: on; }  voice is a language (en-US, en-IN, fr-FR...) or an installed voice name;
   rate 50% to 200%; captions: off hides the words; neural: en_GB-alan-medium; picks the neural voice used when a video export speaks the lines.
 Speak from any motion rule: say: Narrator "The intake valve opens";  at a block's start, or say: Narrator "Done" at end;  or at 1.5s.
   Put a line in the block whose motion it describes, so words and motion stay together. Scene { 0s..4s: say: Narrator "..."; } works for lines that belong to no part.
 Timing: about 2.5 words per second at rate 100%. Leave that long before the next line of the same voice (a new line cuts the caption off), and make
   the block or Scene { duration } long enough for the last line to finish. One idea per line, 4 to 14 words, plain words (write numbers as people say them).
+  Captions are shown like subtitles (two short lines at a time), but a say: line of a whole paragraph still reads badly and cannot follow the
+  picture: split it into several say: lines, each in the block whose motion it describes. W0550 warns when lines overlap, W0551 when one is too long.
 PACING (important): narration sets the length of the film, not the other way round. Work out each line's speaking time first (words / 2.5 s),
   then stretch the motion it describes over at least that time: a 10-word line needs about 4 s of the thing moving, not a 1 s move followed
   by a still picture. Start the motion with the line, end it as the line ends or a little after, and leave 0.5 to 1 s before the next line.
@@ -4052,10 +4365,11 @@ PACING (important): narration sets the length of the film, not the other way rou
   W0519 warns when a line outlasts the motion or the animation.
 The preview speaks with the browser's voice; captions are drawn in the picture and burned into exports; .srt and .vtt caption files can be saved.
 Without a Voice declared, say: "words" uses a default narrator.
-
-CHAPTERS (longer videos, made of parts)
+`;
+const AI_CHAPTERS = `CHAPTERS (longer videos, made of parts)
 A project may hold chapters. Each chapter is a complete animation (its own @scene, @style, @motion) whose time starts at 0 s, of any length;
-the export joins them into one video. Use chapters for parts of a story, not to fit a length. @common, before the first chapter, holds what every chapter shares (Scene { frame: ...; sky: ...; },
+the export joins them into one video. Use chapters for parts of a story, not to fit a length. Each chapter sees only @common, the chapter it
+extends and its own sections, so a Voice used in several chapters is declared once in @common (under its own @scene line). @common, before the first chapter, holds what every chapter shares (Scene { frame: ...; sky: ...; },
 styles, the Narrator voice). A chapter line: @chapter Name ["Title"] [extends Other] [cut | fade [time] [#colour] | crossfade [time]] [fade-out [time]]
 extends: the chapter starts from Other's scene and style (not its motion) and adds its own; a later Observer replaces the inherited one, and later
 style rules win. The transition says how this chapter starts: cut, fade (through black or the colour) or crossfade (blends with the previous chapter's end).
@@ -4079,30 +4393,35 @@ Example:
   Scene { duration: 7s; }
   @style
   Body { material: ghost; }
-
-DESIGN (what makes a video look finished)
-- Set the stage: sky + ground (dawn, dusk, sunset outdoors; studio for products) or a plain dark background: #0d1117 for diagrams. Never a bare default.
-- Colour: 2 or 3 main colours plus one accent for the part that matters; materials matter (metal, brushed, plastic). Avoid rainbow parts.
-- Frame: the subject fills about 60% of the picture, a little above centre; set frame: youtube (or a phone format) in Scene.
-- Text: a short title with fixed: top-left (font-weight: 600, no background); a few in-scene Text words beside the parts they name; no labels.
-  Bare text reads best; add text-background only when text sits over busy detail.
-- Camera: one slow move per idea (ease-in-out, 3 to 6 s): push in on the detail, orbit to show depth, pull back to finish. Hold still while things move.
-- Story: show the whole, then how it works (assemble with opacity and move, or cut: / material: ghost; to look inside), then the result. Hold 1 s at the end.
-- Long videos: chapters, one idea each; narration paced as in PACING. shadow: none; on small or floating parts that throw messy shadows.
-
-PATTERNS
-Assembly: parts start at opacity 0 and arrive with 0s..1s: opacity: 0 -> 1; move: (0, 120mm, 0) -> (0, 0, 0) ease-out; sound: Thud at end;
-Captions: a Text (it faces the camera by default) faded in and out per step; a text-background panel only when it sits over busy detail. Engine cycles: let phase = 120deg/s * (t - 10s); then use max(0, sin(phase)) as a 0..1 window for opacity or luminosity.
-
-AVOID
-orient: 90deg; without "about x"  -  a title as a plain Text while the Observer moves (use fixed:)  -  fixed: bottom-left margin 5%; or a margin: property (write fixed: bottom-left 5%;)  -  a short move under a long spoken line  -  # comments  -  mesh/attach/hinge outside the moving part's block  -  rotate about ... on a hinged part
-two sources of motion for one piece (two parts of one fused piece each with a rule; a rule plus a hinge, mesh or belt)  -  unknown targets (copies from repeat are Name1, Name2 or a .class)
-parts passing through each other (W0560: move one, connect them, or overlap: allow;)  -  more than 8 luminous parts  -  long label: tags covering the action
-a sun made from a Sphere (use Scene sun:)  -  spoken lines that overlap or run past the end  -  a different Scene { frame } in each chapter (put it in @common)
 `;
+const AI_CHECK = `BEFORE YOU REPLY, CHECK (these are the slips replies make most)
+- Every part is Name::Type { ... } with two colons. Every property is name: value; with its colon and its semicolon.
+- @scene, @style and @motion each start their section on their own line; under @common and every @chapter, @scene comes first.
+- Every name you use is declared and spelled the same, capital letters included. Numbers carry units and stay in range (opacity 0..1 or 0%..100%).
+- One source of motion per rigid piece. Every move eases (ease-in-out) and lasts long enough to see.
+- Words: a Text is a title or a label; explanations are say: lines of one or two sentences, never overlapping; with both, use Scene { caption-band: 18%; }.`;
+/* the prompt is built from parts: narration and chapters only when the task or the code needs them, so the prompt stays short */
+const AI_NARR_RX = /narrat|voice|speak|spoken|\bsay\b|caption|subtitle|explain|tutorial|lesson|teach|story|video|talk/i, AI_CHAP_RX = /chapter|\bparts?\b|section|minute|longer|episode|step[- ]by[- ]step|series/i;
+function aiBase(task, code, filmish) {
+  const narr = AI_NARR_RX.test(task || '') || /\bsay:|::Voice\b/.test(code || ''), chap = filmish || AI_CHAP_RX.test(task || '');
+  return [AI_PROMPT.trim(), narr ? AI_NARRATION.trim() : '', chap ? AI_CHAPTERS.trim() : '', AI_CHECK.trim()].filter(Boolean).join('\n\n');
+}
+/* asking about one chapter: the reply holds only that chapter (and @common when it changes), and is merged back by name */
+const AI_FORMAT_CHAPTER = (name) => `OUTPUT: reply with ONE fenced code block labelled orrery that holds: the line @orrery 1, then @common with its sections ONLY if
+you change something shared, then the chapter ${name} alone: its line @chapter ${name} [options] and its @scene, @style and @motion. Do not write the
+other chapters: the reply is merged into the project by chapter name, and chapters you leave out stay as they are. Then one or two sentences.
+Rules that replies often break:
+- @common and every @chapter line are followed by a @scene line before any part. Never put a part straight under @common or @chapter.
+- Keep the chapter's name ${name}; a title goes in quotes after it.
+- The chapter sees only @common, the chapter it extends and its own sections.`;
 const AI_FORMAT_FILM = `OUTPUT: reply with ONE fenced code block labelled orrery that holds the whole project with its chapters: the line @orrery 1,
 then @common (only if chapters share something) with its sections, then each chapter: a line @chapter Name [options], then its @scene, @style and
 @motion (leave out sections it does not need). Keep every chapter that is already there unless the task says otherwise. Then one or two sentences.
+Rules that replies often break:
+- @common and every @chapter line are followed by a @scene line before any part. Never put a part straight under @common or @chapter.
+- A chapter title goes in quotes after the name: @chapter Atoms "Atomic numbers". The name is one word.
+- Each chapter sees only @common, the chapter it extends and its own sections. A part, Voice or style rule from another chapter does not exist
+  there: put a Voice (and anything else several chapters use) in @common, or use extends.
 Example of the shape of a reply:
 \`\`\`orrery
 @orrery 1
@@ -6063,7 +6382,7 @@ const SETTINGS_SCHEMA = [
     { key: 'ui', label: 'Interface size', type: 'select', def: '1', options: [['0.9', 'Compact'], ['1', 'Normal'], ['1.12', 'Large']] },
   ] },
   { section: 'Editor', items: [
-    { key: 'view', label: 'Editing view', hint: 'Combined is easiest to hand to an AI assistant: @scene, @style and @motion start each section.', type: 'select', def: 'files', options: [['files', 'Split: .scene, .style, .motion tabs (saves a .zip)'], ['single', 'Combined: one .orrery file with sections']] },
+    { key: 'view', label: 'Editing view', hint: 'One file is easiest to hand to an AI assistant: @scene, @style and @motion start each section.', type: 'select', def: 'files', options: [['files', 'Three files: .scene, .style, .motion tabs (saves a .zip)'], ['single', 'Combined: one .orrery file with sections']] },
     { key: 'font', label: 'Font', type: 'select', def: 'jetbrains', options: Object.entries(FONTS).map(([k, v]) => [k, v[0]]) },
     { key: 'fontSize', label: 'Font size', type: 'range', def: 12.5, min: 10, max: 22, step: 0.5, unit: 'px' },
     { key: 'lineHeight', label: 'Line spacing', type: 'range', def: 1.6, min: 1.2, max: 2.2, step: 0.05, unit: '×' },
@@ -6156,7 +6475,7 @@ function setFilmText(text, keepBox) {
 }
 /* the whole project as one text: every chapter when there are chapters, else the three sections */
 function projText() { return film ? Orrery.joinFilm(film) : Orrery.joinProject(files); }
-/* the project's name: the .orrery file's name in the Combined view, the .zip's name in the Split view */
+/* the project's name: the .orrery file's name in the One file view, the .zip's name in the Three files view */
 const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'untitled';
 const cleanName = (t) => String(t).replace(/[\\/:*?"<>|\u0000-\u001f]+/g, '-').replace(/^[\s.]+|[\s.]+$/g, '').slice(0, 60) || 'untitled';
 const stemOf = (fname) => { let n = String(fname).replace(/^.*[\\/]/, ''); for (let i = 0; i < 3; i++) n = n.replace(/\.(txt|zip|json|orrery)$/i, ''); return cleanName(n); };
@@ -6397,6 +6716,7 @@ function makeCmEditor() {
     setSelectionRange(a, b) { const L = view.state.doc.length; a = Math.max(0, Math.min(L, a)); b = Math.max(0, Math.min(L, b == null ? a : b)); view.dispatch({ selection: { anchor: a, head: b }, scrollIntoView: true }); },
     setRangeText(txt, a, b) { view.dispatch({ changes: { from: a, to: b, insert: txt }, selection: { anchor: a + txt.length }, userEvent: 'input.type', scrollIntoView: true }); },
     insert(txt) { view.dispatch(view.state.replaceSelection(txt), { userEvent: 'input.type', scrollIntoView: true }); },
+    replaceRange(txt, a, b) { view.dispatch({ changes: { from: a, to: b, insert: txt }, userEvent: 'edit.fix' }); },   /* a machine edit (Fix): undoable, but it does not open the completion list */
     focus() { view.focus(); },
     get scrollTop() { return view.scrollDOM.scrollTop; }, set scrollTop(v) { view.scrollDOM.scrollTop = v; },
     get scrollLeft() { return view.scrollDOM.scrollLeft; }, set scrollLeft(v) { view.scrollDOM.scrollLeft = v; },
@@ -6552,6 +6872,7 @@ const PROP_DOC = {
   use: ['use: Metal, Polished;', 'Take the properties of named styles (Metal::Style { … }), left to right: a later style wins, and the part\'s own properties win over all of them'],
   scatter: ['scatter: 40 in plane xz (600mm, 400mm) seed 7 spin 360deg vary 20% apart;', 'Copies at random places, the same on every build: in plane (xz, xy, yz, an equation "2x + y - z = 100mm" or normal (a, b, c)), along x, in box, in disc, on circle, in sphere. Copies are Name1..NameN; flat shapes lie in the plane. A plane takes a third size, (w, d, depth), to spread copies off it too'],
   frame: ['frame: reel;  or  frame: 9:16;  or  frame: 1080x1920;', 'The picture\'s shape and size: the preview shows it exactly, and exports use it'],
+  'caption-band': ['caption-band: 18%;  or  caption-band: on;', 'Scene: keeps a strip at the bottom clear of the scene, for captions and fixed: band; texts'],
   sky: ['sky: dusk;  or  sky: #1d3b70 #f2b38a #2a2030;', 'A glowing sphere round the whole scene: day dawn dusk sunset night space overcast studio, or top, horizon and below colours'],
   ground: ['ground: #3d4a35;', 'A wide floor under the model that fades into the sky. It sits at the foot of the model, leaving out glowing parts (so a sun can rise from below it); ground: #3d4a35 at 0mm; sets its height'],
   stars: ['stars: 800;', 'How many stars the sky shows (night and space have them already)'],
@@ -6562,7 +6883,7 @@ const SKY_DOC = { day: 'blue, bright horizon', dawn: 'deep blue to peach', dusk:
 const SHAPE_PROPS = (type) => (Orrery.SHAPES[type] ? Orrery.SHAPES[type].props : []);
 const COMMON = ['at', 'align', 'orient', 'visible', 'use', 'repeat', 'scatter', 'attach', 'hinge', 'slider', 'range', 'mesh', 'couple', 'belt', 'pin', 'overlap', 'fixed'];
 const REQUIRED = { Sound: ['kind'], Box: ['size'], Rect: ['size'], Sphere: ['radius'], Cylinder: ['radius', 'height'], Cone: ['radius', 'height'], Torus: ['radius'], Rod: ['length'], Link: ['length'], Gear: ['teeth'], Pulley: ['radius'], Wheel: ['radius'], Disc: ['radius'], Spring: ['radius', 'length'], Tube: ['radius', 'height'], Capsule: ['radius', 'length'], Prism: ['radius', 'height'], Pyramid: ['radius', 'height'], Dome: ['radius'], Wedge: ['size'], Plate: ['size'], Beam: ['length'], Ring: ['radius'], Nut: ['radius'], Bolt: ['radius', 'length'], Cam: ['radius'], Star: ['radius'], Mesh: ['src', 'size'], Triangle: ['size'], Ellipse: ['size'], Polygon: ['radius'], Sector: ['radius'], Arc: ['radius'], Path: ['points'], Line: ['from', 'to'], Arrow: ['from', 'to'], Curve: ['domain', 'point'] };
-const SPECIAL_PROPS = { Observer: ['position', 'look-at', 'zoom', 'fov', 'projection'], Light: ['kind', 'direction', 'power', 'at', 'color'], Scene: ['duration', 'frame', 'sky', 'sun', 'ground', 'stars', 'background', 'grid', 'explode'] };
+const SPECIAL_PROPS = { Observer: ['position', 'look-at', 'zoom', 'fov', 'projection'], Light: ['kind', 'direction', 'power', 'at', 'color'], Scene: ['duration', 'frame', 'caption-band', 'sky', 'sun', 'ground', 'stars', 'background', 'grid', 'explode'] };
 const STYLE_KEYS = ['use', 'color', 'material', 'outline', 'opacity', 'luminosity', 'text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height', 'label', 'label-color', 'label-size', 'label-background', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'cut', 'cut-color', 'explode'];
 const MATERIALS = [['metal', 'soft metal'], ['brushed', 'satin metal'], ['chrome', 'mirror metal'], ['gold', 'polished gold'], ['plastic', 'smooth'], ['matte', 'no shine'], ['glass', 'see-through'], ['ghost', 'x-ray: faint faces, clear edges'], ['flat', 'faceted'], ['glow', 'shines: luminosity 60%']];
 const NAMED = ['steel', 'brass', 'oak', 'copper', 'aluminium', 'iron', 'rubber', 'walnut', 'glass', 'graphite'];
@@ -7296,7 +7617,7 @@ function suggestions() {
     if (prop === 'repeat' && /^\d+\s+\w*$/.test(val)) return { prefix, doc, items: [it('step', 'keyword', 'repeat: 4 step (100mm, 0, 0);')] };
     if (prop === 'visible') return { prefix, doc, items: [it('false', 'value', 'hidden'), it('true', 'value', 'shown')] };
     if (prop === 'overlap') return { prefix, doc, items: [it('allow', 'value', 'no overlap warnings for this part')] };
-    if (prop === 'fixed') return { prefix, doc, items: [...['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'].map(w => it(w, 'value', 'a place on the screen')), it('(50%, 10%)', 'value', 'x and y from the top-left corner')] };
+    if (prop === 'fixed') return { prefix, doc, items: [...['top-left', 'top', 'top-right', 'left', 'center', 'right', 'bottom-left', 'bottom', 'bottom-right'].map(w => it(w, 'value', 'a place on the screen')), it('band', 'value', 'the caption band, above the captions (with Scene { caption-band: 18%; })'), it('(50%, 10%)', 'value', 'x and y from the top-left corner')] };
     if (prop === 'use') return { prefix, doc, items: styleNames().map(n => it(n, 'style', 'a named style')) };
     if (prop === 'facing') return { prefix, doc, items: [it('camera', 'value', 'always turned to the viewer (the default)'), it('front', 'value', 'fixed in the scene, facing +z, like a sign on a wall')] };
     if (prop === 'text') return { prefix, doc, items: /"/.test(val) ? [] : [it('"Hello"', 'text', 'quotes round the words; \\n starts a new line')] };
@@ -7507,7 +7828,7 @@ const chapTitle = (c) => (c && (c.title || humanName(c.name))) || '';
 const boxLabel = (b) => b < 0 ? '@common' : film && film.chapters[b] ? film.chapters[b].name : 'chapter';
 function caretLine() { try { return ta.value.slice(0, ta.selectionStart).split('\n').length; } catch (e) { return 1; } }
 function boxAtLine(L) { if (!film) return 0; let b = -1; film.chapters.forEach((c, i) => { if (c.line && c.line <= L) b = i; }); return b; }
-/* the Combined view of a project with chapters: the whole text is read back; the chapter under the caret is the one previewed */
+/* the One file view of a project with chapters: the whole text is read back; the chapter under the caret is the one previewed */
 function readFilmEditor(initial) {
   const f = Orrery.splitFilm(ta.value); film = f;
   box = initial ? Math.max(-1, Math.min(f.chapters.length - 1, box)) : boxAtLine(caretLine());
@@ -7578,6 +7899,47 @@ async function closeChapter(i, skipAsk) {
   deleteChapter(i, true);
   toastAction(`Deleted ${c.name}`, 'Undo', () => { setFilmText(snap, at); filmChanged(at); toast(`${c.name} is back`); });
 }
+/* a reply or paste with chapters, merged by chapter name (see Orrery.mergeFilm). When it would change more than one chapter that is
+   already there, a dialog lists them first, each with a tick to take the pasted version. Always one Undo */
+function pasteFilm(text, opts = {}) {
+  const pasted = Orrery.splitFilm(text);
+  if (!film || !pasted.chapters.length) { const was = projText(), b0 = box; if (isSingle()) replaceEditorText(text); else { setFilmText(text, 0); filmChanged(0); } markAiCode(); toastActions('Pasted a project with chapters.', [['Undo', () => restoreProject(was, b0)]]); return; }
+  const r = Orrery.mergeFilm(film, pasted), n = r.changes.filter(c => c.kind === 'changed').length + (r.common === 'changed' ? 1 : 0);
+  const go = (take) => applyMerge(r, take, opts);
+  if (opts.review !== false && n >= 2) reviewMerge(r, go); else go(null);
+}
+function applyMerge(r, take, opts) {
+  const was = projText(), b0 = box, curName = box >= 0 && film.chapters[box] ? film.chapters[box].name : null;
+  const use = (name) => !take || take.has(name);
+  const old = new Map(film.chapters.map(c => [c.name, c]));
+  const chapters = r.film.chapters.filter(c => { const k = r.changes.find(x => x.name === c.name).kind; return k !== 'added' || use(c.name); }).map(c => { const k = r.changes.find(x => x.name === c.name).kind; return k === 'changed' && !use(c.name) ? old.get(c.name) : c; });
+  const merged = { ...r.film, common: r.common === 'changed' && !use('@common') ? film.common : r.film.common, chapters };
+  const txt = Orrery.joinFilm(merged), nb = curName ? Math.max(0, chapters.findIndex(c => c.name === curName)) : b0;
+  if (isSingle()) replaceEditorText(txt); else { setFilmText(txt, nb); filmChanged(nb); }
+  markAiCode();
+  const by = (k) => r.changes.filter(c => c.kind === k && (k !== 'changed' && k !== 'added' || use(c.name))).map(c => c.name);
+  const upd = by('changed'), add = by('added'), kept = r.changes.filter(c => c.kind === 'kept' || (c.kind === 'changed' && !use(c.name))).map(c => c.name);
+  const parts = [r.common === 'changed' && use('@common') ? 'updated @common' : '', upd.length ? 'updated ' + upd.join(', ') : '', add.length ? 'added ' + add.join(', ') : '', kept.length ? `kept ${kept.join(', ')} as ${kept.length === 1 ? 'it was' : 'they were'}` : ''].filter(Boolean);
+  const msg = parts.length ? parts.join('; ').replace(/^./, c => c.toUpperCase()) + '.' : 'Nothing changed: the pasted chapters are the same as yours.';
+  if (opts.quiet) return msg;
+  toastActions(msg, [['Undo', () => restoreProject(was, b0)]], 9000);
+  return msg;
+}
+function restoreProject(text, b) { if (isSingle()) replaceEditorText(text); else if (Orrery.isFilmText(text)) { setFilmText(text, b); filmChanged(b); } else { film = null; filmCache.clear(); files = Orrery.splitProject(text).files; box = 0; filmChanged(0); } toast('Undone.'); }
+function reviewMerge(r, go) {
+  let back = document.querySelector('.modal-back.merge');
+  if (!back) { back = document.createElement('div'); back.className = 'modal-back merge'; back.innerHTML = '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mgTitle"></div>'; document.body.appendChild(back); }
+  const m = back.firstChild; back.hidden = false;
+  const label = { changed: 'Changed in the paste', added: 'New in the paste', same: 'Same as yours', kept: 'Not in the paste: kept' };
+  const rows = [...(r.common !== 'kept' ? [{ name: '@common', kind: r.common }] : []), ...r.changes];
+  m.innerHTML = `<h2 id="mgTitle">Paste into your chapters</h2><p class="sub">The paste changes more than one chapter. Untick a chapter to keep your version of it.</p><ul class="mergelist">${rows.map(c => `<li><label class="check"><input type="checkbox" data-n="${escH(c.name)}" ${c.kind === 'changed' || c.kind === 'added' ? 'checked' : 'disabled'}> <b>${escH(c.name)}</b></label><span class="k ${c.kind}">${label[c.kind]}</span></li>`).join('')}</ul><div class="acts2"><button type="button" class="btn" data-a="no">Cancel</button><button type="button" class="btn primary" data-a="ok">Paste the ticked chapters</button></div>`;
+  const done = () => { back.hidden = true; back.onkeydown = null; };
+  m.querySelector('[data-a="no"]').onclick = done;
+  m.querySelector('[data-a="ok"]').onclick = () => { const take = new Set([...m.querySelectorAll('input:checked')].map(x => x.dataset.n)); done(); go(take); };
+  back.onkeydown = (e) => { if (e.key === 'Escape') { e.stopPropagation(); done(); } trapFocus(e, back); };
+  back.onmousedown = (e) => { if (e.target === back) done(); };
+  setTimeout(() => m.querySelector('[data-a="ok"]').focus(), 0);
+}
 function moveChapter(i, d) {
   if (!film) return; const j = i + d; if (j < 0 || j >= film.chapters.length) return;
   const [c] = film.chapters.splice(i, 1); film.chapters.splice(j, 0, c); filmChanged(j);
@@ -7593,7 +7955,7 @@ function renderChapters() {
   const trn = (c, i) => { const k = c.trans ? c.trans.kind : 'cut'; return i === 0 && k === 'cut' ? '' : k === 'cut' ? '' : `<small>${k === 'crossfade' ? '⇄ ' : '◐ '}${k}</small>`; };
   const chips = $('chapChips');
   chips.innerHTML = `<button class="chip common" role="tab" type="button" data-b="-1" aria-selected="${box === -1}" title="@common: the scene, style and motion every chapter starts with">common${dot(-1)}</button>`
-    + film.chapters.map((c, i) => `<button class="chip${fp.on && fp.idx === i ? ' playing' : ''}" role="tab" type="button" data-b="${i}" aria-selected="${box === i}" title="${escH(chapTitle(c))}${c.ext ? ' · extends ' + escH(c.ext) : ''}${filmDurs[i] ? ' · ' + filmDurs[i].toFixed(1) + ' s' : ''}. Double-click for its settings"><i>${i + 1}</i><b>${escH(c.name)}</b>${trn(c, i)}${dot(i)}</button>`).join('');
+    + film.chapters.map((c, i) => { const d = filmDurs[i], k = c.trans ? c.trans.kind : 'cut'; return `<button class="chip tl${fp.on && fp.idx === i ? ' playing' : ''}" role="tab" type="button" draggable="true" data-b="${i}" aria-selected="${box === i}" style="--g:${d ? Math.max(0.5, Math.min(6, d / 4)).toFixed(2) : 1}" title="${escH(chapTitle(c))}${c.ext ? ' · extends ' + escH(c.ext) : ''}${d ? ' · ' + d.toFixed(1) + ' s' : ''} · starts with ${k === 'crossfade' ? 'a crossfade' : k === 'fade' ? 'a fade' : 'a cut'}. Double-click for its settings; drag to move it">${i > 0 && k !== 'cut' ? `<span class="tr ${k}" aria-hidden="true"></span>` : ''}<i>${i + 1}</i><b>${escH(c.name)}</b>${dot(i)}<small class="len">${d ? d.toFixed(1) + ' s' : ''}</small>${fp.on && fp.idx === i ? '<span class="ph" aria-hidden="true"></span>' : ''}</button>`; }).join('');
   chips.querySelectorAll('.chip').forEach(ch => {
     const b = +ch.dataset.b;
     if (b >= 0) { const x = document.createElement('span'); x.className = 'chx'; x.textContent = '×'; x.setAttribute('aria-hidden', 'true'); x.title = `Close ${film.chapters[b].name} (Shift skips the question)`; ch.append(x);
@@ -7601,6 +7963,13 @@ function renderChapters() {
     ch.addEventListener('click', () => { if (b !== box || fp.on) selectBox(b); });
     ch.addEventListener('dblclick', () => { if (b >= 0) openChapterDialog(b); });
     ch.addEventListener('contextmenu', (e) => { e.preventDefault(); if (b !== box) selectBox(b); openMenuAt(e.clientX, e.clientY, chapterMenuItems(b), 'Chapter'); });
+    if (b >= 0) {   /* drag a chapter to move it */
+      ch.addEventListener('dragstart', (e) => { e.dataTransfer.setData('text/x-orrery-chapter', String(b)); e.dataTransfer.effectAllowed = 'move'; ch.classList.add('dragging'); });
+      ch.addEventListener('dragend', () => { ch.classList.remove('dragging'); chips.querySelectorAll('.dropbefore,.dropafter').forEach(x => x.classList.remove('dropbefore', 'dropafter')); });
+      ch.addEventListener('dragover', (e) => { if (!e.dataTransfer.types.includes('text/x-orrery-chapter')) return; e.preventDefault(); const r = ch.getBoundingClientRect(), aft = e.clientX > r.left + r.width / 2; ch.classList.toggle('dropafter', aft); ch.classList.toggle('dropbefore', !aft); });
+      ch.addEventListener('dragleave', () => ch.classList.remove('dropbefore', 'dropafter'));
+      ch.addEventListener('drop', (e) => { const from = +e.dataTransfer.getData('text/x-orrery-chapter'); if (!(from >= 0)) return; e.preventDefault(); const r = ch.getBoundingClientRect(); let to = b + (e.clientX > r.left + r.width / 2 ? 1 : 0); if (from < to) to--; if (to === from) return; const [c] = film.chapters.splice(from, 1); film.chapters.splice(to, 0, c); filmChanged(to); toast(`Moved ${c.name} to place ${to + 1}.`); });
+    }
   });
   const sel = chips.querySelector('[aria-selected="true"]'); if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   renderTitle();
@@ -7696,12 +8065,12 @@ function mapFilmDiag(d, m) {
   if (!film || !m.layers || !['scene', 'style', 'motion'].includes(d.file)) { if (film) d.box = m.boxIdx; return d; }
   const L = Orrery.layerOf(m.layers, d.file, d.line); if (!L) { d.box = m.boxIdx; return d; }
   if (L.box === box) { d.line = L.line; d.box = L.box; return d; }
-  d.box = L.box; d.boxFile = d.file; d.boxLine = L.line; d.file = 'film'; d.line = filmAbsLine(L.box, d.boxFile, L.line); d.edit = null; return d;
+  d.box = L.box; d.boxFile = d.file; d.boxLine = L.line; d.file = 'film'; d.line = filmAbsLine(L.box, d.boxFile, L.line); return d;   /* its fix (if any) now points at that line of the whole film */
 }
 /* after a build: compile the other chapters too, so their problems show and the film is ready to play */
-function checkFilm() {
+function checkFilm(now) {
   clearTimeout(checkFilm.tm); if (!film || PLAYER) return;
-  checkFilm.tm = setTimeout(() => {
+  const run = () => {
     if (!film) return; const seen = new Set(lastDiags.map(d => [d.box, d.boxFile || d.file, d.boxLine || d.line, d.code, d.message].join('|')));
     const more = [], frames = [];
     filmDurs = film.chapters.map((c, i) => {
@@ -7709,7 +8078,7 @@ function checkFilm() {
       frames.push(m.sceneOpts.frame ? m.sceneOpts.frame.w + 'x' + m.sceneOpts.frame.h : 'none');
       if (i !== box) for (const d0 of m.diags) {
         if (d0.code === 'W0560') continue;
-        const d = Object.assign(Object.create(Object.getPrototypeOf(d0)), d0); mapFilmDiag(d, m);
+        const d = Object.assign(Object.create(Object.getPrototypeOf(d0)), d0); d.message = d0.message; mapFilmDiag(d, m);
         if (d.box === box) continue;   /* the chapter being edited lists its own problems already */
         if (d.file !== 'film') { d.boxFile = d.file; d.boxLine = d.line; d.file = 'film'; d.line = filmAbsLine(d.box, d.boxFile, d.boxLine); }
         const k = [d.box, d.boxFile, d.boxLine, d.code, d.message].join('|'); if (seen.has(k)) continue; seen.add(k); more.push(d);
@@ -7719,7 +8088,8 @@ function checkFilm() {
     const f0 = frames[0]; film.chapters.forEach((c, i) => { if (frames[i] && frames[i] !== f0) { const d = new Orrery.Diag({ file: 'film', line: c.line || 1, col: 1 }, 'W0147', `${c.name} has a different frame (${frames[i]}) from the first chapter (${f0}).`, 'One video has one shape: the export uses the first chapter\'s frame. Put Scene { frame: … } in @common so every chapter shares it.', 'warning'); d.box = i; d.boxFile = 'scene'; d.boxLine = 1; more.push(d); } });
     if (more.length) { lastDiags = [...lastDiags, ...more]; renderProblems(); renderEditor(); }
     renderChapters(); updateTimeTotal(); if (tracksOn()) renderTracks();
-  }, 650);
+  };
+  if (now) run(); else checkFilm.tm = setTimeout(run, 650);   /* now: straight away, so a round of fixes sees every chapter's problems */
 }
 function updateTimeTotal() { const el = $('projWhat'); if (!el || !film) return; const tot = film.chapters.length && filmDurs.length === film.chapters.length ? Orrery.filmTimes(film.chapters, filmDurs).total : null; el.textContent = `${film.chapters.length} chapter${film.chapters.length === 1 ? '' : 's'}${tot ? ' · ' + tot.toFixed(1) + ' s' : ''} · editing ${box < 0 ? '@common' : film.chapters[box] ? film.chapters[box].name : ''}`; }
 
@@ -7792,6 +8162,7 @@ function filmAfterFrame() {
   $('timeLbl').textContent = `${fp.T.toFixed(2)} s / ${fp.ft.total.toFixed(2)} s · ${c ? c.name : ''}`;
   if (!scrubbing) $('scrub').value = fp.T;
   drawFilmFx(filmFxAt(fp.ft, fp.idx, fp.T - L.s));
+  { const ph = document.querySelector('.chip.tl.playing .ph'), d = filmDurs[fp.idx]; if (ph && d) ph.style.width = Math.max(0, Math.min(100, (fp.T - L.s) / d * 100)) + '%'; }
   if (tracksOn()) placePlayhead();
 }
 function filmAdvance(dt) {
@@ -7859,11 +8230,13 @@ async function withFilmExport(fn) {
   finally { filmExp = null; if (wasFilm) { fp.idx = -1; filmSeek(T, true); } else build(); }
 }
 function filmWantsSound() { return !!(filmExp && filmExp.models.some(m => m.soundEvents.length || (S.exportSpeak && m.sayEvents.length))); }
+/* every caption part (see captionCues), for .srt and .vtt files */
+function captionCuesAll() { return filmSayEvents().flatMap(ev => Orrery.captionCues(ev.text, ev.t, Math.max(0.5, Math.min(ev.est || Infinity, ev.end - ev.t)), ev.end)); }
 /* every spoken line of the film with its time in the joined video */
 function filmSayEvents() {
-  if (!filmExportOn()) return model ? model.sayEvents.map(ev => ({ t: ev.t, end: Math.min(ev.end, model.duration), text: ev.text })) : [];
+  if (!filmExportOn()) return model ? model.sayEvents.map(ev => ({ t: ev.t, end: Math.min(ev.end, model.duration), text: ev.text, est: ev.est })) : [];
   const r = filmPrepare(); if (r.bad) return [];
-  return r.models.flatMap((m, i) => m.sayEvents.map(ev => ({ t: r.ft.list[i].s + ev.t, end: r.ft.list[i].s + Math.min(ev.end, m.duration), text: ev.text })));
+  return r.models.flatMap((m, i) => m.sayEvents.map(ev => ({ t: r.ft.list[i].s + ev.t, end: r.ft.list[i].s + Math.min(ev.end, m.duration), text: ev.text, est: ev.est })));
 }
 
 /* ---------------- tracks: every motion rule, sound and spoken line on a time axis ---------------- */
@@ -7926,11 +8299,11 @@ function replyBlocks(text) {
 let aiUndo = null;   /* the whole project before the last AI change, so one click puts it back */
 function applyAiReply(text) {
   const b = replyBlocks(text), before = { text: projText(), film: !!film, box };
-  if (b.orrery && Orrery.isFilmText(b.orrery)) { if (fp.on) filmStop(true); setFilmText(b.orrery, Math.max(0, Math.min(box, 99))); filmChanged(box); }
+  if (b.orrery && Orrery.isFilmText(b.orrery)) { if (fp.on) filmStop(true); if (film) pasteFilm(b.orrery, { review: false, quiet: true }); else { setFilmText(b.orrery, Math.max(0, Math.min(box, 99))); filmChanged(box); } }
   else if (b.orrery) { const sp = Orrery.splitProject(b.orrery); if (sp.issues.some(d => d.sev === 'error')) return { ok: false, why: 'The reply\'s project has broken section markers.' }; for (const k of Orrery.SECTIONS) files[k] = sp.files[k]; selectTab(current); build(); persist(); markDirty(); }
   else if (b.scene || b.style || b.motion) { for (const k of Orrery.SECTIONS) if (b[k] !== undefined) files[k] = b[k]; selectTab(current); build(); persist(); markDirty(); }
   else return { ok: false, why: 'The reply had no Orrery code in it.' };
-  aiUndo = before; renderChapters(); return { ok: true };
+  aiUndo = before; renderChapters(); markAiCode(); return { ok: true };
 }
 function undoAi() {
   if (!aiUndo) return; const u = aiUndo; aiUndo = null;
@@ -7950,7 +8323,7 @@ async function askAi(prompt, kind) {
   finally { clearTimeout(tm); }
 }
 async function runAi(prompt, kind) {
-  if (!aiOn || runAi.busy) return; runAi.busy = true; $('aiRun').disabled = true; $('aiFix').disabled = true; $('aiBar').hidden = false;
+  if (!aiOn || runAi.busy) return; runAi.busy = true; $('aiRun').disabled = true; $('fixMain').disabled = true; $('aiBar').hidden = false;
   setAiStat(kind === 'fix' ? 'Asking the AI to fix the errors…' : 'Writing the animation… (this can take up to a minute)');
   try {
     const text = await askAi(prompt, kind); const r = applyAiReply(text);
@@ -7959,15 +8332,14 @@ async function runAi(prompt, kind) {
     setTimeout(() => { const n = lastDiags.filter(d => d.sev === 'error').length; setAiStat(`${n ? `Done, with ${n} error${n === 1 ? '' : 's'} left (see Problems).` : 'Done: the preview shows the new code.'}${note ? ' ' + escH(note) : ''} <button type="button" class="linkbtn" id="aiUndoBtn">Undo the AI change</button>`, !!n); }, 50);
     track('ai_run', { kind, chapters: film ? film.chapters.length : 0 });
   } catch (e) { setAiStat(escH(e.message || String(e)), true); }
-  finally { runAi.busy = false; $('aiRun').disabled = false; $('aiFix').disabled = false; $('aiBar').hidden = true; }
+  finally { runAi.busy = false; $('aiRun').disabled = false; $('fixMain').disabled = false; $('aiBar').hidden = true; }
 }
 $('aiRun').addEventListener('click', () => { const task = $('aiTask').value.trim(); if (!task) { setAiStat('Describe what to animate first.', true); $('aiTask').focus(); return; } runAi(buildPrompt(), 'generate'); });
-$('aiFix').addEventListener('click', () => aiFixFor(lastDiags.filter(d => d.sev === 'error')));
 /* Fix with AI: the prompt, the problems and the whole project go to the AI on this site; its answer replaces the code (undoable) */
 function aiFixFor(errs) {
   if (!errs.length || !aiOn) return;
   const $s = $('aiSheet'); $s.hidden = false; $('sheet').hidden = true;
-  const prompt = AI_PROMPT.trim() + '\n\n' + (film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES)
+  const prompt = aiBase('', projText(), !!film) + '\n\n' + (film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES)
     + '\n\nTASK\nFix these problems. Keep everything that already works, and change as little as you can.\n```json\n' + JSON.stringify(errs.slice(0, 20).map(d => d.json ? d.json() : d), null, 1) + '\n```\n'
     + (film ? '\nCURRENT PROJECT\n```orrery\n' + projText().trim() + '\n```\n' : '\nCURRENT PROJECT\n```orrery\n' + Orrery.joinProject(files).trim() + '\n```\n');
   runAi(prompt, 'fix');
@@ -7981,16 +8353,38 @@ function syncAiUi() {
 }
 
 /* ---------------- problems ---------------- */
+/* the Problems list. Repeats of the same problem (same code and message) are one row with ×n; it expands to their places and its Fix
+   fixes them all. Every row has the same three columns: where, what, and one action of a fixed width (Fix, Fix with a ? badge for a
+   guess, or Ask AI), so a long list stays aligned. The chips above filter by errors, warnings or what can be fixed. */
+let probFilter = '';
+const probOpen = new Set();
+function locOf(d) { return d.file === 'film' ? `${boxLabel(d.box)} › ${d.boxFile || 'chapter'}${d.boxLine ? ':' + d.boxLine : ''}` : isSingle() ? `line ${shownLine(d)}${d.file && d.file !== 'project' ? ` · ${d.file}` : ''}` : d.file === 'project' && film ? 'chapter line' : `${d.file ? d.file + ':' : ''}${d.line}:${d.col}`; }
+/* the message, with the suggested word of a guess in bold */
+function msgHtml(d) { const m = esc(d.message); return d.edit && d.edit.guess ? m.replace(/Did you mean (.+?)\?/, 'Did you mean <b class="sugg">$1</b>?') : m; }
+function probGroups() {
+  const errs = lastDiags.filter(d => d.sev === 'error'), wr = lastDiags.filter(d => d.sev !== 'error'), groups = new Map();
+  for (const d of [...errs, ...wr]) { const k = d.sev + '|' + d.code + '|' + d.message; if (!groups.has(k)) groups.set(k, { key: k, list: [] }); groups.get(k).list.push(d); }
+  return [...groups.values()];
+}
 function renderProblems() {
-  const list = $('probList'); const errs = lastDiags.filter(d => d.sev === 'error'), wr = lastDiags.filter(d => d.sev !== 'error');
-  $('probTitle').textContent = `Problems · ${errs.length} error${errs.length === 1 ? '' : 's'}, ${wr.length} warning${wr.length === 1 ? '' : 's'}`;
+  const list = $('probList'); const errs = lastDiags.filter(d => d.sev === 'error'), wr = lastDiags.filter(d => d.sev !== 'error'), nfix = lastDiags.filter(d => canApply(d)).length;
+  $('probTitle').textContent = 'Problems';
+  { const chips = $('probChips'), C = { error: errs.length, warning: wr.length, fixable: nfix };
+    if (probFilter && !C[probFilter]) probFilter = '';
+    chips.hidden = !lastDiags.length;
+    chips.querySelectorAll('[data-pf]').forEach(b => { const k = b.dataset.pf, n = C[k]; b.hidden = k === 'fixable' && !n; b.setAttribute('aria-pressed', String(probFilter === k)); b.querySelector('i').textContent = n; b.querySelector('span').textContent = k === 'error' ? (n === 1 ? 'error' : 'errors') : k === 'warning' ? (n === 1 ? 'warning' : 'warnings') : 'fixable'; }); }
+  const groups = probGroups().filter(g => !probFilter || (probFilter === 'fixable' ? g.list.some(canApply) : g.list[0].sev === probFilter));
   if (!lastDiags.length) { list.innerHTML = '<li class="none" style="cursor:default">No problems. The preview is up to date.</li>'; }
-  else list.innerHTML = [...errs, ...wr].map((d, i) => `<li class="${d.sev === 'error' ? 'e' : 'w'}" data-i="${i}"><span class="loc">${d.file === 'film' ? `${esc(boxLabel(d.box))} › ${d.boxFile || 'chapter'}${d.boxLine ? ':' + d.boxLine : ''}` : isSingle() ? `line ${shownLine(d)}${d.file && d.file !== 'project' ? ` · ${d.file}` : ''}` : d.file === 'project' && film ? 'chapter line' : `${d.file ? d.file + ':' : ''}${d.line}:${d.col}`}</span><span class="msg"><b>${d.code}</b>${esc(d.message)}</span>${d.fix ? `<span class="fix">${esc(d.fix)}</span>` : ''}${d.edit && d.file !== 'film' ? `<button type="button" class="rowfix" data-fix="edit" title="Apply: ${esc(d.edit.ins ? 'write ' + d.edit.ins : 'remove it')}">Fix</button>` : aiOn && !PLAYER ? '<button type="button" class="rowfix" data-fix="ai" title="Ask the AI on this site to fix this problem (you can undo it)">Fix with AI</button>' : ''}</li>`).join('');
-  const ordered = [...errs, ...wr];
-  { const nf = lastDiags.filter(d => d.edit).length; $('fixAll').hidden = !nf; $('fixAll').textContent = `Fix ${nf}`; }
-  list.querySelectorAll('li[data-i]').forEach(li => li.addEventListener('click', () => { const d = ordered[+li.dataset.i]; if (d.file) goToDiag(d); }));
-  list.querySelectorAll('.rowfix').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const d = ordered[+b.closest('li').dataset.i]; if (b.dataset.fix === 'edit') applyFixes([d]); else aiFixFor([d]); }));
-  { const ne = errs.length; $('aiFix').hidden = !(aiOn && ne && !PLAYER); }
+  else list.innerHTML = groups.map((g, i) => {
+    const d = g.list[0], n = g.list.length, fx = g.list.filter(canApply), open = probOpen.has(g.key);
+    const act = fx.length ? rowFixBtn(d, fx.length) : aiOn && !PLAYER ? `<button type="button" class="rowfix ai" data-fix="ai" title="Ask the AI on this site to fix ${n > 1 ? 'these problems' : 'this problem'} (you can undo it)">${SPARK_SVG}<span>Ask AI</span></button>` : '';
+    return `<li class="${d.sev === 'error' ? 'e' : 'w'}" data-i="${i}"><span class="loc" title="${esc(locOf(d))}">${esc(locOf(d))}</span><span class="msg"><b class="pcode">${d.code}</b>${msgHtml(d)}${n > 1 ? ` <button type="button" class="more" aria-expanded="${open}" title="${open ? 'Hide' : 'Show'} the ${n} places">×${n}</button>` : ''}</span><span class="act">${act}</span>${d.fix ? `<span class="fix">${esc(d.fix)}</span>` : ''}${n > 1 ? `<span class="locs"${open ? '' : ' hidden'}>${g.list.map((x, j) => `<button type="button" class="locchip" data-j="${j}">${esc(locOf(x))}${x.col > 1 ? ':' + x.col : ''}</button>`).join('')}</span>` : ''}</li>`;
+  }).join('') || '<li class="none" style="cursor:default">Nothing matches this filter.</li>';
+  list.querySelectorAll('li[data-i]').forEach(li => li.addEventListener('click', () => { const d = groups[+li.dataset.i].list[0]; if (d.file) goToDiag(d); }));
+  list.querySelectorAll('.more').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (probOpen.has(g.key)) probOpen.delete(g.key); else probOpen.add(g.key); renderProblems(); }));
+  list.querySelectorAll('.locchip').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const d = groups[+b.closest('li').dataset.i].list[+b.dataset.j]; if (d.file) goToDiag(d); }));
+  list.querySelectorAll('.rowfix').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (b.dataset.fix === 'edit') { const fx = g.list.filter(canApply); const r = applyFixes(fx); if (r) reportFix(r.changes, r.before, fx[0].edit.guess ? 'guess' : 'sure'); } else aiFixFor(g.list); }));
+  renderFixBtn(); renderCopyBtn();
   document.querySelectorAll('.tab').forEach(t => { const f = t.dataset.file; const mine = (d) => f === 'project' || d.file === f; const e = lastDiags.some(d => mine(d) && d.sev === 'error'), w = lastDiags.some(mine); t.innerHTML = `${f === 'project' ? esc(projName) + '.orrery' : '.' + f}${e ? '<span class="dot"></span>' : w ? '<span class="dot w"></span>' : ''}`; });
   const st = $('status'); st.className = 'status' + (errs.length ? ' bad' : wr.length ? ' warn' : '');
   st.lastElementChild.textContent = errs.length ? `${errs.length} error${errs.length === 1 ? '' : 's'}` : wr.length ? `Running · ${wr.length} warning${wr.length === 1 ? '' : 's'}` : 'Running';
@@ -8005,49 +8399,210 @@ function goToDiag(d) {
   if (d.file === 'project' && film && !isSingle()) { setSetting('view', 'single'); setTimeout(() => goTo('project', d.line, d.col), 0); return; }
   goTo(d.file, d.line, d.col);
 }
-/* apply every machine fix the warnings carry, as one undoable edit per file */
-function applyFixes(only) {
-  const eds = (Array.isArray(only) ? only : lastDiags).filter(d => d.edit && d.file !== 'film'); if (!eds.length) return;
-  const edit = (text, list, lineOf) => { const lines = text.split('\n'); list.slice().sort((a, b) => lineOf(b) - lineOf(a) || b.col - a.col).forEach(d => { const k = lineOf(d) - 1, L = lines[k]; if (L != null) lines[k] = L.slice(0, d.col - 1) + d.edit.ins + L.slice(d.col - 1 + d.edit.del); }); return lines.join('\n'); };
-  if (isSingle()) { const nt = edit(ta.value, eds, shownLine); ta.setSelectionRange(0, ta.value.length); insertText(nt); }
-  else {
-    for (const f of ['scene', 'style', 'motion']) { const mine = eds.filter(d => d.file === f); if (!mine.length) continue; if (f === current) { const nt = edit(ta.value, mine, d => d.line); ta.setSelectionRange(0, ta.value.length); insertText(nt); } else { files[f] = edit(files[f], mine, d => d.line); } }
-    build(); persist();
-  }
-  toast(`Fixed ${eds.length} problem${eds.length === 1 ? '' : 's'}`);
+/* ---------- fixes ----------
+   A problem may carry an edit: a sure one (what is read anyway: a # comment, another name for a property, an ignored property) or a
+   guess (edit.guess: "Did you mean …?", a value back in its range). The Fix button does the most useful thing first: Fix all applies
+   the sure edits; when none are left it becomes Apply suggestions; with only errors left and AI on the site, Fix with AI.
+   Its menu has all of them, and Fix as much as possible, which repeats sure edits then guesses until nothing more changes. */
+const WRENCH_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 7.5l2 2 4.3-4.3a6 6 0 0 1-8 8l-6.6 6.6a2.1 2.1 0 0 1-3-3l6.6-6.6a6 6 0 0 1 8-8z"/></svg>';
+const SPARK_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg>';
+/* an edit can be applied here: problems in another chapter only in the single-file view, where the whole film is in the editor */
+const canApply = (d) => !!d.edit && (d.file !== 'film' || (film && isSingle()));
+/* where an edit goes: the text it changes and its line there (an edit's line is relative to the line the problem was found on) */
+const editLineOf = (d) => (isSingle() ? shownLine(d) : d.line) + (d.edit.line - (d.line0 || d.edit.line));
+function editText(d) { return isSingle() || d.file === current ? ta.value : files[d.file] || ''; }
+/* what an edit will do, in a few characters: Gaer → Gear, remove length: 2s;, add mm */
+function editPreview(d) {
+  const e = d.edit; let was = e.old;
+  if (was == null) { const L = editText(d).split('\n')[editLineOf(d) - 1]; was = L == null ? '' : L.substr(e.col - 1, e.del); }
+  return changeLabel(was, e.ins);
 }
-$('fixAll').addEventListener('click', () => applyFixes());
+function changeLabel(was, ins) {
+  const w = String(was).trim(), n = String(ins).replace(/\n/g, ' ').trim();
+  return w && n ? `${w} → ${n}` : w ? `remove ${w}` : `add ${n}`;
+}
+function rowFixBtn(d, n = 1) {
+  const g = d.edit.guess, pv = editPreview(d);
+  const tip = (g ? `A guess: ${pv}. You can undo it.` : `Apply: ${pv}`) + (n > 1 ? ` (all ${n})` : '');
+  return `<button type="button" class="rowfix${g ? ' guess' : ''}" data-fix="edit" title="${esc(tip).replace(/"/g, '&quot;')}">${WRENCH_SVG}<span>Fix${n > 1 ? ' all' : ''}</span>${g ? '<i class="q" aria-label="a guess">?</i>' : ''}</button>`;
+}
+function fixPlan() {
+  const ok = lastDiags.filter(canApply);
+  const plan = { sure: ok.filter(d => !d.edit.guess), guess: ok.filter(d => d.edit.guess), errs: lastDiags.filter(d => d.sev === 'error'), ai: !!(aiOn && !PLAYER) };
+  plan.main = plan.sure.length ? 'sure' : plan.guess.length ? 'guess' : plan.ai && plan.errs.length ? 'ai' : null;
+  return plan;
+}
+const plural = (n, w, ws) => `${n} ${n === 1 ? w : ws || w + 's'}`;
+function renderFixBtn() {
+  const P = fixPlan(), b = $('fixMain');
+  $('fixSplit').hidden = !P.main; b.dataset.fix = P.main || '';
+  $('fixLabel').textContent = P.main === 'sure' ? `Fix all (${P.sure.length})` : P.main === 'guess' ? `Apply suggestions (${P.guess.length})` : 'Fix with AI';
+  b.title = (P.main === 'sure' ? 'Apply the fixes that are sure: ' + P.sure.slice(0, 3).map(editPreview).join(', ') + (P.sure.length > 3 ? ', …' : '')
+    : P.main === 'guess' ? 'Apply the likely corrections: ' + P.guess.slice(0, 3).map(editPreview).join(', ') + (P.guess.length > 3 ? ', …' : '') + '. You can undo them.'
+    : 'Ask the AI on this site to fix the errors') + ` (${MOD_KEY} .)`;
+  if (!$('fixMenu').hidden) renderFixMenu(P);
+}
+function renderFixMenu(P = fixPlan()) {
+  const m = $('fixMenu'), item = (k) => m.querySelector(`[data-fix="${k}"]`);
+  const set = (k, on, n, desc) => { const it = item(k); it.setAttribute('aria-disabled', on ? 'false' : 'true'); it.querySelector('[data-n]').textContent = n ? `(${n})` : ''; it.querySelector('[data-d]').textContent = desc; it.querySelector('[data-k]').textContent = P.main === k ? `${MOD_KEY} .` : ''; };
+  const list = (L) => L.slice(0, 3).map(editPreview).join(', ') + (L.length > 3 ? ', …' : '');
+  set('sure', P.sure.length, P.sure.length, P.sure.length ? list(P.sure) : 'Nothing to fix for sure right now');
+  set('guess', P.guess.length, P.guess.length, P.guess.length ? list(P.guess) : 'No suggestions right now');
+  set('max', P.sure.length + P.guess.length, 0, P.sure.length + P.guess.length ? 'Repeats both until nothing more can be fixed' : 'Nothing to fix right now');
+  m.querySelectorAll('[data-ai]').forEach(x => { x.hidden = !P.ai; });
+  if (P.ai) set('ai', P.errs.length && !runAi.busy, 0, P.errs.length ? `Asks the AI about the ${plural(P.errs.length, 'error')} left` : 'No errors to send');
+}
+/* the editor's text, and the other sections' when they are in tabs: for Undo, and to see that a round of fixes changed nothing new */
+function editorSnapshot() { return { single: isSingle(), cur: current, text: ta.value, files: { ...files } }; }
+const snapKey = () => isSingle() ? ta.value : JSON.stringify(files);
+/* replace the editor's text with as small a change as possible, so the caret, the scroll and undo stay sensible */
+function replaceEditorText(nt) {
+  const old = ta.value; if (old === nt) return false;
+  const max = Math.min(old.length, nt.length); let a = 0; while (a < max && old[a] === nt[a]) a++;
+  let b = 0; while (b < max - a && old[old.length - 1 - b] === nt[nt.length - 1 - b]) b++;
+  const c0 = ta.selectionStart, c1 = ta.selectionEnd, dl = nt.length - old.length;
+  if (ta.isCm) ta.replaceRange(nt.slice(a, nt.length - b), a, old.length - b); else { ta.setSelectionRange(a, old.length - b); insertText(nt.slice(a, nt.length - b)); }
+  const map = (p) => p <= a ? p : p >= old.length - b ? p + dl : nt.length - b;
+  try { ta.setSelectionRange(map(c0), map(c1)); } catch (e) {}
+  return true;
+}
+function restoreSnapshot(sn) {
+  if (!sn || sn.single !== isSingle() || sn.cur !== current) { toast('The editor has changed view; use Undo in the editor instead.'); return; }
+  if (sn.single) replaceEditorText(sn.text);
+  else { for (const f of ['scene', 'style', 'motion']) if (f !== current) files[f] = sn.files[f]; replaceEditorText(sn.files[current]); files[current] = ta.value; }
+  clearTimeout(tmr); build(); persist();
+}
+/* apply some problems' edits as one change per section, then build straight away. Returns { changes, before } or null */
+function applyFixes(list) {
+  const eds = list.filter(canApply); if (!eds.length) return null;
+  const before = editorSnapshot(), changes = [];
+  if (isSingle()) { const r = Orrery.applyEdits(ta.value, eds, editLineOf); changes.push(...r.changes); replaceEditorText(r.text); }
+  else for (const f of ['scene', 'style', 'motion']) {
+    const mine = eds.filter(d => d.file === f); if (!mine.length) continue;
+    const r = Orrery.applyEdits(f === current ? ta.value : files[f], mine, editLineOf); r.changes.forEach(c => { c.file = f; }); changes.push(...r.changes);
+    if (f === current) { replaceEditorText(r.text); files[f] = ta.value; } else files[f] = r.text;
+  }
+  clearTimeout(tmr); build(); if (film) checkFilm(true); persist();
+  return { changes, before };
+}
+/* Fix as much as possible: sure edits, then guesses, round after round, until a round changes nothing, the text comes back to one it
+   had, or 10 rounds. One Undo puts everything back. It never calls the AI: that stays a separate, deliberate click */
+function fixMax() {
+  const before = editorSnapshot(), seen = new Set([snapKey()]), changes = []; let rounds = 0;
+  while (rounds < 10) {
+    const P = fixPlan(), list = P.sure.length ? P.sure : P.guess; if (!list.length) break;
+    const r = applyFixes(list); if (!r || !r.changes.length) break;
+    rounds++; changes.push(...r.changes);
+    const k = snapKey(); if (seen.has(k)) break; seen.add(k);
+  }
+  reportFix(changes, before, 'max', rounds);
+}
+function runFix(kind) {
+  closeMenus(); const P = fixPlan();
+  if (kind === 'ai') { if (P.ai && P.errs.length && !runAi.busy) aiFixFor(P.errs); return; }
+  if (kind === 'max') { fixMax(); return; }
+  const r = applyFixes(kind === 'sure' ? P.sure : P.guess); if (r) reportFix(r.changes, r.before, kind);
+}
+/* say what changed, with Undo; for more than one change, a list of them; with errors left after a full run, the AI if it is on */
+function reportFix(changes, before, kind, rounds) {
+  const n = changes.length; if (!n) { toast('Nothing more could be fixed.'); return; }
+  const errs = lastDiags.filter(d => d.sev === 'error').length, sample = changes.slice(0, 2).map(c => changeLabel(c.was, c.ins)).join(', ') + (n > 2 ? ', …' : '');
+  const msg = kind === 'max' ? `Made ${plural(n, 'fix', 'fixes')}${rounds > 1 ? ` in ${rounds} rounds` : ''}${errs ? `; ${plural(errs, 'error')} left` : ''}.`
+    : kind === 'guess' ? `Applied ${n === 1 ? '' : n + ' suggestions: '}${sample}.` : n === 1 ? `Fixed: ${sample}.` : `Fixed ${n} problems.`;
+  const acts = [['Undo', () => { restoreSnapshot(before); toast('Undone.'); }]];
+  if (n > 1) acts.push(['Show changes', () => showFixChanges(changes, before)]);
+  if (kind === 'max' && errs && aiOn && !PLAYER) acts.push(['Fix the rest with AI', () => aiFixFor(lastDiags.filter(d => d.sev === 'error'))]);
+  toastActions(msg, acts, 9000);
+}
+function showFixChanges(changes, before) {
+  let back = document.querySelector('.modal-back.fixes');
+  if (!back) { back = document.createElement('div'); back.className = 'modal-back fixes'; back.innerHTML = '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="fxTitle"></div>'; document.body.appendChild(back); }
+  const m = back.firstChild; back.hidden = false;
+  const row = (c) => `<li><span class="loc">${c.file ? '.' + c.file + ' ' : ''}line ${c.line}</span><code>${c.was.trim() ? `<del>${esc(c.was.trim())}</del>` : ''}${c.was.trim() && c.ins.trim() ? ' → ' : ''}${c.ins.trim() ? `<ins>${esc(c.ins.replace(/\n/g, ' ').trim())}</ins>` : ''}${!c.ins.trim() ? ' <span class="g" style="display:inline">removed</span>' : ''}</code><span class="g">${esc(c.d.code)}${c.d.edit && c.d.edit.guess ? ' · a guess' : ''}</span></li>`;
+  m.innerHTML = `<h2 id="fxTitle">${plural(changes.length, 'change')}</h2><p class="sub">Line numbers are as they were when each change was made.</p><ul class="fixlist">${changes.map(row).join('')}</ul><div class="acts2"><button type="button" class="btn" data-a="undo">Undo all</button><button type="button" class="btn primary" data-a="ok">Done</button></div>`;
+  const done = () => { back.hidden = true; back.onkeydown = null; };
+  m.querySelector('[data-a="ok"]').onclick = done;
+  m.querySelector('[data-a="undo"]').onclick = () => { done(); restoreSnapshot(before); toast('Undone.'); };
+  back.onkeydown = (e) => { if (e.key === 'Escape') { e.stopPropagation(); done(); } trapFocus(e, back); };
+  back.onmousedown = (e) => { if (e.target === back) done(); };
+  setTimeout(() => m.querySelector('[data-a="ok"]').focus(), 0);
+}
+$('probChips').addEventListener('click', (e) => { const b = e.target.closest('[data-pf]'); if (!b) return; probFilter = probFilter === b.dataset.pf ? '' : b.dataset.pf; renderProblems(); });
+$('fixMain').addEventListener('click', () => { const k = $('fixMain').dataset.fix; if (k) runFix(k); });
+$('fixMenuBtn').addEventListener('click', (e) => { e.stopPropagation(); renderFixMenu(); toggleMenu($('fixMenuBtn'), $('fixMenu')); });
+$('fixMenu').querySelectorAll('[data-fix]').forEach(b => b.addEventListener('click', () => { if (b.getAttribute('aria-disabled') === 'true') return; runFix(b.dataset.fix); }));
 function copyText(txt) {
   const legacy = () => { const t = document.createElement('textarea'); t.value = txt; t.setAttribute('readonly', ''); t.style.cssText = 'position:fixed;left:-9999px;top:0'; document.body.appendChild(t); t.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (e) {} t.remove(); return ok; };
   try { if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(txt).then(() => true, () => legacy()); } catch (e) {}
   return Promise.resolve(legacy());
 }
 function flashBtn(b, msg, label) { b.textContent = msg; setTimeout(() => b.textContent = label, 1600); }
-$('copyJson').addEventListener('click', () => {
-  copyText(JSON.stringify(lastDiags.map(d => d.json()), null, 2)).then(ok => flashBtn($('copyJson'), ok ? 'Copied' : 'Copy blocked', 'Copy as JSON'));
-});
+/* Copy as JSON, or Copy with code. When the code in the editor is what was last pasted (or what the site's AI wrote), the AI already has
+   it and the problems are enough; once it has been edited by hand (or by Fix), the default is the message with the code */
+const aiCopy = { key: null };
+function markAiCode() { setTimeout(() => { aiCopy.key = snapKey(); renderCopyBtn(); }, 0); }
+const copyDefault = () => aiCopy.key !== null && snapKey() === aiCopy.key ? 'json' : 'code';
+function renderCopyBtn() {
+  const k = copyDefault(), b = $('copyJson'); b.dataset.copy = k; b.textContent = k === 'code' ? 'Copy with code' : 'Copy as JSON';
+  b.title = k === 'code' ? 'The code was changed since the last paste, so this copies a message with the problems and the code' : 'The code is as pasted, so this copies just the problems as JSON';
+  $('copyMenu').querySelectorAll('[data-copy]').forEach(x => { x.querySelector('[data-k]').textContent = x.dataset.copy === k ? 'default' : ''; });
+}
+/* the problems as JSON, with lines as the AI will see them: in the one-file view (and for a film), lines in the whole file */
+function problemsForAi(keepEdit = true) {
+  return lastDiags.map(d => { const j = d.json(); if (isSingle()) { const L = shownLine(d); if (j.edit) j.edit = { ...j.edit, line: L + (j.edit.line - j.line) }; j.section = d.file === 'film' ? undefined : j.file; j.file = 'project'; j.line = L; } if (!keepEdit) delete j.edit; return j; });
+}
+const problemsJson = () => JSON.stringify(problemsForAi(), null, 2);
+/* the current code, in the format the AI is asked to reply in */
+function codeForAi() {
+  if (film) return '```orrery\n' + projText().trim() + '\n```\n';
+  if (S.view === 'single') return '```orrery\n' + Orrery.joinProject(files).trim() + '\n```\n';
+  return '```scene\n' + files.scene.trim() + '\n```\n```style\n' + files.style.trim() + '\n```\n```motion\n' + files.motion.trim() + '\n```\n';
+}
+function copyProblems(kind) {
+  closeMenus();
+  const txt = kind === 'code'
+    ? `Fix these problems in my Orrery project. Change as little as you can, keep what already works, and reply with the whole project in the same format as the code below.\n\nPROBLEMS\n\`\`\`json\n${problemsJson()}\n\`\`\`\n\nCURRENT PROJECT\n${codeForAi()}`
+    : problemsJson();
+  copyText(txt).then(ok => flashBtn($('copyJson'), ok ? 'Copied' : 'Copy blocked', kind === 'code' ? 'Copy with code' : 'Copy as JSON'));
+}
+$('copyJson').addEventListener('click', () => copyProblems($('copyJson').dataset.copy));
+$('copyMenuBtn').addEventListener('click', (e) => { e.stopPropagation(); renderCopyBtn(); toggleMenu($('copyMenuBtn'), $('copyMenu')); });
+$('copyMenu').querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => copyProblems(b.dataset.copy)));
 
 /* AI prompt */
 function buildPrompt() {
   const task = $('aiTask').value.trim() || '[Describe the animation you want here]';
-  let out = AI_PROMPT.trim() + '\n\n' + (film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES);
+  const oneCh = aiChapterScope();
+  let out = aiBase($('aiTask').value, projText(), !!film) + '\n\n' + (oneCh ? AI_FORMAT_CHAPTER(oneCh.name) : film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES);
   out += '\n\nTASK\n' + task + '\n';
+  if ($('aiProbs').checked && lastDiags.length) out += '\nPROBLEMS IN THE CURRENT CODE (fix these first; change as little else as you can)\n```json\n' + JSON.stringify(problemsForAi(false)).replace(/\},\{/g, '},\n{') + '\n```\n';
   if ($('aiState').checked && model) out += '\nSTATE AT t = ' + t.toFixed(2) + ' s (what the current code produces at that moment; use it to find what is wrong)\n```text\n' + frameState(t, { header: false }).trim() + '\n```\n';
-  if ($('aiCode').checked && film) out += `\nCURRENT PROJECT (change it to do the task; keep what already works. The chapter on screen is ${box < 0 ? '@common' : film.chapters[box].name})\n\`\`\`orrery\n` + projText().trim() + '\n```\n';
+  if ($('aiCode').checked && oneCh) out += `\nCURRENT CHAPTER ${oneCh.name}, with @common${oneCh.ext ? ' and the chapter it extends' : ''} (change ${oneCh.name} to do the task; keep what already works)\n\`\`\`orrery\n` + Orrery.joinFilm({ ...film, chapters: [...(oneCh.ext ? film.chapters.filter(c => c.name === oneCh.ext) : []), oneCh] }).trim() + '\n```\n';
+  else if ($('aiCode').checked && film) out += `\nCURRENT PROJECT (change it to do the task; keep what already works. The chapter on screen is ${box < 0 ? '@common' : film.chapters[box].name})\n\`\`\`orrery\n` + projText().trim() + '\n```\n';
   else if ($('aiCode').checked) out += S.view === 'single'
     ? '\nCURRENT PROJECT (change it to do the task; keep what already works)\n```orrery\n' + Orrery.joinProject(files).trim() + '\n```\n'
     : '\nCURRENT PROJECT (change it to do the task; keep what already works)\n```scene\n' + files.scene.trim() + '\n```\n```style\n' + files.style.trim() + '\n```\n```motion\n' + files.motion.trim() + '\n```\n';
   return out;
 }
+/* in a project with chapters, the prompt can be about the chapter on screen only: a shorter prompt and reply, and the other chapters stay safe */
+let aiScope = 'chapter';
+function aiChapterScope() { return film && box >= 0 && aiScope === 'chapter' ? film.chapters[box] : null; }
+$('aiScope').addEventListener('click', (e) => { const b = e.target.closest('[data-s]'); if (!b) return; aiScope = b.dataset.s; $('aiScope').querySelectorAll('[data-s]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); updateAiLen(); });
 function updateAiLen() {
+  $('aiScopeRow').hidden = !film || box < 0;
+  if (film && box >= 0) $('aiScope').querySelector('[data-s="chapter"]').textContent = `This chapter (${film.chapters[box].name})`;
   $('aiStateLbl').textContent = `Include the state at ${t.toFixed(2)} s: where every part is, so it can see what is wrong`;
+  { const e = lastDiags.filter(d => d.sev === 'error').length, w = lastDiags.length - e, cb = $('aiProbs');
+    cb.disabled = !lastDiags.length; if (!lastDiags.length) cb.checked = false;
+    $('aiProbsLbl').textContent = lastDiags.length ? `Include the problems (${plural(e, 'error')}, ${plural(w, 'warning')}), so it fixes them first` : 'Include the problems (there are none right now)'; }
   const txt = buildPrompt(); $('aiLen').textContent = `${txt.split(/\s+/).length.toLocaleString()} words`;
   const single = S.view === 'single';
-  $('aiFmt').textContent = film ? 'One file with every chapter' : single ? 'Combined: one file (@scene, @style, @motion)' : 'Split: three code blocks';
-  $('aiFmtSwitch').textContent = single ? 'use Split' : 'use Combined'; $('aiFmtSwitch').hidden = !!film;
+  $('aiFmt').textContent = aiChapterScope() ? `One file with chapter ${aiChapterScope().name} (merged back by name)` : film ? 'One file with every chapter' : single ? 'One file (@scene, @style, @motion)' : 'Three files: three code blocks';
+  $('aiFmtSwitch').textContent = single ? 'use three files' : 'use one file'; $('aiFmtSwitch').hidden = !!film;
 }
 $('aiFmtSwitch').addEventListener('click', () => { setSetting('view', S.view === 'single' ? 'files' : 'single'); updateAiLen(); });
-$('aiBtn').addEventListener('click', () => { const s = $('aiSheet'); s.hidden = !s.hidden; $('sheet').hidden = true; if (!s.hidden) { updateAiLen(); $('aiTask').focus(); } });
+$('aiBtn').addEventListener('click', () => { const s = $('aiSheet'); s.hidden = !s.hidden; $('sheet').hidden = true; if (!s.hidden) { if (lastDiags.length && !$('aiProbs').dataset.touched) { $('aiProbs').checked = true; $('aiCode').checked = true; } updateAiLen(); $('aiTask').focus(); } });
+$('aiProbs').addEventListener('change', () => { $('aiProbs').dataset.touched = '1'; if ($('aiProbs').checked) $('aiCode').checked = true; updateAiLen(); });
 $('aiClose').addEventListener('click', () => { $('aiSheet').hidden = true; });
 $('aiTask').addEventListener('input', updateAiLen);
 $('aiSheet').querySelector('.note').textContent = 'Copies the Orrery syntax as instructions any chat assistant can follow, plus your request. Paste its reply back into the editor: a single-file reply fills all three sections.'; $('aiCode').addEventListener('change', updateAiLen); $('aiState').addEventListener('change', updateAiLen);
@@ -8570,7 +9125,7 @@ function frame(tt, forExport) {
     }
   }
   if (guideGroup) guideGroup.visible = showGuides && !forExport;
-  { const vc = freeCam && !forExport ? persp : cam; vc.updateMatrixWorld(); placeFixed(vc, mats); skyFollow(vc); sunFollow(vc, tt); textFollow(vc); }
+  { const vc = freeCam && !forExport ? persp : cam; applyBand(vc, freeCam && !forExport ? 0 : model.sceneOpts.band || 0); vc.updateMatrixWorld(); placeFixed(vc, mats); skyFollow(vc); sunFollow(vc, tt); textFollow(vc); }
   // labels follow their part and stay upright
   if (labelGroup && labelGroup.children.length) {
     contentGroup.updateMatrixWorld(true);
@@ -8589,19 +9144,35 @@ function frame(tt, forExport) {
 /* fixed: the part keeps one place on the screen, whatever the Observer does. It is drawn just in front of the camera,
    scaled so it looks the size it would at the Observer's starting distance, and it keeps its own motion (a spin, say) */
 const _fm = new THREE.Matrix4(), _fs = new THREE.Matrix4(), _fc = new THREE.Matrix4();
+/* the caption band: the camera draws the scene smaller (zoom x (1 - band)) and higher (a view offset), leaving the bottom strip clear */
+function applyBand(vc, band) {
+  const u = vc.userData;
+  if (u.band && vc.zoom === u.zoomSet) vc.zoom = u.zoomBase;   /* the camera code did not reset the zoom this frame: start from the zoom without the band */
+  if (band) { u.zoomBase = vc.zoom || 1; vc.zoom = u.zoomBase * (1 - band); u.zoomSet = vc.zoom; const fw = vc.isPerspectiveCamera ? 1000 * (vc.aspect || 1) : 1000; vc.setViewOffset(fw, 1000, 0, band * 500, fw, 1000); }   /* setViewOffset also sets a perspective camera's aspect from these sizes */
+  else if (u.band) vc.clearViewOffset();
+  if (band || u.band) vc.updateProjectionMatrix();
+  u.band = band;
+}
+/* a part on the screen is showing: some of it is drawn and not faded out */
+function fixedShowing(e) { let on = false; e.node.traverse(o => { if (on || !o.visible) return; if ((o.isMesh || o.isSprite) && o.material) { const ms = Array.isArray(o.material) ? o.material : [o.material]; if (ms.some(m => m.visible !== false && (!m.transparent || m.opacity > 0.02))) on = true; } }); return on && e.node.visible !== false; }
 function placeFixed(vc, mats) {
   const fx = model.fixedInfo; if (!fx || !fx.length) return;
-  const asp = stageAspect();
+  const asp = stageAspect(), band = vc.userData.band || 0;
   let H, W, k, z;
   if (vc === persp) { const tn = Math.tan(persp.fov * Math.PI / 360) / (persp.zoom || 1); z = Math.max(persp.near * 20, model.fixedRef * 0.04); H = z * tn; W = H * (persp.aspect || asp); k = z / (model.fixedRef * (persp.zoom || 1)); }
-  else { H = ortho.top; W = ortho.right; k = H / (model.fixedOrthoH || H); z = -model.box.getSize(new THREE.Vector3()).length() * 40; }
+  else { const zm = ortho.zoom || 1; H = ortho.top / zm; W = ortho.right / zm; k = H / (model.fixedOrthoH || H); z = -model.box.getSize(new THREE.Vector3()).length() * 40; }
+  /* parts at the same named place, showing at the same time, stack instead of covering each other: down from the top and the middle,
+     up from the bottom */
+  const stack = new Map();
   for (const f of fx) {
     const sp = f.e.fixed, hx = f.hx * k, hy = f.hy * k; let x, y;
     if (sp.pos) {
-      const m = sp.margin * H * 2, p = sp.pos;
+      const m = sp.margin * H * 2, p = sp.pos === 'band' && !band ? 'bottom' : sp.pos, gap = H * 0.02;
       x = p.endsWith('left') ? -W + m + hx : p.endsWith('right') ? W - m - hx : 0;
-      y = p.startsWith('top') ? H - m - hy : p.startsWith('bottom') ? -H + m + hy : 0;
+      y = p === 'band' ? -H + 2 * band * H - H * 0.03 - hy : p.startsWith('top') ? H - m - hy : p.startsWith('bottom') ? -H + m + hy : 0;
+      if (fixedShowing(f.e)) { const used = stack.get(p) || 0; y += p.startsWith('bottom') ? used : -used; stack.set(p, used + 2 * hy + gap); }
     } else { x = (-1 + 2 * sp.x) * W; y = (1 - 2 * sp.y) * H; }
+    if (band) y -= band * H;   /* undo the view offset: the place is in the whole picture, band included */
     _fc.makeTranslation(x, y, -z).premultiply(vc.matrixWorld);
     _fs.makeScale(k, k, k); _fm.makeTranslation(-f.p0.x, -f.p0.y, -f.p0.z);
     f.e.node.matrix.copy(_fc).multiply(_fs).multiply(_fm).multiply(mats.get(f.e.name)); f.e.node.matrixWorldNeedsUpdate = true;
@@ -9157,7 +9728,7 @@ function openNewProject() {
       <div class="shhead"><h2 id="npTitle">New project</h2><label class="npname">Name <input id="npName" type="text" maxlength="60" spellcheck="false" autocomplete="off"></label></div>
       <div class="npbody">
         <div class="npgrid" id="npGrid" role="listbox" aria-label="Start from"></div>
-        <div class="nprow"><button type="button" class="btn" id="npExamples">Start from an example…</button><button type="button" class="btn" id="npAi">Describe it to an AI…</button><label class="npview">Edit as <select id="npView"><option value="single">Combined: one .orrery file</option><option value="files">Split: .scene, .style, .motion</option></select></label></div>
+        <div class="nprow"><button type="button" class="btn" id="npExamples">Start from an example…</button><button type="button" class="btn" id="npAi">Describe it to an AI…</button><label class="npview">Edit as <select id="npView"><option value="single">One file (.orrery)</option><option value="files">Three files (.scene, .style, .motion)</option></select></label></div>
         <div class="nprecent" id="npRecent"></div>
       </div>
       <div class="shfoot"><span></span><button type="button" class="btn" id="npCancel">Cancel</button><button type="button" class="btn primary" id="npGo">Create</button></div></div>`;
@@ -9174,7 +9745,7 @@ function openNewProject() {
   grid.querySelectorAll('.npcard').forEach(c => { c.onclick = () => grid.querySelectorAll('.npcard').forEach(x => x.setAttribute('aria-selected', String(x === c))); c.ondblclick = () => createNewProject(); });
   back.querySelector('#npView').value = S.view === 'single' ? 'single' : 'files';
   const rec = readRecent().filter(r => r.id !== projId).slice(0, 4), rb = back.querySelector('#npRecent');
-  rb.innerHTML = rec.length ? `<h3>Or reopen</h3><div class="nprecs">${rec.map((r, i) => `<button type="button" class="nprec" data-i="${i}"><b>${escH(r.name)}</b><span>${agoText(r.at)} · ${r.view === 'single' ? 'Combined' : 'Split'}</span></button>`).join('')}</div>` : '';
+  rb.innerHTML = rec.length ? `<h3>Or reopen</h3><div class="nprecs">${rec.map((r, i) => `<button type="button" class="nprec" data-i="${i}"><b>${escH(r.name)}</b><span>${agoText(r.at)} · ${r.view === 'single' ? 'One file' : 'Three files'}</span></button>`).join('')}</div>` : '';
   rb.querySelectorAll('.nprec').forEach(b => { b.onclick = () => { back.hidden = true; openRecent(rec[+b.dataset.i]); }; });
   back.querySelector('#npName').value = 'untitled'; back.hidden = false; setTimeout(() => { const n = back.querySelector('#npName'); n.focus(); n.select(); }, 0);
 }
@@ -9422,13 +9993,13 @@ $('expSpeak').addEventListener('change', () => { S.exportSpeak = $('expSpeak').c
 /* SubRip captions from the spoken lines, for YouTube, video editors and players */
 const capTime = (x, sep) => { const ms = Math.round(x * 1000), h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s2 = Math.floor(ms / 1000) % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s2).padStart(2, '0')}${sep}${String(ms % 1000).padStart(3, '0')}`; };
 $('srtBtn').addEventListener('click', async () => {
-  const evs = filmSayEvents(); if (!evs.length) return;
+  const evs = captionCuesAll(); if (!evs.length) return;
   const srt = evs.map((ev, i) => `${i + 1}\n${capTime(ev.t, ',')} --> ${capTime(ev.end, ',')}\n${ev.text}\n`).join('\n');
   const r = await saveFile(`${projName}.srt`, new Blob([srt], { type: 'application/x-subrip' }), `${projName}.srt.txt`); toast(r === 'saved' ? 'Captions saved' : SAVE_MSG[r] || 'Could not save');
 });
 /* WebVTT: the caption format browsers and most web players read (<track src="name.vtt">) */
 $('vttBtn').addEventListener('click', async () => {
-  const evs = filmSayEvents(); if (!evs.length) return;
+  const evs = captionCuesAll(); if (!evs.length) return;
   const vtt = 'WEBVTT\n\n' + evs.map((ev, i) => `${i + 1}\n${capTime(ev.t, '.')} --> ${capTime(ev.end, '.')}\n${ev.text}\n`).join('\n');
   const r = await saveFile(`${projName}.vtt`, new Blob([vtt], { type: 'text/vtt' }), `${projName}.vtt.txt`); toast(r === 'saved' ? 'Captions saved' : SAVE_MSG[r] || 'Could not save');
 });
@@ -9599,12 +10170,12 @@ async function withExportSize(W, H, fn, ss = 1) {
 }
 /* the caption showing at a moment: the line a Voice with captions is speaking */
 let curFrameT = 0;
-function captionAt(tt) { if (!model || !model.sayEvents) return null; for (let i = model.sayEvents.length - 1; i >= 0; i--) { const ev = model.sayEvents[i]; if (ev.t <= tt + 1e-6 && tt < ev.end) { const v = ev.voice && model.voices.get(ev.voice); return !v || v.captions ? ev.text : null; } } return null; }
+function captionAt(tt) { if (!model || !model.sayEvents) return null; for (let i = model.sayEvents.length - 1; i >= 0; i--) { const ev = model.sayEvents[i]; if (ev.t <= tt + 1e-6 && tt < ev.end) { const v = ev.voice && model.voices.get(ev.voice); if (v && !v.captions) return null; const cs = ev.cues || []; for (let j = cs.length - 1; j >= 0; j--) if (cs[j].t <= tt + 1e-6) return cs[j].text; return cs.length ? cs[0].text : ev.text; } } return null; }
 function placeCaption(tt) {
   const el = $('capBar'); if (!el) return; const txt = captionAt(tt); if (!txt) { el.hidden = true; return; }
   const cv = renderer.domElement, sr = stage.getBoundingClientRect(), r = cv.getBoundingClientRect(), fr = model.sceneOpts.frame;
-  const bottom = fr ? fr.safe[2] * r.height + r.height * 0.02 : r.height * 0.06;
   if (el.textContent !== txt) el.textContent = txt; el.hidden = false;
+  const bottom = fr ? fr.safe[2] * r.height + r.height * 0.02 : r.height * 0.06;   /* at the bottom of the caption band, when there is one; fixed: band texts sit at its top */
   el.style.left = (r.left - sr.left + r.width / 2) + 'px'; el.style.top = 'auto'; el.style.bottom = (sr.bottom - r.bottom + bottom) + 'px'; el.style.fontSize = Math.max(11, Math.min(22, Math.min(r.width, r.height) * 0.04)) + 'px';
 }
 /* burns the caption into an exported frame */
@@ -9836,10 +10407,33 @@ function applyView() {
 $('viewFiles').addEventListener('click', () => { setSetting('view', 'files'); });
 $('viewSingle').addEventListener('click', () => { setSetting('view', 'single'); });
 /* pasting a whole single-file project into the three-file view fills all three tabs */
+/* a whole AI reply pasted, prose and fences included: keep only the code. Blocks labelled scene, style and motion fill the three
+   sections; otherwise the orrery block (or the longest block) is the project */
+function replyCode(txt) {
+  if (!/^[ \t]*```/m.test(txt)) return null;
+  const re = /^[ \t]*```[ \t]*([A-Za-z]*)[^\n]*\n([\s\S]*?)^[ \t]*```[ \t]*$/gm, blocks = []; let m;
+  while ((m = re.exec(txt))) blocks.push({ lang: m[1].toLowerCase(), body: m[2] });
+  if (!blocks.length) return null;
+  const by = {}; for (const b of blocks) if (['scene', 'style', 'motion'].includes(b.lang)) by[b.lang] = b.body;
+  if (Object.keys(by).length >= 2) return { files: { scene: by.scene || '', style: by.style || '', motion: by.motion || '' } };
+  const main = blocks.find(b => b.lang === 'orrery') || blocks.slice().sort((a, b) => b.body.length - a.body.length)[0];
+  return { text: main.body };
+}
 ta.addEventListener('paste', (e) => {
+  markAiCode();   /* pasted code is what the AI (or wherever it came from) already has */
+  let txt = (e.clipboardData || window.clipboardData).getData('text');
+  const rc = replyCode(txt);
+  if (rc && rc.files) {
+    e.preventDefault();
+    if (isSingle()) { insertText(Orrery.joinProject(rc.files)); toast('Pasted the code from the reply (its three blocks joined)'); return; }
+    files = rc.files; selectTab('scene'); build(); persist(); toast('Pasted the reply\'s three blocks into the three files'); return;
+  }
+  if (rc) txt = rc.text;
+  /* a project with chapters pasted over the whole editor (or with nothing selected) into a project with chapters: merge it by chapter name */
+  if (film && Orrery.isFilmText(txt) && (!isSingle() || ta.selectionStart === ta.selectionEnd || (ta.selectionStart === 0 && ta.selectionEnd === ta.value.length))) { e.preventDefault(); pasteFilm(txt); return; }
+  if (rc) { if (isSingle() || !(Orrery.isFilmText(txt) || (txt.match(/^[ \t]*@(scene|style|motion)\b/gm) || []).length >= 2)) { e.preventDefault(); insertText(txt); toast('Pasted the code from the reply'); return; } e.preventDefault(); }
   if (isSingle()) return;
-  const txt = (e.clipboardData || window.clipboardData).getData('text');
-  if (Orrery.isFilmText(txt)) { e.preventDefault(); setFilmText(txt, 0); filmChanged(0); toast('Pasted a project with chapters'); return; }
+  if (Orrery.isFilmText(txt)) { e.preventDefault(); pasteFilm(txt); return; }
   const found = new Set((txt.match(/^[ \t]*@(scene|style|motion)\b/gm) || []).map(x => x.trim()));
   if (found.size < 2) return;
   e.preventDefault(); files = Orrery.splitProject(txt).files; selectTab('scene'); build(); persist();
@@ -9961,6 +10555,7 @@ document.addEventListener('keydown', (e) => {
   else if (mod && (e.key === 's' || e.key === 'S') && !e.shiftKey) { e.preventDefault(); saveProject(); }
   else if (mod && (e.key === 's' || e.key === 'S') && e.shiftKey) { e.preventDefault(); $('saveMenuBtn').click(); }
   else if (mod && (e.key === 'o' || e.key === 'O')) { e.preventDefault(); openProjectFlow(); }
+  else if (mod && !e.shiftKey && !e.altKey && e.key === '.') { e.preventDefault(); const k = $('fixSplit').hidden ? '' : $('fixMain').dataset.fix; if (k && !$('fixMain').disabled) runFix(k); }
   else if (mod && e.altKey && e.code === 'KeyN') { e.preventDefault(); openNewProject(); }
   else if (mod && ['1', '2', '3'].includes(e.key)) { e.preventDefault(); const f = ['scene', 'style', 'motion'][+e.key - 1]; if (isSingle()) goTo(f, 1, 1); else { selectTab(f); ta.focus(); } }
   else if (mod && e.shiftKey && (e.key === 'E' || e.key === 'e')) { e.preventDefault(); setFocus(bench.dataset.focus === 'view' ? null : 'view'); }
@@ -9990,6 +10585,11 @@ function toast(msg, ms = 2600) { let el = document.querySelector('.toast'); if (
 function toastAction(msg, label, fn, ms = 6000) {
   toast(msg, ms); const el = document.querySelector('.toast'); const b = document.createElement('button'); b.type = 'button'; b.className = 'toastbtn'; b.textContent = label;
   b.onclick = () => { el.hidden = true; fn(); }; el.append(' ', b);
+}
+/* a toast with several actions (Undo, Show changes …) */
+function toastActions(msg, acts, ms = 8000) {
+  toast(msg, ms); const el = document.querySelector('.toast');
+  for (const [label, fn] of acts) { const b = document.createElement('button'); b.type = 'button'; b.className = 'toastbtn'; b.textContent = label; b.onclick = () => { el.hidden = true; fn(); }; el.append(' ', b); }
 }
 /* a yes/no question in the studio's own dialog; resolves true for the action */
 function confirmDlg(title, sub, okLabel, danger) {
@@ -10137,8 +10737,8 @@ const TOUR = [
   { sel: '.editor', title: 'The editor', text: 'Your animation is written here as short, readable code. Type hints suggest shapes, properties and units as you go; <kbd>Ctrl</kbd> <kbd>Space</kbd> opens them any time.' },
   { sel: '.stage', title: 'The live preview', text: 'Rebuilds every time the code changes. Click a part to jump to its code; <b>Free</b> lets you drag to look around.' },
   { sel: '.timeline', title: 'The timeline', text: 'Play, pause and scrub. The last button copies the <b>state</b> at this moment (where every part is), ready to paste into an AI chat when something moves wrongly.' },
-  { sel: '#aiBtn', title: 'AI prompt: the fastest way in', text: 'Describe what you want, copy the prompt, and paste it into any AI assistant. It teaches the assistant Orrery; paste its reply back into the editor.' },
-  { sel: '.problems', title: 'Problems', text: 'Every problem names its line and what to do. <b>Fix</b> handles simple slips; <b>Copy as JSON</b> hands the rest to your AI assistant.' },
+  { sel: '#aiBtn', title: 'Prompt AI: the fastest way in', text: 'Describe what you want, copy the prompt, and paste it into any AI assistant. It teaches the assistant Orrery; paste its reply back into the editor.' },
+  { sel: '.problems', title: 'Problems', text: 'Every problem names its line and what to do. <b>Fix</b> (the spanner) handles slips and typos, and its menu has more ways to fix; <b>Copy as JSON</b> hands the rest to your AI assistant.' },
   { sel: '#exportBtn', title: 'Export', text: 'Save the animation as an MP4 or WebM video, a GIF, or a 3D player: one .html file anyone can open and orbit.' },
   { sel: '#helpBtn', title: 'Help is here', text: 'Come back here for the <b>interactive tour</b>, which walks you through building, fixing and exporting a crane, or for the language guide. Everything else explains itself when you point at it.' },
 ];
@@ -10310,14 +10910,14 @@ const STORY_STEPS = [
   { ch: 0, sel: '.timeline', place: 'above', title: 'This is the timeline', text: 'Play, pause and drag through time. Later you will use it to find the moment something goes wrong.', next: 'Next' },
   { ch: 0, sel: '#aiBtn', allow: ['#aiBtn'], title: 'Ask an AI to write it',
     text: 'Orrery is made to work with an AI assistant: you describe the machine, the AI writes the code, Orrery runs it.<div class="sc-warn"><b>The AI in this tour is simulated.</b> Its replies are written in advance so you can see how the pieces fit. When you work for real, paste the prompt into your own AI assistant.</div>',
-    act: 'Click <b>AI prompt</b>.', alt: 'Open it for me',
+    act: 'Click <b>Prompt AI</b>.', alt: 'Open it for me',
     enter(c) { c.on($('aiBtn'), 'click', () => setTimeout(() => c.done(), 60)); },
     doAlt() { $('aiBtn').click(); } },
   { ch: 0, sel: '#aiSheet', place: 'left', allow: ['#aiCopy'], title: 'Describe what you want',
     text: 'Normally you type your own idea here. For the tour it is a fixed example, because the simulated AI has only one answer. The prompt teaches any AI assistant the Orrery language, then adds your request.',
     act: 'Click <b>Copy prompt</b>.', alt: 'Copy it for me',
     enter(c) {
-      $('aiCode').checked = false; $('aiState').checked = false;
+      $('aiCode').checked = false; $('aiState').checked = false; $('aiProbs').checked = false;
       storyLockTask(true); c.type($('aiTask'), STORY_REQUEST, updateAiLen);
       const go = () => setTimeout(() => { $('aiSheet').hidden = true; c.done('Copied. The prompt is on your clipboard.'); }, 500);
       c.on($('aiCopy'), 'pointerdown', () => c.finishTyping()); c.on($('aiCopy'), 'keydown', () => c.finishTyping());
@@ -10378,7 +10978,7 @@ const STORY_STEPS = [
     },
     doAlt() { storyPause(7.2); this._c && this._c.done('7.2 s: the crate is half under the ground.'); } },
   { ch: 2, sel: '#copyState', allow: ['#copyState'], title: 'Copy what the preview shows',
-    text: 'An AI cannot see your screen. This button copies where every part is at this moment: positions, rotations and boxes.<div class="sc-tip">Tip: the <b>AI prompt</b> dialog has two boxes that send your code and this state together, in one prompt.</div>',
+    text: 'An AI cannot see your screen. This button copies where every part is at this moment: positions, rotations and boxes.<div class="sc-tip">Tip: the <b>Prompt AI</b> dialog has two boxes that send your code and this state together, in one prompt.</div>',
     act: 'Click the <b>copy state</b> button.', alt: 'Copy it for me',
     enter(c) { c.on($('copyState'), 'click', () => c.done(`Copied the state at ${t.toFixed(2)} s.`)); },
     doAlt() { $('copyState').click(); } },
@@ -10428,7 +11028,7 @@ const STORY_STEPS = [
     enter(c) { c.on($('gifSave'), 'click', () => setTimeout(() => c.done('Saved.'), 300)); },
     doAlt() { this._c && this._c.done(); } },
   { ch: 3, finish: true, title: 'You have done the whole loop',
-    text: '<p>Describe, paste, fix, export: that is how Orrery is meant to be used.</p><div class="sc-warn"><b>When you work for real</b>, the AI is your own: <b>AI prompt</b> copies everything your assistant needs, and its reply goes back into the editor.</div><p class="sc-dim">Everything else explains itself when you point at it. The <b>?</b> button brings these tours back.</p>' },
+    text: '<p>Describe, paste, fix, export: that is how Orrery is meant to be used.</p><div class="sc-warn"><b>When you work for real</b>, the AI is your own: <b>Prompt AI</b> copies everything your assistant needs, and its reply goes back into the editor.</div><p class="sc-dim">Everything else explains itself when you point at it. The <b>?</b> button brings these tours back.</p>' },
 ];
 
 /* ---------------- the tour's machinery ---------------- */

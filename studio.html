@@ -254,7 +254,7 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 .fixlist del { color: var(--err); text-decoration: line-through; } .fixlist ins { color: var(--ok, #3fb950); text-decoration: none; }
 .fixlist .g { grid-column: 2; color: var(--muted); font-size: 11.5px; }
 .problems .rowfix[disabled] { opacity: .5; cursor: default; }
-.problems .none { padding: 4px 14px 10px; color: var(--muted); font-size: 12px; }
+.problems .none { display: block; padding: 4px 14px 10px; color: var(--muted); font-size: 12px; }
 
 /* Viewport */
 .view { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--view-bg); }
@@ -298,6 +298,9 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 @media (prefers-reduced-motion: reduce) { .sndwait { animation: none; } }
 .sndwait:not([hidden]) ~ .stale, .stale:not([hidden]) ~ .sndwait { top: 46px; }
 .saynote { font-size: 12px; color: var(--muted); line-height: 1.45; }
+#sheet .sayrow { align-items: flex-start; gap: 4px 14px; }
+#sheet .sayrow .saynote { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
+#sheet .sayrow .check { margin: 0; color: var(--fg); } #sheet .sayrow .check small { display: block; color: var(--muted); font-size: 11px; }
 .capbar { position: absolute; z-index: 3; transform: translateX(-50%); max-width: 86%; padding: .35em .7em; border-radius: 8px; background: rgba(10,14,20,.74); color: #fff; font: 500 15px/1.35 var(--font-ui); text-align: center; pointer-events: none; text-wrap: balance; }
 .stale {
   position: absolute; left: 46px; top: 10px; font-size: 12px; padding: 4px 9px; border-radius: var(--radius);
@@ -326,6 +329,9 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 .sheet select { border: 1px solid var(--line); background: var(--panel-2); border-radius: var(--radius); padding: 6px 10px; color: var(--fg); min-width: 170px; }
 .sheet .note { line-height: 1.5; }
 .sheet .note.outdated { color: var(--warn); }
+.stalemark { display: flex; gap: 8px; align-items: flex-start; margin: 8px 0 6px; padding: 8px 10px; border: 1px solid color-mix(in srgb, var(--warn) 55%, transparent); background: color-mix(in srgb, var(--warn) 14%, var(--panel)); border-radius: var(--radius); font-size: 12.5px; color: var(--fg); }
+.stalemark svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--warn); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+#sheet.outofdate #vidOut, #sheet.outofdate #gifImg { opacity: .45; filter: grayscale(.6); }
 .sheet #fmtSeg { flex-wrap: wrap; }
 .bar { height: 4px; background: var(--panel-2); border-radius: 2px; overflow: hidden; }
 .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.1s linear; }
@@ -363,14 +369,12 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 .chip[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .chip[aria-selected="true"] i { background: var(--accent); color: var(--accent-ink); }
 .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--err); } .chip .dot.w { background: var(--warn); }
-.chip.playing { box-shadow: inset 0 -2px 0 var(--ok); }
 /* the chapter strip is a timeline: each chapter is as wide as it is long (within limits), with its length and how it starts */
 .chapbar .chips { align-items: stretch; }
 .chip.tl { flex: var(--g, 1) 1 0; min-width: 132px; max-width: 320px; border-radius: 8px; justify-content: flex-start; position: relative; overflow: hidden; }
 .chip.tl .len { margin-left: auto; font-family: var(--font-code); }
 .chip.tl .tr { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--muted); opacity: .6; }
 .chip.tl .tr.fade { background: linear-gradient(var(--fg), transparent); } .chip.tl .tr.crossfade { background: var(--accent); }
-.chip.tl .ph { position: absolute; bottom: 0; left: 0; height: 2px; background: var(--ok); width: 0; }
 .chip.tl.dragging { opacity: .5; } .chip.tl.dropbefore { box-shadow: inset 3px 0 0 var(--accent); } .chip.tl.dropafter { box-shadow: inset -3px 0 0 var(--accent); }
 .mergelist { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
 .mergelist li { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -970,13 +974,18 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
         <div class="row"><label for="gifW">Width</label><select id="gifW"></select></div>
         <div class="row"><label for="gifFps">Frame rate</label><select id="gifFps"></select></div>
         <div class="row" id="qualRow"><label for="vidQ">Quality</label><select id="vidQ"><option value="0.6">Smaller file</option><option value="1" selected>Standard</option><option value="1.8">High (sharper, larger file)</option></select></div>
-        <div class="row" id="sayRow" hidden><span>Spoken lines</span><span class="saynote"><span id="sayNote"></span> <button type="button" class="linkbtn" id="srtBtn">Captions .srt</button> · <button type="button" class="linkbtn" id="vttBtn">.vtt</button><label class="check" style="margin:4px 0 0" title="Experimental: downloads the voice, 20 to 70 MB, the first time; then it works offline"><input type="checkbox" id="expSpeak"> <span>Speak them into the video (neural voice, experimental)</span></label></span></div>
+        <div class="row sayrow" id="sayRow" hidden><span>Spoken lines</span><div class="saynote">
+          <span id="sayNote"></span>
+          <span class="caplinks">Save the captions: <button type="button" class="linkbtn" id="srtBtn" title="SubRip captions, for YouTube and video editors">.srt</button> · <button type="button" class="linkbtn" id="vttBtn" title="WebVTT captions, for web players">.vtt</button></span>
+          <label class="check" title="Experimental: downloads the voice, 20 to 70 MB, the first time; then it works offline"><input type="checkbox" id="expSpeak"> <span>Speak them into the video <small>neural voice, experimental</small></span></label>
+        </div></div>
         <div class="row" id="chapListRow" hidden><span>Chapters</span><span class="saynote"><button type="button" class="linkbtn" id="chapListBtn" title="Times and titles, ready to paste into a YouTube description: it turns them into chapters">Copy the chapter list</button></span></div>
         <div class="row" id="soundRow" hidden><span>Sound</span><label class="check" style="margin:0"><input type="checkbox" id="expSound" checked> <span id="expSoundLbl">Include the project's sounds</span></label></div>
         <div class="row"><span>Length</span><span id="gifLen" class="time"></span></div>
         </div>
         <div class="note" id="fmtNote"></div>
         <div class="bar" id="gifBar" hidden><i></i></div>
+        <div class="stalemark" id="staleMark" role="status" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></svg><span><b>Out of date.</b> The code or settings changed after this render. Render again to include the changes.</span></div>
         <img id="gifImg" alt="Exported animation preview" hidden>
         <video id="vidOut" controls loop muted playsinline hidden></video>
         <div class="note" id="gifNote"></div>
@@ -4330,6 +4339,8 @@ DESIGN (what makes a video look finished)
 - Frame: the subject fills about 60% of the picture, a little above centre; set frame: youtube (or a phone format) in Scene.
 - Text: a short title with fixed: top (font-weight: 600, no background); a few in-scene Text words beside the parts they name; no labels.
   Bare text reads best; add text-background only when text sits over busy detail. A Text is a title or a label: a dozen words at most.
+- Fonts: sans, serif and mono work everywhere (and in 3D letters). A named font shows only where it is installed, so prefer
+  font-family: "IBM Plex Sans"; (always loaded by the studio) over Helvetica, Arial or Calibri; titles at font-weight: 600.
 - Keep words off the animation: with narration or explanations, Scene { caption-band: 18%; } draws the picture above a clear strip; captions sit
   at its bottom and Texts with fixed: band; at its top. Texts at the same fixed: place stack instead of covering each other.
 - Camera: one slow move per idea (ease-in-out, 3 to 6 s): push in on the detail, orbit to show depth, pull back to finish. Hold still while things move.
@@ -7013,9 +7024,11 @@ function soundBuf(snd) {
   const data = Orrery.synthSound(snd.kind, snd, c.sampleRate); const b = c.createBuffer(1, Math.max(1, data.length), c.sampleRate); b.copyToChannel(data, 0);
   if (audio.bufs.size > 120) audio.bufs.clear(); audio.bufs.set(key, b); return b;
 }
+/* the playback speed (0.5x, 2x …): sounds and spoken lines play at it too, so they stay with the picture */
+const playSpeed = () => Math.max(0.1, Math.min(4, +S.speed || 1));
 function playSnd(snd, vol = 1, pan = 0, offset = 0) {
   const c = audioCtx(); if (!c || !snd) return null; const b = soundBuf(snd); if (!b) return null;
-  const src = c.createBufferSource(); src.buffer = b; const g = c.createGain(); g.gain.value = Math.max(0, Math.min(1, vol)) * 0.8;
+  const src = c.createBufferSource(); src.buffer = b; src.playbackRate.value = playSpeed(); const g = c.createGain(); g.gain.value = Math.max(0, Math.min(1, vol)) * 0.8;
   let node = src; node.connect(g); node = g;
   if (c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = Math.max(-1, Math.min(1, pan)); node.connect(p); node = p; }
   node.connect(audio.master); src.start(0, Math.max(0, Math.min(offset, b.duration - 0.01)));
@@ -7040,7 +7053,7 @@ function pickVoice(want) {
 function speak(ev) {
   if (!speechOK || S.sound === false) return; const v = ev.voice && model.voices.get(ev.voice);
   const u = new SpeechSynthesisUtterance(ev.text); const pv = pickVoice(v && v.voice); if (pv) { u.voice = pv; u.lang = pv.lang; } else if (v && v.voice && /^[a-z]{2}(-[A-Za-z]{2})?$/.test(v.voice)) u.lang = v.voice;
-  u.rate = v ? v.rate : 1; u.pitch = v ? v.pitch : 1; u.volume = Math.max(0, Math.min(1, (v ? v.volume : 1) * soundVol())); speechSynthesis.speak(u);
+  u.rate = Math.max(0.1, Math.min(10, (v ? v.rate : 1) * playSpeed())); u.pitch = v ? v.pitch : 1; u.volume = Math.max(0, Math.min(1, (v ? v.volume : 1) * soundVol())); speechSynthesis.speak(u);
 }
 function stopSpeech() { if (speechOK) try { speechSynthesis.cancel(); } catch (e) {} }
 if (speechOK) try { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => {}; } catch (e) {}
@@ -7845,6 +7858,11 @@ function followCaret() {
 document.addEventListener('selectionchange', () => { if (editorHasFocus()) followCaret(); });
 function selectBox(b) {
   if (!film) return; b = Math.max(-1, Math.min(film.chapters.length - 1, b));
+  if (fp.on && S.playFilm !== false) {   /* playing the film: edit that chapter, and move the film to its start */
+    const go = () => { if (fp.on && b >= 0 && fp.ft && fp.ft.list[b]) { filmSeek(fp.ft.list[b].s, true); frame(t); } };
+    if (isSingle()) { const c = boxOf(b), line = b < 0 ? Math.max(1, film.common.line || 1) : c.line; goTo('project', line, 1); followCaret(); go(); return; }
+    box = b; files = boxOf(b).files; selectTab(current); build(); renderChapters(); persist(); go(); return;
+  }
   if (fp.on) filmStop(true);
   if (isSingle()) { const c = boxOf(b), line = b < 0 ? Math.max(1, film.common.line || 1) : c.line; goTo('project', line, 1); followCaret(); return; }
   box = b; files = boxOf(b).files; t = 0; selectTab(current); build(); renderChapters(); persist();
@@ -7950,12 +7968,13 @@ function renderChapters() {
   bar.hidden = !on; $('chapBtn').hidden = !!film || !!PLAYER; $('filmSeg').hidden = !film || !!PLAYER;
   const ex = $('scopeRow'); if (ex) ex.hidden = !film;
   if (!film) { if (fp.on) filmStop(true); renderTitle(); return; }
+  if (!fp.on && S.playFilm !== false) setTimeout(filmAuto, 0);
   const flags = new Map(); for (const d of lastDiags) { const b = d.box !== undefined ? d.box : box; const f = flags.get(b) || {}; if (d.sev === 'error') f.e = true; else f.w = true; flags.set(b, f); }
   const dot = (b) => { const f = flags.get(b); return f && f.e ? '<span class="dot" title="Has errors"></span>' : f && f.w ? '<span class="dot w" title="Has warnings"></span>' : ''; };
   const trn = (c, i) => { const k = c.trans ? c.trans.kind : 'cut'; return i === 0 && k === 'cut' ? '' : k === 'cut' ? '' : `<small>${k === 'crossfade' ? '⇄ ' : '◐ '}${k}</small>`; };
   const chips = $('chapChips');
   chips.innerHTML = `<button class="chip common" role="tab" type="button" data-b="-1" aria-selected="${box === -1}" title="@common: the scene, style and motion every chapter starts with">common${dot(-1)}</button>`
-    + film.chapters.map((c, i) => { const d = filmDurs[i], k = c.trans ? c.trans.kind : 'cut'; return `<button class="chip tl${fp.on && fp.idx === i ? ' playing' : ''}" role="tab" type="button" draggable="true" data-b="${i}" aria-selected="${box === i}" style="--g:${d ? Math.max(0.5, Math.min(6, d / 4)).toFixed(2) : 1}" title="${escH(chapTitle(c))}${c.ext ? ' · extends ' + escH(c.ext) : ''}${d ? ' · ' + d.toFixed(1) + ' s' : ''} · starts with ${k === 'crossfade' ? 'a crossfade' : k === 'fade' ? 'a fade' : 'a cut'}. Double-click for its settings; drag to move it">${i > 0 && k !== 'cut' ? `<span class="tr ${k}" aria-hidden="true"></span>` : ''}<i>${i + 1}</i><b>${escH(c.name)}</b>${dot(i)}<small class="len">${d ? d.toFixed(1) + ' s' : ''}</small>${fp.on && fp.idx === i ? '<span class="ph" aria-hidden="true"></span>' : ''}</button>`; }).join('');
+    + film.chapters.map((c, i) => { const d = filmDurs[i], k = c.trans ? c.trans.kind : 'cut'; return `<button class="chip tl${fp.on && fp.idx === i ? ' playing' : ''}" role="tab" type="button" draggable="true" data-b="${i}" aria-selected="${box === i}" style="--g:${d ? Math.max(0.5, Math.min(6, d / 4)).toFixed(2) : 1}" title="${escH(chapTitle(c))}${c.ext ? ' · extends ' + escH(c.ext) : ''}${d ? ' · ' + d.toFixed(1) + ' s' : ''} · starts with ${k === 'crossfade' ? 'a crossfade' : k === 'fade' ? 'a fade' : 'a cut'}. Double-click for its settings; drag to move it">${i > 0 && k !== 'cut' ? `<span class="tr ${k}" aria-hidden="true"></span>` : ''}<i>${i + 1}</i><b>${escH(c.name)}</b>${dot(i)}<small class="len">${d ? d.toFixed(1) + ' s' : ''}</small></button>`; }).join('');
   chips.querySelectorAll('.chip').forEach(ch => {
     const b = +ch.dataset.b;
     if (b >= 0) { const x = document.createElement('span'); x.className = 'chx'; x.textContent = '×'; x.setAttribute('aria-hidden', 'true'); x.title = `Close ${film.chapters[b].name} (Shift skips the question)`; ch.append(x);
@@ -8106,7 +8125,7 @@ function filmPrepare() {
   return { models, ft: Orrery.filmTimes(film.chapters, models.map(m => m.duration)) };
 }
 function filmStart() {
-  if (!film || fp.on) return true;
+  if (!film || fp.on) return true; filmAutoFailed = null;
   const r = filmPrepare();
   if (r.bad) { const c = film.chapters[r.bad.i]; toast(`${c.name} has an error, so the film cannot play yet: ${r.bad.d ? r.bad.d.message : r.bad.msg}`, 5200); selectBox(r.bad.i); return false; }
   fp.on = true; fp.models = r.models; fp.ft = r.ft; fp.idx = -1; filmDurs = r.models.map(m => m.duration);
@@ -8121,8 +8140,17 @@ function filmStop(noBuild) {
   $('filmOn').setAttribute('aria-pressed', 'false'); $('filmOff').setAttribute('aria-pressed', 'true');
   if (!noBuild) { t = 0; build(); } renderChapters();
 }
-$('filmOn').addEventListener('click', () => { if (!fp.on) { if (filmStart()) setPlay(true); } });
-$('filmOff').addEventListener('click', () => filmStop());
+$('filmOn').addEventListener('click', () => { S.playFilm = true; saveSettings(); if (!fp.on) { if (filmStart()) setPlay(true); } });
+$('filmOff').addEventListener('click', () => { S.playFilm = false; saveSettings(); filmStop(); });
+/* a project with chapters plays as a film by default (the choice is remembered). Started quietly: a chapter with an error waits until the
+   project changes, with no message each time */
+let filmAutoFailed = null;
+function filmAuto() {
+  if (!film || fp.on || PLAYER || S.playFilm === false || typeof exporting !== 'undefined' && exporting) return;
+  const key = projText(); if (filmAutoFailed === key) return;
+  const r = filmPrepare(); if (r.bad) { filmAutoFailed = key; return; }
+  filmAutoFailed = null; filmStart();
+}
 const filmIndexAt = (ft, T) => { let i = 0; for (let k = 0; k < ft.list.length; k++) if (ft.list[k].s <= T + 1e-9) i = k; return i; };
 /* show the film at time T: the chapter playing then, at its own time */
 function filmSeek(T, force) {
@@ -8162,7 +8190,6 @@ function filmAfterFrame() {
   $('timeLbl').textContent = `${fp.T.toFixed(2)} s / ${fp.ft.total.toFixed(2)} s · ${c ? c.name : ''}`;
   if (!scrubbing) $('scrub').value = fp.T;
   drawFilmFx(filmFxAt(fp.ft, fp.idx, fp.T - L.s));
-  { const ph = document.querySelector('.chip.tl.playing .ph'), d = filmDurs[fp.idx]; if (ph && d) ph.style.width = Math.max(0, Math.min(100, (fp.T - L.s) / d * 100)) + '%'; }
   if (tracksOn()) placePlayhead();
 }
 function filmAdvance(dt) {
@@ -8229,7 +8256,7 @@ async function withFilmExport(fn) {
   try { install(r.models[0]); return await fn(); }
   finally { filmExp = null; if (wasFilm) { fp.idx = -1; filmSeek(T, true); } else build(); }
 }
-function filmWantsSound() { return !!(filmExp && filmExp.models.some(m => m.soundEvents.length || (S.exportSpeak && m.sayEvents.length))); }
+function filmWantsSound() { return !!(filmExp && filmExp.models.some(m => m.soundEvents.length || (S.exportSpeak !== false && m.sayEvents.length))); }
 /* every caption part (see captionCues), for .srt and .vtt files */
 function captionCuesAll() { return filmSayEvents().flatMap(ev => Orrery.captionCues(ev.text, ev.t, Math.max(0.5, Math.min(ev.est || Infinity, ev.end - ev.t)), ev.end)); }
 /* every spoken line of the film with its time in the joined video */
@@ -8543,6 +8570,7 @@ const aiCopy = { key: null };
 function markAiCode() { setTimeout(() => { aiCopy.key = snapKey(); renderCopyBtn(); }, 0); }
 const copyDefault = () => aiCopy.key !== null && snapKey() === aiCopy.key ? 'json' : 'code';
 function renderCopyBtn() {
+  $('copySplit').hidden = !lastDiags.length;   /* nothing to copy */
   const k = copyDefault(), b = $('copyJson'); b.dataset.copy = k; b.textContent = k === 'code' ? 'Copy with code' : 'Copy as JSON';
   b.title = k === 'code' ? 'The code was changed since the last paste, so this copies a message with the problems and the code' : 'The code is as pasted, so this copies just the problems as JSON';
   $('copyMenu').querySelectorAll('[data-copy]').forEach(x => { x.querySelector('[data-k]').textContent = x.dataset.copy === k ? 'default' : ''; });
@@ -9950,13 +9978,16 @@ $('modelIn').addEventListener('change', async () => {
 /* ---------------- export: MP4 and WebM (WebCodecs) or GIF ---------------- */
 var outBlob = null, outExt = 'gif', outSig = null;   /* var: read by checkStale, which can run before this line during start-up */
 /* everything that changes what an export looks like: if any of it changes after a render, the file on hand is out of date */
-function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
+function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, S.exportSpeak !== false, $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
 function checkStale() {
   if (!outBlob || $('gifSave').hidden && !outSig) return;
+  /* out of date: a warning over the render, which is dimmed; Save still saves it (as the earlier render), and the main button renders again */
   const stale = outSig !== exportSig();
-  $('gifSave').disabled = stale; $('gifSave').title = stale ? 'The code or options changed after this render. Render again to save the latest.' : '';
+  $('gifSave').disabled = false; $('gifSave').textContent = stale ? 'Save the earlier render' : 'Save';
+  $('gifSave').title = stale ? 'Saves the file rendered before the code or settings changed' : '';
+  $('sheet').classList.toggle('outofdate', stale); $('staleMark').hidden = !stale;
   const n = $('gifNote'); n.classList.toggle('outdated', stale);
-  if (stale) { if (!n.dataset.done) n.dataset.done = n.textContent; n.textContent = 'Changed since the last render. Render again to save the latest version.'; $('gifGo').textContent = S.exportFormat === 'html' ? 'Create again' : 'Render again'; }
+  if (stale) { if (!n.dataset.done) n.dataset.done = n.textContent; n.textContent = ''; $('gifGo').textContent = S.exportFormat === 'html' ? 'Create again' : 'Render again'; }
   else if (n.dataset.done) { n.textContent = n.dataset.done; delete n.dataset.done; $('gifGo').textContent = S.exportFormat === 'html' ? 'Create' : 'Render'; }
 }
 const optList = (key) => SETTINGS_SCHEMA.flatMap(x => x.items).find(x => x.key === key).options;
@@ -9979,7 +10010,7 @@ function syncExportUI() {
   $('scopeSeg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.s === exportScope)));
   { const ns = filmExportOn() ? filmSayEvents().length : model && model.sayEvents ? model.sayEvents.length : 0; $('sayRow').hidden = !ns || html;
     if (ns) { const n = $('sayNote'); n.textContent = `${ns} line${ns === 1 ? '' : 's'}, captioned in the picture.`; n.title = 'The 3D player speaks the lines itself. A browser cannot record its own voices: tick the box below to generate speech for MP4 and WebM, or add a voice-over file (Insert › 3D models and audio).'; }
-    $('expSpeak').checked = !!S.exportSpeak; $('expSpeak').disabled = f === 'gif' || f === 'png'; }
+    $('expSpeak').checked = S.exportSpeak !== false; $('expSpeak').disabled = f === 'gif' || f === 'png'; }
   const clearNote = bgClear ? (gif ? ' The transparent background is kept (GIF pixels are fully clear or solid).' : f === 'png' ? '' : ' Video has no transparency, so the background is filled with ' + (S.bg === 'clear' || !(model && model.sceneOpts.bg && model.sceneOpts.bg.alpha > 0.001) ? 'the theme colour' : 'the background colour') + '. For a clear background, use PNG frames, GIF or the 3D player.') : '';
   $('fmtNote').textContent = (f === 'png' ? 'Every frame as a numbered PNG in one .zip, with full transparency. Video editors (Premiere, DaVinci Resolve, After Effects, Final Cut) import it as an image sequence.' : gif ? 'GIF plays everywhere, but has 256 colours and large files. Best for short loops.' : !('VideoEncoder' in window) ? 'This browser cannot encode video. Use a current Chrome, Edge, Safari or Firefox, or choose GIF.' : f === 'mp4' ? 'H.264 MP4: plays everywhere, including phones, slides and social media.' : 'VP9 WebM: small files for the web.') + clearNote;
   $('gifGo').disabled = exporting || (!gif && f !== 'png' && !('VideoEncoder' in window));
@@ -10095,8 +10126,17 @@ async function encodeVideoFrames(M, f, W, H, fps, n, quality, progress) {
 /* ---------------- neural speech for exports (Piper, MIT; run in the browser by ONNX Runtime). Untested here: the voices download from
    huggingface.co the first time and are kept in the browser's private storage. Each line becomes an audio clip mixed in like a Sound ---------------- */
 const PIPER_URL = 'https://cdn.jsdelivr.net/npm/@mintplex-labs/piper-tts-web@1.0.5/+esm';
-let piperMod = null; const neuralCache = new Map();
-async function piperLoad() { if (!piperMod) piperMod = await import(PIPER_URL); return piperMod; }
+let piperMod = null, piperWasm = null, piperVoice = null; const neuralCache = new Map();
+/* The package loads ONNX Runtime with import('onnxruntime-web/wasm'), which the CDN bundle resolves to the newest 1.x release, but its default
+   WebAssembly files are the 1.18.0 ones: a runtime with another release's files fails to start ("backend failed"). So the runtime's version
+   is read from the bundle, and that release's own files are used */
+async function piperLoad() {
+  if (piperMod) return piperMod;
+  const mod = await import(PIPER_URL); let ver = null;
+  try { const src = await (await fetch(PIPER_URL)).text(); const m = src.match(/onnxruntime-web@(\d+\.\d+\.\d+[\w.-]*)/); if (m) ver = m[1]; } catch (e) {}
+  piperWasm = { onnxWasm: ver ? `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ver}/dist/` : mod.ONNX_BASE, piperData: mod.WASM_BASE + '.data', piperWasm: mod.WASM_BASE + '.wasm' };
+  piperMod = mod; return mod;
+}
 function neuralVoiceId(v) {
   if (v && v.neural) return v.neural; const l = String(v && v.voice || 'en-US').toLowerCase().replace('_', '-');
   const map = [['en-gb', 'en_GB-alan-medium'], ['en-in', 'en_GB-alan-medium'], ['en-au', 'en_GB-alba-medium'], ['en', 'en_US-hfc_female-medium'], ['de', 'de_DE-thorsten-medium'], ['fr', 'fr_FR-siwis-medium'], ['es-mx', 'es_MX-claude-high'], ['es', 'es_ES-davefx-medium'], ['it', 'it_IT-riccardo-x_low'], ['pt-br', 'pt_BR-faber-medium'], ['pt', 'pt_PT-tugão-medium'], ['nl', 'nl_NL-mls-medium'], ['pl', 'pl_PL-gosia-medium'], ['ru', 'ru_RU-irina-medium'], ['uk', 'uk_UA-ukrainian_tts-medium'], ['tr', 'tr_TR-dfki-medium'], ['zh', 'zh_CN-huayan-medium'], ['vi', 'vi_VN-vais1000-medium'], ['ne', 'ne_NP-google-medium'], ['sv', 'sv_SE-nst-medium'], ['fi', 'fi_FI-harri-medium'], ['cs', 'cs_CZ-jirka-medium'], ['ro', 'ro_RO-mihai-medium'], ['hu', 'hu_HU-anna-medium']];
@@ -10108,7 +10148,12 @@ async function neuralClips(progress) {
     const ev = model.sayEvents[i], v = ev.voice && model.voices.get(ev.voice), id = neuralVoiceId(v), key = id + '|' + ev.text;
     if (!neuralCache.has(key)) {
       progress(`Speaking line ${i + 1} of ${model.sayEvents.length} (${id})…`);
-      const wav = await mod.predict({ text: ev.text, voiceId: id }, (pr) => { if (pr && pr.total) progress(`Downloading the ${id} voice: ${Math.round(pr.loaded * 100 / pr.total)}%`); });
+      /* the package keeps one session and would reuse the first voice's model for every voice, and a session that failed to start stays
+         broken: start a new one for a new voice, and after a failure */
+      if (piperVoice !== id) { mod.TtsSession._instance = null; piperVoice = id; }
+      let wav;
+      try { const sess = await mod.TtsSession.create({ voiceId: id, wasmPaths: piperWasm, progress: (pr) => { if (pr && pr.total) progress(`Downloading the ${id} voice: ${Math.round(pr.loaded * 100 / pr.total)}%`); } }); wav = await sess.predict(ev.text); }
+      catch (e) { mod.TtsSession._instance = null; piperVoice = null; throw e; }
       neuralCache.set(key, await decodeAudioFile(new Uint8Array(await wav.arrayBuffer())));
     }
     out.push({ ev, pcm: neuralCache.get(key), vol: v ? v.volume : 1, rate: v ? v.rate : 1 });
@@ -10117,7 +10162,7 @@ async function neuralClips(progress) {
 }
 /* while a video renders: each spoken line as a temporary Sound and event, removed afterwards */
 async function withNeuralSpeech(fn, note) {
-  if (!(S.exportSpeak && model && model.sayEvents && model.sayEvents.length)) return fn();
+  if (!(S.exportSpeak !== false && model && model.sayEvents && model.sayEvents.length)) return fn();
   let clips; try { clips = await neuralClips(note); } catch (e) { console.error('neural speech', e); toast('Could not make the neural voice (' + String(e.message || e).slice(0, 80) + '); the video has captions only', 6000); return fn(); }
   const added = [];
   clips.forEach(({ ev, pcm, vol, rate }, i) => { const name = `__say${i}`; Orrery.audio[name] = pcm; model.sounds.set(name, { name, kind: null, src: name, pitch: 1, volume: vol, length: null }); const e2 = { t: ev.t, sound: name, volume: 1, target: null }; model.soundEvents.push(e2); added.push([name, e2]); });
@@ -10207,7 +10252,7 @@ $('gifGo').addEventListener('click', async () => {
     const kb = outBlob.size / 1024; $('gifNote').textContent = `3D player · ${kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB'} · needs an internet connection the first time, to load three.js.`;
     $('gifSave').textContent = 'Save HTML'; $('gifSave').hidden = false; outSig = exportSig(); return;
   }
-  $('gifGo').disabled = true; $('gifNote').textContent = ''; delete $('gifNote').dataset.done; $('gifNote').classList.remove('outdated'); $('gifSave').hidden = true; $('gifSave').disabled = false; outSig = null; $('gifImg').hidden = true; $('vidOut').hidden = true; $('gifBar').hidden = false; $('gifNote').textContent = 'Rendering frames…';
+  $('gifGo').disabled = true; $('gifNote').textContent = ''; delete $('gifNote').dataset.done; $('gifNote').classList.remove('outdated'); $('staleMark').hidden = true; $('sheet').classList.remove('outofdate'); $('gifSave').hidden = true; $('gifSave').disabled = false; outSig = null; $('gifImg').hidden = true; $('vidOut').hidden = true; $('gifBar').hidden = false; $('gifNote').textContent = 'Rendering frames…';
   const bar = (x) => { $('gifBar').firstElementChild.style.width = Math.round(x * 100) + '%'; };
   const t0 = performance.now();
   try {

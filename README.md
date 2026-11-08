@@ -10,7 +10,7 @@ The name says what it does: a script for machines. Write how the parts connect, 
 [![Licence: Apache 2.0](https://img.shields.io/badge/licence-Apache_2.0-16264a?style=flat-square)](LICENSE)
 ![Runs in the browser](https://img.shields.io/badge/runs_in-the_browser-ffb84d?style=flat-square)
 [![Version 1.0 beta](https://img.shields.io/badge/version-1.0_beta-26323c?style=flat-square)](CHANGELOG.md)
-[![Checks](https://img.shields.io/github/actions/workflow/status/Hypertoroid/Orrery/ci.yml?branch=master&label=checks&style=flat-square)](https://github.com/Hypertoroid/Orrery/actions/workflows/ci.yml)
+[![Checks](https://img.shields.io/github/actions/workflow/status/Hypertoroid/GearScript/ci.yml?branch=master&label=checks&style=flat-square)](https://github.com/Hypertoroid/GearScript/actions/workflows/ci.yml)
 
 ---
 

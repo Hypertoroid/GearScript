@@ -75,16 +75,6 @@ node gearscript.js mcp                                               # an MCP se
 
 Rendering drives the studio in a headless browser, so it needs Playwright or a local Chrome.
 
-## Documentation
-
-| | |
-|---|---|
-| [`help.html`](help.html) | The documentation: every shape, anchor, joint, motion rule and error, with runnable snippets |
-| [`SPEC.md`](SPEC.md) | The language on a few pages, written for AI agents |
-| [`GearScript_Syntax_Reference.pdf`](GearScript_Syntax_Reference.pdf) | A 21-page reference with a quick-reference card |
-| [`examples/`](examples) | 33 examples, each as one `.gscript` file and (apart from the chapters example) as three files |
-| [`evals/`](evals) | 12 tasks with reference answers, for testing AI models |
-
 ## Repository layout
 
 ```

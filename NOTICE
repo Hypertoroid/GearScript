@@ -19,6 +19,10 @@ This product includes or loads third-party software under its own licence:
     their own licences, listed in each voice's MODEL_CARD (loaded from cdn.jsdelivr.net and
     huggingface.co only when an export speaks say: lines)
 
+  Video fonts (vendor/fonts/*.js): Inter, Montserrat, Oswald, Bebas Neue, Playfair Display,
+    Space Grotesk, Caveat, JetBrains Mono and Noto Sans Devanagari, from Fontsource, under the
+    SIL Open Font License 1.1; see vendor/fonts/FONTS-LICENSE.txt (loaded only when a project uses one)
+
 The web fonts IBM Plex Sans, IBM Plex Sans Condensed and JetBrains Mono are
 loaded from Google Fonts under the SIL Open Font License 1.1. The landing page also loads
 Fraunces, Inter Tight, Geist and Geist Mono from Google Fonts under the same licence.

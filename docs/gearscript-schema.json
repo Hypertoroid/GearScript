@@ -1716,8 +1716,8 @@
   },
   {
    "name": "font-family",
-   "example": "font-family: sans;  or  serif | mono | \"Avenir Next\"",
-   "doc": "Typeface: sans, serif, mono, or any font installed on the computer (3D letters: sans, serif, mono)"
+   "example": "font-family: Montserrat;  or  sans | serif | mono | \"Playfair Display\" | \"Avenir Next\"",
+   "doc": "Typeface: sans, serif, mono, a bundled font (Inter, Montserrat, Oswald, \"Bebas Neue\", \"Playfair Display\", \"Space Grotesk\", Caveat, \"JetBrains Mono\", \"Noto Sans Devanagari\"), or any font installed on the computer (3D letters: sans, serif, mono)"
   },
   {
    "name": "font-size",
@@ -1763,6 +1763,16 @@
    "name": "line-height",
    "example": "line-height: 1.2;",
    "doc": "Space between lines, as a multiple of the letter height"
+  },
+  {
+   "name": "text-transform",
+   "example": "text-transform: uppercase;",
+   "doc": "uppercase, lowercase, capitalize (first letters) or none: changes the letters, not the code"
+  },
+  {
+   "name": "letter-spacing",
+   "example": "letter-spacing: 8%;",
+   "doc": "Extra space between letters: a share of the letter height (8% for airy capitals, -2% tight) or a length (1.5mm)"
   },
   {
    "name": "label",

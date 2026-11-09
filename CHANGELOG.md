@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Video fonts ship with GearScript:** Montserrat, Oswald, Bebas Neue, Playfair Display, Space Grotesk, Inter, Caveat, JetBrains Mono and Noto Sans Devanagari (SIL Open Font License, from Fontsource), in vendor/fonts. Write `font-family: Montserrat;` and the text looks the same in the preview, on every computer, in the offline copy, the 3D player and every export. Each font loads the first time a project uses it, and exports wait for it. The type hints list them with what each is good for; scripts/make-fonts.js rebuilds them.
+- **Two text styles for titles:** `text-transform: uppercase | capitalize | lowercase | none;` and `letter-spacing: 8%;` (a share of the letter height, or a length such as `1.5mm`; negative tightens). Both work on flat and 3D letters and on face text. New errors E0626 and E0627.
+- **W0628: words over words.** Two Texts that cover each other on the picture while both are showing get a warning naming them and the first moment, in the studio and in `gearscript check`. Texts stacked at one `fixed:` place and quick crossfades between captions are left alone.
+- The AI prompt lists the bundled fonts with their roles and pairings, shows the new text styles, and asks that Texts never cover each other.
+- **Undo and Redo buttons** next to Beautify, greyed out when there is nothing to undo or redo. Each file and chapter keeps its own history, as with Ctrl+Z.
+
 - **Orrery is now GearScript.** Projects are `.gscript` files that start with `@gearscript 1`; the command line is `gearscript` (cli/gearscript.js), the MCP tools are `gearscript_*`, AI replies use `gearscript` code blocks, and the schema is docs/gearscript-schema.json. There is no support for the old `.orrery` format or the old saved settings: this is a clean break.
 - **New logo and brand files:** a silver gear whose ring opens into a gold G, drawn as vectors (logo-mark.svg, a simpler logo-mark-small.svg for small sizes, app-icon.svg, app-maskable.svg) with PNGs for app icons, a 1080-wide logo for light and dark backgrounds, a 1280x640 social preview, and a crop of the original render. The wordmark is Inter SemiBold, with Script in gold; scripts/make-brand.py rebuilds the set.
 - **Type:** the home page uses one family, Inter (Inter Tight for headings), with JetBrains Mono for code, instead of five; the wordmark in every page header is Inter SemiBold.

@@ -248,7 +248,7 @@ Selectors work like CSS: `Gear` (a type or a define), `Door` (a part, including 
 | `trail` | `[anchor] [time] [colour]`, for example `trail: tip 1.5s #c2410c;` draws the path the anchor follows (no time means the whole run) |
 | `text` | `"PISTON"`: prints on the part's faces (`\n` starts a new line). On a Text part it replaces the scene's text |
 | `text-side` | `front` (default), `back`, `left`, `right`, `top`, `bottom`, several of them, or `all`. Round parts with an upright axis wrap the text round their side |
-| `font-family` | `sans` (default), `serif`, `mono`, or any installed font in quotes, `"Avenir Next"`. 3D letters come in sans, serif and mono |
+| `font-family` | `sans` (default), `serif`, `mono`, a bundled font, or any installed font in quotes, `"Avenir Next"`. Bundled fonts look the same everywhere (preview, every computer, exports): `Montserrat`, `Oswald`, `"Bebas Neue"`, `"Playfair Display"`, `"Space Grotesk"`, `Inter`, `Caveat`, `"JetBrains Mono"`, `"Noto Sans Devanagari"`. 3D letters come in sans, serif and mono (W0623 for anything else) |
 | `font-size` | a length (`24mm`) or a share of the face (`40%`); without it the text fits the face |
 | `font-weight` | `normal`, `bold`, or `100` to `900` |
 | `font-style` | `normal`, `italic`, `3d` (solid letters with depth, lighting and shadows), or `italic 3d` |
@@ -258,6 +258,8 @@ Selectors work like CSS: `Gear` (a type or a define), `Door` (a part, including 
 | `text-padding` | space between the letters and the face edge or the background panel |
 | `text-background` | a panel behind the letters, such as `#10203080`, so they read over anything |
 | `line-height` | space between lines as a multiple of the letter height (`1.2`) |
+| `text-transform` | `uppercase`, `capitalize`, `lowercase` or `none`: changes the letters drawn (E0626 for anything else) |
+| `letter-spacing` | extra space between letters: a share of the letter height (`8%`, `-2%`) or a length (`1.5mm`); `normal` is the font's own (E0627) |
 
 ### Named styles and use
 
@@ -284,6 +286,8 @@ Block::Box  { size: (200mm, 120mm, 80mm); }
 Title { color: #ffd27a; font-weight: 600; text-background: #10203080; }
 Block { text: "ENGINE BLOCK"; text-side: front top; font-family: serif; font-style: 3d; text-depth: 2mm; }
 ```
+
+Two Texts that cover each other on the picture while both are showing (opacity over 50%) get warning W0628, with the first moment. Texts at the same named `fixed:` place stack instead, and a crossfade between two captions in one place is fine.
 
 A Text is a part: place it, attach it, move it, fade it (`opacity`) or change its colour (`color: #a -> #b`) like any other. A Text turns to face the viewer by default (`facing: camera`), so it reads straight at any zoom; `facing: front` keeps it fixed in the scene, facing +z. Text never raises the overlap warning. Flat text can use any font installed on the computer; `font-style: 3d` builds solid letters from bundled outlines.
 
@@ -357,6 +361,8 @@ Scene { 0s..1s: sound: VoiceOver; }
 | one piece driven twice (parts fused by attach or in a group that each have a motion rule, or a rule plus a hinge, mesh or belt) | E0400, listing every source; keep one. Several rules for the same part are fine: they add up |
 | a capitalised `let`, or a lower-case part name | E0100, W0211 |
 | a title that drifts out of view while the Observer moves | `fixed: top-left;` on the Text keeps it on the screen |
+| two Texts in the same place at the same time | W0628; give each its own place, or fade one out before the other comes in |
+| Helvetica, Arial or Calibri for video titles | a bundled font: `font-family: Montserrat;` (or Oswald, "Playfair Display" …) looks the same in every export |
 | a long spoken line over a one-second move | W0519; make the move last as long as the words |
 | a different `Scene { frame }` in each chapter | W0147; put the frame in `@common` |
 | a group member written `A::Sphere { … }` | W0109 reads it as `A: Sphere { … }` and offers the fix |

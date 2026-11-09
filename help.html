@@ -769,7 +769,7 @@ Block { color: steel; text: "ENGINE BLOCK"; text-side: front top; font-family: s
         <tr><th>Property</th><th>Values</th></tr>
         <tr><td><code>text</code></td><td><code>"PISTON"</code>. In style it prints on the part's faces; on a Text it replaces the scene's text</td></tr>
         <tr><td><code>text-side</code></td><td><code>front</code> (the default), <code>back</code>, <code>left</code>, <code>right</code>, <code>top</code>, <code>bottom</code>, several at once, or <code>all</code>. Cylinders, rods and other round parts wrap the text round their side, like print on a can</td></tr>
-        <tr><td><code>font-family</code></td><td><code>sans</code>, <code>serif</code>, <code>mono</code>, or any font installed on the computer in quotes: <code>"Avenir Next"</code></td></tr>
+        <tr><td><code>font-family</code></td><td><code>sans</code>, <code>serif</code>, <code>mono</code>, a bundled font (below), or any font installed on the computer in quotes: <code>"Avenir Next"</code></td></tr>
         <tr><td><code>font-size</code></td><td>a length such as <code>24mm</code>, or a share of the face such as <code>40%</code>. Leave it out and the text fits the face</td></tr>
         <tr><td><code>font-weight</code></td><td><code>normal</code>, <code>bold</code>, or <code>100</code> to <code>900</code></td></tr>
         <tr><td><code>font-style</code></td><td><code>italic</code>; <code>3d</code> for solid letters with depth, lighting and shadows (sans, serif and mono outlines); or <code>italic 3d</code></td></tr>
@@ -777,7 +777,26 @@ Block { color: steel; text: "ENGINE BLOCK"; text-side: front top; font-family: s
         <tr><td><code>text-depth</code></td><td>how far 3D letters stand out, such as <code>4mm</code></td></tr>
         <tr><td><code>text-align</code>, <code>text-padding</code>, <code>line-height</code></td><td><code>left</code> / <code>center</code> / <code>right</code>; the space to the edge; the space between lines (<code>1.2</code>)</td></tr>
         <tr><td><code>text-background</code></td><td>a panel behind the letters, such as <code>#10203080</code>, so captions read over anything</td></tr>
+        <tr><td><code>text-transform</code></td><td><code>uppercase</code>, <code>capitalize</code> (first letters), <code>lowercase</code> or <code>none</code>. It changes the letters drawn, not your code</td></tr>
+        <tr><td><code>letter-spacing</code></td><td>extra space between letters: a share of the letter height (<code>8%</code> for airy capitals, <code>-2%</code> for tight large titles) or a length (<code>1.5mm</code>)</td></tr>
       </table></div>
+      <h3>Bundled fonts</h3>
+      <p>These fonts ship with GearScript, so text looks the same in the preview, on every computer and in every export, online or offline. Each loads the first time a project uses it. All are under the SIL Open Font License.</p>
+      <div class="tbl"><table>
+        <tr><th>Font</th><th>Good for</th></tr>
+        <tr><td><code>Montserrat</code></td><td>bold, geometric titles</td></tr>
+        <tr><td><code>Oswald</code></td><td>tall, condensed headlines</td></tr>
+        <tr><td><code>"Bebas Neue"</code></td><td>all-capitals poster titles (one weight)</td></tr>
+        <tr><td><code>"Playfair Display"</code></td><td>elegant serif titles</td></tr>
+        <tr><td><code>"Space Grotesk"</code></td><td>a technical, modern look</td></tr>
+        <tr><td><code>Inter</code></td><td>clean body text and labels</td></tr>
+        <tr><td><code>Caveat</code></td><td>handwritten notes and callouts</td></tr>
+        <tr><td><code>"JetBrains Mono"</code></td><td>code, readouts and numbers</td></tr>
+        <tr><td><code>"Noto Sans Devanagari"</code></td><td>Hindi, Marathi, Sanskrit and Nepali, with Latin letters too</td></tr>
+      </table></div>
+      <div data-snippet="style">Title { font-family: Montserrat; font-weight: 700; text-transform: uppercase; letter-spacing: 8%; }
+Note  { font-family: Inter; }</div>
+      <p>Two fonts are plenty: one for titles, one for everything else. 3D letters (<code>font-style: 3d</code>) come in sans, serif and mono only; a bundled font asked for in 3D is drawn in the nearest of those, with warning W0623.</p>
       <p>The type hints suggest every property and its values as you type. Insert a Text from the shape picker (<b>Text and sky</b>).</p>
     </section>
 
@@ -922,6 +941,8 @@ Sales::Plot { size: (360mm, 240mm); data: (1, 12) (2, 18) (3, 9) (4, 22); x-labe
         <tr><td><code>W0109</code>, <code>W0148</code>, <code>W0149</code></td><td>Layout slips</td><td>A group member written <code>A::Sphere</code> (read as <code>A: Sphere</code>); a missing <code>@scene</code> line; a chapter title without quotes. Each builds anyway, and <b>Fix</b> rewrites it.</td></tr>
         <tr><td><code>W0232</code></td><td>fixed margin</td><td><code>fixed: bottom-left margin 5%;</code> or a separate <code>margin: 5%;</code>. Both are read as <code>fixed: bottom-left 5%;</code>, and <b>Fix</b> rewrites them that way.</td></tr>
         <tr><td><code>W0550</code>, <code>W0551</code></td><td>Narration</td><td>A spoken line is cut off by the next one (start the next later, or say less); a line over 40 words (split it into several <code>say:</code> lines, one per block).</td></tr>
+        <tr><td><code>E0626</code>, <code>E0627</code></td><td>Text styles</td><td>An unknown <code>text-transform</code> (write <code>uppercase</code>, <code>lowercase</code>, <code>capitalize</code> or <code>none</code>); a <code>letter-spacing</code> that is not a length or a percentage.</td></tr>
+        <tr><td><code>W0628</code></td><td>Words over words</td><td>Two Texts cover each other on the picture while both are showing. The message names them and the first moment. Move one, give it another <code>fixed:</code> place, or let them take turns with <code>opacity</code>. Texts at the same <code>fixed:</code> place stack by themselves, and a quick crossfade between two captions is fine.</td></tr>
         <tr><td><code>W0624</code>, <code>W0625</code></td><td>Words on the picture</td><td><code>caption-band</code> outside 0 to 40%; a Text holding more than 16 words, which covers the animation (use narration, Texts that take turns, or <code>fixed: band;</code>).</td></tr>
         <tr><td><code>W0519</code></td><td>Pacing</td><td>A spoken line takes longer to say than the motion lasts, so the picture stands still under the words, or it runs past the end of the animation. Stretch the motion over the line (about 2.5 words a second), or say less.</td></tr>
         <tr><td><code>W0560</code></td><td>Overlap</td><td>Two parts that are not connected pass through each other while one of them moves (parts that both stay still are left alone, so a band round a tower is fine). The message names both and the first moment it happens. Move one, connect them, or add <code>overlap: allow;</code> to one of them if it is meant.</td></tr>

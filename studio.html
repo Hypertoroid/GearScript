@@ -145,6 +145,7 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 .surface pre .l.mk.ch { box-shadow: inset 0 2px 0 var(--accent); background: color-mix(in srgb, var(--accent) 22%, transparent); }
 .tabtool { align-self: center; margin-left: 4px; border: 1px solid transparent; background: none; border-radius: var(--radius); padding: 3px 5px; color: var(--muted); display: inline-flex; }
 .tabtool:hover { border-color: var(--line); color: var(--fg); }
+.tabtool:disabled { opacity: 0.35; cursor: default; } .tabtool:disabled:hover { border-color: transparent; color: var(--muted); }
 .tabtool svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .tab {
   border: 1px solid transparent; border-bottom: none; background: none; padding: 6px 12px; border-radius: var(--radius) var(--radius) 0 0;
@@ -888,6 +889,8 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
 
       <span class="tab-hint">Click a part in the view to jump to its code</span>
       <button class="tabtool" id="beautifyBtn" type="button" aria-label="Beautify the code" title="Beautify: lay the code out like CSS (Shift+Alt+F)"><svg viewBox="0 0 24 24"><path d="M4 6h10M4 10h7M8 14h10M8 18h7"/><path d="M19 3l.7 1.6L21.3 5.3l-1.6.7L19 7.6l-.7-1.6L16.7 5.3l1.6-.7z"/></svg></button>
+      <button class="tabtool" id="undoBtn" type="button" aria-label="Undo" title="Undo (Ctrl+Z)"><svg viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button class="tabtool" id="redoBtn" type="button" aria-label="Redo" title="Redo (Ctrl+Shift+Z)"><svg viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"/></svg></button>
       <button class="tabtool" id="checkpointBtn" type="button" aria-label="Set a checkpoint" title="Checkpoint: undo stops here (Shift-click skips the question)"><svg viewBox="0 0 24 24"><path d="M6 21V4"/><path d="M6 4h11l-2.5 4L17 12H6"/></svg></button>
       <button class="tabtool" id="addShape" type="button" aria-label="Insert a shape" title="Insert a shape…"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 8v8M8 12h8"/></svg></button>
       <button class="tabtool" id="maxCode" type="button" aria-label="Expand the code panel" title="Expand the code panel"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -1310,7 +1313,7 @@ class Parser {
       else if (depth === 1 && a.type === 'id' && this.isP(':', k + 1) && !(this.peek(k - 1).type === 'p' && this.peek(k - 1).v === ':')) keys.push(a.v);
     }
     if (time) return 'motion';
-    const ST = ['color', 'material', 'outline', 'opacity', 'luminosity', 'label', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'text-color', 'font-size', 'font-weight', 'font-family', 'background', 'cut'];
+    const ST = ['color', 'material', 'outline', 'opacity', 'luminosity', 'label', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'text-color', 'font-size', 'font-weight', 'font-family', 'background', 'cut', 'text-transform', 'letter-spacing'];
     return keys.length && keys.every(x => ST.includes(x)) ? 'style' : null;
   }
   memberAhead(k) {   /* after Type: optional .classes and (args), then "{" */
@@ -1579,8 +1582,8 @@ function textValue(n, env) {
   const s = typeof v === 'string' ? v : v && v.ref ? v.ref.join('.') : typeof v === 'number' ? String(+v.toFixed(6)) : String(v);
   return s.replace(/\\n/g, '\n').replace(/\\"/g, '"');
 }
-function textBox(str, size, depth, lh) {
-  const lines = String(str || ' ').split('\n'); const w = Math.max(...lines.map(l => l.length), 1) * size * 0.58;
+function textBox(str, size, depth, lh, spacing) {   /* spacing: extra mm between letters (letter-spacing) */
+  const lines = String(str || ' ').split('\n'); const w = Math.max(...lines.map(l => l.length * size * 0.58 + Math.max(0, l.length - 1) * (spacing || 0)), size * 0.58);
   return [Math.max(size * 0.6, w), size * (1 + (lines.length - 1) * (lh || 1.2)), Math.max(depth || 0, 0.5)];
 }
 /* frame presets: [width, height, safe area as top, right, bottom, left fractions] */
@@ -2859,8 +2862,26 @@ function colorOf(v, at) {
   throw bad();
 }
 /* text on a part's faces (text, text-side ...) or the look of a Text: read once here, drawn by the app */
-const TEXT_STYLE = ['text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height'];
+const TEXT_STYLE = ['text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height', 'text-transform', 'letter-spacing'];
 const FONT_GENERIC = { sans: 'sans', 'sans-serif': 'sans', serif: 'serif', mono: 'mono', monospace: 'mono' };
+/* video fonts that ship with GearScript (vendor/fonts, SIL Open Font License): the same in the preview, the offline copy and every export.
+   They load the first time a project uses one. Each is registered under its own name (css) so it never clashes with an installed copy;
+   kind is the family 3D letters fall back to. Rebuilt by scripts/make-fonts.js, which has the same list */
+const WEBFONTS = {
+  inter:                  { name: 'Inter', kind: 'sans', role: 'clean, neutral body text and labels' },
+  montserrat:             { name: 'Montserrat', kind: 'sans', role: 'bold, geometric titles' },
+  oswald:                 { name: 'Oswald', kind: 'sans', role: 'tall, condensed headlines' },
+  'bebas-neue':           { name: 'Bebas Neue', kind: 'sans', role: 'all-capitals poster titles (one weight)' },
+  'playfair-display':     { name: 'Playfair Display', kind: 'serif', role: 'elegant serif titles' },
+  'space-grotesk':        { name: 'Space Grotesk', kind: 'sans', role: 'technical, modern' },
+  caveat:                 { name: 'Caveat', kind: 'sans', role: 'handwritten notes and callouts' },
+  'jetbrains-mono':       { name: 'JetBrains Mono', kind: 'mono', role: 'code, readouts and numbers' },
+  'noto-sans-devanagari': { name: 'Noto Sans Devanagari', kind: 'sans', role: 'Hindi, Marathi, Sanskrit and Nepali (with Latin)' },
+};
+for (const [id, f] of Object.entries(WEBFONTS)) f.css = 'GearScript ' + f.name, f.id = id;
+const webfontId = (name) => { const k = String(name).toLowerCase().replace(/[\s_]+/g, '-'); return WEBFONTS[k] ? k : null; };
+/* the extra space between letters, in mm, for letters fsz mm tall */
+function textSpacing(T, fsz) { return T.spacing != null ? T.spacing : T.spacingPct != null ? T.spacingPct * fsz : 0; }
 function textStyle(leaf, st, warn) {
   const isText = leaf.type === 'Text';
   const T = { str: st.text ? textValue(st.text.items[0], {}) : isText ? leaf.spec.text : '', sides: isText ? ['front'] : ['front'], family: 'sans', css: null, weight: 400, italic: false, solid: false, depth: null, size: null, sizePct: null, color: null, align: 'center', padding: null, background: null, lineHeight: 1.2 };
@@ -2875,7 +2896,9 @@ function textStyle(leaf, st, warn) {
   if (st['font-family']) {
     const n = st['font-family'].items[0]; const name = n.t === 'str' ? n.v : words(st['font-family']).join(' ');
     const g = FONT_GENERIC[name.toLowerCase()];
-    if (g) T.family = g; else { T.css = name; T.family = /serif|times|georgia|garamond|book|roman|baskerville|palatino/i.test(name) && !/sans/i.test(name) ? 'serif' : /mono|code|courier|consol/i.test(name) ? 'mono' : 'sans'; }
+    const wf = webfontId(name);
+    if (g) T.family = g; else if (wf) { T.font = wf; T.css = WEBFONTS[wf].css; T.fontName = WEBFONTS[wf].name; T.family = WEBFONTS[wf].kind; }
+    else { T.css = name; T.family = /serif|times|georgia|garamond|book|roman|baskerville|palatino/i.test(name) && !/sans/i.test(name) ? 'serif' : /mono|code|courier|consol/i.test(name) ? 'mono' : 'sans'; }
   }
   if (st['font-weight']) {
     const n = st['font-weight'].items[0]; const k = n.t === 'ref' ? n.parts[0] : null;
@@ -2896,14 +2919,29 @@ function textStyle(leaf, st, warn) {
   if (st['text-depth']) { T.depth = num(st['text-depth'].items[0], {}, 'text-depth'); if (!T.solid) T.solid = true; }
   if (st['line-height']) { const v = num(st['line-height'].items[0], {}, 'line-height'); T.lineHeight = Math.max(0.6, Math.min(4, v)); }
   if (st['text-padding']) T.padding = num(st['text-padding'].items[0], {}, 'text-padding');
+  /* text-transform: capitals and the like, applied to the words themselves (flat and 3D letters, and the Text's size) */
+  if (st['text-transform']) {
+    const k = kwOf(st['text-transform']), ok = ['none', 'uppercase', 'lowercase', 'capitalize'];
+    if (!ok.includes(k)) throw nearFix(new Diag(st['text-transform'], 'E0626', `"${k || words(st['text-transform']).join(' ')}" is not a text-transform.`, 'Write text-transform: uppercase;  (or lowercase, capitalize, none)'), k, ok);
+    if (k === 'uppercase') T.str = T.str.toUpperCase(); else if (k === 'lowercase') T.str = T.str.toLowerCase();
+    else if (k === 'capitalize') T.str = T.str.replace(/(^|[\s\-"(])(\p{L})/gu, (m, a, b) => a + b.toUpperCase());
+  }
+  /* letter-spacing: extra space between letters, a length or a share of the letter height (10% is airy, -3% is tight) */
+  if (st['letter-spacing']) {
+    const n0 = st['letter-spacing'].items[0], k = kwOf(st['letter-spacing']), neg = n0 && n0.t === 'neg', n = neg ? n0.a : n0, sg = neg ? -1 : 1;
+    if (k === 'normal' || k === 'none') { /* the default */ }
+    else if (n && n.t === 'num' && n.unit === '%') T.spacingPct = sg * n.v;
+    else if (n && n.t === 'num' && n.kind === 'len') T.spacing = sg * n.v;
+    else throw new Diag(st['letter-spacing'], 'E0627', 'letter-spacing is a length or a share of the letter height.', 'Write letter-spacing: 8%;  (airy capitals)  or  letter-spacing: 1.5mm;  or  normal');
+  }
   if (st['text-align']) { const k = kwOf(st['text-align']); if (!['left', 'center', 'right'].includes(k)) throw nearFix(new Diag(st['text-align'], 'E0623', 'text-align is left, center or right.', 'Write text-align: left;'), k, ['left', 'center', 'right']); T.align = k; }
   const col = (p) => { const c = colorOf(evalE(p.items[0], {}), p.items[0]); return { hex: '#' + c.getHexString(), alpha: c.alpha === undefined ? 1 : c.alpha }; };
   if (st['text-color']) T.color = col(st['text-color']); else if (isText && st.color) T.color = col(st.color);
   if (st['text-background'] && kwOf(st['text-background']) !== 'none') T.background = col(st['text-background']);
-  if (T.solid && T.css) warn(st['font-family'], 'W0623', `3D letters come in sans, serif and mono; "${T.css}" is drawn as ${T.family}.`, 'Flat text can use any font installed on the computer.');
+  if (T.solid && T.css) warn(st['font-family'], 'W0623', `3D letters come in sans, serif and mono; "${T.fontName || T.css}" is drawn as ${T.family}.`, `Flat text can use ${T.font ? 'every bundled font' : 'the bundled fonts (Inter, Montserrat, Oswald …) or any font installed on the computer'}.`);
   if (isText) {   /* the invisible box takes the text's size, so framing and anchors fit it */
     const d = T.solid ? (T.depth !== null ? T.depth : leaf.spec.fontSize * 0.18) : 0;
-    const sz = textBox(T.str, leaf.spec.fontSize, d, T.lineHeight); leaf.spec.size = sz;
+    const sz = textBox(T.str, leaf.spec.fontSize, d, T.lineHeight, textSpacing(T, leaf.spec.fontSize)); leaf.spec.size = sz;
     leaf.geom.dispose(); leaf.geom = new THREE.BoxGeometry(...sz); leaf.mesh.geometry = leaf.geom; leaf.textResized = true;
   }
   return T.str ? T : null;
@@ -3390,6 +3428,10 @@ function beautify(src, kind, indent = 4) {
    lie inside the other's mesh (ray parity). Connected parts (hinge, slider, attach, mesh, couple, belt, pin), members of
    one group, invisible parts and parts with overlap: allow; are left out. Returns warnings; budgetMs caps the work. */
 function overlapCheck(model, opts = {}) {
+  let words = []; try { words = textOverlapCheck(model, opts); } catch (e) { words = []; }   /* W0628: words covering words, checked on the picture */
+  return [...solidOverlapCheck(model, opts), ...words];
+}
+function solidOverlapCheck(model, opts = {}) {
   const budget = opts.budgetMs || 1500, t0 = Date.now(), out = [];
   if (!model || !model.order || !model.order.length) return out;
   const skipType = new Set(['Line', 'Arrow', 'Curve', 'Arc']);
@@ -3461,6 +3503,92 @@ function overlapCheck(model, opts = {}) {
     }
   }
   return out.slice(0, 30).map(o => new Diag(o.decl, 'W0560', `${o.a} and ${o.b} pass through each other${o.t > 1e-6 ? ` at ${o.t.toFixed(2)} s` : ''}.`, `Move one of them, or connect them (attach, hinge) if they belong together. If it is meant, add overlap: allow; to ${o.a.split('.')[0]}.`, 'warning'));
+}
+
+/* ---------- words over words: two Texts that cover each other in the picture (W0628) ----------
+   Each Text is a rectangle on the screen: projected from where it is (camera-facing text keeps its size; facing: front text is
+   projected corner by corner), or placed where fixed: puts it. Sampled every 0.2 s; a pair counts when both are mostly showing
+   (opacity over 50%, so a crossfade between two captions in one place is fine) and the shared area is over a quarter of the smaller
+   one. Texts at the same named fixed: place stack by themselves, so they are left out. One warning per pair, at the first moment. */
+function textOverlapCheck(model, opts = {}) {
+  if (!model || !model.order) return [];
+  const items = [];
+  for (const ent of model.order) {
+    const leaves = ent.kind === 'group' ? [...ent.members.values()] : [ent.leaf];
+    for (const l of leaves) {
+      if (!l || l.type !== 'Text' || l.hidden || !l.spec || !l.spec.size || !(l.text && String(l.text.str || '').trim())) continue;
+      if (l.colorAlpha !== undefined && l.colorAlpha < 0.05) continue;
+      if (l.node) l.node.updateMatrix();
+      items.push({ ent, l, name: ent.kind === 'group' ? `${ent.name}.${l.member}` : ent.name, local: ent.kind === 'group' && l.node ? l.node.matrix.clone() : new THREE.Matrix4() });
+    }
+  }
+  if (items.length < 2 || items.length > 60) return [];
+  const budget = Math.min(800, opts.budgetMs || 800), t0 = Date.now(), out = [];
+  const fr = model.sceneOpts && model.sceneOpts.frame, asp = fr ? fr.aspect : 16 / 9, band = (model.sceneOpts && model.sceneOpts.band) || 0;
+  const o = model.observer || {}, base = (o.fov || 40) * Math.PI / 180, fovV = asp < 1 ? 2 * Math.atan(Math.tan(base / 2) / asp) : base, tn0 = Math.tan(fovV / 2);
+  const solved = new Map(), matsAt = (tt) => { const k = Math.round(tt * 1000); if (!solved.has(k)) solved.set(k, solve(model, tt)); return solved.get(k); };
+  const size = model.box ? model.box.getSize(new THREE.Vector3()).length() : 1000;
+  let c0; try { c0 = cameraAt(model, 0, matsAt); } catch (e) { return []; }
+  const fixedRef = Math.max(1, c0.pos.distanceTo(c0.look) / (c0.zoom || 1));
+  /* opacity at t: the last rule with an opacity wins, as in the preview; otherwise the style's */
+  const opacAt = (it, t) => {
+    let v = null;
+    for (const r of [...(model.rules || []), ...(model.lookRules || [])]) if (r.target.kind === 'entity' && r.target.ent === it.ent && r.compiled && r.compiled.opac && r.compiled.opac.length) { try { v = track(r.compiled.opac, t); } catch (e) {} }
+    const base = v !== null ? v : it.l.opacity !== undefined ? it.l.opacity : 1;
+    return Math.max(0, Math.min(1, base)) * (it.l.colorAlpha === undefined ? 1 : it.l.colorAlpha);
+  };
+  const fixedRect = (it) => {
+    const sp = it.ent.fixed, [w, h] = it.l.spec.size;
+    const hy = o.ortho ? (h / 2) / (size / 2) : (h / 2) / (fixedRef * tn0), hx = (o.ortho ? (w / 2) / (size / 2) : (w / 2) / (fixedRef * tn0)) / asp;
+    let x, y;
+    if (sp.pos) {
+      const p = sp.pos === 'band' && !band ? 'bottom' : sp.pos, my = 2 * sp.margin, mx = my / asp;
+      x = p.endsWith('left') ? -1 + mx + hx : p.endsWith('right') ? 1 - mx - hx : 0;
+      y = p === 'band' ? -1 + 2 * band - 0.03 - hy : p.startsWith('top') ? 1 - my - hy : p.startsWith('bottom') ? -1 + my + hy : 0;
+    } else { x = -1 + 2 * sp.x; y = 1 - 2 * sp.y; }
+    return [x - hx, y - hy, x + hx, y + hy];
+  };
+  const rects = (t) => {
+    const mats = matsAt(t), cam = cameraAt(model, t, matsAt), zoom = (cam.zoom || 1) * (1 - band);
+    const fwd = cam.look.clone().sub(cam.pos).normalize(), right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0));
+    if (right.lengthSq() < 1e-9) right.set(1, 0, 0); right.normalize(); const up = new THREE.Vector3().crossVectors(right, fwd);
+    const hh = size / 2 / zoom, tn = tn0 / zoom;
+    const proj = (p) => { const v = p.clone().sub(cam.pos), dz = v.dot(fwd); if (!o.ortho && dz <= 1e-6) return null; const s = o.ortho ? hh : dz * tn; return [v.dot(right) / (s * asp), v.dot(up) / s + band, s]; };
+    return items.map(it => {
+      if (it.ent.fixed) return fixedRect(it);
+      const m = mats.get(it.ent.name); if (!m) return null;
+      const W = m.clone().multiply(it.local), [w, h] = it.l.spec.size;
+      if (it.l.spec.facing === 'front') {
+        const ps = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => proj(new THREE.Vector3(a * w / 2, b * h / 2, 0).applyMatrix4(W)));
+        if (ps.some(q => !q)) return null;
+        return [Math.min(...ps.map(q => q[0])), Math.min(...ps.map(q => q[1])), Math.max(...ps.map(q => q[0])), Math.max(...ps.map(q => q[1]))];
+      }
+      const c = proj(new THREE.Vector3().setFromMatrixPosition(W)); if (!c) return null;
+      const k = W.getMaxScaleOnAxis(), hx = (w / 2) * k / (c[2] * asp), hy = (h / 2) * k / c[2];
+      return [c[0] - hx, c[1] - hy, c[0] + hx, c[1] + hy];
+    });
+  };
+  const dur = Math.max(0, model.duration || 0), n = Math.min(300, Math.floor(dur / 0.2) + 1), done = new Set();
+  for (let s = 0; s < n && Date.now() - t0 < budget; s++) {
+    const t = n > 1 ? Math.min(dur, s * 0.2) : 0; let R; try { R = rects(t); } catch (e) { continue; }
+    const op = items.map(it => opacAt(it, t));
+    for (let i = 0; i < items.length; i++) {
+      const a = R[i]; if (!a || op[i] <= 0.5 || a[2] < -1 || a[0] > 1 || a[3] < -1 || a[1] > 1) continue;
+      for (let j = i + 1; j < items.length; j++) {
+        const b = R[j], A = items[i], B = items[j]; if (!b || op[j] <= 0.5 || A.ent === B.ent || b[2] < -1 || b[0] > 1 || b[3] < -1 || b[1] > 1) continue;
+        const fa = A.ent.fixed, fb = B.ent.fixed; if (fa && fb && fa.pos && fa.pos === fb.pos) continue;   /* they stack */
+        const key = A.name + '|' + B.name; if (done.has(key)) continue;
+        const ix = Math.min(a[2], b[2]) - Math.max(a[0], b[0]), iy = Math.min(a[3], b[3]) - Math.max(a[1], b[1]); if (ix <= 0 || iy <= 0) continue;
+        const small = Math.min((a[2] - a[0]) * (a[3] - a[1]), (b[2] - b[0]) * (b[3] - b[1]));
+        if (small > 0 && ix * iy / small > 0.25) { done.add(key); out.push({ a: A, b: B, t }); }
+      }
+    }
+  }
+  return out.slice(0, 20).map(({ a, b, t }) => {
+    const later = (b.l.decl && b.l.decl.line ? b.l.decl : b.ent.decl) || a.ent.decl;
+    return new Diag(later, 'W0628', `${a.name} and ${b.name} cover each other on the picture${t > 1e-6 ? ` at ${t.toFixed(1)} s` : ''}.`,
+      `Words over words are hard to read. Move one (a different at:, or another fixed: place), let them take turns (fade one out with opacity before the other comes in), or make them smaller. Texts at the same fixed: place stack by themselves.`, 'warning');
+  });
 }
 
 /* ---------- sound: every sound is synthesised here from a recipe, so it is free of copyright and the same on every machine ---------- */
@@ -4182,7 +4310,7 @@ function filmTimes(chapters, durs) {
   const total = out.length ? out[out.length - 1].s + out[out.length - 1].d : 0;
   return { list: out, total };
 }
-root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, EASINGS, version: '1.0.0-beta' };
+root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, EASINGS, version: '1.0.0-beta' };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -4304,8 +4432,9 @@ opacity: 0.4;  (glass parts read well at 0.15 to 0.4)      trail: [anchor] [time
 luminosity: 80% [colour] [range];  the part shines and lights what is near. Only 8 luminous parts light the scene (W0610): keep it to lamps, sparks, flames.
 Text on any part's faces (Text parts take the same font properties):
   text: "PISTON"; text-side: front | back | left | right | top | bottom | all (several allowed; round parts wrap it); text-color: #1b1f24;
-  font-family: sans | serif | mono | "Any Installed Font"; font-size: 24mm | 40%; (omit to fit the face) font-weight: bold | 600; font-style: italic | 3d;
+  font-family: sans | serif | mono | a bundled font (see Fonts below) | "Any Installed Font"; font-size: 24mm | 40%; (omit to fit the face) font-weight: bold | 600; font-style: italic | 3d;
   text-depth: 4mm; (solid letters) text-align: left | center | right; text-padding: 6mm; text-background: #10203080; line-height: 1.2;
+  text-transform: uppercase | capitalize | lowercase | none; letter-spacing: 8% | -2% | 1.5mm; (a share of the letter height, or a length)
 label: "text"; label-color; label-size; label-background: #10203080; (a panel behind it; left out, the label is bare text): draws a screen-space tag above the part, always on top. Prefer Text parts or face text for anything long-lived.
 
 MOTION
@@ -4337,8 +4466,13 @@ DESIGN (what makes a video look finished)
 - Frame: the subject fills about 60% of the picture, a little above centre; set frame: youtube (or a phone format) in Scene.
 - Text: a short title with fixed: top (font-weight: 600, no background); a few in-scene Text words beside the parts they name; no labels.
   Bare text reads best; add text-background only when text sits over busy detail. A Text is a title or a label: a dozen words at most.
-- Fonts: sans, serif and mono work everywhere (and in 3D letters). A named font shows only where it is installed, so prefer
-  font-family: "IBM Plex Sans"; (always loaded by the studio) over Helvetica, Arial or Calibri; titles at font-weight: 600.
+- Fonts: these ship with GearScript and look the same in the preview and every export; prefer them to installed fonts (Helvetica, Arial,
+  Calibri show only where installed). Montserrat (bold geometric titles), Oswald (tall condensed headlines), "Bebas Neue" (all-capitals
+  poster titles, one weight), "Playfair Display" (elegant serif), "Space Grotesk" (technical, modern), Inter (clean body text and labels),
+  Caveat (handwritten notes), "JetBrains Mono" (code and readouts), "Noto Sans Devanagari" (Hindi and other Devanagari text).
+  At most two per video: one for titles, one for everything else (Montserrat + Inter, Oswald + Inter, "Playfair Display" + Inter,
+  "Space Grotesk" + "JetBrains Mono"). Titles: font-weight: 700; short capitals read best with text-transform: uppercase; letter-spacing: 8%;
+  large titles look tighter with letter-spacing: -2%. 3D letters (font-style: 3d) come only in sans, serif and mono.
 - Keep words off the animation: with narration or explanations, Scene { caption-band: 18%; } draws the picture above a clear strip; captions sit
   at its bottom and Texts with fixed: band; at its top. Texts at the same fixed: place stack instead of covering each other.
 - Camera: one slow move per idea (ease-in-out, 3 to 6 s): push in on the detail, orbit to show depth, pull back to finish. Hold still while things move.
@@ -4356,6 +4490,7 @@ a chapter using a part, Voice or style rule from another chapter  -  light power
 Name:Type or Name Type (always Name::Type)  -  a paragraph in one Text or one say: line  -  orient: 90deg; without "about x"  -  a title as a plain Text while the Observer moves (use fixed:)  -  fixed: bottom-left margin 5%; or a margin: property (write fixed: bottom-left 5%;)  -  a short move under a long spoken line  -  # comments  -  mesh/attach/hinge outside the moving part's block  -  rotate about ... on a hinged part
 two sources of motion for one piece (two parts of one fused piece each with a rule; a rule plus a hinge, mesh or belt)  -  unknown targets (copies from repeat are Name1, Name2 or a .class)
 parts passing through each other (W0560: move one, connect them, or overlap: allow;)  -  more than 8 luminous parts  -  long label: tags covering the action
+Texts covering each other on the picture (W0628): give each its own place, or let them take turns with opacity
 a sun made from a Sphere (use Scene sun:)  -  spoken lines that overlap or run past the end  -  a different Scene { frame } in each chapter (put it in @common)
 `;
 const AI_NARRATION = `NARRATION (spoken lines and captions)
@@ -4408,7 +4543,8 @@ const AI_CHECK = `BEFORE YOU REPLY, CHECK (these are the slips replies make most
 - @scene, @style and @motion each start their section on their own line; under @common and every @chapter, @scene comes first.
 - Every name you use is declared and spelled the same, capital letters included. Numbers carry units and stay in range (opacity 0..1 or 0%..100%).
 - One source of motion per rigid piece. Every move eases (ease-in-out) and lasts long enough to see.
-- Words: a Text is a title or a label; explanations are say: lines of one or two sentences, never overlapping; with both, use Scene { caption-band: 18%; }.`;
+- Words: a Text is a title or a label; explanations are say: lines of one or two sentences, never overlapping; with both, use Scene { caption-band: 18%; }.
+- Texts never cover each other: each has its own place on the picture, or they take turns (fade one out before the next fades in at the same spot). Leave a gap above and below in-scene words: a 30mm Text needs about 45mm of height.`;
 /* the prompt is built from parts: narration and chapters only when the task or the code needs them, so the prompt stays short */
 const AI_NARR_RX = /narrat|voice|speak|spoken|\bsay\b|caption|subtitle|explain|tutorial|lesson|teach|story|video|talk/i, AI_CHAP_RX = /chapter|\bparts?\b|section|minute|longer|episode|step[- ]by[- ]step|series/i;
 function aiBase(task, code, filmish) {
@@ -6695,6 +6831,7 @@ function makeCmEditor() {
     })),
     C.keymap.of([tabKey, ...C.closeBracketsKeymap, ...C.defaultKeymap, ...C.searchKeymap, ...C.historyKeymap, ...C.foldKeymap]),
     C.EditorView.updateListener.of((u) => {
+      if (u.docChanged || u.transactions.length) emit('history', fakeEvent('history'));
       if (u.docChanged && !u.transactions.some(t => t.annotation(progAnn))) {
         const tr = u.transactions.find(t => t.annotation(C.Transaction.userEvent)); const ue = tr ? tr.annotation(C.Transaction.userEvent) : '';
         const inputType = /^input\.type/.test(ue) ? 'insertText' : /^delete\.backward/.test(ue) ? 'deleteContentBackward' : /^input\.paste/.test(ue) ? 'insertFromPaste' : /^input/.test(ue) ? 'insertText' : 'other';
@@ -6711,14 +6848,18 @@ function makeCmEditor() {
   cmView = view; cmParts = { C, comp, gutterExt, tabExt, setDiag };
   view.scrollDOM.addEventListener('scroll', () => emit('scroll', fakeEvent('scroll')));
   const sel = () => view.state.selection.main;
+  const histField = C.history()[0];   /* the history StateField (the same one ext uses): undo and redo depth for the toolbar buttons */
+  const depth = (b) => b ? b.length - (b.length && !b[0].changes ? 1 : 0) : 0;
   const facade = {
     isCm: true, view,
+    historyDepth() { const h = view.state.field(histField, false); return h ? { undo: depth(h.done), redo: depth(h.undone) } : null; },
     get value() { return view.state.doc.toString(); },
     set value(v) { v = String(v); if (v === view.state.doc.toString()) return; view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: v }, annotations: progAnn.of(true) }); },
     load(key, text) {   /* switch tabs: keep each tab's own history */
       const cur = facade.key; if (cur != null) states[cur] = view.state;
       facade.key = key; const st = states[key];
       view.setState(st && st.doc.toString() === text ? st : C.EditorState.create({ doc: text, extensions: ext }));
+      emit('history', fakeEvent('history'));
     },
     get selectionStart() { return sel().from; }, set selectionStart(v) { facade.setSelectionRange(v, Math.max(v, sel().to)); },
     get selectionEnd() { return sel().to; }, set selectionEnd(v) { facade.setSelectionRange(sel().from, v); },
@@ -6740,6 +6881,7 @@ function makeCmEditor() {
     checkpoint() {   /* forget every tab's undo history: Ctrl Z now stops here */
       for (const k of Object.keys(states)) delete states[k];
       const st = view.state; view.setState(C.EditorState.create({ doc: st.doc, selection: st.selection, extensions: ext }));
+      emit('history', fakeEvent('history'));
     },
   };
   taEl.hidden = true; hl.hidden = true; gutter.hidden = true;
@@ -6858,7 +7000,7 @@ const PROP_DOC = {
   text: ['text: "Inlet valve";  (\\n starts a new line)', 'Text: in the scene for a Text part; in style it prints on the part\'s faces'],
   facing: ['facing: front;', 'Text: camera (the default) keeps it turned to the viewer, so it reads straight at any zoom; front keeps it fixed in the scene, facing +z, like a sign on a wall'],
   'text-side': ['text-side: front;  or  text-side: front top;  or  all', 'Which faces carry the text: front back left right top bottom; round parts wrap it round the side'],
-  'font-family': ['font-family: sans;  or  serif | mono | "Avenir Next"', 'Typeface: sans, serif, mono, or any font installed on the computer (3D letters: sans, serif, mono)'],
+  'font-family': ['font-family: Montserrat;  or  sans | serif | mono | "Playfair Display" | "Avenir Next"', 'Typeface: sans, serif, mono, a bundled font (Inter, Montserrat, Oswald, "Bebas Neue", "Playfair Display", "Space Grotesk", Caveat, "JetBrains Mono", "Noto Sans Devanagari"), or any font installed on the computer (3D letters: sans, serif, mono)'],
   'font-size': ['font-size: 24mm;  or  40%', 'Letter height; a % is a share of the face. Leave it out to fit the face'],
   'font-weight': ['font-weight: bold;  or  600', 'normal, bold, or 100 to 900'],
   'font-style': ['font-style: italic;  or  3d  or  italic 3d', 'italic slants the letters; 3d makes them solid, with depth and shadows'],
@@ -6868,6 +7010,8 @@ const PROP_DOC = {
   'text-padding': ['text-padding: 6mm;', 'Space between the letters and the edge of the face or background'],
   'text-background': ['text-background: #10203080;', 'A panel behind the letters, so they read over anything'],
   'line-height': ['line-height: 1.2;', 'Space between lines, as a multiple of the letter height'],
+  'text-transform': ['text-transform: uppercase;', 'uppercase, lowercase, capitalize (first letters) or none: changes the letters, not the code'],
+  'letter-spacing': ['letter-spacing: 8%;', 'Extra space between letters: a share of the letter height (8% for airy capitals, -2% tight) or a length (1.5mm)'],
   say: ['say: Narrator "The intake valve opens";  or  say: "Done" at end;', 'Speak a line (and show it as a caption): the browser\'s voice in the preview and the 3D player'],
   voice: ['voice: en-GB;  or  voice: "Samantha";', 'Voice: a language (en-US, en-IN, fr-FR…) or a voice name installed on the computer'],
   rate: ['rate: 95%;', 'Voice: how fast it speaks, 50% to 200%'], neural: ['neural: en_GB-alan-medium;', 'Voice: the neural voice used when an export speaks the lines (Piper voices; left out, one is picked from voice)'], captions: ['captions: off;', 'Voice: on (the default) shows each line in the picture, and in exports'],
@@ -6893,7 +7037,7 @@ const SHAPE_PROPS = (type) => (GearScript.SHAPES[type] ? GearScript.SHAPES[type]
 const COMMON = ['at', 'align', 'orient', 'visible', 'use', 'repeat', 'scatter', 'attach', 'hinge', 'slider', 'range', 'mesh', 'couple', 'belt', 'pin', 'overlap', 'fixed'];
 const REQUIRED = { Sound: ['kind'], Box: ['size'], Rect: ['size'], Sphere: ['radius'], Cylinder: ['radius', 'height'], Cone: ['radius', 'height'], Torus: ['radius'], Rod: ['length'], Link: ['length'], Gear: ['teeth'], Pulley: ['radius'], Wheel: ['radius'], Disc: ['radius'], Spring: ['radius', 'length'], Tube: ['radius', 'height'], Capsule: ['radius', 'length'], Prism: ['radius', 'height'], Pyramid: ['radius', 'height'], Dome: ['radius'], Wedge: ['size'], Plate: ['size'], Beam: ['length'], Ring: ['radius'], Nut: ['radius'], Bolt: ['radius', 'length'], Cam: ['radius'], Star: ['radius'], Mesh: ['src', 'size'], Triangle: ['size'], Ellipse: ['size'], Polygon: ['radius'], Sector: ['radius'], Arc: ['radius'], Path: ['points'], Line: ['from', 'to'], Arrow: ['from', 'to'], Curve: ['domain', 'point'] };
 const SPECIAL_PROPS = { Observer: ['position', 'look-at', 'zoom', 'fov', 'projection'], Light: ['kind', 'direction', 'power', 'at', 'color'], Scene: ['duration', 'frame', 'caption-band', 'sky', 'sun', 'ground', 'stars', 'background', 'grid', 'explode'] };
-const STYLE_KEYS = ['use', 'color', 'material', 'outline', 'opacity', 'luminosity', 'text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height', 'label', 'label-color', 'label-size', 'label-background', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'cut', 'cut-color', 'explode'];
+const STYLE_KEYS = ['use', 'color', 'material', 'outline', 'opacity', 'luminosity', 'text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height', 'text-transform', 'letter-spacing', 'label', 'label-color', 'label-size', 'label-background', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'cut', 'cut-color', 'explode'];
 const MATERIALS = [['metal', 'soft metal'], ['brushed', 'satin metal'], ['chrome', 'mirror metal'], ['gold', 'polished gold'], ['plastic', 'smooth'], ['matte', 'no shine'], ['glass', 'see-through'], ['ghost', 'x-ray: faint faces, clear edges'], ['flat', 'faceted'], ['glow', 'shines: luminosity 60%']];
 const NAMED = ['steel', 'brass', 'oak', 'copper', 'aluminium', 'iron', 'rubber', 'walnut', 'glass', 'graphite'];
 const EASE = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'cubic-bezier(0.4, 0, 0.2, 1)'];
@@ -7210,6 +7354,15 @@ async function setCheckpoint(skipAsk) {
   ta.checkpoint(); ta.focus(); toast('Checkpoint set: undo stops here'); track('checkpoint');
 }
 $('checkpointBtn').addEventListener('click', (e) => setCheckpoint(e.shiftKey));
+/* undo and redo buttons: the editor's own history (each tab keeps its own); greyed out when there is nothing to undo or redo */
+function renderHistoryBtns() {
+  const d = ta.historyDepth ? ta.historyDepth() : null, u = $('undoBtn'), r = $('redoBtn');
+  u.disabled = !!d && d.undo === 0; r.disabled = !!d && d.redo === 0;   /* the plain editor cannot tell, so its buttons stay on */
+}
+$('undoBtn').addEventListener('click', () => { edHistory(false); renderHistoryBtns(); });
+$('redoBtn').addEventListener('click', () => { edHistory(true); renderHistoryBtns(); });
+ta.addEventListener('history', renderHistoryBtns); ta.addEventListener('input', renderHistoryBtns);
+renderHistoryBtns();
 
 /* the code editor's own right-click menu, like the preview's */
 const edSel = () => ta.value.slice(ta.selectionStart, ta.selectionEnd);
@@ -7662,7 +7815,7 @@ function suggestions() {
     if (prop === 'label-color' || prop === 'text-color' || prop === 'text-background' || prop === 'label-background' || prop === 'cut-color') return { prefix: cpre, doc, items: [...(prop === 'text-background' || prop === 'label-background' ? [it('#10203080', 'colour', 'dark see-through panel'), it('#ffffffcc', 'colour', 'light panel'), it('none', 'value', 'no panel')] : []), ...colourItems(cpre)] };
     if (prop === 'text') return { prefix, doc, items: /"/.test(pm[2]) ? [] : [it('"Label"', 'text', 'quotes round the words; \\n starts a new line')] };
     if (prop === 'text-side') { const used = pm[2].split(/\s+/); return { prefix, doc, items: [...['front', 'back', 'left', 'right', 'top', 'bottom'].filter(k => !used.includes(k)).map(k => it(k, 'side', '')), it('all', 'side', 'every face')] }; }
-    if (prop === 'font-family') return { prefix, doc, items: [it('sans', 'family', 'clean, like Helvetica (3D too)'), it('serif', 'family', 'with serifs, like Georgia (3D too)'), it('mono', 'family', 'fixed width, for codes and numbers (3D too)'), it('"Avenir Next"', 'family', 'any font installed on the computer, in quotes')] };
+    if (prop === 'font-family') return { prefix, doc, items: [it('sans', 'family', 'clean, like Helvetica (3D too)'), it('serif', 'family', 'with serifs, like Georgia (3D too)'), it('mono', 'family', 'fixed width, for codes and numbers (3D too)'), ...Object.values(GearScript.WEBFONTS).map(f => it(f.name.includes(' ') ? `"${f.name}"` : f.name, 'family', `bundled: ${f.role}`)), it('"Avenir Next"', 'family', 'any font installed on the computer, in quotes')] };
     if (prop === 'font-weight') return { prefix, doc, items: [it('normal', 'value', '400'), it('bold', 'value', '700'), it('300', 'value', 'light'), it('600', 'value', 'semibold'), it('800', 'value', 'heavy')] };
     if (prop === 'font-style') { const used = pm[2].split(/\s+/); return { prefix, doc, items: [it('3d', 'style', 'solid letters with depth and shadows'), it('italic', 'style', 'slanted'), it('normal', 'style', 'upright and flat')].filter(x => !used.includes(x.label)) }; }
     if (prop === 'text-align') return { prefix, doc, items: ['left', 'center', 'right'].map(k => it(k, 'value', '')) };
@@ -7670,6 +7823,8 @@ function suggestions() {
     if (prop === 'text-depth') return { prefix, doc, items: [it('2mm', 'length', 'shallow, like engraving'), it('5mm', 'length', ''), it('12mm', 'length', 'deep, like a sign')] };
     if (prop === 'text-padding') return { prefix, doc, items: [it('4mm', 'length', ''), it('8mm', 'length', ''), it('0', 'value', 'to the edge')] };
     if (prop === 'line-height') return { prefix, doc, items: [it('1', 'value', 'tight'), it('1.2', 'value', 'normal'), it('1.5', 'value', 'airy')] };
+    if (prop === 'text-transform') return { prefix, doc, items: [it('uppercase', 'value', 'ALL CAPITALS'), it('capitalize', 'value', 'First Letters'), it('lowercase', 'value', 'all small'), it('none', 'value', 'as written')] };
+    if (prop === 'letter-spacing') return { prefix, doc, items: [it('8%', 'value', 'airy, for capitals'), it('15%', 'value', 'wide, for short titles'), it('-2%', 'value', 'tight, for large titles'), it('normal', 'value', 'the font\'s own')] };
     if (prop === 'luminosity' && /(^|\s)#[0-9a-fA-F]*$/.test(pm[2])) return { prefix: cpre, doc, items: colourItems(cpre) };
     if (prop === 'luminosity' && !pm[2].trim()) return { prefix, doc, items: [it('60%', 'value', 'a soft glow'), it('100%', 'value', 'a lamp'), it('200%', 'value', 'a strong light'), it('80% #ffd27a 400mm', 'value', 'level, colour and range')] };
     if (prop === 'wireframe') return { prefix, doc, items: [it('on', 'value', 'triangle edges only'), it('off', 'value', 'solid faces')] };
@@ -8859,6 +9014,23 @@ function want3dFonts() {
   }
   return false;
 }
+/* video fonts (vendor/fonts/<id>.js): loaded the first time a project uses one, then registered with the page; text is redrawn
+   when they are ready, and exports wait for them (textReady). The offline copy has them inside already */
+const webfonts = {};   /* id: 'loading' | 'ready' | 'failed' */
+function wantWebfont(id) {
+  const st = webfonts[id]; if (st) return st === 'ready';
+  const F = GearScript.WEBFONTS[id]; if (!F || typeof FontFace === 'undefined' || !document.fonts) { webfonts[id] = 'failed'; return false; }
+  webfonts[id] = 'loading';
+  const done = (ok) => { webfonts[id] = ok ? 'ready' : 'failed'; if (!ok) toast(`Could not load the font ${F.name}; showing a standard font instead`); if (model) { buildTexts(model); frame(t); } };
+  const register = () => {
+    const faces = (window.GEARSCRIPT_WEBFONTS || {})[id]; if (!faces) { done(false); return; }
+    Promise.all(faces.map(f => { const bin = Uint8Array.from(atob(f.data), c => c.charCodeAt(0)); const ff = new FontFace(F.css, bin, { weight: f.weight, ...(f.range ? { unicodeRange: f.range } : {}) }); document.fonts.add(ff); return ff.load(); }))
+      .then(() => done(true), (e) => { console.warn('font', id, e); done(false); });
+  };
+  if (window.GEARSCRIPT_WEBFONTS && window.GEARSCRIPT_WEBFONTS[id]) register();
+  else { const sc = document.createElement('script'); sc.src = `vendor/fonts/${id}.js`; sc.onload = register; sc.onerror = () => done(false); document.head.appendChild(sc); }
+  return false;
+}
 function font3d(T) {
   const key = T.family === 'mono' ? 'mono' : T.family + (T.weight >= 600 ? '-bold' : '');
   if (!fontCache[key]) fontCache[key] = new THREE.Font(window.GEARSCRIPT_FONTS[key]);
@@ -8871,8 +9043,17 @@ function fitTextSize(T, w, h) {
   const lines = T.str.split('\n'), pad = T.padding !== null ? T.padding : Math.min(w, h) * 0.08;
   if (T.size) return T.size; if (T.sizePct) return h * T.sizePct;
   const c = fitTextSize.c || (fitTextSize.c = document.createElement('canvas').getContext('2d')); c.font = cssFont(T, 100);
-  const wr = Math.max(...lines.map(l => c.measureText(l || ' ').width)) / 100;
-  return Math.max(0.5, Math.min((w - 2 * pad) / Math.max(wr, 0.3), (h - 2 * pad) / (lines.length * T.lineHeight), h * 0.32));
+  /* the widest line, with letter-spacing: a share of the letter height grows with the size, a length does not */
+  const n1 = (l) => Math.max(0, [...l].length - 1);
+  const byW = Math.min(...lines.map(l => (w - 2 * pad - (T.spacing || 0) * n1(l)) / Math.max(c.measureText(l || ' ').width / 100 + (T.spacingPct || 0) * n1(l), 0.3)));
+  return Math.max(0.5, Math.min(byW, (h - 2 * pad) / (lines.length * T.lineHeight), h * 0.32));
+}
+/* a line drawn with extra space between its letters (letter-spacing); without it, the browser's own drawing, kerning and all */
+function spacedWidth(x, l, sp) { return x.measureText(l).width + (sp ? sp * Math.max(0, [...l].length - 1) : 0); }
+function fillSpaced(x, l, ax, y, sp, align) {
+  if (!sp) { x.fillText(l, ax, y); return; }
+  const w = spacedWidth(x, l, sp), prev = x.textAlign; let cx = align === 'left' ? ax : align === 'right' ? ax - w : ax - w / 2;
+  x.textAlign = 'left'; for (const ch of l) { x.fillText(ch, cx, y); cx += x.measureText(ch).width + sp; } x.textAlign = prev;
 }
 /* a canvas with white letters (the material tints them), sized w x h mm */
 function textCanvas(T, w, h, fsz) {
@@ -8881,15 +9062,42 @@ function textCanvas(T, w, h, fsz) {
   const x = c.getContext('2d'), px = fsz * ppm, lh = px * T.lineHeight, pad = (T.padding !== null ? T.padding : Math.min(w, h) * 0.08) * ppm;
   x.font = cssFont(T, px); x.fillStyle = '#ffffff'; x.textBaseline = 'middle'; x.textAlign = T.align === 'center' ? 'center' : T.align;
   const ax = T.align === 'left' ? pad : T.align === 'right' ? c.width - pad : c.width / 2, y0 = c.height / 2 - (lines.length - 1) * lh / 2;
-  lines.forEach((l, i) => x.fillText(l, ax, y0 + i * lh + px * 0.04));
+  const sp = GearScript.textSpacing(T, fsz) * ppm;
+  lines.forEach((l, i) => fillSpaced(x, l, ax, y0 + i * lh + px * 0.04, sp, T.align));
   const tex = new THREE.CanvasTexture(c); tex.anisotropy = 4; tex.minFilter = THREE.LinearMipmapLinearFilter; return tex;
+}
+/* joins geometries with the same attributes (letters of one line) into one */
+function mergeGeos(gs) {
+  const gl = gs.map(g => g.index ? g.toNonIndexed() : g), names = Object.keys(gl[0].attributes).filter(n => gl.every(g => g.attributes[n]));
+  const out = new THREE.BufferGeometry();
+  for (const n of names) {
+    const a0 = gl[0].attributes[n], len = gl.reduce((s, g) => s + g.attributes[n].array.length, 0), arr = new Float32Array(len); let o = 0;
+    for (const g of gl) { arr.set(g.attributes[n].array, o); o += g.attributes[n].array.length; }
+    out.setAttribute(n, new THREE.BufferAttribute(arr, a0.itemSize));
+  }
+  for (const g of gs) g.dispose(); for (const g of gl) g.dispose();
+  return out;
 }
 /* solid letters, centred on the origin in x and y, from z = 0 to z = depth */
 function textSolid(T, fsz, depth, mat) {
   const g = new THREE.Group(), font = font3d(T), lines = T.str.split('\n'), lh = fsz * T.lineHeight;
+  const opts = { font, size: fsz * 0.74, height: depth, curveSegments: 6, bevelEnabled: depth > 0.8, bevelThickness: Math.min(depth * 0.12, fsz * 0.03), bevelSize: fsz * 0.012, bevelSegments: 2 };
+  const sp = GearScript.textSpacing(T, fsz), glyphs = font.data.glyphs, unit = opts.size / (font.data.resolution || 1000);
+  /* with letter-spacing, each letter is its own geometry, moved along by its advance plus the spacing, then joined */
+  const lineGeo = (l) => {
+    if (!sp) return new THREE.TextGeometry(l, opts);
+    const parts = []; let cx = 0;
+    for (const ch of l) {
+      const gl = glyphs[ch] || glyphs['?'];
+      if (ch.trim()) { const g = new THREE.TextGeometry(ch, opts); g.translate(cx, 0, 0); parts.push(g); }
+      cx += (gl ? gl.ha : 600) * unit + sp;
+    }
+    if (!parts.length) return new THREE.TextGeometry(l, opts);
+    return mergeGeos(parts);
+  };
   lines.forEach((l, i) => {
     if (!l.trim()) return;
-    const geo = new THREE.TextGeometry(l, { font, size: fsz * 0.74, height: depth, curveSegments: 6, bevelEnabled: depth > 0.8, bevelThickness: Math.min(depth * 0.12, fsz * 0.03), bevelSize: fsz * 0.012, bevelSegments: 2 });
+    const geo = lineGeo(l);
     geo.computeBoundingBox(); const bb = geo.boundingBox, w = bb.max.x - bb.min.x;
     const dx = T.align === 'left' ? -bb.min.x : T.align === 'right' ? -bb.max.x : -(bb.min.x + w / 2);
     geo.translate(dx, -fsz * 0.37 + ((lines.length - 1) / 2 - i) * lh, 0);
@@ -8906,6 +9114,7 @@ const FACE_FRAME = {
 function textObjsFor(l) {
   const T = l.text, out = [], isText = l.type === 'Text';
   const solid = T.solid && (window.GEARSCRIPT_FONTS || (want3dFonts(), false));
+  if (T.font && !solid) wantWebfont(T.font);   /* drawn with a standard font until it arrives, then redrawn */
   const contrast = () => { const c = l.mesh.material.color; return (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) > 0.42 ? '#15191d' : '#f4f6f8'; };
   const tcol = new THREE.Color(T.color ? T.color.hex : isText ? (l.style && l.style.color ? '#' + l.mesh.material.color.getHexString() : tok('--fg')) : contrast());
   const talpha = T.color ? T.color.alpha : 1;
@@ -8931,7 +9140,7 @@ function textObjsFor(l) {
     const holder = new THREE.Group(); holder.userData.textHolder = true; l.mesh.add(holder); l.textHolder = holder;
     const fsz = l.spec.fontSize, lines = T.str.split('\n');
     const c = fitTextSize.c || (fitTextSize.c = document.createElement('canvas').getContext('2d')); c.font = cssFont(T, 100);
-    const wr = Math.max(...lines.map(x => c.measureText(x || ' ').width)) / 100, pad = T.padding !== null ? T.padding : (T.background ? fsz * 0.35 : fsz * 0.1);
+    const sp = GearScript.textSpacing(T, fsz), wr = Math.max(...lines.map(x => (c.measureText(x || ' ').width / 100) * fsz + sp * Math.max(0, [...(x || ' ')].length - 1))) / fsz, pad = T.padding !== null ? T.padding : (T.background ? fsz * 0.35 : fsz * 0.1);
     const w = wr * fsz + 2 * pad, h = fsz * (1 + (lines.length - 1) * T.lineHeight) + 2 * pad;
     make(w, h, fsz, holder);
   } else {
@@ -8959,8 +9168,13 @@ function textObjsFor(l) {
 }
 /* resolves once solid letters can be drawn (exports wait for it) */
 function textReady() {
-  if (!model || !model.leaves.some(l => l.text && l.text.solid) || window.GEARSCRIPT_FONTS || fonts3d === 'failed') return Promise.resolve();
-  want3dFonts(); return new Promise(res => { const iv = setInterval(() => { if (fonts3d === 'ready' || fonts3d === 'failed') { clearInterval(iv); res(); } }, 30); });
+  const ids = model ? [...new Set(model.leaves.filter(l => l.text && l.text.font && !l.text.solid).map(l => l.text.font))] : [];
+  ids.forEach(wantWebfont);
+  const need3d = model && model.leaves.some(l => l.text && l.text.solid) && !window.GEARSCRIPT_FONTS && fonts3d !== 'failed';
+  if (need3d) want3dFonts();
+  const ready = () => (!need3d || fonts3d === 'ready' || fonts3d === 'failed') && ids.every(id => webfonts[id] === 'ready' || webfonts[id] === 'failed');
+  if (ready()) return Promise.resolve();
+  return new Promise(res => { const iv = setInterval(() => { if (ready()) { clearInterval(iv); res(); } }, 30); });
 }
 function buildTexts(m) {
   for (const l of m.leaves) {
@@ -10316,6 +10530,15 @@ async function inlineEngine() {   /* three.js and the camera controls, inside th
   try { const [a, b] = await Promise.all([vendorText('three.min.js'), vendorText('OrbitControls.js')]); return `<script>${a.replace(/<\/script/gi, '<\\/script')}<\/script>\n<script>${b.replace(/<\/script/gi, '<\\/script')}<\/script>\n`; }
   catch (e) { return `<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>\n<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>\n`; }
 }
+/* the bundled fonts a project names (in any chapter), loaded and written into a script for a self-contained page */
+async function webfontsScript(text) {
+  const ids = Object.keys(GearScript.WEBFONTS).filter(id => new RegExp('font-family\\s*:\\s*"?' + GearScript.WEBFONTS[id].name.replace(/ /g, '[\\s_-]+') + '\\b', 'i').test(text));
+  if (!ids.length) return '';
+  ids.forEach(wantWebfont);
+  await new Promise(res => { const iv = setInterval(() => { if (ids.every(id => webfonts[id] === 'ready' || webfonts[id] === 'failed')) { clearInterval(iv); res(); } }, 30); });
+  const W = window.GEARSCRIPT_WEBFONTS || {}, out = {}; for (const id of ids) if (W[id]) out[id] = W[id];
+  return Object.keys(out).length ? `<script>window.GEARSCRIPT_WEBFONTS = ${JSON.stringify(out)};<\/script>\n` : '';
+}
 async function buildPlayerHtml() {
   const noEnd = (t) => t.replace(/<\/script/gi, '<\\/script');
   const b64 = (u) => { let bin = ''; for (let i = 0; i < u.length; i += 0x8000) bin += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(bin); };
@@ -10327,6 +10550,7 @@ async function buildPlayerHtml() {
     + `<script>window.GEARSCRIPT_PLAYER = ${JSON.stringify(data).replace(/</g, '\\u003c')};<\/script>\n`
     + (await inlineEngine())
     + (window.GEARSCRIPT_FONTS && model && model.leaves.some(l => l.text && l.text.solid) ? `<script>window.GEARSCRIPT_FONTS = ${JSON.stringify(window.GEARSCRIPT_FONTS)};<\/script>\n` : '')
+    + (await webfontsScript(projText()))
     + `<script id="core">${noEnd($('core').textContent)}<\/script>\n<script id="app">${noEnd($('app').textContent)}<\/script>\n</body>\n</html>\n`;
 }
 
@@ -10392,12 +10616,12 @@ function openDownloadDialog() {
 /* one self-contained file: the whole studio with its libraries inside, for use without internet or a server */
 async function buildOfflineStudio() {
   const files_ = ['three.min.js', 'OrbitControls.js', 'codemirror6.js', 'GLTFLoader.js', 'mp4-muxer.js', 'webm-muxer.js', 'fonts3d.js'];
-  const libs = await Promise.all(files_.map(vendorText));
+  const libs = await Promise.all([...files_, ...Object.keys(GearScript.WEBFONTS).map(id => `fonts/${id}.js`)].map(vendorText));
   const noEnd = (t) => t.replace(/<\/script/gi, '<\\/script');
   const strip = (h) => String(h || '').replace(/<script>\/\* a pristine copy[\s\S]*?<\/script>/, '').replace(/<link rel="manifest"[^>]*>/, '');
   const site = Object.assign({}, SITE); delete site.apiBase;   /* an offline copy sends no statistics */
   return `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n${strip(window.__GEARSCRIPT_HEAD)}\n</head>\n<body>\n${strip(window.__GEARSCRIPT_MARKUP)}\n`
-    + `<script>/* GearScript Studio ${GearScript.version}, offline copy. Apache-2.0; bundled libraries under their own MIT licences (three.js, CodeMirror, mp4-muxer, webm-muxer). */\nwindow.GEARSCRIPT_SITE = ${JSON.stringify(site).replace(/</g, '\\u003c')}; window.GEARSCRIPT_OFFLINE = true;<\/script>\n`
+    + `<script>/* GearScript Studio ${GearScript.version}, offline copy. Apache-2.0; bundled libraries under their own MIT licences (three.js, CodeMirror, mp4-muxer, webm-muxer); bundled fonts under the SIL Open Font License 1.1. */\nwindow.GEARSCRIPT_SITE = ${JSON.stringify(site).replace(/</g, '\\u003c')}; window.GEARSCRIPT_OFFLINE = true;<\/script>\n`
     + libs.map(t => `<script>${noEnd(t)}<\/script>\n`).join('')
     + `<script id="core">${noEnd($('core').textContent)}<\/script>\n<script id="app">${noEnd($('app').textContent)}<\/script>\n</body>\n</html>\n`;
 }

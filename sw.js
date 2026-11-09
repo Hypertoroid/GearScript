@@ -3,6 +3,8 @@
 const VERSION = 'gearscript-1.0.0-beta';
 const CORE = ['studio.html', 'index.html', 'help.html', 'privacy.html', 'terms.html', 'site-config.js', 'manifest.webmanifest',
   'vendor/three.min.js', 'vendor/OrbitControls.js', 'vendor/codemirror6.js', 'vendor/GLTFLoader.js', 'vendor/mp4-muxer.js', 'vendor/webm-muxer.js', 'vendor/fonts3d.js',
+  'vendor/fonts/inter.js', 'vendor/fonts/montserrat.js', 'vendor/fonts/oswald.js', 'vendor/fonts/bebas-neue.js', 'vendor/fonts/playfair-display.js',
+  'vendor/fonts/space-grotesk.js', 'vendor/fonts/caveat.js', 'vendor/fonts/jetbrains-mono.js', 'vendor/fonts/noto-sans-devanagari.js',
   'brand/app-192.png', 'brand/app-512.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });

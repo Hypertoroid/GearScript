@@ -1,7 +1,33 @@
+# Dependencies (installed with npm install in cli/ and server/; the lock files are not kept)
 node_modules/
+package-lock.json
+
+# The server's SQLite database and its write-ahead files (server/gearscript.db, or wherever DB= points)
 *.db
 *.db-*
+*.sqlite
+*.sqlite3
+
+# Secrets and local configuration (ADMIN_TOKEN, AI keys)
 .env
+.env.*
+
+# Logs
 *.log
-.DS_Store
+npm-debug.log*
+
+# Build output, renders and test artefacts
 /dist/
+/out/
+coverage/
+test-results/
+playwright-report/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*~

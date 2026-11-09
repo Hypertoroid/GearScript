@@ -6,6 +6,10 @@
 - **Two text styles for titles:** `text-transform: uppercase | capitalize | lowercase | none;` and `letter-spacing: 8%;` (a share of the letter height, or a length such as `1.5mm`; negative tightens). Both work on flat and 3D letters and on face text. New errors E0626 and E0627.
 - **W0628: words over words.** Two Texts that cover each other on the picture while both are showing get a warning naming them and the first moment, in the studio and in `gearscript check`. Texts stacked at one `fixed:` place and quick crossfades between captions are left alone.
 - The AI prompt lists the bundled fonts with their roles and pairings, shows the new text styles, and asks that Texts never cover each other.
+- **One file is the default view**, because it is the easiest to hand to an AI. The header switch now reads One file | Three files; the choice is remembered, and a project opened from a .zip follows it.
+- The version moved out of the header: it is shown in the More (⋯) menu and at the foot of Settings (with a What's new link when the repository is set), read from the compiler's own version number.
+- Fixed: "Showing the last build that compiled" could stay over the view beside a green tick after an error was fixed while a film was playing. Every build path now sets that note, starting the film clears it, and an error in another chapter while the film plays shows as an error rather than a green tick.
+- .gitignore covers lock files, SQLite files, .env files, test and render output, and editor and system files.
 - **Undo and Redo buttons** next to Beautify, greyed out when there is nothing to undo or redo. Each file and chapter keeps its own history, as with Ctrl+Z.
 
 - **Orrery is now GearScript.** Projects are `.gscript` files that start with `@gearscript 1`; the command line is `gearscript` (cli/gearscript.js), the MCP tools are `gearscript_*`, AI replies use `gearscript` code blocks, and the schema is docs/gearscript-schema.json. There is no support for the old `.orrery` format or the old saved settings: this is a clean break.

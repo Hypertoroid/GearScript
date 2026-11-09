@@ -95,7 +95,6 @@ button { cursor: pointer; }
 .brand b { font-weight: 600; font-size: calc(15px * var(--ui)); letter-spacing: -0.01em; }
 .brand b em { font-style: normal; color: var(--muted); font-weight: 500; }
 .brand .wm { font-style: normal; font-family: "Inter", var(--font-ui); letter-spacing: -0.012em; } .brand .wm span { color: #e0a823; }   /* the wordmark: Inter SemiBold, Script in gold */
-.brand > span { font-family: var(--font-code); font-size: 11px; color: var(--muted); }
 .ctl { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
 .ctl select, .btn { text-decoration: none; display: inline-flex; align-items: center;
   border: 1px solid var(--line); background: var(--panel-2); border-radius: var(--radius);
@@ -482,6 +481,8 @@ html.player.see, html.player.see body, html.player.see .bench, html.player.see .
 .menu .mi-head { padding: 6px 10px 2px 34px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
 .menu hr { border: 0; border-top: 1px solid var(--line); margin: 5px 4px; }
 .menu .menu-foot { padding: 6px 10px 4px; color: var(--muted); font-size: 11.5px; }
+.menu .menu-foot .ver, .drawer footer .ver { display: block; color: var(--fg); opacity: 0.8; margin-bottom: 2px; }
+.drawer footer .ver { margin: 3px 0 0; font-size: 11.5px; } .drawer footer .ver a { color: inherit; }
 .menu .who { padding: 8px 10px 6px; }
 .menu .who b { display: block; font-size: 13px; } .menu .who span { color: var(--muted); font-size: 12px; }
 .phonebar { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 60; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 18px 40px rgba(0,0,0,.4); padding: 14px 16px; display: grid; gap: 10px; }
@@ -739,7 +740,6 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
   .bench[data-layout] > .code { order: 1; } .bench[data-layout] > .view { order: 3; }
   .tab-hint { display: none; }
 }
-@media (max-width: 1420px) { .brand > span { display: none; } }
 @media (max-width: 1240px) { .ctl > .lbl { display: none; } .top { gap: 8px 10px; } }
 @media (prefers-reduced-motion: reduce) { .bar i { transition: none; } }
 </style>
@@ -750,7 +750,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
 <linearGradient id="gsla" x1="0.1" y1="0" x2="0.9" y2="1"><stop offset="0" stop-color="#ffe382"/><stop offset="0.5" stop-color="#f0bd36"/><stop offset="1" stop-color="#d99a1c"/></linearGradient>
 <linearGradient id="gsld" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f2b631"/><stop offset="1" stop-color="#b97a0d"/></linearGradient>
 <clipPath id="gslc"><circle cx="31.4" cy="32.3" r="23.6"/></clipPath>
-<path id="gslb" d="M55.3 32.7 L55.2 34.4 L57.6 35.5 L58.3 35.9 L58.6 36.1 L58.5 37.1 L58.3 38.0 L57.9 39.4 L57.5 40.8 L55.8 40.8 L54.0 40.7 L53.8 40.8 L53.1 42.4 L52.6 43.4 L52.0 44.5 L52.0 44.6 L52.8 45.6 L53.7 46.6 L54.2 47.3 L54.3 47.5 L53.6 48.5 L52.9 49.4 L52.1 50.4 L51.3 51.3 L51.1 51.3 L49.6 50.5 L48.0 49.7 L47.8 49.7 L47.1 50.4 L46.3 51.0 L45.4 51.7 L44.6 52.3 L44.6 52.5 L45.1 54.2 L45.5 55.9 L45.4 56.0 L44.5 56.5 L42.8 57.3 L41.1 58.1 L40.9 57.9 L40.3 57.2 L39.5 56.2 L38.8 55.1 L37.8 55.4 L36.7 55.7 L35.7 55.9 L34.6 56.0 L34.5 56.4 L34.1 58.5 L33.9 59.4 L33.8 59.7 L32.7 59.8 L31.5 59.8 L30.4 59.8 L29.2 59.8 L28.9 59.7 L28.8 59.4 L28.5 58.1 L28.2 56.4 L28.1 56.0 L27.1 55.9 L26.0 55.7 L24.9 55.4 L24.0 55.1 L23.2 56.2 L22.4 57.2 L21.9 57.9 L21.6 58.1 L20.6 57.6 L19.4 57.1 L18.4 56.6 L17.4 56.0 L17.3 55.9 L17.7 54.2 L18.1 52.5 L18.1 52.3 L17.3 51.7 L16.4 51.0 L15.6 50.4 L14.9 49.7 L14.7 49.7 L13.2 50.5 L11.6 51.3 L11.4 51.3 L10.6 50.4 L10.0 49.6 L9.2 48.6 L8.4 47.5 L8.5 47.3 L9.1 46.6 L9.9 45.6 L10.8 44.6 L10.8 44.5 L10.3 43.6 L9.8 42.7 L9.3 41.7 L9.0 40.8 L8.7 40.7 L6.9 40.8 L5.2 40.8 L4.9 39.7 L4.5 38.5 L4.3 37.2 L4.1 36.1 L4.4 35.9 L5.2 35.5 L7.5 34.4 L7.4 33.3 L7.4 32.3 L7.4 31.3 L7.5 30.2 L5.2 29.1 L4.4 28.8 L4.1 28.6 L4.3 27.4 L4.5 26.2 L4.8 25.1 L5.2 23.8 L6.9 23.8 L8.7 23.9 L9.0 23.9 L9.3 22.9 L9.8 21.9 L10.3 21.0 L10.8 20.1 L10.8 20.0 L9.9 19.0 L9.1 18.0 L8.5 17.3 L8.4 17.1 L9.1 16.1 L9.8 15.2 L10.5 14.3 L11.4 13.4 L11.6 13.4 L13.2 14.1 L14.7 15.0 L14.9 15.0 L15.6 14.3 L16.5 13.6 L17.3 13.0 L18.1 12.4 L18.1 12.2 L17.7 10.5 L17.3 8.8 L17.4 8.6 L18.2 8.1 L19.9 7.3 L21.6 6.6 L21.9 6.7 L22.4 7.4 L23.2 8.5 L24.0 9.5 L24.9 9.3 L26.0 9.0 L27.1 8.8 L28.1 8.6 L28.2 8.3 L28.6 6.1 L28.8 5.3 L28.9 4.9 L30.1 4.8 L31.2 4.8 L32.4 4.8 L33.5 4.9 L33.8 4.9 L33.9 5.3 L34.2 6.6 L34.5 8.3 L34.6 8.6 L35.7 8.8 L36.7 9.0 L37.8 9.3 L38.8 9.5 L39.5 8.5 L40.3 7.4 L40.9 6.7 L41.1 6.6 L42.4 7.1 L43.6 7.7 L45.2 8.6 L45.4 8.6 L45.5 8.8 L45.1 10.5 L44.6 12.2 L44.6 12.4 L45.4 13.0 L46.2 13.6 L47.0 14.2 L47.8 15.0 L48.0 15.0 L49.6 14.1 L43.8 19.9 L43.2 19.3 L42.5 18.7 L41.9 18.2 L41.2 17.7 L40.6 17.3 L39.9 16.9 L39.1 16.5 L38.3 16.1 L37.5 15.8 L36.7 15.5 L35.8 15.3 L35.1 15.1 L34.3 14.9 L33.4 14.8 L32.5 14.7 L31.8 14.7 L30.9 14.7 L30.2 14.7 L29.3 14.8 L28.5 14.9 L27.6 15.1 L26.8 15.3 L25.9 15.6 L25.2 15.8 L24.4 16.1 L23.6 16.5 L23.0 16.8 L22.2 17.3 L21.5 17.7 L20.8 18.2 L20.2 18.7 L19.5 19.3 L18.9 19.9 L18.4 20.4 L17.9 21.0 L17.3 21.7 L16.8 22.4 L16.4 23.1 L16.0 23.7 L15.6 24.5 L15.2 25.3 L14.9 26.0 L14.6 26.8 L14.4 27.5 L14.2 28.3 L14.0 29.1 L13.9 29.9 L13.8 30.8 L13.8 31.7 L13.7 32.4 L13.8 33.3 L13.8 34.0 L13.9 34.9 L14.1 35.8 L14.3 36.6 L14.5 37.3 L14.7 38.2 L15.0 38.9 L15.3 39.6 L15.7 40.3 L16.1 41.1 L16.5 41.7 L17.0 42.5 L17.5 43.2 L18.3 44.1 L19.2 45.1 L20.2 45.9 L21.2 46.7 L22.3 47.4 L23.4 48.1 L24.6 48.6 L25.8 49.0 L27.1 49.4 L28.3 49.7 L29.6 49.8 L30.9 49.9 L32.2 49.9 L33.5 49.8 L34.8 49.6 L36.1 49.3 L37.4 48.9 L38.6 48.4 L39.8 47.8 L40.9 47.1 L41.9 46.4 L43.0 45.5 L44.0 44.5 L44.9 43.6 L45.8 42.5 L46.5 41.4 L47.1 40.2 L47.6 39.1 L48.1 37.7 L48.5 36.5 L48.7 35.2 L48.9 33.8 L36.7 33.8 L36.4 33.8 L36.0 33.7 L35.8 33.6 L35.5 33.5 L35.2 33.3 L35.0 33.1 L34.8 32.8 L34.6 32.5 L34.5 32.3 L34.4 32.0 L34.4 31.6 L34.4 31.3 L34.4 31.0 L34.5 30.7 L34.6 30.4 L34.8 30.1 L35.0 29.9 L35.2 29.7 L35.5 29.5 L35.9 29.3 L36.3 29.2 L36.7 29.2 L57.5 29.2 L55.2 30.2 L55.3 31.4 L55.3 32.7 Z"/></defs><g fill="url(#gslw)"><use href="#gslb" x="2.06" y="2.34"/><use href="#gslb" x="1.38" y="1.56"/><use href="#gslb" x="0.69" y="0.78"/></g><g fill="url(#gsld)" clip-path="url(#gslc)"><use href="#gslb" x="2.06" y="2.34"/><use href="#gslb" x="1.38" y="1.56"/><use href="#gslb" x="0.69" y="0.78"/></g><use href="#gslb" fill="url(#gsls)" stroke="#fbfcfd" stroke-opacity="0" stroke-width="0.60" stroke-linejoin="round"/><path d="M47.9 15.8 L43.8 19.9 L43.8 19.9 L43.5 19.5 L43.1 19.2 L42.8 18.9 L42.4 18.6 L42.1 18.3 L41.7 18.1 L41.3 17.8 L41.0 17.5 L40.6 17.3 L40.2 17.1 L39.8 16.8 L39.4 16.6 L38.9 16.4 L38.5 16.2 L38.1 16.0 L37.7 15.9 L37.2 15.7 L36.8 15.6 L36.4 15.4 L35.9 15.3 L35.5 15.2 L35.0 15.1 L34.6 15.0 L34.1 14.9 L33.7 14.9 L33.2 14.8 L32.7 14.8 L32.3 14.7 L31.8 14.7 L31.4 14.7 L30.9 14.7 L30.4 14.7 L30.0 14.8 L29.5 14.8 L29.1 14.9 L28.6 14.9 L28.2 15.0 L27.7 15.1 L27.2 15.2 L26.8 15.3 L26.4 15.4 L25.9 15.6 L25.5 15.7 L25.0 15.9 L24.6 16.0 L24.2 16.2 L23.8 16.4 L23.4 16.6 L23.0 16.8 L22.6 17.1 L22.2 17.3 L21.8 17.5 L21.4 17.8 L21.0 18.1 L20.6 18.3 L20.3 18.6 L19.9 18.9 L19.6 19.2 L19.2 19.5 L18.9 19.9 L18.6 20.2 L18.3 20.5 L18.0 20.9 L17.7 21.2 L17.4 21.6 L17.1 22.0 L16.8 22.3 L16.6 22.7 L16.3 23.1 L16.1 23.5 L15.9 23.9 L15.7 24.3 L15.5 24.7 L15.3 25.2 L15.1 25.6 L14.9 26.0 L14.8 26.4 L14.6 26.9 L14.5 27.3 L14.3 27.8 L14.2 28.2 L14.1 28.7 L14.0 29.1 L14.0 29.6 L13.9 30.0 L13.8 30.5 L13.8 30.9 L13.8 31.4 L13.8 31.9 L13.7 32.3 L13.8 32.8 L13.8 33.2 L13.8 33.7 L13.8 34.2 L13.9 34.6 L14.0 35.1 L14.0 35.5 L14.1 36.0 L14.2 36.4 L14.3 36.9 L14.5 37.3 L14.6 37.8 L14.8 38.2 L14.9 38.6 L15.1 39.1 L15.3 39.5 L15.5 39.9 L15.7 40.3 L15.9 40.7 L16.1 41.1 L16.3 41.5 L16.6 41.9 L16.8 42.3 L17.1 42.7 L17.4 43.0 L17.7 43.4 L18.0 43.8 L18.3 44.1 L18.6 44.4 L18.9 44.8 L19.2 45.1 L19.6 45.4 L19.9 45.7 L20.3 46.0 L20.6 46.3 L21.0 46.6 L21.4 46.8 L21.8 47.1 L22.2 47.3 L22.6 47.6 L23.0 47.8 L23.4 48.0 L23.8 48.2 L24.2 48.4 L24.6 48.6 L25.0 48.8 L25.5 48.9 L25.9 49.1 L26.4 49.2 L26.8 49.3 L27.2 49.4 L27.7 49.5 L28.2 49.6 L28.6 49.7 L29.1 49.8 L29.5 49.8 L30.0 49.9 L30.4 49.9 L30.9 49.9 L31.4 49.9 L31.8 49.9 L32.3 49.9 L32.7 49.9 L33.2 49.8 L33.7 49.8 L34.1 49.7 L34.6 49.6 L35.0 49.5 L35.5 49.4 L35.9 49.3 L36.4 49.2 L36.8 49.1 L37.2 48.9 L37.7 48.8 L38.1 48.6 L38.5 48.4 L38.9 48.2 L39.4 48.0 L39.8 47.8 L40.2 47.6 L40.6 47.3 L41.0 47.1 L41.3 46.8 L41.7 46.6 L42.1 46.3 L42.4 46.0 L42.8 45.7 L43.1 45.4 L43.5 45.1 L43.8 44.8 L44.1 44.4 L44.4 44.1 L44.8 43.8 L45.0 43.4 L45.3 43.0 L45.6 42.7 L45.9 42.3 L46.1 41.9 L46.4 41.5 L46.6 41.1 L46.8 40.7 L47.1 40.3 L47.3 39.9 L47.5 39.5 L47.6 39.1 L47.8 38.6 L48.0 38.2 L48.1 37.8 L48.2 37.3 L48.4 36.9 L48.5 36.4 L48.6 36.0 L48.7 35.5 L48.8 35.1 L48.8 34.6 L48.9 34.2 L48.9 33.8 L36.7 33.8 L36.4 33.8 L36.1 33.8 L35.8 33.7 L35.6 33.5 L35.3 33.4 L35.1 33.1 L34.9 32.9 L34.7 32.7 L34.6 32.4 L34.5 32.1 L34.4 31.8 L34.4 31.5 L34.4 31.2 L34.5 30.9 L34.6 30.6 L34.7 30.3 L34.9 30.1 L35.1 29.8 L35.3 29.6 L35.6 29.5 L35.8 29.3 L36.1 29.2 L36.4 29.2 L36.7 29.2 L55.0 29.2" fill="none" stroke="url(#gsla)" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round"/></svg><b><i class="wm">Gear<span>Script</span></i> <em>Studio</em></b><span>v1.0 beta</span></a>
+<path id="gslb" d="M55.3 32.7 L55.2 34.4 L57.6 35.5 L58.3 35.9 L58.6 36.1 L58.5 37.1 L58.3 38.0 L57.9 39.4 L57.5 40.8 L55.8 40.8 L54.0 40.7 L53.8 40.8 L53.1 42.4 L52.6 43.4 L52.0 44.5 L52.0 44.6 L52.8 45.6 L53.7 46.6 L54.2 47.3 L54.3 47.5 L53.6 48.5 L52.9 49.4 L52.1 50.4 L51.3 51.3 L51.1 51.3 L49.6 50.5 L48.0 49.7 L47.8 49.7 L47.1 50.4 L46.3 51.0 L45.4 51.7 L44.6 52.3 L44.6 52.5 L45.1 54.2 L45.5 55.9 L45.4 56.0 L44.5 56.5 L42.8 57.3 L41.1 58.1 L40.9 57.9 L40.3 57.2 L39.5 56.2 L38.8 55.1 L37.8 55.4 L36.7 55.7 L35.7 55.9 L34.6 56.0 L34.5 56.4 L34.1 58.5 L33.9 59.4 L33.8 59.7 L32.7 59.8 L31.5 59.8 L30.4 59.8 L29.2 59.8 L28.9 59.7 L28.8 59.4 L28.5 58.1 L28.2 56.4 L28.1 56.0 L27.1 55.9 L26.0 55.7 L24.9 55.4 L24.0 55.1 L23.2 56.2 L22.4 57.2 L21.9 57.9 L21.6 58.1 L20.6 57.6 L19.4 57.1 L18.4 56.6 L17.4 56.0 L17.3 55.9 L17.7 54.2 L18.1 52.5 L18.1 52.3 L17.3 51.7 L16.4 51.0 L15.6 50.4 L14.9 49.7 L14.7 49.7 L13.2 50.5 L11.6 51.3 L11.4 51.3 L10.6 50.4 L10.0 49.6 L9.2 48.6 L8.4 47.5 L8.5 47.3 L9.1 46.6 L9.9 45.6 L10.8 44.6 L10.8 44.5 L10.3 43.6 L9.8 42.7 L9.3 41.7 L9.0 40.8 L8.7 40.7 L6.9 40.8 L5.2 40.8 L4.9 39.7 L4.5 38.5 L4.3 37.2 L4.1 36.1 L4.4 35.9 L5.2 35.5 L7.5 34.4 L7.4 33.3 L7.4 32.3 L7.4 31.3 L7.5 30.2 L5.2 29.1 L4.4 28.8 L4.1 28.6 L4.3 27.4 L4.5 26.2 L4.8 25.1 L5.2 23.8 L6.9 23.8 L8.7 23.9 L9.0 23.9 L9.3 22.9 L9.8 21.9 L10.3 21.0 L10.8 20.1 L10.8 20.0 L9.9 19.0 L9.1 18.0 L8.5 17.3 L8.4 17.1 L9.1 16.1 L9.8 15.2 L10.5 14.3 L11.4 13.4 L11.6 13.4 L13.2 14.1 L14.7 15.0 L14.9 15.0 L15.6 14.3 L16.5 13.6 L17.3 13.0 L18.1 12.4 L18.1 12.2 L17.7 10.5 L17.3 8.8 L17.4 8.6 L18.2 8.1 L19.9 7.3 L21.6 6.6 L21.9 6.7 L22.4 7.4 L23.2 8.5 L24.0 9.5 L24.9 9.3 L26.0 9.0 L27.1 8.8 L28.1 8.6 L28.2 8.3 L28.6 6.1 L28.8 5.3 L28.9 4.9 L30.1 4.8 L31.2 4.8 L32.4 4.8 L33.5 4.9 L33.8 4.9 L33.9 5.3 L34.2 6.6 L34.5 8.3 L34.6 8.6 L35.7 8.8 L36.7 9.0 L37.8 9.3 L38.8 9.5 L39.5 8.5 L40.3 7.4 L40.9 6.7 L41.1 6.6 L42.4 7.1 L43.6 7.7 L45.2 8.6 L45.4 8.6 L45.5 8.8 L45.1 10.5 L44.6 12.2 L44.6 12.4 L45.4 13.0 L46.2 13.6 L47.0 14.2 L47.8 15.0 L48.0 15.0 L49.6 14.1 L43.8 19.9 L43.2 19.3 L42.5 18.7 L41.9 18.2 L41.2 17.7 L40.6 17.3 L39.9 16.9 L39.1 16.5 L38.3 16.1 L37.5 15.8 L36.7 15.5 L35.8 15.3 L35.1 15.1 L34.3 14.9 L33.4 14.8 L32.5 14.7 L31.8 14.7 L30.9 14.7 L30.2 14.7 L29.3 14.8 L28.5 14.9 L27.6 15.1 L26.8 15.3 L25.9 15.6 L25.2 15.8 L24.4 16.1 L23.6 16.5 L23.0 16.8 L22.2 17.3 L21.5 17.7 L20.8 18.2 L20.2 18.7 L19.5 19.3 L18.9 19.9 L18.4 20.4 L17.9 21.0 L17.3 21.7 L16.8 22.4 L16.4 23.1 L16.0 23.7 L15.6 24.5 L15.2 25.3 L14.9 26.0 L14.6 26.8 L14.4 27.5 L14.2 28.3 L14.0 29.1 L13.9 29.9 L13.8 30.8 L13.8 31.7 L13.7 32.4 L13.8 33.3 L13.8 34.0 L13.9 34.9 L14.1 35.8 L14.3 36.6 L14.5 37.3 L14.7 38.2 L15.0 38.9 L15.3 39.6 L15.7 40.3 L16.1 41.1 L16.5 41.7 L17.0 42.5 L17.5 43.2 L18.3 44.1 L19.2 45.1 L20.2 45.9 L21.2 46.7 L22.3 47.4 L23.4 48.1 L24.6 48.6 L25.8 49.0 L27.1 49.4 L28.3 49.7 L29.6 49.8 L30.9 49.9 L32.2 49.9 L33.5 49.8 L34.8 49.6 L36.1 49.3 L37.4 48.9 L38.6 48.4 L39.8 47.8 L40.9 47.1 L41.9 46.4 L43.0 45.5 L44.0 44.5 L44.9 43.6 L45.8 42.5 L46.5 41.4 L47.1 40.2 L47.6 39.1 L48.1 37.7 L48.5 36.5 L48.7 35.2 L48.9 33.8 L36.7 33.8 L36.4 33.8 L36.0 33.7 L35.8 33.6 L35.5 33.5 L35.2 33.3 L35.0 33.1 L34.8 32.8 L34.6 32.5 L34.5 32.3 L34.4 32.0 L34.4 31.6 L34.4 31.3 L34.4 31.0 L34.5 30.7 L34.6 30.4 L34.8 30.1 L35.0 29.9 L35.2 29.7 L35.5 29.5 L35.9 29.3 L36.3 29.2 L36.7 29.2 L57.5 29.2 L55.2 30.2 L55.3 31.4 L55.3 32.7 Z"/></defs><g fill="url(#gslw)"><use href="#gslb" x="2.06" y="2.34"/><use href="#gslb" x="1.38" y="1.56"/><use href="#gslb" x="0.69" y="0.78"/></g><g fill="url(#gsld)" clip-path="url(#gslc)"><use href="#gslb" x="2.06" y="2.34"/><use href="#gslb" x="1.38" y="1.56"/><use href="#gslb" x="0.69" y="0.78"/></g><use href="#gslb" fill="url(#gsls)" stroke="#fbfcfd" stroke-opacity="0" stroke-width="0.60" stroke-linejoin="round"/><path d="M47.9 15.8 L43.8 19.9 L43.8 19.9 L43.5 19.5 L43.1 19.2 L42.8 18.9 L42.4 18.6 L42.1 18.3 L41.7 18.1 L41.3 17.8 L41.0 17.5 L40.6 17.3 L40.2 17.1 L39.8 16.8 L39.4 16.6 L38.9 16.4 L38.5 16.2 L38.1 16.0 L37.7 15.9 L37.2 15.7 L36.8 15.6 L36.4 15.4 L35.9 15.3 L35.5 15.2 L35.0 15.1 L34.6 15.0 L34.1 14.9 L33.7 14.9 L33.2 14.8 L32.7 14.8 L32.3 14.7 L31.8 14.7 L31.4 14.7 L30.9 14.7 L30.4 14.7 L30.0 14.8 L29.5 14.8 L29.1 14.9 L28.6 14.9 L28.2 15.0 L27.7 15.1 L27.2 15.2 L26.8 15.3 L26.4 15.4 L25.9 15.6 L25.5 15.7 L25.0 15.9 L24.6 16.0 L24.2 16.2 L23.8 16.4 L23.4 16.6 L23.0 16.8 L22.6 17.1 L22.2 17.3 L21.8 17.5 L21.4 17.8 L21.0 18.1 L20.6 18.3 L20.3 18.6 L19.9 18.9 L19.6 19.2 L19.2 19.5 L18.9 19.9 L18.6 20.2 L18.3 20.5 L18.0 20.9 L17.7 21.2 L17.4 21.6 L17.1 22.0 L16.8 22.3 L16.6 22.7 L16.3 23.1 L16.1 23.5 L15.9 23.9 L15.7 24.3 L15.5 24.7 L15.3 25.2 L15.1 25.6 L14.9 26.0 L14.8 26.4 L14.6 26.9 L14.5 27.3 L14.3 27.8 L14.2 28.2 L14.1 28.7 L14.0 29.1 L14.0 29.6 L13.9 30.0 L13.8 30.5 L13.8 30.9 L13.8 31.4 L13.8 31.9 L13.7 32.3 L13.8 32.8 L13.8 33.2 L13.8 33.7 L13.8 34.2 L13.9 34.6 L14.0 35.1 L14.0 35.5 L14.1 36.0 L14.2 36.4 L14.3 36.9 L14.5 37.3 L14.6 37.8 L14.8 38.2 L14.9 38.6 L15.1 39.1 L15.3 39.5 L15.5 39.9 L15.7 40.3 L15.9 40.7 L16.1 41.1 L16.3 41.5 L16.6 41.9 L16.8 42.3 L17.1 42.7 L17.4 43.0 L17.7 43.4 L18.0 43.8 L18.3 44.1 L18.6 44.4 L18.9 44.8 L19.2 45.1 L19.6 45.4 L19.9 45.7 L20.3 46.0 L20.6 46.3 L21.0 46.6 L21.4 46.8 L21.8 47.1 L22.2 47.3 L22.6 47.6 L23.0 47.8 L23.4 48.0 L23.8 48.2 L24.2 48.4 L24.6 48.6 L25.0 48.8 L25.5 48.9 L25.9 49.1 L26.4 49.2 L26.8 49.3 L27.2 49.4 L27.7 49.5 L28.2 49.6 L28.6 49.7 L29.1 49.8 L29.5 49.8 L30.0 49.9 L30.4 49.9 L30.9 49.9 L31.4 49.9 L31.8 49.9 L32.3 49.9 L32.7 49.9 L33.2 49.8 L33.7 49.8 L34.1 49.7 L34.6 49.6 L35.0 49.5 L35.5 49.4 L35.9 49.3 L36.4 49.2 L36.8 49.1 L37.2 48.9 L37.7 48.8 L38.1 48.6 L38.5 48.4 L38.9 48.2 L39.4 48.0 L39.8 47.8 L40.2 47.6 L40.6 47.3 L41.0 47.1 L41.3 46.8 L41.7 46.6 L42.1 46.3 L42.4 46.0 L42.8 45.7 L43.1 45.4 L43.5 45.1 L43.8 44.8 L44.1 44.4 L44.4 44.1 L44.8 43.8 L45.0 43.4 L45.3 43.0 L45.6 42.7 L45.9 42.3 L46.1 41.9 L46.4 41.5 L46.6 41.1 L46.8 40.7 L47.1 40.3 L47.3 39.9 L47.5 39.5 L47.6 39.1 L47.8 38.6 L48.0 38.2 L48.1 37.8 L48.2 37.3 L48.4 36.9 L48.5 36.4 L48.6 36.0 L48.7 35.5 L48.8 35.1 L48.8 34.6 L48.9 34.2 L48.9 33.8 L36.7 33.8 L36.4 33.8 L36.1 33.8 L35.8 33.7 L35.6 33.5 L35.3 33.4 L35.1 33.1 L34.9 32.9 L34.7 32.7 L34.6 32.4 L34.5 32.1 L34.4 31.8 L34.4 31.5 L34.4 31.2 L34.5 30.9 L34.6 30.6 L34.7 30.3 L34.9 30.1 L35.1 29.8 L35.3 29.6 L35.6 29.5 L35.8 29.3 L36.1 29.2 L36.4 29.2 L36.7 29.2 L55.0 29.2" fill="none" stroke="url(#gsla)" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round"/></svg><b><i class="wm">Gear<span>Script</span></i> <em>Studio</em></b></a>
   <div class="menuwrap"><button class="btn filebtn" id="fileBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="fileMenu" title="New, open, recent and save (Ctrl Alt N, Ctrl O, Ctrl S)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>File<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button><div class="menu ctx" id="fileMenu" role="menu" aria-label="File" hidden></div></div>
   <button class="btn" id="examplesBtn" type="button" title="Browse the examples"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg>Examples</button>
   <span class="tsep" aria-hidden="true"></span>
@@ -763,8 +763,8 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
   <span class="tsep" aria-hidden="true"></span>
   <div class="ctl viewctl">
     <div class="seg" role="group" aria-label="Editing view: three files or one file">
-      <button type="button" id="viewFiles" aria-pressed="true" title="Three files: .scene, .style and .motion in three tabs. Saves as a .zip">Three files</button>
-      <button type="button" id="viewSingle" aria-pressed="false" title="One file: a single .gscript file with @scene, @style and @motion sections. Easiest to review or hand to an AI">One file</button>
+      <button type="button" id="viewSingle" aria-pressed="true" title="One file: a single .gscript file with @scene, @style and @motion sections. Easiest to review or hand to an AI">One file</button>
+      <button type="button" id="viewFiles" aria-pressed="false" title="Three files: .scene, .style and .motion in three tabs. Saves as a .zip">Three files</button>
     </div>
   </div>
   <span class="spacer"></span>
@@ -858,7 +858,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
       <a role="menuitem" href="privacy.html" target="_blank" rel="noopener"><span>Privacy policy</span></a>
       <a role="menuitem" href="terms.html" target="_blank" rel="noopener"><span>Terms of use</span></a>
       <button role="menuitem" type="button" id="cookieBtn" hidden><span>Cookie preferences</span></button>
-      <div class="menu-foot" id="copyLine"></div>
+      <div class="menu-foot"><span class="ver" id="menuVersion"></span><span id="copyLine"></span></div>
     </div>
   </div>
   <button class="btn icon" id="helpBtn" type="button" aria-haspopup="dialog" aria-label="Help and tours" title="Help: tours and the language guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r="0.6"/></svg></button>
@@ -1011,7 +1011,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" hidden>
   <header><h2 id="drawerTitle">Settings</h2><button class="btn" id="drawerClose" type="button">Done</button></header>
   <div class="body" id="settingsBody"></div>
-  <footer><span class="note">Saved in this browser</span><button class="btn" id="settingsReset" type="button">Reset to defaults</button></footer>
+  <footer><span class="note">Saved in this browser<span class="ver" id="setVersion"></span></span><button class="btn" id="settingsReset" type="button">Reset to defaults</button></footer>
 </aside>
 
 <script data-goatcounter="https://gearscript-studio.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -6527,7 +6527,7 @@ const SETTINGS_SCHEMA = [
     { key: 'ui', label: 'Interface size', type: 'select', def: '1', options: [['0.9', 'Compact'], ['1', 'Normal'], ['1.12', 'Large']] },
   ] },
   { section: 'Editor', items: [
-    { key: 'view', label: 'Editing view', hint: 'One file is easiest to hand to an AI assistant: @scene, @style and @motion start each section.', type: 'select', def: 'files', options: [['files', 'Three files: .scene, .style, .motion tabs (saves a .zip)'], ['single', 'Combined: one .gscript file with sections']] },
+    { key: 'view', label: 'Editing view', hint: 'One file is easiest to hand to an AI assistant: @scene, @style and @motion start each section.', type: 'select', def: 'single', options: [['single', 'One file: a .gscript file with @scene, @style and @motion sections'], ['files', 'Three files: .scene, .style, .motion tabs (saves a .zip)']] },
     { key: 'font', label: 'Font', type: 'select', def: 'jetbrains', options: Object.entries(FONTS).map(([k, v]) => [k, v[0]]) },
     { key: 'fontSize', label: 'Font size', type: 'range', def: 12.5, min: 10, max: 22, step: 0.5, unit: 'px' },
     { key: 'lineHeight', label: 'Line spacing', type: 'range', def: 1.6, min: 1.2, max: 2.2, step: 0.05, unit: '×' },
@@ -8281,7 +8281,7 @@ function filmStart() {
   if (!film || fp.on) return true; filmAutoFailed = null;
   const r = filmPrepare();
   if (r.bad) { const c = film.chapters[r.bad.i]; toast(`${c.name} has an error, so the film cannot play yet: ${r.bad.d ? r.bad.d.message : r.bad.msg}`, 5200); selectBox(r.bad.i); return false; }
-  fp.on = true; fp.models = r.models; fp.ft = r.ft; fp.idx = -1; filmDurs = r.models.map(m => m.duration);
+  fp.on = true; fp.models = r.models; fp.ft = r.ft; fp.idx = -1; filmDurs = r.models.map(m => m.duration); setStale(false);   /* every chapter compiled */
   const T0 = box >= 0 && fp.ft.list[box] ? fp.ft.list[box].s + Math.min(t, fp.ft.list[box].d) : 0;
   $('filmOn').setAttribute('aria-pressed', 'true'); $('filmOff').setAttribute('aria-pressed', 'false');
   filmSeek(T0, true); $('scrub').max = fp.ft.total; renderChapters(); if (tracksOn()) renderTracks();
@@ -9208,10 +9208,12 @@ function textFollow(c) {
   }
 }
 
+/* the note over the view when it is not showing the code as written. Every path of build() sets it, so it never sits beside a green tick */
+function setStale(on, text) { $('stale').hidden = !on; $('stale').textContent = text || 'Showing the last build that compiled'; }
 function build() {
   let m;
   try { m = compileBox(box); }
-  catch (e) { console.error(e); lastDiags = [new GearScript.Diag(null, 'E0999', 'The compiler hit an internal error: ' + e.message, 'This is a bug in GearScript. Undo the last edit to continue.')]; setSync('err'); renderProblems(); renderEditor(); $('stale').hidden = false; return; }
+  catch (e) { console.error(e); lastDiags = [new GearScript.Diag(null, 'E0999', 'The compiler hit an internal error: ' + e.message, 'This is a bug in GearScript. Undo the last edit to continue.')]; setSync('err'); renderProblems(); renderEditor(); setStale(true); return; }
   const FO = { project: -1, scene: 0, style: 1, motion: 2, film: 3 };
   const own = film ? m.diags.map(d => mapFilmDiag(d, m)) : m.diags, issues = film ? (film.issues || []) : isSingle() && proj ? proj.issues : [];
   lastDiags = [...issues, ...own].slice().sort((a, b) => (a.sev === b.sev ? 0 : a.sev === 'error' ? -1 : 1) || (isSingle() ? shownLine(a) - shownLine(b) : ((FO[a.file] ?? 3) - (FO[b.file] ?? 3)) || a.line - b.line));
@@ -9219,12 +9221,14 @@ function build() {
   const hasErr = own.some(d => d.sev === 'error') || (!film && issues.some(d => d.sev === 'error'));
   if (film) { checkFilm(); renderChapters(); }
   if (fp.on) {   /* playing the film: the edit reaches the film; the chapter at the playhead is shown again if it changed */
-    setSync(hasErr ? 'err' : 'ok'); if (hasErr) return;
-    const r = filmPrepare(); if (r.bad) return; const T = fp.T; fp.models = r.models; fp.ft = r.ft; filmSeek(T, true); return;
+    setSync(hasErr ? 'err' : 'ok'); if (hasErr) { setStale(true); return; }
+    const r = filmPrepare(); setStale(!!r.bad);
+    if (r.bad) { setSync('err', `${film.chapters[r.bad.i].name} has an error: the film shows the last version that compiled`); return; }   /* another chapter: not a green tick */
+    const T = fp.T; fp.models = r.models; fp.ft = r.ft; filmSeek(T, true); return;
   }
   setSync(hasErr ? 'err' : 'ok');
-  if (hasErr && model) { $('stale').hidden = false; $('stale').textContent = 'Showing the last build that compiled'; return; }
-  $('stale').hidden = !hasErr; $('stale').textContent = 'Showing the parts that compiled';
+  if (hasErr && model) { setStale(true); return; }
+  setStale(hasErr, 'Showing the parts that compiled');
   install(m);
   /* overlap check: a moment after the build, so typing stays smooth; its warnings join the Problems list */
   clearTimeout(build.ov); if (!hasErr && !PLAYER) build.ov = setTimeout(() => {
@@ -10034,14 +10038,14 @@ async function openFile(f) {
       }
       if (typeof fl.scene !== 'string' && ms != null) return GearScript.isFilmText(ms) ? openedProject({}, stemOf(f.name), S.view, models, ms) : openedProject(GearScript.splitProject(ms).files, stemOf(f.name), 'single', models);
       if (typeof fl.scene !== 'string') { bad('That zip has no .scene or .gscript file'); return false; }
-      return openedProject(fl, stemOf(f.name), 'files', models);
+      return openedProject(fl, stemOf(f.name), S.view, models);   /* a .zip of three files opens in the chosen view (One file unless Three files was picked); Save still offers the .zip */
     }
     const text = new TextDecoder().decode(buf);
     if (GearScript.isFilmText(text) && !/^\s*\{/.test(text)) return openedProject({}, stemOf(f.name), S.view, {}, text);
     if (/^[ \t]*@(scene|style|motion)\b/m.test(text) && !/^\s*\{/.test(text)) return openedProject(GearScript.splitProject(text).files, stemOf(f.name), 'single');
     const j = JSON.parse(text); if (typeof j.film === 'string') return openedProject({}, stemOf(f.name), S.view, {}, j.film);
     const fl = j.files; if (!fl || typeof fl.scene !== 'string') throw new Error();
-    return openedProject(fl, stemOf(f.name), 'files');
+    return openedProject(fl, stemOf(f.name), S.view);
   } catch (e) { bad(); return false; }
 }
 /* a minimal zip: stored (uncompressed) entries, which every unzip tool reads */
@@ -10846,6 +10850,13 @@ const realUrl = (u) => /^https:\/\//.test(u || '') && !/yourname|your-org|exampl
 SITE_GH();
 $('coffeeLink').href = SITE.coffeeUrl; $('coffeeLink').hidden = !realUrl(SITE.coffeeUrl); syncDownloadItem();
 $('copyLine').textContent = `© ${SITE.year} ${SITE.owner}. Open source under the Apache License 2.0.`;
+/* the version: in the More menu and at the foot of Settings (not in the header), always read from the compiler's own number */
+{
+  const ver = 'GearScript Studio ' + GearScript.version.replace(/-/, ' ');
+  $('menuVersion').textContent = ver;
+  const sv = $('setVersion'); sv.textContent = ver;
+  if (realUrl(SITE.repoUrl)) { const a = document.createElement('a'); a.href = SITE.repoUrl.replace(/\/$/, '') + '/blob/HEAD/CHANGELOG.md'; a.target = '_blank'; a.rel = 'noopener'; a.textContent = "What's new"; sv.append(' · ', a); }
+}
 let toastT = null;
 function toast(msg, ms = 2600) { let el = document.querySelector('.toast'); if (!el) { el = document.createElement('div'); el.className = 'toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); } el.textContent = msg; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, ms); }
 /* a toast with one action button (Undo, say); it stays a little longer */

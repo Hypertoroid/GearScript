@@ -8,9 +8,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@600&text=GearScript&display=swap">
 <style>
-:root { --bg: #f4f6f8; --panel: #ffffff; --fg: #1a222b; --muted: #5b6774; --line: #d8dee4; --accent: #1c6b82; --warn-bg: #fff4dc; --warn: #8a5a00; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1419; --panel: #151b21; --fg: #dde4ea; --muted: #8995a1; --line: #29323b; --accent: #5db2c8; --warn-bg: #2b2210; --warn: #e2b04a; color-scheme: dark; } }
-:root[data-theme="dark"] { --bg: #0f1419; --panel: #151b21; --fg: #dde4ea; --muted: #8995a1; --line: #29323b; --accent: #5db2c8; --warn-bg: #2b2210; --warn: #e2b04a; color-scheme: dark; }
+:root { --bg: #f4f6f8; --panel: #ffffff; --fg: #1a222b; --muted: #5b6774; --line: #d8dee4; --accent: #1c6b82; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0f1419; --panel: #151b21; --fg: #dde4ea; --muted: #8995a1; --line: #29323b; --accent: #5db2c8; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0f1419; --panel: #151b21; --fg: #dde4ea; --muted: #8995a1; --line: #29323b; --accent: #5db2c8; color-scheme: dark; }
 body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.65 "IBM Plex Sans", system-ui, sans-serif; }
 header { display: flex; align-items: center; gap: 10px; padding: 12px max(16px, env(safe-area-inset-left)); background: var(--panel); border-bottom: 1px solid var(--line); }
 header svg { width: 26px; height: 26px; } header b { font-weight: 600; font-family: "Inter", "IBM Plex Sans", system-ui, sans-serif; letter-spacing: -0.012em; } header b span { color: #e0a823; } header b em { font-style: normal; color: var(--accent); } header a { margin-left: auto; color: var(--accent); }
@@ -19,7 +19,6 @@ h1 { font-size: 28px; line-height: 1.2; margin: 0 0 4px; } h2 { font-size: 19px;
 .meta { color: var(--muted); margin: 0 0 18px; }
 a { color: var(--accent); }
 table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 8px 0; } th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; } th { font-weight: 600; }
-.draft { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 12px 14px; margin: 0 0 22px; font-size: 14px; }
 footer { border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; padding: 18px 16px 28px; text-align: center; }
 footer a { color: var(--muted); }
 </style>
@@ -32,83 +31,88 @@ footer a { color: var(--muted); }
 <clipPath id="gslc"><circle cx="31.4" cy="32.3" r="23.6"/></clipPath>
 <path id="gslb" d="M55.3 32.7 L55.2 34.4 L57.6 35.5 L58.3 35.9 L58.6 36.1 L58.5 37.1 L58.3 38.0 L57.9 39.4 L57.5 40.8 L55.8 40.8 L54.0 40.7 L53.8 40.8 L53.1 42.4 L52.6 43.4 L52.0 44.5 L52.0 44.6 L52.8 45.6 L53.7 46.6 L54.2 47.3 L54.3 47.5 L53.6 48.5 L52.9 49.4 L52.1 50.4 L51.3 51.3 L51.1 51.3 L49.6 50.5 L48.0 49.7 L47.8 49.7 L47.1 50.4 L46.3 51.0 L45.4 51.7 L44.6 52.3 L44.6 52.5 L45.1 54.2 L45.5 55.9 L45.4 56.0 L44.5 56.5 L42.8 57.3 L41.1 58.1 L40.9 57.9 L40.3 57.2 L39.5 56.2 L38.8 55.1 L37.8 55.4 L36.7 55.7 L35.7 55.9 L34.6 56.0 L34.5 56.4 L34.1 58.5 L33.9 59.4 L33.8 59.7 L32.7 59.8 L31.5 59.8 L30.4 59.8 L29.2 59.8 L28.9 59.7 L28.8 59.4 L28.5 58.1 L28.2 56.4 L28.1 56.0 L27.1 55.9 L26.0 55.7 L24.9 55.4 L24.0 55.1 L23.2 56.2 L22.4 57.2 L21.9 57.9 L21.6 58.1 L20.6 57.6 L19.4 57.1 L18.4 56.6 L17.4 56.0 L17.3 55.9 L17.7 54.2 L18.1 52.5 L18.1 52.3 L17.3 51.7 L16.4 51.0 L15.6 50.4 L14.9 49.7 L14.7 49.7 L13.2 50.5 L11.6 51.3 L11.4 51.3 L10.6 50.4 L10.0 49.6 L9.2 48.6 L8.4 47.5 L8.5 47.3 L9.1 46.6 L9.9 45.6 L10.8 44.6 L10.8 44.5 L10.3 43.6 L9.8 42.7 L9.3 41.7 L9.0 40.8 L8.7 40.7 L6.9 40.8 L5.2 40.8 L4.9 39.7 L4.5 38.5 L4.3 37.2 L4.1 36.1 L4.4 35.9 L5.2 35.5 L7.5 34.4 L7.4 33.3 L7.4 32.3 L7.4 31.3 L7.5 30.2 L5.2 29.1 L4.4 28.8 L4.1 28.6 L4.3 27.4 L4.5 26.2 L4.8 25.1 L5.2 23.8 L6.9 23.8 L8.7 23.9 L9.0 23.9 L9.3 22.9 L9.8 21.9 L10.3 21.0 L10.8 20.1 L10.8 20.0 L9.9 19.0 L9.1 18.0 L8.5 17.3 L8.4 17.1 L9.1 16.1 L9.8 15.2 L10.5 14.3 L11.4 13.4 L11.6 13.4 L13.2 14.1 L14.7 15.0 L14.9 15.0 L15.6 14.3 L16.5 13.6 L17.3 13.0 L18.1 12.4 L18.1 12.2 L17.7 10.5 L17.3 8.8 L17.4 8.6 L18.2 8.1 L19.9 7.3 L21.6 6.6 L21.9 6.7 L22.4 7.4 L23.2 8.5 L24.0 9.5 L24.9 9.3 L26.0 9.0 L27.1 8.8 L28.1 8.6 L28.2 8.3 L28.6 6.1 L28.8 5.3 L28.9 4.9 L30.1 4.8 L31.2 4.8 L32.4 4.8 L33.5 4.9 L33.8 4.9 L33.9 5.3 L34.2 6.6 L34.5 8.3 L34.6 8.6 L35.7 8.8 L36.7 9.0 L37.8 9.3 L38.8 9.5 L39.5 8.5 L40.3 7.4 L40.9 6.7 L41.1 6.6 L42.4 7.1 L43.6 7.7 L45.2 8.6 L45.4 8.6 L45.5 8.8 L45.1 10.5 L44.6 12.2 L44.6 12.4 L45.4 13.0 L46.2 13.6 L47.0 14.2 L47.8 15.0 L48.0 15.0 L49.6 14.1 L43.8 19.9 L43.2 19.3 L42.5 18.7 L41.9 18.2 L41.2 17.7 L40.6 17.3 L39.9 16.9 L39.1 16.5 L38.3 16.1 L37.5 15.8 L36.7 15.5 L35.8 15.3 L35.1 15.1 L34.3 14.9 L33.4 14.8 L32.5 14.7 L31.8 14.7 L30.9 14.7 L30.2 14.7 L29.3 14.8 L28.5 14.9 L27.6 15.1 L26.8 15.3 L25.9 15.6 L25.2 15.8 L24.4 16.1 L23.6 16.5 L23.0 16.8 L22.2 17.3 L21.5 17.7 L20.8 18.2 L20.2 18.7 L19.5 19.3 L18.9 19.9 L18.4 20.4 L17.9 21.0 L17.3 21.7 L16.8 22.4 L16.4 23.1 L16.0 23.7 L15.6 24.5 L15.2 25.3 L14.9 26.0 L14.6 26.8 L14.4 27.5 L14.2 28.3 L14.0 29.1 L13.9 29.9 L13.8 30.8 L13.8 31.7 L13.7 32.4 L13.8 33.3 L13.8 34.0 L13.9 34.9 L14.1 35.8 L14.3 36.6 L14.5 37.3 L14.7 38.2 L15.0 38.9 L15.3 39.6 L15.7 40.3 L16.1 41.1 L16.5 41.7 L17.0 42.5 L17.5 43.2 L18.3 44.1 L19.2 45.1 L20.2 45.9 L21.2 46.7 L22.3 47.4 L23.4 48.1 L24.6 48.6 L25.8 49.0 L27.1 49.4 L28.3 49.7 L29.6 49.8 L30.9 49.9 L32.2 49.9 L33.5 49.8 L34.8 49.6 L36.1 49.3 L37.4 48.9 L38.6 48.4 L39.8 47.8 L40.9 47.1 L41.9 46.4 L43.0 45.5 L44.0 44.5 L44.9 43.6 L45.8 42.5 L46.5 41.4 L47.1 40.2 L47.6 39.1 L48.1 37.7 L48.5 36.5 L48.7 35.2 L48.9 33.8 L36.7 33.8 L36.4 33.8 L36.0 33.7 L35.8 33.6 L35.5 33.5 L35.2 33.3 L35.0 33.1 L34.8 32.8 L34.6 32.5 L34.5 32.3 L34.4 32.0 L34.4 31.6 L34.4 31.3 L34.4 31.0 L34.5 30.7 L34.6 30.4 L34.8 30.1 L35.0 29.9 L35.2 29.7 L35.5 29.5 L35.9 29.3 L36.3 29.2 L36.7 29.2 L57.5 29.2 L55.2 30.2 L55.3 31.4 L55.3 32.7 Z"/></defs><g fill="url(#gslw)"><use href="#gslb" x="2.06" y="2.34"/><use href="#gslb" x="1.38" y="1.56"/><use href="#gslb" x="0.69" y="0.78"/></g><g fill="url(#gsld)" clip-path="url(#gslc)"><use href="#gslb" x="2.06" y="2.34"/><use href="#gslb" x="1.38" y="1.56"/><use href="#gslb" x="0.69" y="0.78"/></g><use href="#gslb" fill="url(#gsls)" stroke="#fbfcfd" stroke-opacity="0" stroke-width="0.60" stroke-linejoin="round"/><path d="M47.9 15.8 L43.8 19.9 L43.8 19.9 L43.5 19.5 L43.1 19.2 L42.8 18.9 L42.4 18.6 L42.1 18.3 L41.7 18.1 L41.3 17.8 L41.0 17.5 L40.6 17.3 L40.2 17.1 L39.8 16.8 L39.4 16.6 L38.9 16.4 L38.5 16.2 L38.1 16.0 L37.7 15.9 L37.2 15.7 L36.8 15.6 L36.4 15.4 L35.9 15.3 L35.5 15.2 L35.0 15.1 L34.6 15.0 L34.1 14.9 L33.7 14.9 L33.2 14.8 L32.7 14.8 L32.3 14.7 L31.8 14.7 L31.4 14.7 L30.9 14.7 L30.4 14.7 L30.0 14.8 L29.5 14.8 L29.1 14.9 L28.6 14.9 L28.2 15.0 L27.7 15.1 L27.2 15.2 L26.8 15.3 L26.4 15.4 L25.9 15.6 L25.5 15.7 L25.0 15.9 L24.6 16.0 L24.2 16.2 L23.8 16.4 L23.4 16.6 L23.0 16.8 L22.6 17.1 L22.2 17.3 L21.8 17.5 L21.4 17.8 L21.0 18.1 L20.6 18.3 L20.3 18.6 L19.9 18.9 L19.6 19.2 L19.2 19.5 L18.9 19.9 L18.6 20.2 L18.3 20.5 L18.0 20.9 L17.7 21.2 L17.4 21.6 L17.1 22.0 L16.8 22.3 L16.6 22.7 L16.3 23.1 L16.1 23.5 L15.9 23.9 L15.7 24.3 L15.5 24.7 L15.3 25.2 L15.1 25.6 L14.9 26.0 L14.8 26.4 L14.6 26.9 L14.5 27.3 L14.3 27.8 L14.2 28.2 L14.1 28.7 L14.0 29.1 L14.0 29.6 L13.9 30.0 L13.8 30.5 L13.8 30.9 L13.8 31.4 L13.8 31.9 L13.7 32.3 L13.8 32.8 L13.8 33.2 L13.8 33.7 L13.8 34.2 L13.9 34.6 L14.0 35.1 L14.0 35.5 L14.1 36.0 L14.2 36.4 L14.3 36.9 L14.5 37.3 L14.6 37.8 L14.8 38.2 L14.9 38.6 L15.1 39.1 L15.3 39.5 L15.5 39.9 L15.7 40.3 L15.9 40.7 L16.1 41.1 L16.3 41.5 L16.6 41.9 L16.8 42.3 L17.1 42.7 L17.4 43.0 L17.7 43.4 L18.0 43.8 L18.3 44.1 L18.6 44.4 L18.9 44.8 L19.2 45.1 L19.6 45.4 L19.9 45.7 L20.3 46.0 L20.6 46.3 L21.0 46.6 L21.4 46.8 L21.8 47.1 L22.2 47.3 L22.6 47.6 L23.0 47.8 L23.4 48.0 L23.8 48.2 L24.2 48.4 L24.6 48.6 L25.0 48.8 L25.5 48.9 L25.9 49.1 L26.4 49.2 L26.8 49.3 L27.2 49.4 L27.7 49.5 L28.2 49.6 L28.6 49.7 L29.1 49.8 L29.5 49.8 L30.0 49.9 L30.4 49.9 L30.9 49.9 L31.4 49.9 L31.8 49.9 L32.3 49.9 L32.7 49.9 L33.2 49.8 L33.7 49.8 L34.1 49.7 L34.6 49.6 L35.0 49.5 L35.5 49.4 L35.9 49.3 L36.4 49.2 L36.8 49.1 L37.2 48.9 L37.7 48.8 L38.1 48.6 L38.5 48.4 L38.9 48.2 L39.4 48.0 L39.8 47.8 L40.2 47.6 L40.6 47.3 L41.0 47.1 L41.3 46.8 L41.7 46.6 L42.1 46.3 L42.4 46.0 L42.8 45.7 L43.1 45.4 L43.5 45.1 L43.8 44.8 L44.1 44.4 L44.4 44.1 L44.8 43.8 L45.0 43.4 L45.3 43.0 L45.6 42.7 L45.9 42.3 L46.1 41.9 L46.4 41.5 L46.6 41.1 L46.8 40.7 L47.1 40.3 L47.3 39.9 L47.5 39.5 L47.6 39.1 L47.8 38.6 L48.0 38.2 L48.1 37.8 L48.2 37.3 L48.4 36.9 L48.5 36.4 L48.6 36.0 L48.7 35.5 L48.8 35.1 L48.8 34.6 L48.9 34.2 L48.9 33.8 L36.7 33.8 L36.4 33.8 L36.1 33.8 L35.8 33.7 L35.6 33.5 L35.3 33.4 L35.1 33.1 L34.9 32.9 L34.7 32.7 L34.6 32.4 L34.5 32.1 L34.4 31.8 L34.4 31.5 L34.4 31.2 L34.5 30.9 L34.6 30.6 L34.7 30.3 L34.9 30.1 L35.1 29.8 L35.3 29.6 L35.6 29.5 L35.8 29.3 L36.1 29.2 L36.4 29.2 L36.7 29.2 L55.0 29.2" fill="none" stroke="url(#gsla)" stroke-width="1.65" stroke-linejoin="round" stroke-linecap="round"/></svg><b>Gear<span>Script</span></b><a href="studio.html">Open the studio</a></header>
 <main>
-<div class="draft" id="draft-note"><b>Template, not legal advice.</b> This text was drafted as a starting point. Fill in the placeholders, adapt it to how you actually run the service and where your users are, and have it reviewed by a lawyer before you publish. Then delete this box.</div>
 <h1>Privacy policy</h1>
-<p class="meta">Last updated: 1 November 2026</p>
-<p>This policy explains what this GearScript site (“the studio”, “we”) collects, why, how long we keep it, and the choices you have. The site is run by <b data-site="owner"></b>. Questions or requests: <a data-site="contactEmail" href="#"></a>.</p>
+<p class="meta">Last updated: 10 November 2026</p>
+<p>This policy covers <a href="https://gearscript.org/">gearscript.org</a>, the official GearScript website: the home page, the studio, the documentation and these pages. It explains what is collected when you use the site, why, for how long, and the choices you have. The site is run by <b data-site="owner"></b> (“we”). Questions or requests: <a data-site="contactEmail" href="#"></a>.</p>
 
 <h2>The short version</h2>
 <ul>
   <li>There are no accounts. You never sign in, and we never ask for your name or email.</li>
-  <li>Your projects stay in your browser. We do not upload the code you write or the files you open.</li>
-  <li>Analytics are off unless you allow them. If you do, we count which features are used, under a random id. No ads, no selling, no third-party trackers.</li>
-  <li>If this site offers the AI buttons (Generate, Fix with AI) and you use them, your request and your project's code are sent to Anthropic to write the reply. We do not keep the request or the reply.</li>
+  <li>The studio runs on your device. The code you write and the files you open are not uploaded anywhere.</li>
+  <li>We count visits with <a href="https://www.goatcounter.com/">GoatCounter</a>, a privacy-friendly analytics service. It sets no cookies, does not store your IP address, and shows us totals, not people.</li>
+  <li>We set no cookies, show no ads and sell nothing. That is why there is no cookie banner.</li>
   <li>GearScript is open source, so you can check all of this in the code.</li>
 </ul>
 
-<h2>What we collect</h2>
-<h3>If you allow analytics</h3>
-<p>A random visitor id (in the <code>ms_vid</code> cookie) and a record of events such as opening the studio, choosing an example, copying the AI prompt, finishing the tour and exporting, with the time, the page and small details (for example which example, or the format and size of an export). These records are not linked to your name, email address or IP address.</p>
-<h3>If you use the AI features</h3>
-<p>Where this site offers them, when you press <b>Generate</b> or <b>Fix with AI</b>, the studio sends what you typed, the project's code and (if you tick it) a description of the scene at one moment to our server, which passes it to Anthropic's Claude API and returns the reply. We do not store the request or the reply. Do not put personal information in your request or your code. To limit how many AI requests one visitor can make in a day, the server keeps a count under a one-way hash of your IP address, mixed with a secret and with the date, so it changes every day; these counts are deleted after two days. <b>Copy prompt</b> sends nothing: it only copies text for you to paste wherever you choose.</p>
-<h3>Technical data</h3>
-<p>To protect the site from abuse, the server counts requests per visitor using the hash described above or the analytics id; your IP address itself is not written to our database. The company that hosts the site may keep standard request logs (IP address, browser, pages requested) for security and operations; see <i>Who we share data with</i>.</p>
-<h3>Stored only in your browser</h3>
-<p>Your projects, 3D models you add, editor settings, the tour and your cookie choice are kept in your browser's storage. They never leave your device unless you save a project file yourself.</p>
-<h3>Loaded from other sites</h3>
-<p>The studio's 3D and video libraries come from this site. If they cannot be loaded (for example, a copy opened without its <code>vendor</code> folder), it fetches them from cdnjs (Cloudflare) or jsDelivr instead. Its fonts come from Google Fonts. If you tick <b>Speak the lines into the video with a neural voice</b> when exporting, the speech engine loads from jsDelivr and the voice files from Hugging Face. Those services receive your IP address and browser details when they send the files, under their own privacy policies.</p>
+<h2>What is collected</h2>
+<h3>Visit counts (GoatCounter)</h3>
+<p>When you open the home page or the studio, your browser sends a small request to GoatCounter. From it, GoatCounter records:</p>
+<ul>
+  <li>the page's address and title, and the page that linked to it (the referrer);</li>
+  <li>your browser and operating system, worked out from the browser's User-Agent header;</li>
+  <li>your screen width and browser language;</li>
+  <li>your country or region, worked out from your IP address.</li>
+</ul>
+<p>To tell one visitor from many visits, GoatCounter matches your IP address and browser to a random id that is kept only in memory, for at most 8 hours. It does not store your IP address, your full User-Agent or any id, and it puts nothing in your browser: no cookies and no local storage. What we see is totals, such as how many visits came from a country or used a browser. We do not use this to identify anyone, and we do not combine it with other data.</p>
+<p>The documentation and these legal pages are not counted. The counter runs only on gearscript.org: the offline copy of the studio, 3D players you export and copies of GearScript on other sites send nothing to GoatCounter.</p>
+
+<h3>Hosting</h3>
+<p>The site is static files served by GitHub Pages, a service of GitHub, Inc. As with any website, GitHub's servers receive your IP address and the details of each request (browser, page, time) and may log them to run and protect the service. We have no access to those logs. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub General Privacy Statement</a>.</p>
+
+<h3>Files loaded from other services</h3>
+<p>The pages load their fonts from Google Fonts. The studio's 3D and video libraries come from this site. If they cannot be loaded (for example, a copy opened without its <code>vendor</code> folder), it fetches them from cdnjs (Cloudflare) or jsDelivr instead. If you tick <b>Speak the lines into the video with a neural voice</b> when exporting, the speech engine loads from jsDelivr and the voice files from Hugging Face. These services receive your IP address and browser details when they send the files, under their own privacy policies.</p>
+
+<h3>Kept only in your browser</h3>
+<p>Your projects, the 3D models you add, your editor settings and your tour progress are kept in your browser's storage. The site's own files are also cached so that the studio works offline. None of this leaves your device unless you save or export a file yourself. A project you share as a link is packed into the part of the address after <code>#</code>, which browsers do not send to any server, but anyone you give the link to can open it.</p>
+
+<h3>AI</h3>
+<p>gearscript.org does not offer the Generate and Fix with AI buttons, so nothing you write is sent to an AI service from this site. <b>Prompt AI</b> and <b>Copy</b> only copy text to your clipboard. When you paste that text into an AI service, that service's own terms and privacy policy apply.</p>
 
 <h2>Why we use it</h2>
 <table>
   <tr><th>Purpose</th><th>Data</th><th>Basis</th></tr>
-  <tr><td>Understand which features are used, to decide what to build next</td><td>Analytics events and visitor id</td><td>Your consent, which you can withdraw at any time</td></tr>
-  <tr><td>Keep the site secure</td><td>Request counts, server logs</td><td>Our legitimate interest in preventing abuse</td></tr>
-  <tr><td>Write an animation or fix code when you ask the AI to</td><td>Your request and project code (sent on, not stored); a daily request count under a hashed id</td><td>Providing the feature you asked for; our legitimate interest in preventing abuse (the count)</td></tr>
+  <tr><td>See how many people visit and which browsers and screen sizes to support</td><td>GoatCounter totals</td><td>Our legitimate interest in improving the site. The counts do not identify you.</td></tr>
+  <tr><td>Deliver the site and keep it secure</td><td>Request details handled by GitHub Pages</td><td>Our legitimate interest in running a working, secure website</td></tr>
   <tr><td>Answer you</td><td>Whatever you write to us</td><td>Our legitimate interest in replying</td></tr>
 </table>
 
 <h2>Cookies and local storage</h2>
-<table>
-  <tr><th>Name</th><th>Kind</th><th>What it does</th><th>Kept for</th></tr>
-  <tr><td><code>ms_consent</code></td><td>Necessary</td><td>Remembers your analytics choice</td><td>180 days</td></tr>
-  <tr><td><code>ms_vid</code></td><td>Analytics (only with consent)</td><td>A random visitor id for usage counts</td><td>180 days, or until you withdraw consent</td></tr>
-  <tr><td>Local storage</td><td>Necessary</td><td>Your projects, models, settings, tour and cookie choices</td><td>Until you clear your browser data</td></tr>
-</table>
-<p>Change your choice at any time from <b>More › Cookie preferences</b> in the studio. Withdrawing consent deletes the <code>ms_vid</code> cookie and stops new events. A copy of the studio opened on its own, without our server, sets no cookies and sends nothing.</p>
+<p>gearscript.org sets no cookies, and GoatCounter sets none either. The site uses your browser's local storage and cache only to do what you ask: keep your projects and settings, and make the studio work offline. You can clear them at any time in your browser's settings, which also deletes any projects you have not saved as files.</p>
+<p>If you would rather not be counted at all, block <code>gc.zgo.at</code> with any content blocker. The site works the same without it.</p>
 
-<h2>How long we keep it</h2>
+<h2>How long it is kept</h2>
 <ul>
-  <li>Analytics events: 13 months, then deleted automatically.</li>
-  <li>AI requests and replies: not stored. Daily AI request counts: two days.</li>
+  <li>GoatCounter: the random id is kept in memory for up to 8 hours and is never stored. Totals, which identify no one, are kept while we use the service.</li>
+  <li>GitHub Pages request logs: as set out in GitHub's privacy statement.</li>
   <li>Emails you send us: as long as needed to deal with your request.</li>
 </ul>
 
-<h2>Who we share data with</h2>
-<p>We do not sell or rent personal data, and we do not use advertising or third-party analytics. Our hosting provider [name, country] processes data for us under contract. When you use the AI features, Anthropic receives your request and code to produce the reply, under its commercial terms and privacy policy. We may disclose data if the law requires it. Buy Me a Coffee is a separate service with its own privacy policy; we do not share your studio data with it.</p>
+<h2>Who receives data</h2>
+<p>We do not sell or rent personal data, and we do not use advertising. These services handle data to run the site: GitHub (hosting, in the United States) and GoatCounter (visit counts, stored on servers in Finland and Germany). The font and library services named above receive requests from your browser directly. Buy Me a Coffee is a separate service with its own privacy policy, and we share nothing from the site with it. We may disclose data if the law requires it.</p>
 
 <h2>International transfers</h2>
-<p>Our servers are in [country/region]. AI requests are processed by Anthropic in the United States. If your data is transferred outside your country, we use safeguards required by the law that applies to you.</p>
+<p>The site is run from India, hosted by GitHub in the United States, and counted by GoatCounter in the European Union. Where data crosses borders, we rely on these providers' safeguards and on the law that applies to you.</p>
 
 <h2>Your rights</h2>
-<p>Depending on where you live (for example under India's Digital Personal Data Protection Act 2023, the EU and UK GDPR, or Californian law), you can ask to see the data we hold about you, delete it, object to some uses, and withdraw consent. Because analytics records carry only a random id, tell us the id in your <code>ms_vid</code> cookie, or simply withdraw consent and clear your cookies. Write to <a data-site="contactEmail" href="#"></a>; we will reply within the time the law requires. You can also complain to your data protection authority (in India, the Data Protection Board of India).</p>
+<p>Depending on where you live (for example under India's Digital Personal Data Protection Act 2023, the EU and UK GDPR, or Californian law), you can ask to see the data we hold about you, have it corrected or deleted, object to some uses, and complain to a regulator. Because the visit counts identify no one, we usually hold nothing we can link to you, but write to <a data-site="contactEmail" href="#"></a> and we will check and reply within the time the law requires. You can also complain to your data protection authority (in India, the Data Protection Board of India).</p>
 
 <h2>Children</h2>
-<p>The studio needs no account and asks for no personal details. Analytics run only with consent. If you believe a child's data has reached us without the consent the law requires, contact us and we will delete it.</p>
+<p>The site needs no account and asks for no personal details, from anyone. If you believe a child's personal data has reached us, contact us and we will delete it.</p>
 
 <h2>Security</h2>
-<p>We hold no accounts or passwords. Connections should be encrypted with HTTPS, requests from other sites are refused, and requests are rate-limited. No system is perfectly secure; if we learn of a breach that affects you, we will tell you and the authorities as the law requires.</p>
+<p>There are no accounts or passwords to steal. The site is served over HTTPS. No system is perfectly secure; if we learn of a breach that affects you, we will tell you and the authorities as the law requires.</p>
 
 <h2>Changes</h2>
-<p>If we change this policy we will update the date above.</p>
+<p>If we change this policy, we will update it here and change the date above.</p>
 
 <h2>Contact</h2>
-<p><b data-site="owner"></b> · <a data-site="contactEmail" href="#"></a> · [postal address, if required where you operate]</p>
+<p><b data-site="owner"></b> · <a data-site="contactEmail" href="#"></a></p>
 </main>
 <footer>© <span data-site="year"></span> <span data-site="owner"></span>. Open source under the Apache License 2.0. · <a href="privacy.html">Privacy policy</a> · <a href="terms.html">Terms of use</a> · <a href="help.html">Documentation</a></footer>
 <script src="site-config.js"></script>
 <script>
 (function () {
-  var S = Object.assign({ owner: 'Sivaprasad Murali', contactEmail: 'hello@example.com', year: new Date().getFullYear(), coffeeUrl: '#' }, window.GEARSCRIPT_SITE || {});
+  var S = Object.assign({ owner: 'Sivaprasad Murali', contactEmail: 'sivaprasad.off@gmail.com', year: new Date().getFullYear(), coffeeUrl: '#' }, window.GEARSCRIPT_SITE || {});
   document.querySelectorAll('[data-site]').forEach(function (el) { var k = el.getAttribute('data-site'); if (k === 'contactEmail') { el.textContent = S.contactEmail; if (el.tagName === 'A') el.href = 'mailto:' + S.contactEmail; } else if (k === 'coffeeUrl') { el.href = S.coffeeUrl; } else el.textContent = S[k]; });
 })();
 </script>

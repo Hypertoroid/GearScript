@@ -1014,10 +1014,11 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
   <footer><span class="note">Saved in this browser<span class="ver" id="setVersion"></span></span><button class="btn" id="settingsReset" type="button">Reset to defaults</button></footer>
 </aside>
 
-<script data-goatcounter="https://gearscript-studio.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-
 <script>/* a pristine copy of the page, used to export the shareable 3D player */
 window.__GEARSCRIPT_HEAD = document.head.innerHTML; window.__GEARSCRIPT_MARKUP = document.body.innerHTML;</script>
+<script>/* visit counts with GoatCounter (no cookies, no stored IP addresses: see privacy.html), only on the official site.
+   It comes after the snapshot above, so exported 3D players and the offline copy never carry it */
+if (location.hostname === 'gearscript.org') { const s = document.createElement('script'); s.async = true; s.src = 'https://gc.zgo.at/count.js'; s.dataset.goatcounter = 'https://gearscript-studio.goatcounter.com/count'; document.head.appendChild(s); }</script>
 <!-- three.js ships with GearScript (vendor/); a public CDN is the fallback when the page is opened without its folder -->
 <script src="vendor/three.min.js"></script>
 <script>window.THREE || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');</script>
@@ -10522,7 +10523,7 @@ function maybeSayThanks(ext) {
   back.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } });
   back.querySelectorAll('.ways [data-w]').forEach(a => a.addEventListener('click', async () => {
     track('thanks_' + a.dataset.w);
-    if (a.dataset.w === 'share') { const url = repo || location.origin + location.pathname.replace(/[^/]*$/, ''); try { await navigator.clipboard.writeText(url); toast('Link copied'); } catch (e) { toast(url); } }
+    if (a.dataset.w === 'share') { const url = realUrl(SITE.siteUrl) ? SITE.siteUrl : repo || location.origin + location.pathname.replace(/[^/]*$/, ''); try { await navigator.clipboard.writeText(url); toast('Link copied'); } catch (e) { toast(url); } }
     st.never = true; try { localStorage.setItem(THANKS_KEY, JSON.stringify(st)); } catch (e) {}   /* they said thanks: no need to ask again */
     setTimeout(() => back.remove(), 300);
   }));
@@ -10845,7 +10846,7 @@ setPlay(playing);
 
 /* ---------------- site settings (site-config.js), menus and toasts ---------------- */
 const SITE_GH = () => { const a = $('ghLink'); if (a) { if (SITE.repoUrl) a.href = SITE.repoUrl; a.hidden = !!PLAYER; } };
-const SITE = Object.assign({ owner: 'Sivaprasad Murali', contactEmail: 'hello@example.com', coffeeUrl: 'https://www.buymeacoffee.com/', apiBase: '/api', year: new Date().getFullYear() }, window.GEARSCRIPT_SITE || {});
+const SITE = Object.assign({ owner: 'Sivaprasad Murali', contactEmail: 'sivaprasad.off@gmail.com', coffeeUrl: 'https://www.buymeacoffee.com/', apiBase: '/api', year: new Date().getFullYear() }, window.GEARSCRIPT_SITE || {});
 const realUrl = (u) => /^https:\/\//.test(u || '') && !/yourname|your-org|example\.(com|org)/.test(u);   /* placeholders in site-config.js stay hidden (the header's GitHub button keeps its placeholder until set) */
 SITE_GH();
 $('coffeeLink').href = SITE.coffeeUrl; $('coffeeLink').hidden = !realUrl(SITE.coffeeUrl); syncDownloadItem();

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **gearscript.org:** the official site now lives at its own domain, published from this repository with GitHub Pages (`CNAME`). `site-config.js` sets `siteUrl`, and Share GearScript copies the site's address. The home page has a canonical address and a share card (brand/social-1280x640.png).
+- **Privacy policy and terms of use rewritten for gearscript.org** as it actually runs: static files on GitHub Pages, visit counts with GoatCounter (no cookies, no stored IP addresses), no server, so no cookie banner and no AI buttons. The template notices and placeholders are gone.
+- The GoatCounter counters load only on gearscript.org. The studio's counter used to sit in the page snapshot, so it was copied into exported 3D players and the offline studio; it now loads after the snapshot. The home page's counter moved into `<head>`.
+- Removed docs/Inside_GearScript.pdf (written for the old Orrery name) and the home page's link to a syntax PDF that did not exist. README, SELF-HOSTING, SECURITY, TRADEMARKS and NOTICE are up to date with the domain, the `.gscript` format and the fonts the pages load.
+
 - **Video fonts ship with GearScript:** Montserrat, Oswald, Bebas Neue, Playfair Display, Space Grotesk, Inter, Caveat, JetBrains Mono and Noto Sans Devanagari (SIL Open Font License, from Fontsource), in vendor/fonts. Write `font-family: Montserrat;` and the text looks the same in the preview, on every computer, in the offline copy, the 3D player and every export. Each font loads the first time a project uses it, and exports wait for it. The type hints list them with what each is good for; scripts/make-fonts.js rebuilds them.
 - **Two text styles for titles:** `text-transform: uppercase | capitalize | lowercase | none;` and `letter-spacing: 8%;` (a share of the letter height, or a length such as `1.5mm`; negative tightens). Both work on flat and 3D letters and on face text. New errors E0626 and E0627.
 - **W0628: words over words.** Two Texts that cover each other on the picture while both are showing get a warning naming them and the first moment, in the studio and in `gearscript check`. Texts stacked at one `fixed:` place and quick crossfades between captions are left alone.

@@ -1,12 +1,12 @@
 # The GearScript name and logo
 
-The code is open source under the Apache License 2.0. The name **GearScript** and the GearScript logo are not: section 6 of the licence leaves trademarks out. That keeps it clear to everyone which site, downloads and announcements are the official ones.
+The code is open source under the Apache License 2.0. The name **GearScript** and the GearScript logo are not: section 6 of the licence leaves trademarks out. That keeps it clear to everyone which site, downloads and announcements are the official ones. The official site is [gearscript.org](https://gearscript.org).
 
 ## Fine without asking
 
 - Saying your project, course, video or plugin **works with**, **is built with** or **is for** GearScript.
 - Writing about GearScript, teaching it, and making tutorials, talks and reviews.
-- Using the name for files and code: the `.ms` format, a syntax highlighter, an editor extension, a parser in another language.
+- Using the name for files and code: the `.gscript` format, a syntax highlighter, an editor extension, a parser in another language.
 - Showing the logo unchanged next to a link to the official project.
 - Running an unmodified or lightly modified copy of the studio for yourself, your class or your team.
 

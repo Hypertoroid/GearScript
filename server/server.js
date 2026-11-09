@@ -158,7 +158,7 @@ async function ai(req, res) {
 
 /* ---------- static files ---------- */
 const TYPES = { '.webmanifest': 'application/manifest+json', '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.gif': 'image/gif', '.pdf': 'application/pdf', '.md': 'text/markdown; charset=utf-8', '.ms': 'text/plain; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
-const PUBLIC = /^\/(index\.html|404\.html|studio\.html|manifest\.webmanifest|sw\.js|help\.html|privacy\.html|terms\.html|site-config\.js|SPEC\.md|LICENSE|NOTICE|TRADEMARKS\.md|GearScript_Syntax_Reference\.pdf|brand\/[\w.-]+|docs\/[\w.-]+|vendor\/[\w.-]+|examples\/[\w.-]+|examples\/[\w-]+\/[\w.-]+)$/;
+const PUBLIC = /^\/(index\.html|404\.html|studio\.html|manifest\.webmanifest|sw\.js|help\.html|privacy\.html|terms\.html|site-config\.js|SPEC\.md|LICENSE|NOTICE|TRADEMARKS\.md|brand\/[\w.-]+|docs\/[\w.-]+|vendor\/[\w.-]+|examples\/[\w.-]+|examples\/[\w-]+\/[\w.-]+)$/;
 /* a missing page: the 404 page for a browser, plain text for anything else */
 function notFound(req, res) {
   if (!/text\/html/.test(req.headers.accept || '')) { res.writeHead(404, { 'Content-Type': 'text/plain' }); return res.end('Not found'); }

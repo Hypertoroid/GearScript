@@ -3,6 +3,8 @@
 
 **Describe mechanisms in a CSS-like language. Watch them move.**
 
+**[gearscript.org](https://gearscript.org)** · [Open the studio](https://gearscript.org/studio.html) · [Documentation](https://gearscript.org/help.html)
+
 GearScript is a small language and browser-based studio for describing and animating mechanisms, from linkages and gears to engines, robots and 2D explainers. Its syntax is designed to be approachable for people and predictable for AI models.
 
 The name says what it does: a script for machines. Write how the parts connect, turn one gear, and everything moves in step.
@@ -10,7 +12,7 @@ The name says what it does: a script for machines. Write how the parts connect, 
 [![Licence: Apache 2.0](https://img.shields.io/badge/licence-Apache_2.0-16264a?style=flat-square)](LICENSE)
 ![Runs in the browser](https://img.shields.io/badge/runs_in-the_browser-ffb84d?style=flat-square)
 [![Version 1.0 beta](https://img.shields.io/badge/version-1.0_beta-26323c?style=flat-square)](CHANGELOG.md)
-[![Checks](https://img.shields.io/github/actions/workflow/status/Hypertoroid/GearScript/ci.yml?branch=master&label=checks&style=flat-square)](https://github.com/Hypertoroid/GearScript/actions/workflows/ci.yml)
+[![Checks](https://img.shields.io/github/actions/workflow/status/Hypertoroid/GearScript/ci.yml?branch=main&label=checks&style=flat-square)](https://github.com/Hypertoroid/GearScript/actions/workflows/ci.yml)
 
 ---
 
@@ -58,7 +60,7 @@ You drive only the crank. GearScript solves the closed loop at every frame, so t
 
 ## Quick start
 
-**In the browser:** open `studio.html` (or `index.html`, the landing page). Pick something from **Examples**, or start typing; the hints suggest shapes, properties and anchors as you go. From the published site you can install it as an app (it then works offline), download it as one HTML file, and send any project as a link.
+**In the browser:** go to [gearscript.org/studio.html](https://gearscript.org/studio.html), or open `studio.html` from a copy of this repository (`index.html` is the landing page). Pick something from **Examples**, or start typing; the hints suggest shapes, properties and anchors as you go. From the published site you can install it as an app (it then works offline), download it as one HTML file, and send any project as a link.
 
 **From the command line** (Node 18 or later):
 
@@ -81,20 +83,27 @@ Rendering drives the studio in a headless browser, so it needs Playwright or a l
 index.html       landing page
 studio.html      the studio: the language core (<script id="core">) and the app (<script id="app">)
 help.html        the documentation
-vendor/          CodeMirror 6, bundled
+privacy.html     privacy policy and terms of use for gearscript.org
+terms.html
+site-config.js   owner, contact address and links that the pages show
+CNAME            the custom domain for GitHub Pages (gearscript.org)
+vendor/          three.js, CodeMirror 6, video muxers and fonts, bundled
 cli/             command-line tool and MCP server
-server/          optional server: serves the site and keeps opt-in usage statistics
+server/          optional server for self-hosting: opt-in usage statistics and AI Generate and Fix
 examples/        example projects
+tests/           saved motion that every example must still match
 evals/           AI evaluation tasks
+docs/            the animations in this README and the language's JSON schema
 brand/           logo files (see TRADEMARKS.md)
-privacy.html, terms.html, site-config.js    templates for running a public instance
 ```
 
 The studio is one HTML file with no build step. Edit it, reload, done.
 
-## Running a public instance
+## The website and your own copy
 
-The studio works fully without the server, and there are no accounts anywhere. The optional `server/` serves the site and counts which features are used, only for visitors who allow it. See [SELF-HOSTING.md](SELF-HOSTING.md). If you run a public instance, call it something other than "GearScript" (see [TRADEMARKS.md](TRADEMARKS.md)), and replace the templates in `privacy.html`, `terms.html` and `site-config.js` with your own.
+The official site, [gearscript.org](https://gearscript.org), is these files served as they are by GitHub Pages. There is no server behind it: the studio runs entirely in the browser, and visits are counted with GoatCounter, which sets no cookies (see the [privacy policy](https://gearscript.org/privacy.html)).
+
+You can host your own copy anywhere that serves static files. See [SELF-HOSTING.md](SELF-HOSTING.md), which also covers the optional `server/`. If you run a public copy, call it something other than "GearScript" (see [TRADEMARKS.md](TRADEMARKS.md)), and replace `CNAME`, `site-config.js`, `privacy.html` and `terms.html` with your own. The GoatCounter tags run only on gearscript.org, so your copy sends no statistics to it.
 
 ## Contributing
 

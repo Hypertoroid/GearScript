@@ -1,6 +1,6 @@
 # Running GearScript
 
-GearScript is static files. There are no accounts and nothing to configure.
+GearScript is static files. There are no accounts and nothing to configure. The official site, [gearscript.org](https://gearscript.org), is this repository published as it is with GitHub Pages.
 
 ## Just the studio
 
@@ -8,10 +8,10 @@ Open `index.html` (the landing page) or `studio.html` in a browser, or put these
 
 ```
 index.html  studio.html  help.html  privacy.html  terms.html  404.html  site-config.js
-manifest.webmanifest  sw.js  vendor/  brand/  docs/  LICENSE  NOTICE  GearScript_Syntax_Reference.pdf
+manifest.webmanifest  sw.js  vendor/  brand/  docs/  LICENSE  NOTICE
 ```
 
-On its own the studio sets no cookies, shows no cookie banner and sends nothing anywhere. Its libraries (three.js, CodeMirror, glTF support, the video muxers) are in `vendor/`; a public CDN is used only if those files are missing. Fonts come from Google Fonts, with system fonts as the fallback.
+On its own the studio sets no cookies, shows no cookie banner and sends nothing anywhere. (The GoatCounter visit counter in `index.html` and `studio.html` runs only when the address is gearscript.org.) Its libraries (three.js, CodeMirror, glTF support, the video muxers) are in `vendor/`; a public CDN is used only if those files are missing. Fonts come from Google Fonts, with system fonts as the fallback.
 
 **Offline and installable.** Served over HTTPS, the studio registers `sw.js`, so it keeps working without a connection once it has been opened, and Chrome and Edge show their own install icon in the address bar; the studio's **More › Download Studio** asks the same question. Installation needs HTTPS (or localhost). When you publish a new version, change `VERSION` in `sw.js` so installed copies fetch the new files. Where a browser cannot install, Download Studio offers the whole studio as one HTML file instead, which runs from disk with no internet.
 
@@ -19,7 +19,9 @@ On its own the studio sets no cookies, shows no cookie banner and sends nothing 
 
 **Project links:** the documentation's "Try it" buttons open a project packed into the address after `#p=`; they work from your site as it is.
 
-**Before you publish**, run `node scripts/release-check.js`: it lists placeholders left in `site-config.js`, the legal templates, and version numbers that disagree.
+**GitHub Pages with your own domain:** publish the repository from its main branch (Settings › Pages), put the domain in `CNAME`, point the domain's DNS at GitHub Pages as GitHub's documentation describes, and tick **Enforce HTTPS** once the certificate is ready. Pages cannot run `server/`, so the cookie banner and the AI buttons stay hidden, as they should.
+
+**Before you publish**, run `node scripts/release-check.js`: it lists placeholders left in `site-config.js` and version numbers that disagree.
 
 ## With usage statistics (optional)
 
@@ -67,13 +69,14 @@ AI_PER_MINUTE=4                                   # burst limit per visitor
 HASH_SALT=<long random string>                    # keeps daily counts across restarts
 ```
 
-Requests and replies are not stored. Daily counts are kept under a salted hash of the visitor's address that changes every day, and deleted after two days. If you turn AI on, say so in your privacy policy (`privacy.html` has a section for it).
+Requests and replies are not stored. Daily counts are kept under a salted hash of the visitor's address that changes every day, and deleted after two days. If you turn AI on, say so in your privacy policy: who receives requests (Anthropic), what is kept and for how long.
 
 
-## A public instance
+## A public copy
 
 If you run GearScript for other people:
 
 - Give your site its own name and logo (see TRADEMARKS.md). "Powered by GearScript" is welcome.
-- Put your details in `site-config.js`: owner, contact email, repository link, site address. Links with placeholder addresses stay hidden until you do.
-- Replace the `[placeholders]` in `privacy.html` and `terms.html` with policies that fit your service, have them reviewed by someone qualified, and delete the yellow notice.
+- Put your details in `site-config.js`: owner, contact email, repository link, site address. Links with placeholder addresses stay hidden until you do. Replace `CNAME` with your domain, or delete it.
+- `privacy.html` and `terms.html` are the policies of gearscript.org. Replace them with your own, written for how you run your site (for example, if you run the server with statistics or AI, say so), and have them reviewed by someone qualified.
+- To count visits with your own GoatCounter, change the hostname and the counter address in the two loaders (one in `index.html`, one in `studio.html`).

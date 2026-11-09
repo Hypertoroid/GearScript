@@ -23,9 +23,9 @@ This product includes or loads third-party software under its own licence:
     Space Grotesk, Caveat, JetBrains Mono and Noto Sans Devanagari, from Fontsource, under the
     SIL Open Font License 1.1; see vendor/fonts/FONTS-LICENSE.txt (loaded only when a project uses one)
 
-The web fonts IBM Plex Sans, IBM Plex Sans Condensed and JetBrains Mono are
-loaded from Google Fonts under the SIL Open Font License 1.1. The landing page also loads
-Fraunces, Inter Tight, Geist and Geist Mono from Google Fonts under the same licence.
+The pages load their web fonts from Google Fonts, under each font's own licence: Inter,
+Inter Tight, IBM Plex Sans and JetBrains Mono, and, for the editor's font choices, Fira Code,
+IBM Plex Mono, Source Code Pro and Roboto Mono.
 
 Several editor themes follow published colour schemes (Monokai, Dracula, Nord,
 One Dark, Tokyo Night, Gruvbox, Solarized, Night Blue); their names are used

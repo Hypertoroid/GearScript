@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /cli/
+Disallow: /server/
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /evals/
+
+Sitemap: https://gearscript.org/sitemap.xml

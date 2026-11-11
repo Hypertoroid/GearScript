@@ -10295,10 +10295,12 @@ async function vendorText(file) {
   }
   throw last || new Error(file);
 }
+/* the software encoder comes first: an export is not live, and the GPU encoders browsers use (Media Foundation on Windows, VideoToolbox
+   on a Mac, VA-API) often ignore the bitrate asked for and smear fine edges, so the video looked softer than the preview. The GPU is the fallback */
 async function pickCodec(f, W, H, fps, bitrate) {
   const tries = f === 'mp4' ? ['avc1.640033', 'avc1.640028', 'avc1.4d0028', 'avc1.42E01F'] : ['vp09.00.41.08', 'vp09.00.31.08', 'vp8'];
   for (const codec of tries) {
-    for (const hw of ['no-preference', 'prefer-software']) {
+    for (const hw of ['prefer-software', 'no-preference']) {
       const cfg = { codec, width: W, height: H, bitrate, framerate: fps, hardwareAcceleration: hw, latencyMode: 'quality' };
       if (f === 'mp4') cfg.avc = { format: 'avc' };
       try { const r = await VideoEncoder.isConfigSupported(cfg); if (r.supported) return r.config; } catch (e) {}
@@ -10315,7 +10317,7 @@ async function encodeVideo(f, W, H, fps, n, quality, progress) {
 async function encodeVideoFrames(M, f, W, H, fps, n, quality, progress) {
   /* about 0.2 bits per pixel per frame at Standard: dark gradients and fine edges stay clean (1080p30: 12 Mbps; High: 26 Mbps) */
   const bitrate = Math.round(Math.min(60e6, Math.max(2e6, W * H * fps * 0.2 * quality)));
-  const config = await pickCodec(f, W, H, fps, bitrate);
+  const config = await pickCodec(f, W, H, fps, bitrate); encodeVideoFrames.lastHw = config.hardwareAcceleration;
   /* sound: the project's sound events, mixed here and encoded as AAC (MP4, where the browser can) or Opus */
   let acfg = null; const wantSound = filmExp ? filmWantsSound() && window.__exportSound !== false && $('expSound').checked : exportWantsSound();
   if (wantSound && 'AudioEncoder' in window) for (const [codec, mux] of (f === 'mp4' ? [['mp4a.40.2', 'aac'], ['opus', 'opus']] : [['opus', 'opus']])) {
@@ -10428,8 +10430,13 @@ async function encodeGifBlob(W, H, fps, n, progress) {
 let exportSS = 1, exportWH = [0, 0], ssCanvas = null;
 async function withExportSize(W, H, fn, ss = 1) {
   const pr = renderer.getPixelRatio(); exporting = true; exportAspect = W / H;
-  exportSS = Math.max(1, Math.min(ss, 4096 / Math.max(W, H))); exportWH = [W, H];
-  renderer.setPixelRatio(exportSS); renderer.setSize(W, H, false); persp.aspect = W / H; fitFov(); persp.updateProjectionMatrix();
+  /* whole steps only (1× or 2×): scaling down by an odd amount like 1.5× or 1.07× (4K, capped) blurs every edge, and was a large part of why
+     exported videos looked softer than the preview. When 2× does not fit, render at the true size; the renderer's own antialiasing still applies */
+  exportSS = ss >= 2 && Math.max(W, H) * 2 <= 4096 ? 2 : 1; exportWH = [W, H];
+  renderer.setPixelRatio(exportSS); renderer.setSize(W, H, false);
+  /* some browsers and GPUs quietly give a smaller drawing buffer than asked for, which would be stretched up to the export size: fall back to 1× */
+  if (exportSS > 1) { const gl = renderer.getContext(); if (gl.drawingBufferWidth < W * exportSS || gl.drawingBufferHeight < H * exportSS) { exportSS = 1; renderer.setPixelRatio(1); renderer.setSize(W, H, false); } }
+  persp.aspect = W / H; fitFov(); persp.updateProjectionMatrix();
   try { return await fn(); } finally { exportSS = 1; renderer.setPixelRatio(pr); exporting = false; exportAspect = null; resize(); }
 }
 /* the caption showing at a moment: the line a Voice with captions is speaking */
@@ -10461,7 +10468,7 @@ function exportSource() {
   const cx = ssCanvas.getContext('2d'); cx.imageSmoothingEnabled = true; cx.imageSmoothingQuality = 'high'; cx.clearRect(0, 0, W, H);
   cx.drawImage(renderer.domElement, 0, 0, W, H); if (cap) drawCaption(cx, W, H, cap); return ssCanvas;
 }
-const SS_FOR_QUALITY = (q) => (q >= 1.5 ? 2 : q >= 1 ? 1.5 : 1);
+const SS_FOR_QUALITY = (q) => (q >= 1 ? 2 : 1);   /* Standard and High render at 2× and scale down (when it fits); Smaller file at 1× */
 $('gifGo').addEventListener('click', async () => {
   if (!model || exporting) return;
   if (lastDiags.some(d => d.sev === 'error' && (filmExportOn() || d.file !== 'film'))) { $('gifNote').textContent = filmExportOn() ? 'Fix the errors in every chapter first; the export uses the current code.' : 'Fix the errors first; the export uses the current code.'; return; }
@@ -10475,7 +10482,7 @@ $('gifGo').addEventListener('click', async () => {
   const bar = (x) => { $('gifBar').firstElementChild.style.width = Math.round(x * 100) + '%'; };
   const t0 = performance.now();
   try {
-    outBlob = await withFilmExport(() => withExportSize(W, H, () => f === 'gif' ? encodeGifBlob(W, H, fps, n, bar) : f === 'png' ? encodePngZip(W, H, fps, n, bar) : encodeVideo(f, W, H, fps, n, q, bar), f === 'gif' ? 1.5 : f === 'png' ? 2 : SS_FOR_QUALITY(q)));
+    outBlob = await withFilmExport(() => withExportSize(W, H, () => f === 'gif' ? encodeGifBlob(W, H, fps, n, bar) : f === 'png' ? encodePngZip(W, H, fps, n, bar) : encodeVideo(f, W, H, fps, n, q, bar), f === 'gif' ? 2 : f === 'png' ? 2 : SS_FOR_QUALITY(q)));
     outExt = f === 'png' ? 'zip' : f; bar(1);
     const url = URL.createObjectURL(outBlob);
     if (f === 'gif') { const img = $('gifImg'); if (img.src) URL.revokeObjectURL(img.src); img.src = url; img.hidden = false; }
@@ -10483,7 +10490,7 @@ $('gifGo').addEventListener('click', async () => {
     else { const v = $('vidOut'); if (v.src) URL.revokeObjectURL(v.src); v.src = url; v.hidden = false; v.play().catch(() => {}); }
     const kb = outBlob.size / 1024;
     const au = (f === 'mp4' || f === 'webm') ? encodeVideoFrames.lastAudio : null;
-    $('gifNote').textContent = `${f === 'png' ? 'PNG frames' : f.toUpperCase()} · ${W}×${H} · ${n} frames${f === 'png' && bgClear ? ' · transparent' : ''}${au === 'aac' || au === 'opus' ? ` · sound (${au === 'aac' ? 'AAC' : 'Opus'})` : au === 'unsupported' ? ' · no sound: this browser cannot encode audio' : ''} · ${kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB'} · made in ${((performance.now() - t0) / 1000).toFixed(1)} s`;
+    $('gifNote').textContent = `${f === 'png' ? 'PNG frames' : f.toUpperCase()} · ${W}×${H} · ${n} frames${f === 'png' && bgClear ? ' · transparent' : ''}${au === 'aac' || au === 'opus' ? ` · sound (${au === 'aac' ? 'AAC' : 'Opus'})` : au === 'unsupported' ? ' · no sound: this browser cannot encode audio' : ''}${(f === 'mp4' || f === 'webm') && encodeVideoFrames.lastHw === 'no-preference' ? ' · GPU encoder (this browser has no software one at this size, so fine detail may be softer; try WebM or a smaller width)' : ''} · ${kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB'} · made in ${((performance.now() - t0) / 1000).toFixed(1)} s`;
     $('gifSave').textContent = f === 'png' ? 'Save .zip' : `Save ${f.toUpperCase()}`; $('gifSave').hidden = false; outSig = exportSig(); $('gifGo').textContent = 'Render';
   } catch (e) { console.error(e); $('gifNote').textContent = 'Export failed: ' + e.message; }
   $('gifGo').disabled = false; setTimeout(() => $('gifBar').hidden = true, 600);

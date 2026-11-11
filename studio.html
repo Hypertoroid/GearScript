@@ -9524,7 +9524,9 @@ function loop(now) {
 requestAnimationFrame(loop);
 
 /* timeline */
-const setPlay = (p) => { if (!p) stopSpeech(); playing = p; $('play').setAttribute('aria-label', p ? 'Pause' : 'Play'); $('playIcon').innerHTML = p ? '<rect x="2" y="1.5" width="3" height="9"/><rect x="7" y="1.5" width="3" height="9"/>' : '<path d="M2.5 1.5 L10.5 6 L2.5 10.5 Z"/>'; };
+/* pausing silences everything that is still sounding (audio files, long synth sounds, spoken lines); playing again picks
+   long sounds back up from where the picture is, so a voice-over or music track stays in step with the animation */
+const setPlay = (p) => { const was = playing; if (!p) stopSounds(); playing = p; if (p && !was) { try { catchUpSounds(); } catch (e) {} } $('play').setAttribute('aria-label', p ? 'Pause' : 'Play'); $('playIcon').innerHTML = p ? '<rect x="2" y="1.5" width="3" height="9"/><rect x="7" y="1.5" width="3" height="9"/>' : '<path d="M2.5 1.5 L10.5 6 L2.5 10.5 Z"/>'; };
 $('play').addEventListener('click', () => { if (fp.on) { if (!playing && fp.T >= fp.ft.total - 1e-6) filmSeek(0); setPlay(!playing); return; } if (!playing && model && t >= model.duration - 1e-6) t = 0; setPlay(!playing); });
 $('scrub').addEventListener('input', () => { if (fp.on) { scrubbing = true; filmSeek(+$('scrub').value); frame(t); return; } scrubbing = true; const t0 = t; t = +$('scrub').value; if (t > t0 && t - t0 < 0.35) soundsBetween(t0, t); frame(t); });
 $('scrub').addEventListener('change', () => { scrubbing = false; });

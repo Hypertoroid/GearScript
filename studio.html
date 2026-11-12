@@ -303,7 +303,17 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 #sheet .sayrow { align-items: flex-start; gap: 4px 14px; }
 #sheet .sayrow .saynote { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
 #sheet .levelctl { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px 12px; }
-#sheet .levelctl .bal { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: var(--muted); } #sheet .levelctl .bal[hidden] { display: none; } #sheet .levelctl input[type=range] { width: 96px; } #sheet .levelctl select { width: auto; min-width: 0; flex: 0 0 auto; }
+#sheet .bal { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: var(--muted); } #sheet .bal input[type=range] { width: 120px; accent-color: var(--accent); } #sheet .levelctl select { width: auto; min-width: 0; flex: 0 0 auto; }
+#sheet details.xsec { border-top: 1px solid var(--line); } #sheet details.xsec:first-child { border-top: 0; } #sheet details.xsec[hidden] { display: none; }
+#sheet details.xsec > summary { list-style: none; display: flex; align-items: center; gap: 8px; min-height: 34px; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--fg); user-select: none; }
+#sheet details.xsec > summary::-webkit-details-marker { display: none; }
+#sheet details.xsec > summary .chev { width: 14px; height: 14px; flex: none; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .15s; }
+#sheet details.xsec[open] > summary .chev { transform: rotate(90deg); }
+#sheet details.xsec > summary .sum { margin-left: auto; font-weight: 400; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 330px; }
+#sheet details.xsec[open] > summary .sum { visibility: hidden; }
+#sheet details.xsec > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+#sheet .xbody { display: grid; gap: 6px; padding: 0 0 10px 22px; }
+#sheet .voicectl { display: flex; align-items: center; gap: 8px; } #sheet .voicectl select { min-width: 170px; max-width: 220px; }
 #sheet .sayrow .check { margin: 0; color: var(--fg); } #sheet .sayrow .check small { display: block; color: var(--muted); font-size: 11px; }
 .capbar { position: absolute; z-index: 3; transform: translateX(-50%); max-width: 86%; padding: .35em .7em; border-radius: 8px; background: rgba(10,14,20,.74); color: #fff; font: 500 15px/1.35 var(--font-ui); text-align: center; pointer-events: none; text-wrap: balance; }
 .stale {
@@ -329,7 +339,7 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 #sheet .row { flex-wrap: wrap; } #sheet .row > :last-child { margin-left: auto; } #sheet .saynote { max-width: 380px; }
 .sheet h3 { margin: 0 0 2px; font-size: 14px; font-weight: 600; }
 .sheet .row { display: flex; gap: 12px; align-items: center; justify-content: space-between; font-size: 12.5px; color: var(--muted); min-height: 28px; }
-.sheet .vidopts { display: grid; gap: 6px; padding: 8px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.sheet .vidopts { display: grid; gap: 6px; padding: 2px 0 8px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .sheet select { border: 1px solid var(--line); background: var(--panel-2); border-radius: var(--radius); padding: 6px 10px; color: var(--fg); min-width: 170px; }
 .sheet .note { line-height: 1.5; }
 .sheet .note.outdated { color: var(--warn); }
@@ -971,22 +981,29 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
           <div class="seg" role="group" aria-labelledby="fmtLbl" id="fmtSeg"><button type="button" data-f="mp4" aria-pressed="false">MP4</button><button type="button" data-f="webm" aria-pressed="false">WebM</button><button type="button" data-f="gif" aria-pressed="true">GIF</button><button type="button" data-f="png" aria-pressed="false" title="Numbered PNG frames in a .zip, transparency kept: for video editors">PNG frames</button><button type="button" data-f="html" aria-pressed="false" title="A single .html file: anyone can watch, scrub and orbit it in a browser">3D player</button></div></div>
         <div class="row" id="scopeRow" hidden><span id="scopeLbl">Export</span><div class="seg" role="group" aria-labelledby="scopeLbl" id="scopeSeg"><button type="button" data-s="film" aria-pressed="true">Whole film</button><button type="button" data-s="chapter" aria-pressed="false">This chapter</button></div></div>
         <div class="vidopts">
+        <details class="xsec" id="secPic" open><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>Picture</span><span class="sum" id="sumPic"></span></summary><div class="xbody">
         <div class="row"><label for="expAspect">Shape</label><select id="expAspect"><option value="view">Like the preview</option><option value="16:9">16:9 wide</option><option value="1:1">1:1 square</option><option value="4:5">4:5 portrait</option><option value="9:16">9:16 tall</option></select></div>
         <div class="row"><label for="gifW">Width</label><select id="gifW"></select></div>
         <div class="row"><label for="gifFps">Frame rate</label><select id="gifFps"></select></div>
         <div class="row" id="qualRow"><label for="vidQ">Quality</label><select id="vidQ"><option value="0.6">Smaller file</option><option value="1" selected>Standard</option><option value="1.8">High (sharper, larger file)</option></select></div>
+        </div></details>
+        <details class="xsec" id="secSay"><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>Narration</span><span class="sum" id="sumSay"></span></summary><div class="xbody">
         <div class="row sayrow" id="sayRow" hidden><span>Spoken lines</span><div class="saynote">
           <span id="sayNote"></span>
           <span class="caplinks">Save the captions: <button type="button" class="linkbtn" id="srtBtn" title="SubRip captions, for YouTube and video editors">.srt</button> · <button type="button" class="linkbtn" id="vttBtn" title="WebVTT captions, for web players">.vtt</button></span>
-          <label class="check" title="Experimental: downloads the voice, 20 to 70 MB, the first time; then it works offline"><input type="checkbox" id="expSpeak"> <span>Speak them into the video <small>neural voice, experimental</small></span></label>
+          <label class="check" title="A voice generated in your browser speaks each line into the MP4 or WebM. It downloads the first time (about 90 MB for the natural English voices), then works offline"><input type="checkbox" id="expSpeak"> <span>Speak them into the video <small>neural voice, made in your browser</small></span></label>
         </div></div>
-        <div class="row" id="chapListRow" hidden><span>Chapters</span><span class="saynote"><button type="button" class="linkbtn" id="chapListBtn" title="Times and titles, ready to paste into a YouTube description: it turns them into chapters">Copy the chapter list</button></span></div>
-        <div class="row" id="soundRow" hidden><span>Sound</span><label class="check" style="margin:0"><input type="checkbox" id="expSound" checked> <span id="expSoundLbl">Include the project's sounds</span></label></div>
+        <div class="row" id="voiceRow"><label for="expVoice">Voice</label><div class="voicectl"><select id="expVoice" title="The voice that speaks the lines in the video. neural: on a Voice in the code still picks its own"></select><button class="btn" id="voiceSample" type="button" title="Hear a short sentence in this voice">Sample</button></div></div>
+        </div></details>
+        <details class="xsec" id="secSnd"><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>Sound</span><span class="sum" id="sumSnd"></span></summary><div class="xbody">
+        <div class="row" id="soundRow" hidden><span>Sounds</span><label class="check" style="margin:0"><input type="checkbox" id="expSound" checked> <span id="expSoundLbl">Include the project's sounds</span></label></div>
         <div class="row" id="levelRow" hidden><span>Audio level</span><div class="levelctl">
           <select id="expLoud" aria-label="Loudness" title="How loud the whole sound track is. Every export is brought to this level, so it is clearly audible: Standard suits YouTube and most players"><option value="quiet">Quieter</option><option value="standard">Standard</option><option value="loud">Louder</option></select>
-          <label class="bal" id="balWrap" title="Spoken lines against the other sounds: move right to bring the voice forward"><span>Sounds</span><input type="range" id="expBal" min="-12" max="12" step="1" aria-label="Voice and sounds balance"><span>Voice</span></label>
           <button class="btn" id="expListen" type="button" title="Plays a few seconds of the exported sound, at the level the video will have">Listen</button>
         </div></div>
+        <div class="row" id="balWrap"><span>Balance</span><label class="bal" title="Spoken lines against the other sounds: move right to bring the voice forward"><span>Sounds</span><input type="range" id="expBal" min="-12" max="12" step="1" aria-label="Voice and sounds balance"><span>Voice</span></label></div>
+        </div></details>
+        <div class="row" id="chapListRow" hidden><span>Chapters</span><span class="saynote"><button type="button" class="linkbtn" id="chapListBtn" title="Times and titles, ready to paste into a YouTube description: it turns them into chapters">Copy the chapter list</button></span></div>
         <div class="row"><span>Length</span><span id="gifLen" class="time"></span></div>
         </div>
         <div class="note" id="fmtNote"></div>
@@ -4476,7 +4493,7 @@ Line, Arrow from, to, stroke -> start, end, mid      Arc radius, angle, start, s
 Text text: "Two lines\\nof text"; size: 24mm; facing: camera (default) | front; -> like Box. Words in the scene that never hide the motion.
 Plot size: (400mm, 240mm); function: sin(x - t) (or data: (1, 12) (2, 18) (3, 9);) kind: line | bars | points | area; x-axis: 0..10 step 2 "time (s)"; y-axis: -1..1; x-label: "time (s)"; y-label: "m"; reveal: min(1, t / 3s); axes: none; -> a chart with ticks and labels
 Mesh src: "file.stl" | "file.glb"; size; fit: contain | stretch  (only files the user added)      Sound kind: knock; pitch: 120%; volume: 60%; length: 2s;  or  Sound src: "voice-over.mp3";
-Voice voice: en-GB; rate: 100%; captions: on; neural: en_GB-alan-medium;  (a narrator: in motion, say: Narrator "The valve opens"; the line is spoken in the preview and shown as a caption, burned into exports)
+Voice voice: en-GB; rate: 100%; captions: on; neural: bf_emma;  (a narrator: in motion, say: Narrator "The valve opens"; the line is spoken in the preview and shown as a caption, burned into exports)
 
 CONNECTIONS (inside the moving part's block)
 attach: own-anchor to Other.anchor;  or  attach: Other.anchor;   -> fused, moves as one
@@ -4565,7 +4582,7 @@ a sun made from a Sphere (use Scene sun:)  -  spoken lines that overlap or run p
 `;
 const AI_NARRATION = `NARRATION (spoken lines and captions)
 Declare a voice in the scene: Narrator::Voice { voice: en-GB; rate: 95%; captions: on; }  voice is a language (en-US, en-IN, fr-FR...) or an installed voice name;
-  rate 50% to 200%; captions: off hides the words; neural: en_GB-alan-medium; picks the neural voice used when a video export speaks the lines.
+  rate 50% to 200%; captions: off hides the words; neural: bf_emma; picks the voice used when a video export speaks the lines: a natural English voice (af_heart, af_bella, af_nicole, af_sarah, am_michael, am_fenrir, am_puck, bf_emma, bf_isabella, bm_george, bm_fable) or a Piper voice for other languages (de_DE-thorsten-medium). Left out, the export panel's Voice choice is used.
 Speak from any motion rule: say: Narrator "The intake valve opens";  at a block's start, or say: Narrator "Done" at end;  or at 1.5s.
   Put a line in the block whose motion it describes, so words and motion stay together. Scene { 0s..4s: say: Narrator "..."; } works for lines that belong to no part.
 Timing: about 2.5 words per second at rate 100%. Leave that long before the next line of the same voice (a new line cuts the caption off), and make
@@ -7084,7 +7101,7 @@ const PROP_DOC = {
   'letter-spacing': ['letter-spacing: 8%;', 'Extra space between letters: a share of the letter height (8% for airy capitals, -2% tight) or a length (1.5mm)'],
   say: ['say: Narrator "The intake valve opens";  or  say: "Done" at end;', 'Speak a line (and show it as a caption): the browser\'s voice in the preview and the 3D player'],
   voice: ['voice: en-GB;  or  voice: "Samantha";', 'Voice: a language (en-US, en-IN, fr-FR…) or a voice name installed on the computer'],
-  rate: ['rate: 95%;', 'Voice: how fast it speaks, 50% to 200%'], neural: ['neural: en_GB-alan-medium;', 'Voice: the neural voice used when an export speaks the lines (Piper voices; left out, one is picked from voice)'], captions: ['captions: off;', 'Voice: on (the default) shows each line in the picture, and in exports'],
+  rate: ['rate: 95%;', 'Voice: how fast it speaks, 50% to 200%'], neural: ['neural: bf_emma;', 'Voice: the voice used when an export speaks the lines: a natural English voice (af_heart, af_bella, am_michael, bf_emma, bm_george …) or a Piper voice for other languages (de_DE-thorsten-medium …); left out, the export panel picks'], captions: ['captions: off;', 'Voice: on (the default) shows each line in the picture, and in exports'],
   function: ['function: 2 * sin(x);  (x is the horizontal value; t makes it move)', 'Plot: the curve to draw'],
   data: ['data: (0, 12) (1, 18) (2, 9);', 'Plot: the values to draw, as (x, y) pairs'],
   'x-axis': ['x-axis: 0..10 step 2 "time (s)";', 'Plot: the horizontal range, the tick spacing and a title'],
@@ -8456,18 +8473,21 @@ async function exportFrames(fps, n, each) {
   }
 }
 /* the sound of the whole film: each chapter's sounds (and spoken lines, when asked) placed at the chapter's start */
-async function filmAudio(secs, note) {
+/* the whole film's sound track, mastered. With win = [t0, t1] (film seconds) only the chapters in that stretch are mixed, only the lines heard
+   in it are spoken, and the mix comes back unmastered, for Listen */
+async function filmAudio(secs, note, win) {
   const sr = 48000, N = Math.max(1, Math.round(secs * sr)), L = new Float32Array(N), R = new Float32Array(N);
   const { models, ft } = filmExp;
   for (let i = 0; i < models.length; i++) {
+    const c = ft.list[i]; if (win && (c.s >= win[1] || c.s + c.d <= win[0])) continue;
     install(models[i]);
     await withNeuralSpeech(async () => {
       if (!model.soundEvents.length) return;
-      const [l, r] = modelMix(ft.list[i].d), o = Math.round(ft.list[i].s * sr);
+      const [l, r] = modelMix(c.d), o = Math.round(c.s * sr);
       for (let k = 0; k < l.length && o + k < N; k++) { L[o + k] += l[k]; R[o + k] += r[k]; }
-    }, note);
+    }, note, win && [win[0] - c.s, win[1] - c.s]);
   }
-  return GearScript.masterMix(L, R, sr, exportMaster());
+  return win ? [L, R] : GearScript.masterMix(L, R, sr, exportMaster());
 }
 /* runs an export of the whole film: the models are compiled first, and the edited chapter is shown again afterwards */
 async function withFilmExport(fn) {
@@ -10264,7 +10284,7 @@ $('modelIn').addEventListener('change', async () => {
 /* ---------------- export: MP4 and WebM (WebCodecs) or GIF ---------------- */
 var outBlob = null, outExt = 'gif', outSig = null;   /* var: read by checkStale, which can run before this line during start-up */
 /* everything that changes what an export looks like: if any of it changes after a render, the file on hand is out of date */
-function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, S.exportSpeak !== false, S.exportLoud || 'standard', +S.exportBal || 0, $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
+function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, S.exportSpeak !== false, S.exportLoud || 'standard', +S.exportBal || 0, S.exportVoice || '', $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
 function checkStale() {
   if (!outBlob || $('gifSave').hidden && !outSig) return;
   /* out of date: a warning over the render, which is dimmed; Save still saves it (as the earlier render), and the main button renders again */
@@ -10297,7 +10317,7 @@ function syncExportUI() {
   { const ns = filmExportOn() ? filmSayEvents().length : model && model.sayEvents ? model.sayEvents.length : 0; $('sayRow').hidden = !ns || html;
     if (ns) { const n = $('sayNote'); n.textContent = `${ns} line${ns === 1 ? '' : 's'}, captioned in the picture.`; n.title = 'The 3D player speaks the lines itself. A browser cannot record its own voices: tick the box below to generate speech for MP4 and WebM, or add a voice-over file (Insert › 3D models and audio).'; }
     $('expSpeak').checked = S.exportSpeak !== false; $('expSpeak').disabled = f === 'gif' || f === 'png'; }
-  syncLevelRow();
+  syncLevelRow(); syncVoiceRow();
   const clearNote = bgClear ? (gif ? ' The transparent background is kept (GIF pixels are fully clear or solid).' : f === 'png' ? '' : ' Video has no transparency, so the background is filled with ' + (S.bg === 'clear' || !(model && model.sceneOpts.bg && model.sceneOpts.bg.alpha > 0.001) ? 'the theme colour' : 'the background colour') + '. For a clear background, use PNG frames, GIF or the 3D player.') : '';
   $('fmtNote').textContent = (f === 'png' ? 'Every frame as a numbered PNG in one .zip, with full transparency. Video editors (Premiere, DaVinci Resolve, After Effects, Final Cut) import it as an image sequence.' : gif ? 'GIF plays everywhere, but has 256 colours and large files. Best for short loops.' : !('VideoEncoder' in window) ? 'This browser cannot encode video. Use a current Chrome, Edge, Safari or Firefox, or choose GIF.' : f === 'mp4' ? 'H.264 MP4: plays everywhere, including phones, slides and social media.' : 'VP9 WebM: small files for the web.') + clearNote;
   $('gifGo').disabled = exporting || (!gif && f !== 'png' && !('VideoEncoder' in window));
@@ -10307,7 +10327,66 @@ $('fmtSeg').addEventListener('click', (e) => { const b = e.target.closest('butto
 $('exportBtn').addEventListener('click', () => { const s = $('sheet'); s.hidden = !s.hidden; $('aiSheet').hidden = true; syncExportUI(); });
 $('gifClose').addEventListener('click', () => { $('sheet').hidden = true; stopListen(); });
 $('expSound').addEventListener('change', () => { checkStale(); syncLevelRow(); });
-$('expSpeak').addEventListener('change', () => { S.exportSpeak = $('expSpeak').checked; saveSettings(); checkStale(); syncLevelRow(); });
+$('expSpeak').addEventListener('change', () => { S.exportSpeak = $('expSpeak').checked; saveSettings(); checkStale(); syncLevelRow(); syncVoiceRow(); });
+/* Kokoro (Apache 2.0, kokoro-js on Transformers.js): a natural-sounding voice for English, about 90 MB the first time, then kept by the
+   browser. Piper stays for every other language, and takes over if Kokoro cannot load. The best-rated Kokoro voices are offered */
+const KOKORO_URL = 'https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/dist/kokoro.web.js', KOKORO_MODEL = 'onnx-community/Kokoro-82M-v1.0-ONNX';
+const KOKORO_VOICES = {
+  af_heart: ['Heart', 'American', 'woman'], af_bella: ['Bella', 'American', 'woman'], af_nicole: ['Nicole', 'American', 'woman, soft'], af_sarah: ['Sarah', 'American', 'woman'],
+  am_michael: ['Michael', 'American', 'man'], am_fenrir: ['Fenrir', 'American', 'man'], am_puck: ['Puck', 'American', 'man'],
+  bf_emma: ['Emma', 'British', 'woman'], bf_isabella: ['Isabella', 'British', 'woman'], bm_george: ['George', 'British', 'man'], bm_fable: ['Fable', 'British', 'man'],
+};
+const isKokoro = (id) => Object.prototype.hasOwnProperty.call(KOKORO_VOICES, id);
+/* Narration voice: Automatic (Kokoro for English, chosen by each Voice's language; Piper for other languages), one of the natural English
+   voices, or the fast Piper voices. neural: on a Voice in the code still wins */
+{ const sel = $('expVoice'), grp = (label, ids) => `<optgroup label="${label}">` + ids.map(id => `<option value="${id}">${KOKORO_VOICES[id][0]} · ${KOKORO_VOICES[id][2]}</option>`).join('') + '</optgroup>';
+  const ids = Object.keys(KOKORO_VOICES);
+  sel.innerHTML = '<option value="">Automatic</option>' + grp('Natural · American English', ids.filter(i => i[0] === 'a')) + grp('Natural · British English', ids.filter(i => i[0] === 'b'))
+    + '<optgroup label="Other"><option value="piper" title="Piper voices: every language, smaller download, plainer sound">Fast · every language</option></optgroup>'; }
+function syncVoiceRow() {
+  const f = S.exportFormat || 'mp4', vid = f === 'mp4' || f === 'webm';
+  $('voiceRow').hidden = !vid || S.exportSpeak === false || $('sayRow').hidden;
+  $('expVoice').value = isKokoro(S.exportVoice) || S.exportVoice === 'piper' ? S.exportVoice : '';
+  syncSections();
+}
+$('expVoice').addEventListener('change', () => { S.exportVoice = $('expVoice').value; saveSettings(); checkStale(); stopListen(); syncSections(); });
+/* the export panel's sections: hidden when they have nothing to show, with a one-line summary when closed; open or closed is remembered */
+const voiceLabel = (id) => isKokoro(id) ? KOKORO_VOICES[id][0] : id === 'piper' ? 'fast voice' : 'automatic voice';
+function syncSections() {
+  const vis = (id) => !$(id).hidden, f = S.exportFormat || 'mp4', vid = f === 'mp4' || f === 'webm';
+  $('secSay').hidden = !vis('sayRow'); $('secSnd').hidden = !vis('soundRow') && !vis('levelRow');
+  const [W, H] = (() => { try { const p = exportPlan(); return [p.W, p.H]; } catch (e) { return [0, 0]; } })();
+  $('sumPic').textContent = [W && `${W}×${H}`, `${$('gifFps').value} fps`, !$('qualRow').hidden && $('vidQ').selectedOptions[0] && $('vidQ').selectedOptions[0].textContent.replace(/ \(.*\)/, '')].filter(Boolean).join(' · ');
+  const nl = (($('sayNote').textContent.match(/^\d+/) || [])[0]) || '';
+  $('sumSay').textContent = [nl && `${nl} line${nl === '1' ? '' : 's'}`, 'captions', vid && (S.exportSpeak !== false ? `spoken: ${voiceLabel(S.exportVoice)}` : 'not spoken')].filter(Boolean).join(' · ');
+  $('sumSnd').textContent = !$('expSound').checked ? 'no sound' : vis('levelRow') ? `${$('expLoud').selectedOptions[0].textContent} level` : 'included';
+}
+for (const id of ['secPic', 'secSay', 'secSnd']) {
+  const d = $(id), want = (S.exportOpen || {})[id]; if (want !== undefined) d.open = want;
+  d.addEventListener('toggle', () => { S.exportOpen = { ...(S.exportOpen || {}), [id]: d.open }; saveSettings(); });
+}
+/* Sample: one sentence in the chosen voice (for Automatic, the voice the project's first narrator gets), at the export's speech level */
+let sampleBusy = false, sampleSrc = null;
+$('voiceSample').addEventListener('click', async () => {
+  if (sampleSrc) { try { sampleSrc.stop(); } catch (e) {} sampleSrc = null; $('voiceSample').textContent = 'Sample'; return; }
+  if (sampleBusy) { cancelSpeechJob(); return; }
+  if (exporting || listenBusy || !model) return;
+  const b = $('voiceSample'), note = (m) => { $('gifNote').textContent = m; };
+  const v = model && model.voices && [...model.voices.values()][0], lang = String(v && v.voice || 'en-US').toLowerCase();
+  const id = S.exportVoice === 'piper' ? piperVoiceFor(lang) : isKokoro(S.exportVoice) && /^en\b/.test(lang) ? S.exportVoice : neuralVoiceId(v ? { ...v, neural: null } : null);
+  const text = /^en\b/.test(lang) || isKokoro(id) ? 'This is how the narration will sound in your video.' : (model.sayEvents[0] && model.sayEvents[0].text) || 'GearScript';
+  sampleBusy = true; b.textContent = 'Cancel'; b.title = 'Stop making the sample'; $('gifGo').disabled = true; $('expListen').disabled = true;
+  const job = beginSpeechJob(null, { noFallback: true }); let used = id;
+  try {
+    const key = id + '|sample|' + text;
+    if (!neuralCache.has(key)) { note(isKokoro(id) ? `Making the sample with ${KOKORO_VOICES[id][0]}…` : 'Making the sample…'); neuralCache.set(key, await speakClip(job, id, text, v ? v.rate : 1, note)); }
+    const clip = neuralCache.get(key), c = audioCtx(); if (!c) { note('This browser cannot play sound here.'); return; } if (c.state !== 'running') await c.resume().catch(() => {});
+    const d = GearScript.normalizeClip(clip.data, clip.sr, -16), buf = c.createBuffer(1, d.length, clip.sr); buf.copyToChannel(d, 0);
+    const src = c.createBufferSource(); src.buffer = buf; src.connect(c.destination); src.onended = () => { if (sampleSrc === src) { sampleSrc = null; b.textContent = 'Sample'; } };
+    src.start(); sampleSrc = src; b.textContent = 'Stop'; note(`Voice: ${isKokoro(used) ? KOKORO_VOICES[used][0] + ' (natural)' : used + ' (fast)'}.`);
+  } catch (e) { if (e.cancelled) note('Sample cancelled.'); else if (e.kokoro) { console.error(e); note(`The natural voice ${KOKORO_VOICES[id][0]} could not load: ${String(e.message).slice(0, 160).replace(/\.+$/, '')}. An export would use the fast voice ${kokoroToPiper(id)} instead.`); } else { console.error(e); note('Could not make the voice: ' + String(e.message || e).slice(0, 160)); } }
+  finally { endSpeechJob(); sampleBusy = false; b.title = 'Hear a short sentence in this voice'; if (!sampleSrc) b.textContent = 'Sample'; $('expListen').disabled = false; $('gifGo').disabled = exporting || (S.exportFormat !== 'gif' && S.exportFormat !== 'png' && !('VideoEncoder' in window)); }
+});
 /* Audio level: shown for a video with sound or spoken lines; the balance only when there are both */
 function syncLevelRow() {
   const f = S.exportFormat || 'mp4', vid = f === 'mp4' || f === 'webm';
@@ -10315,37 +10394,60 @@ function syncLevelRow() {
   const snd = ms.some(m => m.soundEvents && m.soundEvents.some(e => !e.speech)), say = S.exportSpeak !== false && ms.some(m => m.sayEvents && m.sayEvents.length);
   $('levelRow').hidden = !vid || !$('expSound').checked || !(snd || say); $('balWrap').hidden = !(snd && say);
   $('expLoud').value = ['quiet', 'standard', 'loud'].includes(S.exportLoud) ? S.exportLoud : 'standard'; $('expBal').value = +S.exportBal || 0;
+  syncSections();
 }
-$('expLoud').addEventListener('change', () => { S.exportLoud = $('expLoud').value; saveSettings(); checkStale(); stopListen(); });
+$('expLoud').addEventListener('change', () => { S.exportLoud = $('expLoud').value; saveSettings(); checkStale(); stopListen(); syncSections(); });
 $('expBal').addEventListener('input', () => { S.exportBal = +$('expBal').value; checkStale(); stopListen(); });
 $('expBal').addEventListener('change', () => saveSettings());
 /* Listen: a few seconds of the export's own sound track (the neural voice too, when ticked), from its first sound, at the export's level.
    It plays past the studio's volume control, which does not change exports */
 let listenSrc = null, listenBusy = false, listenCache = { key: null, mix: null };
 function stopListen() { if (listenSrc) { try { listenSrc.stop(); } catch (e) {} listenSrc = null; } $('expListen').textContent = 'Listen'; }
+/* the first LISTEN_SECS of sound: from just before the first sound or spoken line. Only the lines in that stretch are spoken, so Listen does
+   not wait for the whole narration; that stretch is brought to the export's level on its own, which is close to the full track's */
+const LISTEN_SECS = 8;
+function firstSoundAt(ms, offs) {
+  let t0 = Infinity;
+  ms.forEach((m, i) => { const o = offs ? offs[i] : 0; for (const e of m.soundEvents || []) t0 = Math.min(t0, o + e.t); if (S.exportSpeak !== false) for (const e of m.sayEvents || []) t0 = Math.min(t0, o + e.t); });
+  return isFinite(t0) ? Math.max(0, t0 - 0.3) : null;
+}
 async function exportMixNow(note) {
   const key = exportSig(); if (listenCache.key === key) return listenCache.mix;
-  const mix = await withFilmExport(async () => filmExp ? filmAudio(filmExp.ft.total, note) : withNeuralSpeech(async () => GearScript.masterMix(...modelMix(model.duration), 48000, exportMaster()), note));
+  const sr = 48000;
+  const mix = await withFilmExport(async () => {
+    let t0, LR;
+    if (filmExp) {
+      t0 = firstSoundAt(filmExp.models, filmExp.ft.list.map(c => c.s)); if (t0 === null) return null;
+      LR = await filmAudio(filmExp.ft.total, note, [t0, t0 + LISTEN_SECS]);
+    } else {
+      t0 = firstSoundAt([model]); if (t0 === null) return null;
+      LR = await withNeuralSpeech(async () => modelMix(model.duration), note, [t0, t0 + LISTEN_SECS]);
+    }
+    const a = Math.round(t0 * sr), b = Math.min(LR[0].length, a + LISTEN_SECS * sr); if (b <= a) return null;
+    const out = GearScript.masterMix(LR[0].slice(a, b), LR[1].slice(a, b), sr, exportMaster()); out.t0 = t0; return out;
+  });
   if (!filmExportOn() && model) frame(t);
   listenCache = { key, mix }; return mix;
 }
 $('expListen').addEventListener('click', async () => {
   if (listenSrc) { stopListen(); return; }
-  if (listenBusy || exporting || !model) return;
+  if (listenBusy) { cancelSpeechJob(); return; }
+  if (exporting || sampleBusy || !model) return;
   if (playing) setPlay(false);
   const b = $('expListen'), note = (msg) => { $('gifNote').textContent = msg; };
-  listenBusy = true; b.disabled = true; b.textContent = 'Preparing…'; $('gifGo').disabled = true;
+  listenBusy = true; b.textContent = 'Preparing…'; $('gifGo').disabled = true; $('voiceSample').disabled = true;
+  /* while lines are being spoken, the button cancels */
+  beginSpeechJob((on) => { b.textContent = on ? 'Cancel' : 'Preparing…'; });
   try {
-    const [L, R] = await exportMixNow(note), sr = 48000; let s0 = 0;
-    while (s0 < L.length && Math.abs(L[s0]) < 0.003 && Math.abs(R[s0]) < 0.003) s0++;
-    if (s0 >= L.length) { note('The export has no sound to play.'); return; }
-    s0 = Math.max(0, s0 - Math.round(0.3 * sr)); const n = Math.min(L.length - s0, 8 * sr);
+    const mix = await exportMixNow(note), sr = 48000;
+    if (!mix || !mix[0].some((x, i) => Math.abs(x) > 1e-4 || Math.abs(mix[1][i]) > 1e-4)) { note('The export has no sound to play.'); return; }
+    const [L, R] = mix, s0 = 0, n = L.length;
     const c = audioCtx(); if (!c) { note('This browser cannot play sound here.'); return; } if (c.state !== 'running') await c.resume().catch(() => {});
     const buf = c.createBuffer(2, n, sr); buf.copyToChannel(L.subarray(s0, s0 + n), 0); buf.copyToChannel(R.subarray(s0, s0 + n), 1);
     const src = c.createBufferSource(); src.buffer = buf; src.connect(c.destination); src.onended = () => { if (listenSrc === src) stopListen(); };
-    src.start(); listenSrc = src; b.textContent = 'Stop'; note(`Playing ${(n / sr).toFixed(0)} s from ${(s0 / sr).toFixed(1)} s, as the video will sound.`);
-  } catch (e) { console.error(e); note('Could not prepare the sound: ' + String(e.message || e).slice(0, 100)); }
-  finally { listenBusy = false; b.disabled = false; if (!listenSrc) b.textContent = 'Listen'; $('gifGo').disabled = exporting || (S.exportFormat !== 'gif' && S.exportFormat !== 'png' && !('VideoEncoder' in window)); }
+    src.start(); listenSrc = src; b.textContent = 'Stop'; note(`Playing ${(n / sr).toFixed(0)} s from ${mix.t0.toFixed(1)} s, as the video will sound.`);
+  } catch (e) { if (e.cancelled) note('Listen cancelled.'); else { console.error(e); note('Could not prepare the sound: ' + String(e.message || e).slice(0, 100)); } }
+  finally { endSpeechJob(); listenBusy = false; $('voiceSample').disabled = false; if (!listenSrc) b.textContent = 'Listen'; $('gifGo').disabled = exporting || (S.exportFormat !== 'gif' && S.exportFormat !== 'png' && !('VideoEncoder' in window)); }
 });
 /* SubRip captions from the spoken lines, for YouTube, video editors and players */
 const capTime = (x, sep) => { const ms = Math.round(x * 1000), h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s2 = Math.floor(ms / 1000) % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s2).padStart(2, '0')}${sep}${String(ms % 1000).padStart(3, '0')}`; };
@@ -10451,8 +10553,8 @@ async function encodeVideoFrames(M, f, W, H, fps, n, quality, progress) {
   muxer.finalize();
   return new Blob([muxer.target.buffer], { type: f === 'mp4' ? 'video/mp4' : 'video/webm' });
 }
-/* ---------------- neural speech for exports (Piper, MIT; run in the browser by ONNX Runtime). Untested here: the voices download from
-   huggingface.co the first time and are kept in the browser's private storage. Each line becomes an audio clip mixed in like a Sound ---------------- */
+/* ---------------- neural speech for exports: Kokoro for English, Piper (MIT) for other languages, both run in the browser by ONNX Runtime.
+   The voices download from huggingface.co the first time and are kept by the browser. Each line becomes an audio clip mixed in like a Sound ---------------- */
 const PIPER_URL = 'https://cdn.jsdelivr.net/npm/@mintplex-labs/piper-tts-web@1.0.5/+esm';
 let piperMod = null, piperWasm = null, piperVoice = null; const neuralCache = new Map();
 /* The package loads ONNX Runtime with import('onnxruntime-web/wasm'), which the CDN bundle resolves to the newest 1.x release, but its default
@@ -10465,36 +10567,131 @@ async function piperLoad() {
   piperWasm = { onnxWasm: ver ? `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ver}/dist/` : mod.ONNX_BASE, piperData: mod.WASM_BASE + '.data', piperWasm: mod.WASM_BASE + '.wasm' };
   piperMod = mod; return mod;
 }
-function neuralVoiceId(v) {
-  if (v && v.neural) return v.neural; const l = String(v && v.voice || 'en-US').toLowerCase().replace('_', '-');
+/* Kokoro runs in its own background thread (a Web Worker): the page stays responsive while lines are made, and the voice's memory
+   lives in the worker. Its WebAssembly memory only grows as it speaks and is never handed back, which ran the tab out of memory (Chrome
+   reports that as SIGILL), so the worker is closed after every batch (an export's chapter, a Listen, a Sample) and replaced every
+   KOKORO_RECYCLE lines, and the memory goes back with it. Kokoro and Piper are never loaded at the same time: the worker is closed first */
+const KOKORO_RECYCLE = 16;
+function kokoroWorkerMain() {
+  let tts = null;
+  self.onmessage = async (e) => {
+    const { req, url, model, text, voice, speed } = e.data, post = (m, t) => self.postMessage(m, t || []);
+    try {
+      if (!tts) {
+        const mod = await import(url), files = new Map();
+        tts = await mod.KokoroTTS.from_pretrained(model, { dtype: 'q8', device: 'wasm', progress_callback: (pr) => {
+          if (!pr || pr.status !== 'progress' || !pr.total) return; files.set(pr.file, [pr.loaded, pr.total]);
+          let a = 0, b = 0; for (const [l, t] of files.values()) { a += l; b += t; } post({ req, progress: a / b }); } });
+      }
+      /* the model reads at most about 500 sounds at once: long lines go sentence by sentence, with a short pause between */
+      const sents = String(text).match(/[^.!?;]+[.!?;]*["')\]]*\s*|.+$/g) || [String(text)], chunks = []; let chunk = '';
+      for (const x of sents) { if ((chunk + x).length > 240 && chunk.trim()) { chunks.push(chunk); chunk = ''; } chunk += x; }
+      if (chunk.trim()) chunks.push(chunk);
+      let sr = 24000; const parts = [];
+      for (const c of chunks) { const r = await tts.generate(c.trim(), { voice, speed }); sr = r.sampling_rate || sr; parts.push(r.audio); }
+      const gap = Math.round(0.18 * sr), n = parts.reduce((x, y) => x + y.length, 0) + gap * Math.max(0, parts.length - 1), data = new Float32Array(n);
+      let o = 0; parts.forEach((pt, i) => { data.set(pt, o); o += pt.length + (i < parts.length - 1 ? gap : 0); });
+      post({ req, sr, data }, [data.buffer]);
+    } catch (err) { post({ req, error: String(err && err.message || err) }); }
+  };
+}
+class KokoroWorker {
+  constructor() {
+    const url = URL.createObjectURL(new Blob(['(' + kokoroWorkerMain.toString() + ')()'], { type: 'text/javascript' }));
+    /* the address is let go once the worker has answered or failed: letting it go at once can stop some browsers loading the worker */
+    this.w = new Worker(url, { type: 'module' }); this.url = url; this.n = 0; this.pend = new Map(); this.lines = 0;
+    const free = () => { if (this.url) { URL.revokeObjectURL(this.url); this.url = null; } };
+    this.w.onmessage = (e) => { free(); const m = e.data, p = this.pend.get(m.req); if (!p) return; if (m.progress !== undefined) { p.progress(m.progress); return; } this.pend.delete(m.req); if (m.error) p.reject(new Error(m.error)); else p.resolve({ sr: m.sr, data: m.data }); };
+    this.w.onerror = (e) => { free(); e.preventDefault && e.preventDefault(); this.fail(new Error(e.message || 'the voice worker stopped')); };
+  }
+  speak(text, voice, speed, progress) {
+    this.lines++;
+    return new Promise((resolve, reject) => { const req = ++this.n; this.pend.set(req, { resolve, reject, progress }); this.w.postMessage({ req, url: KOKORO_URL, model: KOKORO_MODEL, text, voice, speed }); });
+  }
+  fail(err) { for (const p of this.pend.values()) p.reject(err); this.pend.clear(); }
+  close(err) { try { this.w.terminate(); } catch (e) {} if (this.url) { URL.revokeObjectURL(this.url); this.url = null; } this.fail(err || new Error('closed')); }
+}
+/* one speech job: an export, a Listen or a Sample. It holds the Kokoro worker, can be cancelled (the Render, Listen or Sample button
+   turns into Cancel while lines are being made), and notes a Kokoro failure so the rest of the job uses Piper */
+let speechJob = null;
+const cancelledError = () => Object.assign(new Error('Cancelled'), { cancelled: true });
+function beginSpeechJob(onBusy, opts) {
+  endSpeechJob();
+  const job = { cancelled: false, worker: null, kokoroFailed: false, busy: false, onBusy: onBusy || null, fallback: !(opts && opts.noFallback) };
+  job.cancelP = new Promise((_, rej) => { job.rejectCancel = rej; }); job.cancelP.catch(() => {});
+  speechJob = job; return job;
+}
+function dropKokoroWorker(job) { if (job && job.worker) { job.worker.close(job.cancelled ? cancelledError() : null); job.worker = null; } }
+function endSpeechJob() { if (speechJob) { dropKokoroWorker(speechJob); speechJob = null; } }
+function cancelSpeechJob() { if (speechJob) { speechJob.cancelled = true; dropKokoroWorker(speechJob); speechJob.rejectCancel(cancelledError()); } }
+function speechBusy(job, on) { if (job.busy === on) return; job.busy = on; if (job.onBusy) job.onBusy(on); }
+function piperVoiceFor(lang) {
+  const l = String(lang || 'en-US').toLowerCase().replace('_', '-');
   const map = [['en-gb', 'en_GB-alan-medium'], ['en-in', 'en_GB-alan-medium'], ['en-au', 'en_GB-alba-medium'], ['en', 'en_US-hfc_female-medium'], ['de', 'de_DE-thorsten-medium'], ['fr', 'fr_FR-siwis-medium'], ['es-mx', 'es_MX-claude-high'], ['es', 'es_ES-davefx-medium'], ['it', 'it_IT-riccardo-x_low'], ['pt-br', 'pt_BR-faber-medium'], ['pt', 'pt_PT-tugão-medium'], ['nl', 'nl_NL-mls-medium'], ['pl', 'pl_PL-gosia-medium'], ['ru', 'ru_RU-irina-medium'], ['uk', 'uk_UA-ukrainian_tts-medium'], ['tr', 'tr_TR-dfki-medium'], ['zh', 'zh_CN-huayan-medium'], ['vi', 'vi_VN-vais1000-medium'], ['ne', 'ne_NP-google-medium'], ['sv', 'sv_SE-nst-medium'], ['fi', 'fi_FI-harri-medium'], ['cs', 'cs_CZ-jirka-medium'], ['ro', 'ro_RO-mihai-medium'], ['hu', 'hu_HU-anna-medium']];
   const hit = map.find(([k]) => l.startsWith(k)); return hit ? hit[1] : 'en_US-hfc_female-medium';
 }
-async function neuralClips(progress) {
-  const mod = await piperLoad(), out = [];
-  for (let i = 0; i < model.sayEvents.length; i++) {
-    const ev = model.sayEvents[i], v = ev.voice && model.voices.get(ev.voice), id = neuralVoiceId(v), key = id + '|' + ev.text;
-    if (!neuralCache.has(key)) {
-      progress(`Speaking line ${i + 1} of ${model.sayEvents.length} (${id})…`);
-      /* the package keeps one session and would reuse the first voice's model for every voice, and a session that failed to start stays
-         broken: start a new one for a new voice, and after a failure */
-      if (piperVoice !== id) { mod.TtsSession._instance = null; piperVoice = id; }
-      let wav;
-      try { const sess = await mod.TtsSession.create({ voiceId: id, wasmPaths: piperWasm, progress: (pr) => { if (pr && pr.total) progress(`Downloading the ${id} voice: ${Math.round(pr.loaded * 100 / pr.total)}%`); } }); wav = await sess.predict(ev.text); }
-      catch (e) { mod.TtsSession._instance = null; piperVoice = null; throw e; }
-      const a = await decodeAudioFile(new Uint8Array(await wav.arrayBuffer()));
-      neuralCache.set(key, { sr: a.sr, data: GearScript.normalizeClip(a.data, a.sr) });   /* the voice model speaks quietly and unevenly: every line at one level */
-    }
-    out.push({ ev, pcm: neuralCache.get(key), vol: v ? v.volume : 1, rate: v ? v.rate : 1 });
-  }
-  return out;
+/* the voice a line is spoken with: neural: on the Voice wins; then the export panel's choice; then, for English, Kokoro (American or British
+   from the Voice's language), and Piper for other languages. A Kokoro voice is only used for English lines */
+function neuralVoiceId(v) {
+  if (v && v.neural) return v.neural;
+  const lang = String(v && v.voice || 'en-US').toLowerCase().replace('_', '-'), en = /^en\b/.test(lang) || !/^[a-z]{2}(-|$)/.test(lang);
+  const pick = S.exportVoice || '';
+  if (!en || pick === 'piper') return piperVoiceFor(lang);
+  if (isKokoro(pick)) return pick;
+  return /^en-(us|ca)\b/.test(lang) || lang === 'en' ? 'af_heart' : 'bf_emma';
 }
-/* while a video renders: each spoken line as a temporary Sound and event, removed afterwards */
-async function withNeuralSpeech(fn, note) {
+const kokoroToPiper = (id) => id[0] === 'b' ? 'en_GB-alan-medium' : 'en_US-hfc_female-medium';
+/* one line as a clip { sr, data }, brought to a set level. rate is the Voice's rate (Kokoro speaks faster or slower; Piper has no speed) */
+async function speakClip(job, id, text, rate, progress0) {
+  if (job.cancelled) throw cancelledError();
+  const progress = (m) => { if (!job.cancelled) progress0(m); };   /* a download still running after Cancel must not write over "cancelled" */
+  if (isKokoro(id) && !job.kokoroFailed) {
+    try {
+      if (job.worker && job.worker.lines >= KOKORO_RECYCLE) dropKokoroWorker(job);
+      if (!job.worker) job.worker = new KokoroWorker();
+      const r = await job.worker.speak(String(text), id, Math.max(0.5, Math.min(2, rate || 1)), (x) => progress(`Downloading the natural voice: ${Math.round(x * 100)}%`));
+      return { sr: r.sr, data: GearScript.normalizeClip(r.data, r.sr), voice: id };
+    } catch (e) {
+      if (job.cancelled) throw cancelledError();
+      console.error('Kokoro', e); job.kokoroFailed = true; job.kokoroError = String(e.message || e); dropKokoroWorker(job);
+      /* Sample previews the chosen voice, so it says why it failed instead of playing another voice; an export goes on with the fast voice */
+      if (!job.fallback) throw Object.assign(new Error(job.kokoroError), { kokoro: true });
+      toast(`The natural voice ${KOKORO_VOICES[id][0]} could not load (${job.kokoroError.slice(0, 90).replace(/\.+$/, '')}). The lines use the fast voice ${kokoroToPiper(id)} instead.`, 9000);
+    }
+  }
+  const pid = isKokoro(id) ? kokoroToPiper(id) : id, mod = await Promise.race([piperLoad(), job.cancelP]);
+  /* the package keeps one session and would reuse the first voice's model for every voice, and a session that failed to start stays
+     broken: start a new one for a new voice, and after a failure */
+  if (piperVoice !== pid) { mod.TtsSession._instance = null; piperVoice = pid; }
+  let wav;
+  /* Piper's download cannot be stopped: on Cancel the wait ends at once and the download finishes unseen, kept for next time */
+  try { wav = await Promise.race([(async () => { const sess = await mod.TtsSession.create({ voiceId: pid, wasmPaths: piperWasm, progress: (pr) => { if (pr && pr.total) progress(`Downloading the ${pid} voice: ${Math.round(pr.loaded * 100 / pr.total)}%`); } }); return sess.predict(text); })(), job.cancelP]); }
+  catch (e) { if (e.cancelled) throw e; mod.TtsSession._instance = null; piperVoice = null; throw e; }
+  const a = await decodeAudioFile(new Uint8Array(await wav.arrayBuffer()));
+  return { sr: a.sr, data: GearScript.normalizeClip(a.data, a.sr), voice: pid };   /* the voice model speaks quietly and unevenly: every line at one level */
+}
+/* every line of the current model as a clip; with win = [t0, t1], only the lines heard in that stretch (Listen plays a few seconds).
+   Uses the current speech job, or one of its own; the Kokoro worker is closed at the end, so its memory goes back */
+async function neuralClips(progress, win) {
+  const own = !speechJob, job = speechJob || beginSpeechJob();
+  const out = [], evs = model.sayEvents.filter(ev => !win || (ev.t < win[1] && ev.t + (ev.est || 4) + 1 > win[0]));
+  try {
+    for (let i = 0; i < evs.length; i++) {
+      const ev = evs[i], v = ev.voice && model.voices.get(ev.voice), id = neuralVoiceId(v), rate = v ? v.rate : 1, key = id + '|' + (isKokoro(id) ? rate : 1) + '|' + ev.text;
+      /* a line spoken by the fast voice in place of a natural one is not kept under the natural voice's name, so it is made again
+         with the right voice next time */
+      let clip = neuralCache.get(key);
+      if (!clip) { speechBusy(job, true); progress(`Speaking line ${i + 1} of ${evs.length}…`); clip = await speakClip(job, id, ev.text, rate, progress); if (clip.voice === id) neuralCache.set(key, clip); }
+      out.push({ ev, pcm: clip, vol: v ? v.volume : 1 });
+    }
+    return out;
+  } finally { dropKokoroWorker(job); speechBusy(job, false); if (own) endSpeechJob(); }
+}
+async function withNeuralSpeech(fn, note, win) {
   if (!(S.exportSpeak !== false && model && model.sayEvents && model.sayEvents.length)) return fn();
-  let clips; try { clips = await neuralClips(note); } catch (e) { console.error('neural speech', e); toast('Could not make the neural voice (' + String(e.message || e).slice(0, 80) + '); the video has captions only', 6000); return fn(); }
+  let clips; try { clips = await neuralClips(note, win); } catch (e) { if (e.cancelled) throw e; console.error('neural speech', e); toast('Could not make the neural voice (' + String(e.message || e).slice(0, 80) + '); the video has captions only', 6000); return fn(); }
   const added = [];
-  clips.forEach(({ ev, pcm, vol, rate }, i) => { const name = `__say${i}`; GearScript.audio[name] = pcm; model.sounds.set(name, { name, kind: null, src: name, pitch: 1, volume: 1, length: null }); const e2 = { t: ev.t, sound: name, volume: vol, target: null, speech: true }; model.soundEvents.push(e2); added.push([name, e2]); });
+  clips.forEach(({ ev, pcm, vol }, i) => { const name = `__say${i}`; GearScript.audio[name] = pcm; model.sounds.set(name, { name, kind: null, src: name, pitch: 1, volume: 1, length: null }); const e2 = { t: ev.t, sound: name, volume: vol, target: null, speech: true }; model.soundEvents.push(e2); added.push([name, e2]); });
   model.soundEvents.sort((a, b) => a.t - b.t);
   try { return await fn(); } finally { for (const [name, e2] of added) { delete GearScript.audio[name]; model.sounds.delete(name); const k = model.soundEvents.indexOf(e2); if (k >= 0) model.soundEvents.splice(k, 1); } }
 }
@@ -10592,7 +10789,8 @@ function exportSource() {
 }
 const SS_FOR_QUALITY = (q) => (q >= 1 ? 2 : 1);   /* Standard and High render at 2× and scale down (when it fits); Smaller file at 1× */
 $('gifGo').addEventListener('click', async () => {
-  if (!model || exporting || listenBusy) return; stopListen();
+  if (speechJob && speechJob.busy && !listenBusy && !sampleBusy) { cancelSpeechJob(); return; }   /* Cancel, while the voice is speaking the lines */
+  if (!model || exporting || listenBusy || sampleBusy) return; stopListen();
   if (lastDiags.some(d => d.sev === 'error' && (filmExportOn() || d.file !== 'film'))) { $('gifNote').textContent = filmExportOn() ? 'Fix the errors in every chapter first; the export uses the current code.' : 'Fix the errors first; the export uses the current code.'; return; }
   const { f, W, H, fps, n } = exportPlan(); const q = +$('vidQ').value || 1;
   if (f === 'html') {
@@ -10603,6 +10801,7 @@ $('gifGo').addEventListener('click', async () => {
   $('gifGo').disabled = true; $('gifNote').textContent = ''; delete $('gifNote').dataset.done; $('gifNote').classList.remove('outdated'); $('staleMark').hidden = true; $('sheet').classList.remove('outofdate'); $('gifSave').hidden = true; $('gifSave').disabled = false; outSig = null; $('gifImg').hidden = true; $('vidOut').hidden = true; $('gifBar').hidden = false; $('gifNote').textContent = 'Rendering frames…';
   const bar = (x) => { $('gifBar').firstElementChild.style.width = Math.round(x * 100) + '%'; };
   const t0 = performance.now();
+  beginSpeechJob((on) => { const g = $('gifGo'); g.disabled = !on; g.textContent = on ? 'Cancel' : 'Render'; g.classList.toggle('primary', !on); });
   try {
     outBlob = await withFilmExport(() => withExportSize(W, H, () => f === 'gif' ? encodeGifBlob(W, H, fps, n, bar) : f === 'png' ? encodePngZip(W, H, fps, n, bar) : encodeVideo(f, W, H, fps, n, q, bar), f === 'gif' ? 2 : f === 'png' ? 2 : SS_FOR_QUALITY(q)));
     outExt = f === 'png' ? 'zip' : f; bar(1);
@@ -10614,7 +10813,8 @@ $('gifGo').addEventListener('click', async () => {
     const au = (f === 'mp4' || f === 'webm') ? encodeVideoFrames.lastAudio : null;
     $('gifNote').textContent = `${f === 'png' ? 'PNG frames' : f.toUpperCase()} · ${W}×${H} · ${n} frames${f === 'png' && bgClear ? ' · transparent' : ''}${au === 'aac' || au === 'opus' ? ` · sound (${au === 'aac' ? 'AAC' : 'Opus'})` : au === 'unsupported' ? ' · no sound: this browser cannot encode audio' : ''}${(f === 'mp4' || f === 'webm') && encodeVideoFrames.lastHw === 'no-preference' ? ' · GPU encoder (this browser has no software one at this size, so fine detail may be softer; try WebM or a smaller width)' : ''} · ${kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB'} · made in ${((performance.now() - t0) / 1000).toFixed(1)} s`;
     $('gifSave').textContent = f === 'png' ? 'Save .zip' : `Save ${f.toUpperCase()}`; $('gifSave').hidden = false; outSig = exportSig(); $('gifGo').textContent = 'Render';
-  } catch (e) { console.error(e); $('gifNote').textContent = 'Export failed: ' + e.message; }
+  } catch (e) { if (e.cancelled) $('gifNote').textContent = 'Cancelled.'; else { console.error(e); $('gifNote').textContent = 'Export failed: ' + e.message; } }
+  endSpeechJob(); $('gifGo').textContent = 'Render'; $('gifGo').classList.add('primary');
   $('gifGo').disabled = false; setTimeout(() => $('gifBar').hidden = true, 600);
 });
 $('gifSave').addEventListener('click', () => { checkStale(); if ($('gifSave').disabled) return; saveExport(); });

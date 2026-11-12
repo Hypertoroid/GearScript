@@ -1084,8 +1084,8 @@
     },
     {
      "name": "neural",
-     "example": "neural: en_GB-alan-medium;",
-     "doc": "Voice: the neural voice used when an export speaks the lines (Piper voices; left out, one is picked from voice)"
+     "example": "neural: bf_emma;",
+     "doc": "Voice: the voice used when an export speaks the lines: a natural English voice (af_heart, af_bella, am_michael, bf_emma, bm_george …) or a Piper voice for other languages (de_DE-thorsten-medium …); left out, the export panel picks"
     },
     {
      "name": "rate",

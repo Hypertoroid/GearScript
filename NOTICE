@@ -15,9 +15,15 @@ This product includes or loads third-party software under its own licence:
   3D letter outlines (vendor/fonts3d.js):     Helvetiker and Optimer under the MgOpen licence;
     Droid Sans Mono under the Apache License 2.0; see vendor/FONTS3D-LICENSE.txt
     (loaded only when a project uses font-style: 3d)
+  kokoro-js 1.2.1 (bundles Transformers.js     Apache License 2.0; the Kokoro-82M model and its voices
+    and phonemizer)                            (hexgrad/Kokoro-82M, onnx-community/Kokoro-82M-v1.0-ONNX)
+                                               under the Apache License 2.0
   piper-tts-web 1.0.5 and ONNX Runtime Web     MIT License; Piper voices (rhasspy/piper-voices) under
-    their own licences, listed in each voice's MODEL_CARD (loaded from cdn.jsdelivr.net and
-    huggingface.co only when an export speaks say: lines)
+                                               their own licences, listed in each voice's MODEL_CARD
+    Both turn text into phonemes with eSpeak NG (GPL-3.0-or-later), compiled to WebAssembly inside
+    those packages. None of these files is part of GearScript or this repository: they are loaded
+    from cdn.jsdelivr.net and huggingface.co, only when an export speaks say: lines or the export
+    panel's Sample or Listen button is pressed.
 
   Video fonts (vendor/fonts/*.js): Inter, Montserrat, Oswald, Bebas Neue, Playfair Display,
     Space Grotesk, Caveat, JetBrains Mono and Noto Sans Devanagari, from Fontsource, under the

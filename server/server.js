@@ -180,7 +180,7 @@ function serveStatic(req, res, url) {
 }
 
 /* ---------- server ---------- */
-/* the neural voice for video exports (Piper, in the browser) compiles WebAssembly ('wasm-unsafe-eval'), may start workers, fetches its runtime
+/* the neural voice for video exports (Kokoro and Piper, in the browser) compiles WebAssembly ('wasm-unsafe-eval'), may start workers, fetches its runtime
    from the CDNs and the voice model from huggingface.co (connect-src) */
 const SECURITY_HEADERS = {
   'X-Content-Type-Options': 'nosniff',

@@ -302,6 +302,8 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 .saynote { font-size: 12px; color: var(--muted); line-height: 1.45; }
 #sheet .sayrow { align-items: flex-start; gap: 4px 14px; }
 #sheet .sayrow .saynote { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
+#sheet .levelctl { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px 12px; }
+#sheet .levelctl .bal { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: var(--muted); } #sheet .levelctl .bal[hidden] { display: none; } #sheet .levelctl input[type=range] { width: 96px; } #sheet .levelctl select { width: auto; min-width: 0; flex: 0 0 auto; }
 #sheet .sayrow .check { margin: 0; color: var(--fg); } #sheet .sayrow .check small { display: block; color: var(--muted); font-size: 11px; }
 .capbar { position: absolute; z-index: 3; transform: translateX(-50%); max-width: 86%; padding: .35em .7em; border-radius: 8px; background: rgba(10,14,20,.74); color: #fff; font: 500 15px/1.35 var(--font-ui); text-align: center; pointer-events: none; text-wrap: balance; }
 .stale {
@@ -980,13 +982,18 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
         </div></div>
         <div class="row" id="chapListRow" hidden><span>Chapters</span><span class="saynote"><button type="button" class="linkbtn" id="chapListBtn" title="Times and titles, ready to paste into a YouTube description: it turns them into chapters">Copy the chapter list</button></span></div>
         <div class="row" id="soundRow" hidden><span>Sound</span><label class="check" style="margin:0"><input type="checkbox" id="expSound" checked> <span id="expSoundLbl">Include the project's sounds</span></label></div>
+        <div class="row" id="levelRow" hidden><span>Audio level</span><div class="levelctl">
+          <select id="expLoud" aria-label="Loudness" title="How loud the whole sound track is. Every export is brought to this level, so it is clearly audible: Standard suits YouTube and most players"><option value="quiet">Quieter</option><option value="standard">Standard</option><option value="loud">Louder</option></select>
+          <label class="bal" id="balWrap" title="Spoken lines against the other sounds: move right to bring the voice forward"><span>Sounds</span><input type="range" id="expBal" min="-12" max="12" step="1" aria-label="Voice and sounds balance"><span>Voice</span></label>
+          <button class="btn" id="expListen" type="button" title="Plays a few seconds of the exported sound, at the level the video will have">Listen</button>
+        </div></div>
         <div class="row"><span>Length</span><span id="gifLen" class="time"></span></div>
         </div>
         <div class="note" id="fmtNote"></div>
         <div class="bar" id="gifBar" hidden><i></i></div>
         <div class="stalemark" id="staleMark" role="status" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></svg><span><b>Out of date.</b> The code or settings changed after this render. Render again to include the changes.</span></div>
         <img id="gifImg" alt="Exported animation preview" hidden>
-        <video id="vidOut" controls loop muted playsinline hidden></video>
+        <video id="vidOut" controls loop playsinline hidden></video>
         <div class="note" id="gifNote"></div>
         <div class="acts">
           <button class="btn" id="gifClose" type="button">Close</button>
@@ -3797,18 +3804,80 @@ function soundEventsOf(model, sp, warn) {
   const out = []; for (let tt = s; tt < e - 1e-9 && out.length < 4001; tt += every) out.push(mk(tt)); return out;
 }
 /* mixes every event between t0 and t1 into stereo buffers; pan(ev) -> -1..1 may place a sound left or right */
-function mixSounds(model, sr, t0, t1, pan) {
+/* opts.gain(ev, snd) scales one event (the export's voice and sound balance); opts.limit: false leaves the mix unlimited, for masterMix */
+function mixSounds(model, sr, t0, t1, pan, opts = {}) {
   const n = Math.max(1, Math.round((t1 - t0) * sr)), L = new Float32Array(n), R = new Float32Array(n);
   for (const ev of model.soundEvents) {
     if (ev.t < t0 - 600 || ev.t >= t1) continue;
     const snd = model.sounds.get(ev.sound); const buf = synthSound(snd.kind, snd, sr);
     const pp = Math.max(-1, Math.min(1, pan ? pan(ev) || 0 : 0)), gl = Math.cos((pp + 1) * Math.PI / 4) * Math.SQRT2, gr = Math.sin((pp + 1) * Math.PI / 4) * Math.SQRT2;
-    const o = Math.round((ev.t - t0) * sr), g = ev.volume * 0.7;
+    const o = Math.round((ev.t - t0) * sr), g = ev.volume * 0.7 * (opts.gain ? opts.gain(ev, snd) : 1);
     for (let i = Math.max(0, -o); i < buf.length && o + i < n; i++) { L[o + i] += buf[i] * g * gl; R[o + i] += buf[i] * g * gr; }
   }
   /* soft limit, so many overlapping sounds never clip */
-  for (let i = 0; i < n; i++) { L[i] = Math.tanh(L[i]); R[i] = Math.tanh(R[i]); }
+  if (opts.limit !== false) for (let i = 0; i < n; i++) { L[i] = Math.tanh(L[i]); R[i] = Math.tanh(R[i]); }
   return [L, R];
+}
+/* integrated loudness in LUFS (ITU-R BS.1770: K-weighting, 400 ms blocks, absolute and relative gates). R may be null for mono.
+   -Infinity for silence */
+function loudness(L, R, sr) {
+  const kw = (x) => {
+    const y = new Float32Array(x.length);
+    let K = Math.tan(Math.PI * 1681.974450955533 / sr), Q = 0.7071752369554196, Vh = Math.pow(10, 3.999843853973347 / 20), Vb = Math.pow(Vh, 0.4996667741545416), a0 = 1 + K / Q + K * K;
+    const s1 = [(Vh + Vb * K / Q + K * K) / a0, 2 * (K * K - Vh) / a0, (Vh - Vb * K / Q + K * K) / a0, 2 * (K * K - 1) / a0, (1 - K / Q + K * K) / a0];
+    K = Math.tan(Math.PI * 38.13547087602444 / sr); Q = 0.5003270373238773; a0 = 1 + K / Q + K * K;
+    const s2 = [1, -2, 1, 2 * (K * K - 1) / a0, (1 - K / Q + K * K) / a0];
+    let x1 = 0, x2 = 0, y1 = 0, y2 = 0, u1 = 0, u2 = 0, z1 = 0, z2 = 0;
+    for (let i = 0; i < x.length; i++) {
+      const u = s1[0] * x[i] + s1[1] * x1 + s1[2] * x2 - s1[3] * y1 - s1[4] * y2; x2 = x1; x1 = x[i]; y2 = y1; y1 = u;
+      const z = s2[0] * u + s2[1] * u1 + s2[2] * u2 - s2[3] * z1 - s2[4] * z2; u2 = u1; u1 = u; z2 = z1; z1 = z; y[i] = z;
+    }
+    return y;
+  };
+  const chans = (R ? [L, R] : [L]).map(kw), n = L.length, blk = Math.round(0.4 * sr), hop = Math.round(0.1 * sr), zs = [];
+  const sq = chans.map(c => { const a = new Float64Array(n + 1); for (let i = 0; i < n; i++) a[i + 1] = a[i] + c[i] * c[i]; return a; });
+  if (n < blk) { let z = 0; for (const a of sq) z += a[n] / Math.max(1, n); zs.push(z); }
+  else for (let s = 0; s + blk <= n; s += hop) { let z = 0; for (const a of sq) z += (a[s + blk] - a[s]) / blk; zs.push(z); }
+  const lu = (z) => -0.691 + 10 * Math.log10(z), mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
+  const g1 = zs.filter(z => z > 0 && lu(z) > -70); if (!g1.length) return -Infinity;
+  const rel = lu(mean(g1)) - 10, g2 = g1.filter(z => lu(z) > rel);
+  return lu(mean(g2.length ? g2 : g1));
+}
+/* brings a stereo mix to a target loudness (LUFS) and keeps every peak under the ceiling (dBFS) with a look-ahead limiter. In place.
+   Sharp sounds (knocks, clicks) are mostly peak, so limiting lowers the loudness again: up to five more passes make up the difference */
+function masterMix(L, R, sr, { target = -16, ceiling = -1, maxGain = 30 } = {}) {
+  let lu = loudness(L, R, sr), total = 0; if (!isFinite(lu)) return [L, R];
+  for (let pass = 0; pass < 6; pass++) {
+    const db = Math.min(maxGain - total, target - lu); if (pass > 0 && db < 0.3) break;
+    const gain = Math.pow(10, db / 20); total += db;
+    for (let i = 0; i < L.length; i++) { L[i] *= gain; R[i] *= gain; }
+    limitPeaks(L, R, sr, Math.pow(10, ceiling / 20)); lu = loudness(L, R, sr);
+  }
+  return [L, R];
+}
+/* look-ahead peak limiter: the per-sample gain that keeps it under ceil, its minimum over the next 5 ms, averaged over 5 ms (so it is
+   down before the peak arrives), then let back up over about 80 ms. In place */
+function limitPeaks(L, R, sr, ceil) {
+  const n = L.length, W = Math.max(1, Math.round(0.005 * sr)), g = new Float32Array(n), m = new Float32Array(n);
+  let any = false;
+  for (let i = 0; i < n; i++) { const pk = Math.max(Math.abs(L[i]), Math.abs(R[i])); g[i] = pk > ceil ? (any = true, ceil / pk) : 1; }
+  if (!any) return;
+  const dq = new Int32Array(n + 1); let h = 0, t = 0;
+  for (let i = n - 1; i >= 0; i--) { while (t > h && g[dq[t - 1]] >= g[i]) t--; dq[t++] = i; while (dq[h] > i + W) h++; m[i] = g[dq[h]]; }
+  let env = 1, acc = W + 1; const rel = 1 - Math.exp(-1 / (0.08 * sr)), hist = new Float32Array(W + 1).fill(1);
+  for (let i = 0; i < n; i++) {
+    const k = i % (W + 1); acc += m[i] - hist[k]; hist[k] = m[i]; const a = Math.min(m[i], acc / (W + 1));
+    env = a < env ? a : env + (a - env) * rel;
+    L[i] = Math.max(-ceil, Math.min(ceil, L[i] * env)); R[i] = Math.max(-ceil, Math.min(ceil, R[i] * env));
+  }
+}
+/* a mono clip brought to a set loudness, so every spoken line sits at the same level */
+function normalizeClip(data, sr, target = -20) {
+  const lu = loudness(data, null, sr); if (!isFinite(lu)) return data;
+  const g = Math.pow(10, Math.min(30, target - lu) / 20), out = new Float32Array(data.length); let pk = 0;
+  for (let i = 0; i < data.length; i++) { out[i] = data[i] * g; pk = Math.max(pk, Math.abs(out[i])); }
+  if (pk > 0.98) for (let i = 0; i < out.length; i++) out[i] *= 0.98 / pk;
+  return out;
 }
 
 /* ---------- drivers: rotate, orbit, move, along, x / y / z, opacity ---------- */
@@ -4311,7 +4380,7 @@ function filmTimes(chapters, durs) {
   const total = out.length ? out[out.length - 1].s + out[out.length - 1].d : 0;
   return { list: out, total };
 }
-root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, EASINGS, version: '1.0.0-beta' };
+root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, loudness, masterMix, normalizeClip, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, EASINGS, version: '1.0.0-beta' };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -8394,13 +8463,11 @@ async function filmAudio(secs, note) {
     install(models[i]);
     await withNeuralSpeech(async () => {
       if (!model.soundEvents.length) return;
-      const pans = new Map(); for (const ev of model.soundEvents) { frame(Math.min(model.duration, ev.t), true); pans.set(ev, soundPan(ev)); }
-      const [l, r] = GearScript.mixSounds(model, sr, 0, ft.list[i].d, (ev) => pans.get(ev) || 0), o = Math.round(ft.list[i].s * sr);
+      const [l, r] = modelMix(ft.list[i].d), o = Math.round(ft.list[i].s * sr);
       for (let k = 0; k < l.length && o + k < N; k++) { L[o + k] += l[k]; R[o + k] += r[k]; }
     }, note);
   }
-  for (let k = 0; k < N; k++) { L[k] = Math.max(-1, Math.min(1, L[k])); R[k] = Math.max(-1, Math.min(1, R[k])); }
-  return [L, R];
+  return GearScript.masterMix(L, R, sr, exportMaster());
 }
 /* runs an export of the whole film: the models are compiled first, and the edited chapter is shown again afterwards */
 async function withFilmExport(fn) {
@@ -10197,7 +10264,7 @@ $('modelIn').addEventListener('change', async () => {
 /* ---------------- export: MP4 and WebM (WebCodecs) or GIF ---------------- */
 var outBlob = null, outExt = 'gif', outSig = null;   /* var: read by checkStale, which can run before this line during start-up */
 /* everything that changes what an export looks like: if any of it changes after a render, the file on hand is out of date */
-function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, S.exportSpeak !== false, $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
+function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, S.exportSpeak !== false, S.exportLoud || 'standard', +S.exportBal || 0, $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
 function checkStale() {
   if (!outBlob || $('gifSave').hidden && !outSig) return;
   /* out of date: a warning over the render, which is dimmed; Save still saves it (as the earlier render), and the main button renders again */
@@ -10230,6 +10297,7 @@ function syncExportUI() {
   { const ns = filmExportOn() ? filmSayEvents().length : model && model.sayEvents ? model.sayEvents.length : 0; $('sayRow').hidden = !ns || html;
     if (ns) { const n = $('sayNote'); n.textContent = `${ns} line${ns === 1 ? '' : 's'}, captioned in the picture.`; n.title = 'The 3D player speaks the lines itself. A browser cannot record its own voices: tick the box below to generate speech for MP4 and WebM, or add a voice-over file (Insert › 3D models and audio).'; }
     $('expSpeak').checked = S.exportSpeak !== false; $('expSpeak').disabled = f === 'gif' || f === 'png'; }
+  syncLevelRow();
   const clearNote = bgClear ? (gif ? ' The transparent background is kept (GIF pixels are fully clear or solid).' : f === 'png' ? '' : ' Video has no transparency, so the background is filled with ' + (S.bg === 'clear' || !(model && model.sceneOpts.bg && model.sceneOpts.bg.alpha > 0.001) ? 'the theme colour' : 'the background colour') + '. For a clear background, use PNG frames, GIF or the 3D player.') : '';
   $('fmtNote').textContent = (f === 'png' ? 'Every frame as a numbered PNG in one .zip, with full transparency. Video editors (Premiere, DaVinci Resolve, After Effects, Final Cut) import it as an image sequence.' : gif ? 'GIF plays everywhere, but has 256 colours and large files. Best for short loops.' : !('VideoEncoder' in window) ? 'This browser cannot encode video. Use a current Chrome, Edge, Safari or Firefox, or choose GIF.' : f === 'mp4' ? 'H.264 MP4: plays everywhere, including phones, slides and social media.' : 'VP9 WebM: small files for the web.') + clearNote;
   $('gifGo').disabled = exporting || (!gif && f !== 'png' && !('VideoEncoder' in window));
@@ -10237,9 +10305,48 @@ function syncExportUI() {
 }
 $('fmtSeg').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (!b) return; S.exportFormat = b.dataset.f; saveSettings(); syncSettingsUI(); syncExportUI(); });
 $('exportBtn').addEventListener('click', () => { const s = $('sheet'); s.hidden = !s.hidden; $('aiSheet').hidden = true; syncExportUI(); });
-$('gifClose').addEventListener('click', () => { $('sheet').hidden = true; });
-$('expSound').addEventListener('change', () => checkStale());
-$('expSpeak').addEventListener('change', () => { S.exportSpeak = $('expSpeak').checked; saveSettings(); checkStale(); });
+$('gifClose').addEventListener('click', () => { $('sheet').hidden = true; stopListen(); });
+$('expSound').addEventListener('change', () => { checkStale(); syncLevelRow(); });
+$('expSpeak').addEventListener('change', () => { S.exportSpeak = $('expSpeak').checked; saveSettings(); checkStale(); syncLevelRow(); });
+/* Audio level: shown for a video with sound or spoken lines; the balance only when there are both */
+function syncLevelRow() {
+  const f = S.exportFormat || 'mp4', vid = f === 'mp4' || f === 'webm';
+  const ms = filmExportOn() ? (filmPrepare().models || []) : model ? [model] : [];
+  const snd = ms.some(m => m.soundEvents && m.soundEvents.some(e => !e.speech)), say = S.exportSpeak !== false && ms.some(m => m.sayEvents && m.sayEvents.length);
+  $('levelRow').hidden = !vid || !$('expSound').checked || !(snd || say); $('balWrap').hidden = !(snd && say);
+  $('expLoud').value = ['quiet', 'standard', 'loud'].includes(S.exportLoud) ? S.exportLoud : 'standard'; $('expBal').value = +S.exportBal || 0;
+}
+$('expLoud').addEventListener('change', () => { S.exportLoud = $('expLoud').value; saveSettings(); checkStale(); stopListen(); });
+$('expBal').addEventListener('input', () => { S.exportBal = +$('expBal').value; checkStale(); stopListen(); });
+$('expBal').addEventListener('change', () => saveSettings());
+/* Listen: a few seconds of the export's own sound track (the neural voice too, when ticked), from its first sound, at the export's level.
+   It plays past the studio's volume control, which does not change exports */
+let listenSrc = null, listenBusy = false, listenCache = { key: null, mix: null };
+function stopListen() { if (listenSrc) { try { listenSrc.stop(); } catch (e) {} listenSrc = null; } $('expListen').textContent = 'Listen'; }
+async function exportMixNow(note) {
+  const key = exportSig(); if (listenCache.key === key) return listenCache.mix;
+  const mix = await withFilmExport(async () => filmExp ? filmAudio(filmExp.ft.total, note) : withNeuralSpeech(async () => GearScript.masterMix(...modelMix(model.duration), 48000, exportMaster()), note));
+  if (!filmExportOn() && model) frame(t);
+  listenCache = { key, mix }; return mix;
+}
+$('expListen').addEventListener('click', async () => {
+  if (listenSrc) { stopListen(); return; }
+  if (listenBusy || exporting || !model) return;
+  if (playing) setPlay(false);
+  const b = $('expListen'), note = (msg) => { $('gifNote').textContent = msg; };
+  listenBusy = true; b.disabled = true; b.textContent = 'Preparing…'; $('gifGo').disabled = true;
+  try {
+    const [L, R] = await exportMixNow(note), sr = 48000; let s0 = 0;
+    while (s0 < L.length && Math.abs(L[s0]) < 0.003 && Math.abs(R[s0]) < 0.003) s0++;
+    if (s0 >= L.length) { note('The export has no sound to play.'); return; }
+    s0 = Math.max(0, s0 - Math.round(0.3 * sr)); const n = Math.min(L.length - s0, 8 * sr);
+    const c = audioCtx(); if (!c) { note('This browser cannot play sound here.'); return; } if (c.state !== 'running') await c.resume().catch(() => {});
+    const buf = c.createBuffer(2, n, sr); buf.copyToChannel(L.subarray(s0, s0 + n), 0); buf.copyToChannel(R.subarray(s0, s0 + n), 1);
+    const src = c.createBufferSource(); src.buffer = buf; src.connect(c.destination); src.onended = () => { if (listenSrc === src) stopListen(); };
+    src.start(); listenSrc = src; b.textContent = 'Stop'; note(`Playing ${(n / sr).toFixed(0)} s from ${(s0 / sr).toFixed(1)} s, as the video will sound.`);
+  } catch (e) { console.error(e); note('Could not prepare the sound: ' + String(e.message || e).slice(0, 100)); }
+  finally { listenBusy = false; b.disabled = false; if (!listenSrc) b.textContent = 'Listen'; $('gifGo').disabled = exporting || (S.exportFormat !== 'gif' && S.exportFormat !== 'png' && !('VideoEncoder' in window)); }
+});
 /* SubRip captions from the spoken lines, for YouTube, video editors and players */
 const capTime = (x, sep) => { const ms = Math.round(x * 1000), h = Math.floor(ms / 3600000), m = Math.floor(ms / 60000) % 60, s2 = Math.floor(ms / 1000) % 60; return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s2).padStart(2, '0')}${sep}${String(ms % 1000).padStart(3, '0')}`; };
 $('srtBtn').addEventListener('click', async () => {
@@ -10375,7 +10482,8 @@ async function neuralClips(progress) {
       let wav;
       try { const sess = await mod.TtsSession.create({ voiceId: id, wasmPaths: piperWasm, progress: (pr) => { if (pr && pr.total) progress(`Downloading the ${id} voice: ${Math.round(pr.loaded * 100 / pr.total)}%`); } }); wav = await sess.predict(ev.text); }
       catch (e) { mod.TtsSession._instance = null; piperVoice = null; throw e; }
-      neuralCache.set(key, await decodeAudioFile(new Uint8Array(await wav.arrayBuffer())));
+      const a = await decodeAudioFile(new Uint8Array(await wav.arrayBuffer()));
+      neuralCache.set(key, { sr: a.sr, data: GearScript.normalizeClip(a.data, a.sr) });   /* the voice model speaks quietly and unevenly: every line at one level */
     }
     out.push({ ev, pcm: neuralCache.get(key), vol: v ? v.volume : 1, rate: v ? v.rate : 1 });
   }
@@ -10386,16 +10494,30 @@ async function withNeuralSpeech(fn, note) {
   if (!(S.exportSpeak !== false && model && model.sayEvents && model.sayEvents.length)) return fn();
   let clips; try { clips = await neuralClips(note); } catch (e) { console.error('neural speech', e); toast('Could not make the neural voice (' + String(e.message || e).slice(0, 80) + '); the video has captions only', 6000); return fn(); }
   const added = [];
-  clips.forEach(({ ev, pcm, vol, rate }, i) => { const name = `__say${i}`; GearScript.audio[name] = pcm; model.sounds.set(name, { name, kind: null, src: name, pitch: 1, volume: vol, length: null }); const e2 = { t: ev.t, sound: name, volume: 1, target: null }; model.soundEvents.push(e2); added.push([name, e2]); });
+  clips.forEach(({ ev, pcm, vol, rate }, i) => { const name = `__say${i}`; GearScript.audio[name] = pcm; model.sounds.set(name, { name, kind: null, src: name, pitch: 1, volume: 1, length: null }); const e2 = { t: ev.t, sound: name, volume: vol, target: null, speech: true }; model.soundEvents.push(e2); added.push([name, e2]); });
   model.soundEvents.sort((a, b) => a.t - b.t);
   try { return await fn(); } finally { for (const [name, e2] of added) { delete GearScript.audio[name]; model.sounds.delete(name); const k = model.soundEvents.indexOf(e2); if (k >= 0) model.soundEvents.splice(k, 1); } }
 }
 function exportWantsSound() { return !!(model && model.soundEvents && model.soundEvents.length) && window.__exportSound !== false && (!$('expSound') || $('expSound').checked); }
-/* mixes the sound events (placed left or right as the camera sees each part) and feeds them to an AudioEncoder */
-async function encodeAudioInto(muxer, cfg, secs, mixed) {
+/* the export's sound level: Loudness sets the whole mix (LUFS, the measure video sites use; YouTube plays at about -14), and Voice and
+   sounds moves the spoken lines up or down against everything else, in dB. Every export is brought to that level, so it is clearly
+   audible whatever the project's own volumes are */
+const EXPORT_LOUDNESS = { quiet: -20, standard: -16, loud: -13 };
+const exportMaster = () => ({ target: EXPORT_LOUDNESS[S.exportLoud] || EXPORT_LOUDNESS.standard, ceiling: -1 });
+function exportMixOpts() {
+  const bal = Math.max(-12, Math.min(12, +S.exportBal || 0)), vg = Math.pow(10, bal / 40), sg = Math.pow(10, -bal / 40);
+  return { gain: (ev) => ev.speech ? vg : sg, limit: false };
+}
+/* the current model's sounds over secs, placed left or right as the camera sees each part; unlimited, for masterMix */
+function modelMix(secs) {
   const sr = 48000, pans = new Map();
-  if (!mixed) for (const ev of model.soundEvents) if (ev.t <= secs) { frame(Math.min(model.duration, ev.t), true); pans.set(ev, soundPan(ev)); }
-  const [L, R] = mixed || GearScript.mixSounds(model, sr, 0, secs, (ev) => pans.get(ev) || 0);
+  for (const ev of model.soundEvents) if (ev.t <= secs) { frame(Math.min(model.duration, ev.t), true); pans.set(ev, soundPan(ev)); }
+  return GearScript.mixSounds(model, sr, 0, secs, (ev) => pans.get(ev) || 0, exportMixOpts());
+}
+/* mixes the sound events and feeds them to an AudioEncoder */
+async function encodeAudioInto(muxer, cfg, secs, mixed) {
+  const sr = 48000;
+  const [L, R] = mixed || GearScript.masterMix(...modelMix(secs), sr, exportMaster());
   let fail = null; const enc = new AudioEncoder({ output: (chunk, meta) => muxer.addAudioChunk(chunk, meta), error: (e) => { fail = e; } });
   enc.configure(cfg); const step = 4800;
   for (let i = 0; i < L.length; i += step) {
@@ -10470,7 +10592,7 @@ function exportSource() {
 }
 const SS_FOR_QUALITY = (q) => (q >= 1 ? 2 : 1);   /* Standard and High render at 2× and scale down (when it fits); Smaller file at 1× */
 $('gifGo').addEventListener('click', async () => {
-  if (!model || exporting) return;
+  if (!model || exporting || listenBusy) return; stopListen();
   if (lastDiags.some(d => d.sev === 'error' && (filmExportOn() || d.file !== 'film'))) { $('gifNote').textContent = filmExportOn() ? 'Fix the errors in every chapter first; the export uses the current code.' : 'Fix the errors first; the export uses the current code.'; return; }
   const { f, W, H, fps, n } = exportPlan(); const q = +$('vidQ').value || 1;
   if (f === 'html') {
@@ -10487,7 +10609,7 @@ $('gifGo').addEventListener('click', async () => {
     const url = URL.createObjectURL(outBlob);
     if (f === 'gif') { const img = $('gifImg'); if (img.src) URL.revokeObjectURL(img.src); img.src = url; img.hidden = false; }
     else if (f === 'png') { URL.revokeObjectURL(url); }
-    else { const v = $('vidOut'); if (v.src) URL.revokeObjectURL(v.src); v.src = url; v.hidden = false; v.play().catch(() => {}); }
+    else { const v = $('vidOut'); if (v.src) URL.revokeObjectURL(v.src); v.src = url; v.hidden = false; v.muted = false; v.play().catch(() => { v.muted = true; v.play().catch(() => {}); }); }   /* with sound, unless the browser only allows silent autoplay */
     const kb = outBlob.size / 1024;
     const au = (f === 'mp4' || f === 'webm') ? encodeVideoFrames.lastAudio : null;
     $('gifNote').textContent = `${f === 'png' ? 'PNG frames' : f.toUpperCase()} · ${W}×${H} · ${n} frames${f === 'png' && bgClear ? ' · transparent' : ''}${au === 'aac' || au === 'opus' ? ` · sound (${au === 'aac' ? 'AAC' : 'Opus'})` : au === 'unsupported' ? ' · no sound: this browser cannot encode audio' : ''}${(f === 'mp4' || f === 'webm') && encodeVideoFrames.lastHw === 'no-preference' ? ' · GPU encoder (this browser has no software one at this size, so fine detail may be softer; try WebM or a smaller width)' : ''} · ${kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB'} · made in ${((performance.now() - t0) / 1000).toFixed(1)} s`;

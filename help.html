@@ -189,6 +189,7 @@ figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; max-width: 6
       <li><a href="#recipes">Recipes</a></li>
       <li><a href="#errors">Errors</a></li>
       <li><a href="#chapters">Chapters</a></li>
+      <li><a href="#patches">Patches</a></li>
       <li><a href="#export">Export and projects</a></li>
       <li><a href="#cli">Command line and AI</a></li>
       <li><a href="#limits">Current limits</a></li>
@@ -260,9 +261,9 @@ Crank { forever: rotate: 180deg/s; }</div>
       <ul>
         <li><b>Left:</b> the three file tabs and the editor. The preview rebuilds a moment after you stop typing.</li>
         <li><b>Problems:</b> under the editor. Click a problem to jump to its line. A problem the studio knows how to correct has a <b>Fix</b> button with a spanner. Some fixes are sure: what the studio reads anyway, such as a <code>#</code> comment, <code>colour</code> for <code>color</code>, <code>shadow: no</code> or a property that is ignored. Others are guesses, marked with a dashed outline and <i>Did you mean …?</i> in the message: the one known name close to a misspelt one (<code>Gaer</code> → <code>Gear</code>, a part, style, sound or voice name), or a value back in its range (<code>opacity: 40</code> → <code>40%</code>). With the site's AI on, the other problems have <b>Fix with AI</b>.</li>
-        <li><b>The Fix button</b> at the top of Problems does the most useful thing first: <b>Fix all</b> applies every sure fix; when none are left it becomes <b>Apply suggestions</b>; with only errors left and AI on the site, <b>Fix with AI</b>. Its menu has all of these, and <b>Fix as much as possible</b>, which repeats sure fixes then suggestions until nothing more changes (the compiler finds one error at a time, so this clears several in one go). It never asks the AI by itself. Each fix shows what it changed, with <b>Undo</b> and <b>Show changes</b>. <kbd>Ctrl</kbd> <kbd>.</kbd> presses the Fix button. <b>Copy as JSON</b> gives the list to an AI agent.</li>
+        <li><b>The Fix button</b> at the top of Problems does the most useful thing first: <b>Fix all</b> applies every sure fix; when none are left it becomes <b>Apply suggestions</b>, and it hides when there is nothing it can fix by itself (the AI has its own button beside it). Its menu has all of these, and <b>Fix as much as possible</b>, which repeats sure fixes then suggestions until nothing more changes (the compiler finds one error at a time, so this clears several in one go). It never asks the AI by itself. Each fix shows what it changed, with <b>Undo</b> and <b>Show changes</b>. <kbd>Ctrl</kbd> <kbd>.</kbd> presses the Fix button. <b>Copy for AI</b> gives the rest to an AI.</li>
         <li><b>A long list:</b> the chips at the top (<b>errors</b>, <b>warnings</b>, <b>fixable</b>) show only those; click again for all. The same problem in several places is one row with <b>×n</b>: click it to see the places, and its Fix fixes them all. Every row has its action in the same place: <b>Fix</b> (a <b>?</b> badge marks a guess, whose word is in bold in the message) or <b>Ask AI</b>.</li>
-        <li><b>Copy as JSON</b> copies the problems for an AI that already has your code. Once you have changed the code since your last paste (by typing or with Fix), the button becomes <b>Copy with code</b>: a message ready to send, with what to fix, the problems and your code, in the format the AI should answer in. Both are in its menu.</li>
+        <li><b>Copy for AI</b> copies a message for the AI chat you are working in: what to fix, the problems and your code, asking for a <a href="#patches">patch</a> back. Its arrow opens the options, which it keeps until you change them: a box for what should change (for a new feature, or empty to fix what is ticked), <b>Send</b> errors, warnings and the state at the current time (where every part is, for something that builds but moves wrongly), <b>Code</b> (untick it when the AI already has exactly this code), <b>Reply as</b> a patch or the whole code, and in a project with chapters <b>About</b> this chapter or the whole film. <b>Prompt AI</b> uses the same options. <b>Just the problems as JSON</b> copies the bare list. The message leaves out the GearScript prompt, as the chat has it already; to start a new chat, use Prompt AI. Where the studio has an AI on its server, the button is <b>Fix with AI</b> and sends the request there.</li>
         <li><b>Right:</b> the live preview. <b>Observer</b> shows your camera; <b>Free</b> lets you drag to look around. Hinge axes and gear lines can be switched on in Settings.</li>
         <li><b>Examples</b> opens every example by category, with a picture of each. Clicking one opens it here; if your project has unsaved changes the studio first asks whether to save them, discard them or open the example in a <b>new tab</b> instead. <kbd>Ctrl</kbd>-click (or middle-click) always opens a new tab. <b>New project</b> works the same way.</li>
         <li><b>Copy state</b> (the button at the right end of the timeline, or right-click the preview) copies, as text, where every part is at the current moment: its position, rotation, bounding box and joint, plus the camera and any problems. Paste it into an AI chat with what looks wrong, for example "the left foot goes through the floor at 2.4 s". The Prompt AI dialog can include it too: tick <b>Include the state</b>.</li>
@@ -270,7 +271,7 @@ Crank { forever: rotate: 180deg/s; }</div>
         <li><b>Click any part</b> in the preview to jump to its code.</li>
         <li><b>Timeline:</b> play, pause (or press Space) and drag to scrub.</li>
         <li><b>Resize anything:</b> drag the divider between code and preview, or above the Problems list. Double-click a divider to reset it. The expand buttons give the code or the preview the whole window; Esc brings the layout back.</li>
-        <li><b>Tours</b>: the <b>?</b> button at the top (or <b>More › Take the tour</b>, or Settings › Layout › Choose a tour) offers two. The <b>interactive tour</b> (recommended, about 4 minutes) has you build a crane on a scratch project: write a prompt for the AI, paste the code a simulated assistant sends back, fix an error with <b>Copy as JSON</b>, find a wrong motion with the timeline and <b>Copy state</b>, then export. Its AI replies are written in advance; when you work, use your own assistant. Your own project, settings and undo history are put back when it ends, and <kbd>Esc</kbd> leaves it at any step. The <b>quick tour</b> (seven stops) spotlights where things are: <b>Previous</b>, <b>Next</b> and <b>Skip tour</b>, or <kbd>←</kbd> <kbd>→</kbd> and <kbd>Esc</kbd>. The choice appears once by itself on a first visit.</li>
+        <li><b>Tours</b>: the <b>?</b> button at the top (or <b>More › Take the tour</b>, or Settings › Layout › Choose a tour) offers two. The <b>interactive tour</b> (recommended, about 4 minutes) has you build a crane on a scratch project: write a prompt for the AI, paste the code a simulated assistant sends back, fix an error with <b>Copy for AI</b>, find a wrong motion with the timeline and <b>Copy state</b>, then export. Its AI replies are written in advance; when you work, use your own assistant. Your own project, settings and undo history are put back when it ends, and <kbd>Esc</kbd> leaves it at any step. The <b>quick tour</b> (seven stops) spotlights where things are: <b>Previous</b>, <b>Next</b> and <b>Skip tour</b>, or <kbd>←</kbd> <kbd>→</kbd> and <kbd>Esc</kbd>. The choice appears once by itself on a first visit.</li>
         <li><b>Type hints</b>: as you type, a list suggests what fits where the caret is: shape types after <code>Name::</code>, the properties that shape takes (required ones marked), anchors after <code>Part.</code> (lines and points labelled), <code>on</code> / <code>to</code> / <code>about</code> keywords, gears to mesh with, units after a number, materials, colours, easings, time blocks and camera properties. The bottom line shows how the property is written. <kbd>↑</kbd> <kbd>↓</kbd> to choose, <kbd>Enter</kbd> or <kbd>Tab</kbd> to insert, <kbd>Esc</kbd> to close, <kbd>Ctrl</kbd> <kbd>Space</kbd> to open them any time. Settings › Type hints turns them to manual or off.</li>
         <li><b>Insert a shape</b>: the cube button above the code, or <b>Browse shapes…</b> at the top of the type hints after <code>Name::</code>, opens every built-in shape by category with a picture. Search, pick one and press <b>Insert</b> (or double-click it): it arrives with sensible starting values to edit.</li>
         <li><b>Colours</b>: a small swatch sits beside every colour in the code; click it to choose a new one with your system's colour picker. While typing a colour, the hints show <b>Pick a colour…</b>, then the colours this project already uses (with their RGB values) and the named finishes.</li>
@@ -930,7 +931,7 @@ Sales::Plot { size: (360mm, 240mm); data: (1, 12) (2, 18) (3, 9) (4, 22); x-labe
     <!-- ============================== ERRORS ============================== -->
     <section id="errors">
       <h2>Errors</h2>
-      <p>Every problem names its file, line and column, says what went wrong and suggests a fix. Errors stop the preview from updating (it keeps showing the last good build); warnings do not. <b>Copy as JSON</b> produces:</p>
+      <p>Every problem names its file, line and column, says what went wrong and suggests a fix. Errors stop the preview from updating (it keeps showing the last good build); warnings do not. <b>Just the problems as JSON</b> (in the <b>Copy for AI</b> menu) produces:</p>
       <div data-snippet="json">[
   {
     "severity": "error",
@@ -1020,6 +1021,32 @@ G1 { forever: rotate: 40deg/s; }</div>
       <p>The preview shows a crossfade with a still picture of the chapter before; the export blends the moving pictures.</p>
     </section>
 
+    <!-- ============================== PATCHES ============================== -->
+    <section id="patches">
+      <h2>Patches: small fixes from an AI</h2>
+      <p>In a large project, asking an AI for the whole code back to change one value is slow, and the AI may quietly change other lines while it copies them. A <b>patch</b> holds only the changes, each named by chapter, section, part and property, and each checked against your code before anything is applied.</p>
+<div data-snippet="patch">@patch 1 "Close the loop and slow the crank"
+@chapter Ratio
+@scene
+Coupler { length: 120mm =&gt; 125mm; }       // change a value: old =&gt; new
+Coupler { overlap: allow; }               // add a property
+unset Rocker { pin; }                     // remove properties
+add Spring::Spring { … } after Rocker     // a new part or rule
+remove Bracket                            // a part (with its rules) or a rule
+@motion
+replace Crank { forever: rotate: 180deg/s; } with { forever: rotate: 90deg/s; }
+rename Crank to Driver                    // every use of a name</div>
+      <ul>
+        <li><b>Getting one:</b> under Problems, <b>Copy for AI</b> copies a message asking for a patch, with the problems and your code. Type a request in its menu to ask for a new feature as a patch. <b>Reply as</b> in its menu (shared with Prompt AI) switches between a patch and the whole code.</li>
+        <li><b>Applying it:</b> press <b>Paste reply</b>, beside Copy for AI, and paste the AI's whole reply (its prose and code fences are fine); pasting it into the editor does the same. A reply with <b>whole code</b> instead of a patch is compared with yours the same way, then <b>Replace the code</b> puts it in. The patch is not pasted as code: the panel opens and shows every change as before-and-after lines, marked <i>applies</i>, <i>already so</i>, <i>conflict</i> or <i>cannot apply</i>, with the code as it is now where a change missed. The panel never reads your clipboard by itself: it only takes what you paste.</li>
+        <li><b>Before you apply,</b> a summary at the top counts what applies, the problems fixed and new, and the chapters that move differently. A new problem is shown under the change that brought it; the panel also lists the problems the patch fixes, and for each chapter it touches whether the motion changes and by how much. A patch that says it fixes a title but moves the linkage shows up here.</li>
+        <li><b>old =&gt; new</b> is the safety catch: if the value in your code is not the old one (you edited it, or the AI misread it), that change is a conflict and is left out. <b>Apply anyway</b> applies it regardless. Untick a change to leave it out.</li>
+        <li><b>Copy the result for the AI</b> copies what applied, what did not and why, and the new problems, so the AI can send a corrected patch without seeing the whole project again.</li>
+        <li><b>Apply</b> changes only the places the patch names; your comments and layout stay as they are. It is one Undo.</li>
+      </ul>
+      <p>A patch cannot add a chapter: for that, paste the chapter whole and it is merged by name (see <a href="#chapters">Chapters</a>). The full rules are in <code>SPEC.md</code>, under Patches.</p>
+    </section>
+
     <section id="export">
       <h2>Export and projects</h2>
       <ul>
@@ -1054,15 +1081,16 @@ G1 { forever: rotate: 40deg/s; }</div>
         <tr><td class="code-cell">node gearscript.js schema</td><td>Prints the language as JSON (shapes, properties, anchors, values) for editors and AI tools; also <code>docs/gearscript-schema.json</code> and the MCP tool <code>gearscript_schema</code>.</td></tr>
         <tr><td class="code-cell">node gearscript.js sample car/ --at 0,2 --points FL.center</td><td>Solves the motion and prints positions, rotations and anchor points as JSON, so you can check the motion with numbers</td></tr>
         <tr><td class="code-cell">node gearscript.js render car/ -o car.gif</td><td>Renders the GIF in a headless browser (needs Playwright)</td></tr>
+        <tr><td class="code-cell">node gearscript.js patch car.gscript fix.gpatch</td><td>Applies a <a href="#patches">patch</a> and reports each change, the problems fixed and new, and how the motion changed. A dry run until you add <code>--write</code> (or <code>-o out.gscript</code>); <code>--json</code> for agents, <code>--force</code> to apply changes whose old value does not match.</td></tr>
         <tr><td class="code-cell">node gearscript.js eval tasks.json answers/</td><td>Scores AI answers against the test set in <code>evals/</code></td></tr>
-        <tr><td class="code-cell">node gearscript.js mcp</td><td>Runs as an MCP server with check, sample, render and spec tools</td></tr>
+        <tr><td class="code-cell">node gearscript.js mcp</td><td>Runs as an MCP server with check, sample, render, patch, prompt, schema and spec tools</td></tr>
       </table></div>
       <p>A project is a folder holding <code>.scene</code>, <code>.style</code> and <code>.motion</code> files, or a saved <code>.gscript.json</code>. <code>node gearscript.js examples out/</code> writes every studio example as a folder to start from.</p>
       <h3>The Prompt AI button</h3>
-      <p>In the studio, <b>Prompt AI</b> copies a short version of the syntax as instructions any chat assistant can follow. The reply format follows your view: in the three-file view it asks for three code blocks (scene, style, motion); in the one-file view, for a single block with @scene, @style and @motion sections, so the reply pastes straight back. The panel shows which format it will ask for and lets you switch. Type what you want to animate, tick <b>Include my current code</b> if it should edit your project, and paste the result into the assistant. It replies with three code blocks: paste each into its tab. <code>node gearscript.js prompt</code> prints the same text (add <code>--single</code> for the one-file format).</p>
-      <p>The dialog can add your current code, the problems (ticked when there are any, so the AI fixes them first), and where every part is at the current time. The prompt carries the rules for narration and chapters only when your request or your code uses them, and ends with a short checklist of the slips AI replies make most. In a project with chapters, <b>Ask about: This chapter</b> sends @common and the chapter on screen only, and asks for that chapter back; the reply is merged by chapter name, so the others stay as they are.</p>
+      <p>In the studio, <b>Prompt AI</b> copies a short version of the syntax as instructions any chat assistant can follow. The reply format follows your view: in the three-file view it asks for three code blocks (scene, style, motion); in the one-file view, for a single block with @scene, @style and @motion sections, so the reply pastes straight back. The panel shows which format it will ask for and lets you switch. Choose <b>A new animation</b> and describe it, or <b>A change to this project</b> to send it with the same options as Copy for AI (problems, state, code, a patch or the whole code back), then paste the result into the assistant. It replies with three code blocks: paste each into its tab. <code>node gearscript.js prompt</code> prints the same text (add <code>--single</code> for the one-file format).</p>
+      <p>It opens on <b>A change to this project</b> when there are errors. The prompt carries the rules for narration and chapters only when your request or your code uses them, and ends with a short checklist of the slips AI replies make most. In a project with chapters, <b>About: This chapter</b> sends @common and the chapter on screen only, and asks for that chapter back; the reply is merged by chapter name, so the others stay as they are.</p>
       <h3>AI on this site</h3>
-      <p>Where the studio runs with a GearScript server that has an AI key, the AI panel also has <b>Generate</b>: it sends the same prompt to the AI and puts the answer straight into the editor, and <b>Undo the AI change</b> puts your project back. When the code has errors, <b>Fix with AI</b> appears in the Problems panel and sends the errors with the code. Each visitor has a daily number of requests. Without the server, <b>Copy prompt</b> works with any assistant.</p>
+      <p>Where the studio runs with a GearScript server that has an AI key, the AI panel also has <b>Generate</b>: it sends the same prompt to the AI and puts the answer straight into the editor, and <b>Undo the AI change</b> puts your project back. In the Problems panel, <b>Copy for AI</b> becomes <b>Fix with AI</b> and sends the request, with its options, to the AI on the site; a patch in the reply opens in Apply patch. Each visitor has a daily number of requests. Without the server, <b>Copy prompt</b> works with any assistant.</p>
       <h3>Using GearScript from an AI agent</h3>
       <ol>
         <li>Give the agent <code>SPEC.md</code>: the whole language on a few pages.</li>
@@ -1500,7 +1528,7 @@ function highlight(src, file) {
 }
 function codeBlock(src, file, label) {
   const wrap = document.createElement('div'); wrap.className = 'code';
-  const bar = document.createElement('div'); bar.className = 'bar'; bar.textContent = label || (file === 'json' ? 'JSON' : file === 'project' ? 'project.gscript (one file)' : '.' + file);
+  const bar = document.createElement('div'); bar.className = 'bar'; bar.textContent = label || (file === 'json' ? 'JSON' : file === 'project' ? 'project.gscript (one file)' : file === 'patch' ? 'a patch (paste it into the studio, or gearscript patch)' : '.' + file);
   const btn = document.createElement('button'); btn.className = 'copy'; btn.type = 'button'; btn.textContent = 'Copy';
   btn.addEventListener('click', () => {
     const done = (t) => { btn.textContent = t; setTimeout(() => (btn.textContent = 'Copy'), 1400); };

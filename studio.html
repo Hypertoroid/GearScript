@@ -151,6 +151,9 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
   font-family: var(--font-code); font-size: calc(12px * var(--ui)); color: var(--muted); display: flex; align-items: center; gap: 6px; margin-bottom: -1px;
 }
 .tab[aria-selected="true"] { background: var(--panel); border-color: var(--line); color: var(--fg); }
+.tab { white-space: nowrap; flex: none; }
+#tab-project:not([hidden]) { display: block; flex: 0 1 auto; min-width: 0; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
+.tabs .tab-hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .tab .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--err); }
 .tab .dot.w { background: var(--warn); }
 .tab-hint { margin-left: auto; align-self: center; font-size: 11px; color: var(--muted); padding-right: 4px; }
@@ -348,6 +351,8 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 #sheet.outofdate #vidOut, #sheet.outofdate #gifImg { opacity: .45; filter: grayscale(.6); }
 .sheet #fmtSeg { flex-wrap: wrap; }
 .bar { height: 4px; background: var(--panel-2); border-radius: 2px; overflow: hidden; }
+.renderwarn { margin: 6px 0 0; font-size: 12px; line-height: 1.45; color: var(--muted); }
+.renderwarn.away { color: var(--warn); }
 .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width 0.1s linear; }
 .sheet video { width: 100%; border-radius: var(--radius); border: 1px solid var(--line); background: var(--view-bg); }
 .sheet .seg button { padding: 4px 10px; }
@@ -379,20 +384,99 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 @media (hover: none) { .chip .chx { opacity: 1; } }
 .toast .toastbtn { margin-left: 10px; background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 6px; padding: 2px 8px; font: inherit; cursor: pointer; }
 .btn.danger { background: var(--err); border-color: var(--err); color: #fff; }
-.chip.common { padding-left: 10px; font-style: italic; }
+.chip.common { padding-left: 8px; border-radius: 8px; }
+.chip.common svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; color: var(--muted); }
+.chip.common[aria-selected="true"] svg { color: var(--accent); }
 .chip[aria-selected="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .chip[aria-selected="true"] i { background: var(--accent); color: var(--accent-ink); }
 .chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--err); } .chip .dot.w { background: var(--warn); }
-/* the chapter strip is a timeline: each chapter is as wide as it is long (within limits), with its length and how it starts */
-.chapbar .chips { align-items: stretch; }
-.chip.tl { flex: var(--g, 1) 1 0; min-width: 132px; max-width: 320px; border-radius: 8px; justify-content: flex-start; position: relative; overflow: hidden; }
-.chip.tl .len { margin-left: auto; font-family: var(--font-code); }
-.chip.tl .tr { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--muted); opacity: .6; }
-.chip.tl .tr.fade { background: linear-gradient(var(--fg), transparent); } .chip.tl .tr.crossfade { background: var(--accent); }
-.chip.tl.dragging { opacity: .5; } .chip.tl.dropbefore { box-shadow: inset 3px 0 0 var(--accent); } .chip.tl.dropafter { box-shadow: inset -3px 0 0 var(--accent); }
+/* the chapter strip: Common, a divider, then the chapters in order, each with its number, name and length; between two chapters, how
+   the second one starts (⇄ crossfade, ◐ fade, nothing for a cut). It scrolls sideways, fading at an edge with more beyond it */
+.chapbar .chips { align-items: center; gap: 2px; scrollbar-width: none; scroll-behavior: smooth; }
+.chapbar .chips::-webkit-scrollbar { display: none; }
+.chapbar .chips.fadel { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px); mask-image: linear-gradient(to right, transparent, #000 28px); }
+.chapbar .chips.fader { -webkit-mask-image: linear-gradient(to left, transparent, #000 28px); mask-image: linear-gradient(to left, transparent, #000 28px); }
+.chapbar .chips.fadel.fader { -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent); }
+.chapbar .csep { flex: none; width: 1px; height: 18px; background: var(--line); margin: 0 6px; }
+.chapbar .tsep { flex: none; width: 14px; text-align: center; font-size: 11px; color: var(--muted); line-height: 1; }
+.chapbar .tsep.crossfade { color: var(--accent); }
+.chip.tl { flex: none; max-width: 220px; border-radius: 8px; justify-content: flex-start; position: relative; padding-right: calc(8px * var(--ui)); }
+.chip.tl .len { margin-left: 2px; font-family: var(--font-code); }
+.chip.tl.dragging { opacity: .5; } .chip.tl.dropbefore { box-shadow: -3px 0 0 var(--accent); } .chip.tl.dropafter { box-shadow: 3px 0 0 var(--accent); }
 .mergelist { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; max-height: 50vh; overflow: auto; }
 .mergelist li { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .mergelist .k { font-size: 12px; color: var(--muted); } .mergelist .k.changed { color: var(--warn); } .mergelist .k.added { color: var(--ok, #3fb950); }
+/* Apply patch: the changes as before/after lines, the problems they fix and bring, and the motion they change, before anything is applied */
+.modal.patchdlg { width: min(960px, 100%); max-height: calc(100vh - 48px); padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.patchdlg .phead { padding: 20px 24px 16px; border-bottom: 1px solid var(--line); display: grid; gap: 14px; }
+.patchdlg .phead h2 { margin: 0; }
+.patchdlg .phead .sub { margin: 2px 0 0; color: var(--muted); }
+.patchdlg .pstats { display: flex; flex-wrap: wrap; gap: 6px; }
+.patchdlg .pstats { gap: 8px; }
+.patchdlg .pstat { display: inline-flex; align-items: baseline; gap: 6px; padding: 6px 12px; border-radius: 10px; background: var(--panel-2); border: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.patchdlg .pstat b { font-size: 16px; color: var(--fg); font-weight: 600; }
+.patchdlg .pstat.good b { color: var(--ok); } .patchdlg .pstat.bad b { color: var(--err); } .patchdlg .pstat.warn b { color: var(--warn); }
+.patchdlg .pscroll { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 18px 24px 22px; display: flex; flex-direction: column; gap: 14px; }
+.patchdlg .pfoot { padding: 14px 24px; border-top: 1px solid var(--line); display: flex; gap: 8px; align-items: center; background: var(--panel); }
+.patchdlg .pfoot .grow { margin-right: auto; }
+.patchdlg .pfoot kbd { font: 10.5px var(--font-code); opacity: 0.7; margin-left: 8px; background: none; border: 0; box-shadow: none; padding: 0; color: inherit; }
+.patchdlg .pdrop { display: flex; flex-direction: column; gap: 10px; }
+.patchdlg .psrc { width: 100%; height: 200px; min-height: 100px; resize: vertical; font-family: var(--font-code); font-size: 12px; line-height: 1.5; background: var(--panel-2); color: var(--fg); border: 1.5px dashed var(--line); border-radius: 10px; padding: 12px 14px; box-sizing: border-box; tab-size: 2; }
+.patchdlg .psrc:focus { outline: none; border-color: var(--accent); border-style: solid; }
+.patchdlg .pdrop.small .psrc { height: 160px; }
+.patchdlg .phint { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+.patchdlg .psrcbar { display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--muted); }
+.patchdlg .psrcbar .linkbtn { font-size: 12.5px; }
+.patchdlg h3 { margin: 10px 0 -2px; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.patchdlg .pcards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.patchdlg .pcard { border: 1px solid var(--line); border-left: 3px solid var(--line); border-radius: 10px; background: var(--panel-2); overflow: hidden; }
+.patchdlg .pcard.ok { border-left-color: var(--ok); } .patchdlg .pcard.conflict, .patchdlg .pcard.error { border-left-color: var(--err); } .patchdlg .pcard.skipped, .patchdlg .pcard.same { opacity: 0.7; }
+.patchdlg .pc-head { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 12px; padding: 12px 14px; }
+.patchdlg .pc-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.patchdlg .pc-head input { margin: 0; }
+.patchdlg .pc-where { font-size: 12.5px; color: var(--muted); }
+.patchdlg .pc-what { grid-column: 2; font-family: var(--font-code); font-size: 13px; line-height: 1.5; word-break: break-word; color: var(--fg); }
+.patchdlg .pc-msg { padding: 0 14px 12px 40px; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.patchdlg .pc-msg.bad { color: var(--err); }
+.patchdlg .pdiff { margin: 0 14px 14px 40px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); font-family: var(--font-code); font-size: 12.5px; line-height: 1.7; overflow: auto; max-height: 260px; padding: 6px 0; }
+.patchdlg .pdiff div { white-space: pre; padding: 0 12px 0 0; min-height: 1.7em; }
+.patchdlg .pdiff .ln { display: inline-block; width: 4.2em; padding-right: 10px; text-align: right; color: var(--muted); opacity: 0.7; user-select: none; }
+.patchdlg .pdiff .dm { background: color-mix(in srgb, var(--err) 14%, transparent); }
+.patchdlg .pdiff .dp { background: color-mix(in srgb, var(--ok) 16%, transparent); }
+.patchdlg .pdiff .dc { color: var(--muted); }
+.patchdlg .pdiff .dg { color: var(--muted); font-style: italic; }
+.patchdlg .pdiff.now { max-height: 140px; }
+.patchdlg .pc-probs { list-style: none; margin: 0; padding: 12px 14px 14px 40px; border-top: 1px solid var(--line); display: grid; gap: 10px; font-size: 13px; line-height: 1.5; }
+.patchdlg .pc-probs small { display: block; color: var(--muted); margin-top: 2px; font-size: 12.5px; }
+.patchdlg .chip { font-size: 11px; border-radius: 999px; padding: 1px 8px; border: 1px solid currentColor; white-space: nowrap; line-height: 1.5; }
+.patchdlg .chip.ok, .patchdlg .chip.fixed { color: var(--ok); } .patchdlg .chip.same, .patchdlg .chip.skipped { color: var(--muted); } .patchdlg .chip.conflict, .patchdlg .chip.error, .patchdlg .chip.new { color: var(--err); } .patchdlg .chip.warn { color: var(--warn); }
+.patchdlg .plist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.patchdlg .plist li { display: flex; gap: 10px; align-items: baseline; font-size: 13px; line-height: 1.5; padding: 2px; }
+.patchdlg .plist li .w { color: var(--muted); }
+.patchdlg .goto { font: inherit; background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; text-decoration: underline; }
+.patchdlg .pempty { color: var(--muted); font-size: 13px; line-height: 1.5; margin: 0; }
+/* Copy for AI: the popover with the request and the options it is made with (the same options as Prompt AI) */
+.copysplit { position: relative; }
+#replyBtn { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; flex: none; }
+#replyBtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.askpop { position: fixed; z-index: 60; width: min(440px, calc(100vw - 24px)); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 16px 40px rgba(0,0,0,0.35); padding: 14px; display: grid; gap: 10px; text-transform: none; letter-spacing: 0; font-size: 13px; color: var(--fg); }
+.askpop .field { font-size: 12.5px; color: var(--muted); }
+.askpop .field small { font-size: 11.5px; }
+.askpop textarea { width: 100%; box-sizing: border-box; resize: vertical; min-height: 54px; font: inherit; font-size: 13px; background: var(--panel-2); color: var(--fg); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+.askpop textarea:focus { outline: none; border-color: var(--accent); }
+.askpop .asklen { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.askpop .asknote { font-size: 11.5px; color: var(--muted); line-height: 1.45; margin: 0; }
+.askpop .askacts { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.aiopts { display: grid; gap: 8px; }
+.aio { display: grid; grid-template-columns: 70px 1fr; gap: 10px; align-items: center; }
+.aio-k { font-size: 12px; color: var(--muted); }
+.aio-v { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; }
+.aio-v .check { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 13px; }
+.aio-v .check input { margin: 0; accent-color: var(--accent); }
+.aio-v .check i { font-style: normal; font-size: 11px; color: var(--muted); background: var(--panel-2); border: 1px solid var(--line); border-radius: 999px; padding: 0 6px; }
+.aio-v select { font: inherit; font-size: 12.5px; background: var(--panel-2); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; }
+.aio-v .aio-n { font-style: normal; font-size: 11.5px; color: var(--muted); }
+.sheet .aiopts { margin: 4px 0 2px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); }
 .chipadd, .chipmore { flex: none; border: 1px dashed var(--line); background: none; color: var(--muted); border-radius: 999px; height: calc(24px * var(--ui)); min-width: calc(24px * var(--ui)); padding: 0 8px; display: inline-grid; place-items: center; font-size: 13px; }
 .chipmore { border-style: solid; }
 .chipadd:hover, .chipmore:hover { color: var(--fg); border-color: var(--accent); }
@@ -924,16 +1008,18 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
             <button role="menuitem" type="button" data-fix="sure"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 7.5l2 2 4.3-4.3a6 6 0 0 1-8 8l-6.6 6.6a2.1 2.1 0 0 1-3-3l6.6-6.6a6 6 0 0 1 8-8z"/></svg><span><b>Fix all</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
             <button role="menuitem" type="button" data-fix="guess"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="9"/></svg><span><b>Apply suggestions</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
             <button role="menuitem" type="button" data-fix="max"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></svg><span><b>Fix as much as possible</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
-            <hr data-ai>
-            <button role="menuitem" type="button" data-fix="ai" data-ai><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg><span><b>Fix with AI</b><small data-n></small><i data-d></i></span><kbd data-k></kbd></button>
           </div>
         </div><div class="splitbtn copysplit" id="copySplit">
-          <button class="btn" id="copyJson" type="button" data-copy="json">Copy as JSON</button><button class="btn" id="copyMenuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="copyMenu" aria-label="More ways to copy the problems" title="More ways to copy the problems"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
-          <div class="menu up fixmenu" id="copyMenu" role="menu" hidden>
-            <button role="menuitem" type="button" data-copy="json"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4H6a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M16 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2"/></svg><span><b>Copy as JSON</b><small></small><i>Just the problems, for an AI that already has your code</i></span><kbd data-k></kbd></button>
-            <button role="menuitem" type="button" data-copy="code"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span><b>Copy with code</b><small></small><i>A message ready to send: what to fix, the problems and your current code</i></span><kbd data-k></kbd></button>
+          <button class="btn" id="askBtn" type="button">Copy for AI</button><button class="btn" id="askMore" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="askPop" aria-label="What to send the AI" title="What to send: your request, the problems, the code, the state; and the reply you want"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
+          <div class="askpop" id="askPop" role="dialog" aria-label="What to send the AI" hidden>
+            <label class="field" for="askTask">What should change? <small>Leave it empty to fix what is ticked</small></label>
+            <textarea id="askTask" rows="2" placeholder="For example: add a second pendulum that swings the other way"></textarea>
+            <div class="aiopts" id="askOpts"></div>
+            <div class="asklen" id="askLen"></div>
+            <p class="asknote"><span id="askNote"></span> When it answers, press <b>Paste reply</b>.</p>
+            <div class="askacts"><button type="button" class="linkbtn" id="askJson" title="The bare list of problems, without a message">Just the problems as JSON</button><button type="button" class="btn primary" id="askGo">Copy for AI</button></div>
           </div>
-        </div></div></header>
+        </div><button class="btn" id="replyBtn" type="button" title="Paste the AI's reply here: a patch is checked change by change, whole code is compared with yours, and nothing changes until you apply it"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/></svg>Paste reply</button></div></header>
       <ul id="probList"></ul>
     </div>
   </section>
@@ -959,14 +1045,12 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
       <div class="sheet wide" id="aiSheet" hidden>
         <h3>Prompt for an AI assistant</h3>
         <div class="note">Copies the GearScript syntax as instructions any chat assistant can follow, plus your request. Paste its three code blocks back into the tabs.</div>
-        <label class="field" for="aiTask">What should it animate?</label>
+        <div class="row"><span id="aiModeLbl">Ask for</span><div class="seg" role="group" aria-labelledby="aiModeLbl" id="aiMode"><button type="button" data-m="new" aria-pressed="true">A new animation</button><button type="button" data-m="change" aria-pressed="false">A change to this project</button></div></div>
+        <label class="field" for="aiTask" id="aiTaskLbl">What should it animate?</label>
         <textarea id="aiTask" rows="3" placeholder="For example: a crane that lifts a box with a pulley, then swings it 90 degrees"></textarea>
         <p class="ai-locked" id="aiLocked" hidden>An example request, fixed for the tour. In real use you type your own.</p>
-        <label class="check"><input type="checkbox" id="aiCode"> Include my current code, so it edits this project</label>
-        <label class="check"><input type="checkbox" id="aiProbs"> <span id="aiProbsLbl">Include the problems, so it fixes them first</span></label>
-        <label class="check"><input type="checkbox" id="aiState"> <span id="aiStateLbl">Include the state at the current time: where every part is, so it can see what is wrong</span></label>
-        <div class="row" id="aiScopeRow" hidden><span id="aiScopeLbl">Ask about</span><div class="seg" role="group" aria-labelledby="aiScopeLbl" id="aiScope"><button type="button" data-s="chapter" aria-pressed="true">This chapter</button><button type="button" data-s="film" aria-pressed="false">Whole film</button></div></div>
-        <div class="row"><span>Reply format</span><span><b id="aiFmt"></b> · <button type="button" class="linkbtn" id="aiFmtSwitch"></button></span></div>
+        <div class="aiopts" id="aiOpts" hidden></div>
+        <div class="row" id="aiFmtRow"><span>Reply format</span><span><b id="aiFmt"></b><span id="aiFmtSep"> · </span><button type="button" class="linkbtn" id="aiFmtSwitch"></button></span></div>
         <div class="row"><span>Size</span><span id="aiLen" class="time"></span></div>
         <div class="aiwork" id="aiWork" hidden><div class="aistat" id="aiStat" role="status" aria-live="polite"></div><div class="bar" id="aiBar" hidden><i style="width:35%"></i></div></div>
         <div class="acts">
@@ -1008,6 +1092,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
         </div>
         <div class="note" id="fmtNote"></div>
         <div class="bar" id="gifBar" hidden><i></i></div>
+        <p class="renderwarn" id="renderWarn" hidden>Keep this tab open until it finishes. Rendering goes on in a background tab in most browsers, but Safari, a sleeping laptop or a battery saver can pause it.</p>
         <div class="stalemark" id="staleMark" role="status" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></svg><span><b>Out of date.</b> The code or settings changed after this render. Render again to include the changes.</span></div>
         <img id="gifImg" alt="Exported animation preview" hidden>
         <video id="vidOut" controls loop playsinline hidden></video>
@@ -3456,7 +3541,15 @@ function overlapCheck(model, opts = {}) {
   let words = []; try { words = textOverlapCheck(model, opts); } catch (e) { words = []; }   /* W0628: words covering words, checked on the picture */
   return [...solidOverlapCheck(model, opts), ...words];
 }
-function solidOverlapCheck(model, opts = {}) {
+/* the check as steps: it pauses (yield) between moments and between parts, so the studio can run it in slices and stop it when
+   the person types. solidOverlapCheck runs it in one go, for the command line and the patch panel */
+function solidOverlapCheck(model, opts = {}) { const g = solidOverlapSteps(model, opts); let r; do r = g.next(); while (!r.done); return r.value; }
+function* overlapSteps(model, opts = {}) {
+  const solid = yield* solidOverlapSteps(model, opts); let words = [];
+  try { words = textOverlapCheck(model, { budgetMs: opts.textBudgetMs || 250 }); } catch (e) { words = []; }
+  return [...solid, ...words];
+}
+function* solidOverlapSteps(model, opts = {}) {
   const budget = opts.budgetMs || 1500, t0 = Date.now(), out = [];
   if (!model || !model.order || !model.order.length) return out;
   const skipType = new Set(['Line', 'Arrow', 'Curve', 'Arc']);
@@ -3505,7 +3598,7 @@ function solidOverlapCheck(model, opts = {}) {
   const visibleAt = (ent, t) => { const r = [...(model.rules || []), ...(model.lookRules || [])].find(r => r.target.kind === 'entity' && r.target.ent === ent && r.compiled && r.compiled.opac && r.compiled.opac.length); if (!r) return true; try { return track(r.compiled.opac, t) > 0.05; } catch (e) { return true; } };
   const n = Math.max(2, Math.min(24, opts.samples || Math.ceil(Math.min(model.duration, 120) / 1.5) + 1)), done = new Set(), tmp = new THREE.Vector3(), inv = new THREE.Matrix4(), rel2 = new THREE.Matrix4();
   /* parts that never move are composed, not colliding: a band around a tower, a window set in a wall. Only pairs where one moves are tested */
-  const allMats = []; for (let s = 0; s < n; s++) { try { allMats.push(solve(model, model.duration * s / (n - 1))); } catch (e) { allMats.push(null); } }
+  const allMats = []; for (let s = 0; s < n; s++) { try { allMats.push(solve(model, model.duration * s / (n - 1))); } catch (e) { allMats.push(null); } yield; }
   const moves = parts.map(P => { let first = null; for (const M of allMats) { const m = M && M.get(P.ent.name); if (!m) continue; if (!first) { first = m; continue; } for (let k = 0; k < 16; k++) if (Math.abs(m.elements[k] - first.elements[k]) > 1e-6 * (k >= 12 ? 1000 : 1)) return true; } return false; });
   for (let s = 0; s < n && Date.now() - t0 < budget; s++) {
     const t = model.duration * s / (n - 1); const mats = allMats[s]; if (!mats) continue;
@@ -3525,6 +3618,7 @@ function solidOverlapCheck(model, opts = {}) {
         }
         if (count >= 2) { done.add(k2); out.push({ a: A.name, b: B.name, t, decl: A.l.decl && A.l.decl.line ? A.l.decl : A.ent.decl }); }
       }
+      yield;
     }
   }
   return out.slice(0, 30).map(o => new Diag(o.decl, 'W0560', `${o.a} and ${o.b} pass through each other${o.t > 1e-6 ? ` at ${o.t.toFixed(2)} s` : ''}.`, `Move one of them, or connect them (attach, hinge) if they belong together. If it is meant, add overlap: allow; to ${o.a.split('.')[0]}.`, 'warning'));
@@ -4397,7 +4491,519 @@ function filmTimes(chapters, durs) {
   const total = out.length ? out[out.length - 1].s + out[out.length - 1].d : 0;
   return { list: out, total };
 }
-root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, loudness, masterMix, normalizeClip, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, EASINGS, version: '1.0.0-beta' };
+/* ---------- patches: small corrections addressed by name, each checked against the code it changes ----------
+   A patch says where (@common or @chapter Name, then @scene, @style or @motion) and what, in GearScript's own shapes:
+     Coupler { length: 120mm => 125mm; }        set: change or add these properties; old => new fails when the old value is not there
+     unset Rocker { pin; }                      drop properties
+     add Spring::Spring { … } after Rocker      a new part or rule (before or after one, or at the end of the section)
+     remove Bracket                             a part (with its rules in the same chapter's style and motion) or a rule
+     rename Crank to Driver                     every reference, in the chapter and the chapters that see it
+     replace Crank { old text } with { new }    text inside one part's rules (or the section, without a name); spaces do not matter
+   Every operation is all or nothing. applyPatch never guesses: a value that is not what the patch expects, a name that is not there or a
+   text found twice is a conflict, reported with what is there now, and the rest of the patch still applies. */
+const PATCH_HEAD = /^[ \t]*@patch\b/i;
+function patchSource(text) {
+  const t = String(text == null ? '' : text), starts = (s) => /^\s*(?:\/\/[^\n]*\n\s*)*@patch\b/i.test(s);
+  const fence = t.match(/```[ \t]*gearpatch[^\n]*\n([\s\S]*?)(?:```|$)/i); if (fence) return fence[1];
+  const re = /```[A-Za-z]*[^\n]*\n([\s\S]*?)```/g; let m; while ((m = re.exec(t))) if (starts(m[1])) return m[1];
+  return starts(t) ? t : null;
+}
+const isPatchText = (text) => patchSource(text) !== null;
+/* calls fn(i, c) for every character outside comments and strings (a string is one call with c = '"'); fn returns true to stop */
+function codeChars(s, from, to, fn) {
+  for (let i = from; i < to; i++) {
+    const c = s[i];
+    if (c === '/' && s[i + 1] === '/') { while (i + 1 < to && s[i + 1] !== '\n') i++; continue; }
+    if (c === '/' && s[i + 1] === '*') { const e = s.indexOf('*/', i + 2); i = e < 0 || e + 2 > to ? to : e + 1; continue; }
+    if (c === '#' && (i + 1 >= s.length || /[\s#]/.test(s[i + 1])) && /^[ \t]*$/.test(s.slice(s.lastIndexOf('\n', i - 1) + 1, i))) { while (i + 1 < to && s[i + 1] !== '\n') i++; continue; }   /* "# note" is read as a comment (W0108) */
+    if (c === '"') { let j = i + 1; while (j < to && s[j] !== '"' && s[j] !== '\n') { if (s[j] === '\\') j++; j++; } if (fn(i, '"') === true) return i; i = j; continue; }
+    if (fn(i, c) === true) return i;
+  }
+  return -1;
+}
+const normSel = (h) => String(h || '').replace(/\s+/g, ' ').replace(/\s*,\s*/g, ', ').trim();
+const normVal = (v) => String(v == null ? '' : v).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').replace(/\s*([,()])\s*/g, '$1').replace(/;\s*$/, '').replace(/#[0-9a-fA-F]+\b/g, x => x.toLowerCase()).trim();
+function mkStmt(s, start, open, close, end) {
+  const head = s.slice(start, open >= 0 ? open : end).replace(/;\s*$/, '').trim(); let m, name = null, type = null, sel;
+  if ((m = head.match(/^([A-Za-z_][\w-]*)\s*::\s*([A-Za-z_][\w-]*)/))) { name = m[1]; type = m[2]; sel = name; }
+  else if ((m = head.match(/^(let|define)\s+([A-Za-z_][\w-]*)/))) sel = m[1] + ' ' + m[2];
+  else sel = normSel(head);
+  return { start, open, close, end, head, name, type, sel };
+}
+/* the statements of a section: parts, rules, lets; each with its block's braces */
+function stmtsIn(s, a, b) {
+  const out = []; let depth = 0, par = 0, st = -1, open = -1;
+  codeChars(s, a, b, (i, c) => {
+    if (st < 0) { if (/\s/.test(c)) return; st = i; depth = 0; par = 0; open = -1; }
+    if (c === '(') par++; else if (c === ')') par--;
+    else if (c === '{') { if (depth === 0) open = i; depth++; }
+    else if (c === '}') { depth--; if (depth <= 0) { out.push(mkStmt(s, st, open, i, i + 1)); st = -1; } }
+    else if (c === ';' && depth === 0 && par <= 0) { out.push(mkStmt(s, st, -1, -1, i + 1)); st = -1; }
+  });
+  if (st >= 0) out.push(Object.assign(mkStmt(s, st, open, -1, b), { broken: true }));
+  return out;
+}
+function mkDecl(s, start, end, member) {
+  const text = s.slice(start, end), semi = /;$/.test(text), m = member ? null : text.match(/^([^:;{}"]*?)\s*:(?!:)/);
+  const key = m ? m[1].replace(/\s+/g, ' ').trim() : null;
+  let vs = m ? start + m[0].length : -1; while (vs >= 0 && vs < end && /[ \t]/.test(s[vs])) vs++;
+  let ve = semi ? end - 1 : end; while (vs >= 0 && ve > vs && /\s/.test(s[ve - 1])) ve--;
+  return { start, end, key, vs, ve, semi, member: !!member, value: m ? s.slice(vs, ve) : null };
+}
+/* the properties in a block (a group member is one item, marked member) */
+function declsIn(s, st) {
+  const out = []; if (st.open < 0 || st.close < 0) return out;
+  let par = 0, depth = 0, d0 = -1;
+  codeChars(s, st.open + 1, st.close, (i, c) => {
+    if (d0 < 0) { if (/\s/.test(c)) return; d0 = i; par = 0; depth = 0; }
+    if (c === '(') par++; else if (c === ')') par--;
+    else if (c === '{') depth++;
+    else if (c === '}') { depth--; if (depth <= 0) { out.push(mkDecl(s, d0, i + 1, true)); d0 = -1; } }
+    else if (c === ';' && depth === 0 && par <= 0) { out.push(mkDecl(s, d0, i + 1)); d0 = -1; }
+  });
+  if (d0 >= 0) { let e = st.close; while (e > d0 && /\s/.test(s[e - 1])) e--; if (e > d0) out.push(mkDecl(s, d0, e)); }
+  return out;
+}
+const countNL = (s) => { let n = 0; for (let i = 0; i < s.length; i++) if (s.charCodeAt(i) === 10) n++; return n; };
+const indentOf = (s, pos) => { const ls = s.lastIndexOf('\n', pos - 1) + 1; return s.slice(ls).match(/^[ \t]*/)[0]; };
+function dedent(t) {
+  const lines = String(t).replace(/^[ \t]*\n/, '').replace(/\s+$/, '').split('\n');
+  const ind = Math.min(...lines.filter(l => l.trim()).map(l => l.match(/^[ \t]*/)[0].length), 99);
+  return lines.map(l => l.slice(Math.min(ind, l.match(/^[ \t]*/)[0].length))).join('\n');
+}
+/* where every chapter and section sits in a project text */
+function patchLayout(T) {
+  const film = isFilmText(T), boxes = [], lines = T.split('\n'); let off = 0, sec = null;
+  let box = { name: film ? '@common' : null, kind: film ? 'common' : 'single', start: 0, end: T.length, secs: {}, lead: true }; boxes.push(box);
+  const close = (p) => { if (sec) sec.b = p; sec = null; };
+  for (let i = 0; i < lines.length; i++) {
+    const ln = lines[i], next = off + ln.length + 1;
+    const cm = film && ln.match(CHAPTER_LINE);
+    if (cm) {
+      close(off); box.end = off;
+      const common = cm[1].toLowerCase() === 'common', name = common ? '@common' : (cm[2].trim().match(/^[A-Za-z_]\w*/) || [''])[0];
+      if (common && box.lead && !Object.keys(box.secs).length) boxes.pop();
+      box = { name, kind: common ? 'common' : 'chapter', start: off, end: T.length, secs: {}, line: i + 1 }; boxes.push(box);
+    } else {
+      const m = ln.match(MARKER), k = m && m[1].toLowerCase();
+      if (k && SECTIONS.includes(k)) { close(off); sec = { k, marker: off, a: Math.min(next, T.length), b: T.length }; if (!box.secs[k]) box.secs[k] = sec; }
+    }
+    off = next;
+  }
+  close(T.length);
+  const find = (name) => { const all = boxes.filter(b => b.name === name); return all.find(b => Object.keys(b.secs).length) || all[all.length - 1] || null; };
+  return { film, boxes, find, chapters: boxes.filter(b => b.kind === 'chapter').map(b => b.name) };
+}
+/* ---- reading a patch ---- */
+function parsePatch(text) {
+  const src = patchSource(text), ops = [], issues = []; let title = '', version = null;
+  if (src == null) return { ok: false, title, version, ops, issues: [{ line: 1, message: 'This is not a patch: a patch starts with the line @patch 1.' }] };
+  let box = null, sec = null, buf = [], bufLine = 1;
+  const issue = (line, message) => issues.push({ line, message });
+  const flush = () => { if (buf.length && buf.some(l => l.trim())) parseBody(buf.join('\n'), bufLine); buf = []; };
+  const lines = src.split('\n');
+  lines.forEach((ln, i) => {
+    let m;
+    if ((m = ln.match(/^[ \t]*@patch\b[ \t]*(\d+)?[ \t]*(?:"((?:[^"\\]|\\.)*)")?/i))) { flush(); version = m[1] ? +m[1] : version; if (m[2]) title = m[2].replace(/\\(.)/g, '$1'); return; }
+    if (VERSION_LINE.test(ln)) { flush(); return; }
+    if ((m = ln.match(CHAPTER_LINE))) {
+      flush(); sec = null;
+      if (m[1].toLowerCase() === 'common') box = '@common';
+      else { const nm = (m[2].trim().match(/^[A-Za-z_]\w*/) || [null])[0]; if (!nm) issue(i + 1, '@chapter needs the name of the chapter to change.'); box = nm; }
+      return;
+    }
+    if ((m = ln.match(MARKER))) { flush(); const k = m[1].toLowerCase(); if (SECTIONS.includes(k)) sec = k; else { issue(i + 1, `"@${m[1]}" is not a section: write @scene, @style or @motion.`); sec = null; } return; }
+    if (!buf.length) bufLine = i + 1; buf.push(ln);
+  });
+  flush();
+  if (version && version > 1) issue(1, `This patch is for patch format ${version}; this studio reads format 1.`);
+  if (!ops.length && !issues.length) issue(1, 'The patch has no changes in it.');
+  ops.forEach((o, i) => { o.i = i; });
+  return { ok: !issues.length, title, version, ops, issues };
+
+  function parseBody(t, line0) {
+    const n = t.length, lineAt = (p) => line0 + countNL(t.slice(0, p));
+    const skip = (p) => { for (;;) { while (p < n && /\s/.test(t[p])) p++; if (t.startsWith('//', p)) { while (p < n && t[p] !== '\n') p++; continue; } if (t.startsWith('/*', p)) { const e = t.indexOf('*/', p + 2); p = e < 0 ? n : e + 2; continue; } return p; } };
+    const balanced = (p) => {   /* from p: the first block at depth 0, or a ; before any block. Returns { open, close, end } */
+      let depth = 0, open = -1, end = -1;
+      codeChars(t, p, n, (i, c) => { if (c === '{') { if (!depth) open = i; depth++; } else if (c === '}') { depth--; if (!depth) { end = i + 1; return true; } } else if (c === ';' && !depth && open < 0) { end = i + 1; return true; } else if (c === '\n' && !depth && open < 0 && /^[ \t]*(?:add|unset|set|remove|rename|replace)\b/.test(t.slice(i + 1))) { end = i; return true; } });
+      return { open, close: open >= 0 && end > 0 ? end - 1 : -1, end: end < 0 ? n : end };
+    };
+    const splitTop = (body, sep) => { const out = []; let par = 0, last = 0; codeChars(body, 0, body.length, (i, c) => { if (c === '(' || c === '{') par++; else if (c === ')' || c === '}') par--; else if (c === sep && par <= 0) { out.push(body.slice(last, i)); last = i + 1; } }); out.push(body.slice(last)); return out.map(x => x.replace(/^\s*(?:\/\/[^\n]*\n\s*)*/, '').replace(/\/\/[^\n]*$/gm, '').trim()).filter(Boolean); };
+    const arrowAt = (s) => { let at = -1; codeChars(s, 0, s.length, (i, c) => { if (c === '=' && s[i + 1] === '>') { at = i; return true; } }); return at; };
+    const base = (kind, p, extra) => Object.assign({ kind, box, sec, line: lineAt(p) }, extra);
+    let p = 0;
+    for (;;) {
+      p = skip(p); if (p >= n) break;
+      const start = p, w = (t.slice(p).match(/^[A-Za-z_][\w-]*/) || [''])[0];
+      if (w === 'remove' || w === 'rename') {
+        let e = t.indexOf('\n', p); if (e < 0) e = n;
+        const rest = t.slice(p + w.length, e).replace(/\/\/.*$/, '').replace(/;\s*$/, '').trim(), src = t.slice(start, e).replace(/\/\/.*$/, '').trim();
+        if (w === 'remove') { if (!rest) issue(lineAt(p), 'remove needs the name of a part or a rule: remove Bracket'); else ops.push(base('remove', p, { sel: normSel(rest), src })); }
+        else { const m = rest.match(/^([A-Za-z_][\w-]*)\s+(?:to|->|=>)\s+([A-Za-z_][\w-]*)$/); if (!m) issue(lineAt(p), 'Write rename Old to New.'); else ops.push(base('rename', p, { from: m[1], to: m[2], src })); }
+        p = e; continue;
+      }
+      if (w === 'replace') {
+        const ob = codeChars(t, p + 7, n, (i, c) => c === '{');
+        if (ob < 0 || t[ob] !== '{') { issue(lineAt(p), 'Write replace Part { text to find } with { new text }.'); p = (t.indexOf('\n', p) + 1) || n; continue; }
+        const b1 = balanced(ob); if (b1.close < 0) { issue(lineAt(p), 'The text to find is never closed with }.'); break; }
+        let q = skip(b1.end);
+        if (!/^with\b/.test(t.slice(q))) { issue(lineAt(q), 'replace needs "with { new text }" after the text to find.'); p = b1.end; continue; }
+        q = skip(q + 4);
+        if (t[q] !== '{') { issue(lineAt(q), 'Put the new text in braces: with { … }.'); p = q; continue; }
+        const b2 = balanced(q); if (b2.close < 0) { issue(lineAt(q), 'The new text is never closed with }.'); break; }
+        ops.push(base('replace', p, { sel: normSel(t.slice(p + 7, ob)) || null, find: dedent(t.slice(b1.open + 1, b1.close)), repl: dedent(t.slice(b2.open + 1, b2.close)), src: t.slice(start, b2.end) }));
+        p = b2.end; continue;
+      }
+      let kind = 'set', q = p;
+      if (w === 'set' || w === 'unset' || w === 'add') { kind = w; q = p + w.length; }
+      const b = balanced(q), src = t.slice(start, b.end).trim();
+      if (kind === 'add') {
+        let code = t.slice(q, b.end), e = b.end; const pm = t.slice(e).match(/^[ \t]*(after|before)[ \t]+([A-Za-z_][\w-]*)[ \t]*;?/);
+        if (pm) e += pm[0].length;
+        code = dedent(code).replace(/^\s+/, '');
+        if (!code) issue(lineAt(p), 'add needs a part or a rule: add Spring::Spring { … }');
+        else ops.push(base('add', p, { code, pos: pm ? { where: pm[1], name: pm[2] } : null, sel: mkStmt(code, 0, code.indexOf('{'), -1, code.length).sel, src: t.slice(start, e).trim() }));
+        p = e; continue;
+      }
+      if (b.open < 0) { issue(lineAt(p), `"${src.split('\n')[0].slice(0, 60)}" is not a patch line. Write Part { property: value; }, or start with add, unset, remove, rename or replace.`); p = b.end > p ? b.end : n; continue; }
+      const sel = normSel(t.slice(q, b.open)), body = t.slice(b.open + 1, b.close);
+      if (!sel) { issue(lineAt(p), 'Name the part or rule before its {.'); p = b.end; continue; }
+      if (kind === 'unset') {
+        const names = splitTop(body, ';').map(x => { const k = x.match(/^([^:]+?)\s*(?::(?!:)\s*([\s\S]*))?$/); return { key: k[1].replace(/\s+/g, ' ').trim(), old: k[2] != null && k[2].trim() ? k[2].trim() : null }; });
+        if (!names.length) issue(lineAt(p), `unset ${sel} { } names no property.`); else ops.push(base('unset', p, { sel, names, src }));
+      } else {
+        const props = []; let bad = false;
+        for (const x of splitTop(body, ';')) {
+          const k = x.match(/^([^:{}"]+?)\s*:(?!:)\s*([\s\S]*)$/);
+          if (!k || !k[2].trim()) { issue(lineAt(p), `"${x.slice(0, 50)}" in ${sel} { } is not "property: value".`); bad = true; continue; }
+          const v = k[2].trim(), a = arrowAt(v);
+          props.push({ key: k[1].replace(/\s+/g, ' ').trim(), old: a >= 0 ? v.slice(0, a).trim() : null, val: (a >= 0 ? v.slice(a + 2) : v).trim() });
+        }
+        if (props.some(x => !x.val)) { issue(lineAt(p), `A property in ${sel} { } has no new value after =>.`); bad = true; }
+        if (!props.length && !bad) issue(lineAt(p), `${sel} { } has no properties to set.`);
+        if (props.length && !bad) ops.push(base('set', p, { sel, props, src }));
+      }
+      p = b.end;
+    }
+  }
+}
+/* ---- applying a patch ---- */
+class PatchFail extends Error { constructor(status, msg, extra) { super(msg); this.status = status; Object.assign(this, extra || {}); } }
+/* the lines a change touched, before and after: [{ t: ' ' | '-' | '+' | '…', s }], with one line of context around each run */
+function lineDiff(a, b, around = 1, max = 400) {
+  const A = String(a).split('\n'), B = String(b).split('\n'); let p = 0, s = 0;
+  while (p < A.length && p < B.length && A[p] === B[p]) p++;
+  while (s < A.length - p && s < B.length - p && A[A.length - 1 - s] === B[B.length - 1 - s]) s++;
+  const ma = A.slice(p, A.length - s), mb = B.slice(p, B.length - s), mid = [];
+  if (ma.length === mb.length) ma.forEach((x, i) => { if (x === mb[i]) mid.push({ t: ' ', s: x }); else mid.push({ t: '-', s: x }, { t: '+', s: mb[i] }); });
+  else if (ma.length * mb.length <= 250000) {   /* longest common subsequence of the lines in between */
+    const n = ma.length, m = mb.length, L = Array.from({ length: n + 1 }, () => new Uint16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) L[i][j] = ma[i] === mb[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]);
+    let i = 0, j = 0; while (i < n || j < m) { if (i < n && j < m && ma[i] === mb[j]) { mid.push({ t: ' ', s: ma[i] }); i++; j++; } else if (j < m && (i === n || L[i][j + 1] >= L[i + 1][j])) mid.push({ t: '+', s: mb[j++] }); else mid.push({ t: '-', s: ma[i++] }); }
+  } else { ma.forEach(x => mid.push({ t: '-', s: x })); mb.forEach(x => mid.push({ t: '+', s: x })); }
+  const rows = [...A.slice(Math.max(0, p - around), p).map(x => ({ t: ' ', s: x })), ...mid, ...A.slice(A.length - s, Math.min(A.length, A.length - s + around)).map(x => ({ t: ' ', s: x }))];
+  /* each row's line: in the new text, or in the old one for a removed line */
+  let na = Math.max(0, p - around) + 1, nb = na; for (const r of rows) { if (r.t === '-') r.n = na++; else if (r.t === '+') r.n = nb++; else { r.n = nb; na++; nb++; } }
+  const keep = rows.map(() => false); rows.forEach((r, i) => { if (r.t !== ' ') for (let k = Math.max(0, i - around); k <= Math.min(rows.length - 1, i + around); k++) keep[k] = true; });
+  const out = []; let gap = false;
+  rows.forEach((r, i) => { if (keep[i]) { out.push(r); gap = false; } else if (!gap && out.length) { out.push({ t: '…', s: '' }); gap = true; } });
+  while (out.length && out[out.length - 1].t === '…') out.pop();
+  return out.length > max ? out.slice(0, max).concat({ t: '…', s: `${out.length - max} more lines` }) : out;
+}
+function applyPatch(text, patch, opts = {}) {
+  const P = typeof patch === 'string' ? parsePatch(patch) : patch, skipSet = opts.skip || new Set(), force = opts.force || new Set();
+  const ctx = { T: String(text), edits: [], recs: [], lay: null, op: -1 };
+  ctx.layout = () => ctx.lay || (ctx.lay = patchLayout(ctx.T));
+  ctx.edit = (pos, del, ins) => {
+    if (!del && !ins) return;
+    ctx.T = ctx.T.slice(0, pos) + ins + ctx.T.slice(pos + del); ctx.lay = null;
+    const d = ins.length - del; ctx.edits.push({ pos, del, ins: ins.length });
+    for (const r of ctx.recs) { if (r.pos >= pos + del) r.pos += d; else if (r.pos + r.len <= pos) {} else { const s = Math.min(r.pos, pos), e = Math.max(r.pos + r.len, pos + del) + d; r.pos = s; r.len = Math.max(0, e - s); } }
+    ctx.recs.push({ op: ctx.op, pos, len: ins.length });
+  };
+  ctx.span = (s, e) => ctx.recs.push({ op: ctx.op, pos: s, len: Math.max(0, e - s), span: true });   /* the whole part a change is in: problems there are put down to it */
+  const results = P.ops.map(op => {
+    const r = { i: op.i, kind: op.kind, box: op.box, sec: op.sec, sel: op.sel || null, line: op.line, src: op.src, label: opLabel(op), where: [op.box, op.sec].filter(Boolean).join(' › '), what: opLabel({ ...op, box: null, sec: null }), status: 'ok', message: '', changes: [], lines: [], span: [], diff: [] };
+    if (skipSet.has(op.i)) { r.status = 'skipped'; r.message = 'Not applied (unticked).'; return r; }
+    const snap = { T: ctx.T, edits: ctx.edits.length, recs: ctx.recs.map(x => ({ ...x })) };
+    ctx.op = op.i;
+    try { applyOp(ctx, op, r, force.has(op.i)); if (!r.changes.length && r.status === 'ok') { r.status = 'same'; r.message = r.message || 'Already so: nothing to change.'; } else if (opts.diff !== false) r.diff = lineDiff(snap.T, ctx.T); }
+    catch (e) {
+      if (!(e instanceof PatchFail)) throw e;
+      ctx.T = snap.T; ctx.edits.length = snap.edits; ctx.recs = snap.recs; ctx.lay = null;
+      r.status = e.status; r.message = e.message; r.changes = []; if (e.now) r.now = e.now; if (e.forceable) r.forceable = true;
+    }
+    return r;
+  });
+  /* each change's lines in the patched text, and a map from lines of the old text to lines of the new one */
+  const T = ctx.T, starts = [0]; for (let i = 0; i < T.length; i++) if (T.charCodeAt(i) === 10) starts.push(i + 1);
+  const lineOf = (off) => { let lo = 0, hi = starts.length - 1; while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (starts[mid] <= off) lo = mid; else hi = mid - 1; } return lo + 1; };
+  for (const rc of ctx.recs) { const r = results[rc.op]; if (!r || r.status !== 'ok') continue; const a = lineOf(rc.pos), b = Math.max(a, lineOf(Math.max(rc.pos, rc.pos + rc.len - 1))); if (!rc.span) r.lines.push([a, b]); r.span.push([a, b]); }
+  const merge = (list) => list.sort((x, y) => x[0] - y[0]).reduce((acc, x) => { const l = acc[acc.length - 1]; if (l && x[0] <= l[1] + 1) l[1] = Math.max(l[1], x[1]); else acc.push(x.slice()); return acc; }, []);
+  for (const r of results) { r.lines = merge(r.lines); r.span = merge(r.span); }
+  const old = String(text), oldStarts = [0]; for (let i = 0; i < old.length; i++) if (old.charCodeAt(i) === 10) oldStarts.push(i + 1);
+  const edits = ctx.edits.slice();
+  const mapLine = (L) => {
+    if (!(L >= 1 && L <= oldStarts.length)) return { line: L, touched: false };
+    let off = oldStarts[L - 1], len = (L < oldStarts.length ? oldStarts[L] - 1 : old.length) - off, touched = false;
+    for (const e of edits) { if (off >= e.pos + e.del) off += e.ins - e.del; else if (off + len < e.pos) {} else { touched = true; off = Math.min(off, e.pos); len = e.ins; } }
+    return { line: lineOf(Math.min(off, T.length)), touched };
+  };
+  return { text: T, changed: T !== old, title: P.title, ops: results, issues: P.issues, mapLine, applied: results.filter(r => r.status === 'ok').length, conflicts: results.filter(r => r.status === 'conflict' || r.status === 'error').length };
+}
+function opLabel(op) {
+  const where = [op.box, op.sec].filter(Boolean).join(' › ');
+  const what = op.kind === 'set' ? `${op.sel} { ${op.props.map(p => p.key + ': ' + (p.old != null ? p.old + ' → ' : '') + p.val).join('; ')} }`
+    : op.kind === 'unset' ? `unset ${op.sel} { ${op.names.map(n => n.key).join('; ')} }`
+    : op.kind === 'add' ? `add ${op.code.split('\n')[0].replace(/\s*\{.*$/, '')}${op.pos ? ' ' + op.pos.where + ' ' + op.pos.name : ''}`
+    : op.kind === 'remove' ? `remove ${op.sel}` : op.kind === 'rename' ? `rename ${op.from} to ${op.to}` : `replace in ${op.sel || 'the section'}`;
+  return (where ? where + ' · ' : '') + what;
+}
+function patchBox(ctx, op) {
+  const lay = ctx.layout();
+  if (!lay.film) { if (op.box) throw new PatchFail('error', `This project has no chapters, so leave out the line ${op.box === '@common' ? '@common' : '@chapter ' + op.box}.`); return lay.boxes[0]; }
+  if (!op.box) throw new PatchFail('error', 'Say which chapter first: a line @chapter Name (or @common) above this change.');
+  const b = lay.find(op.box);
+  if (!b) { const nn = nearName(op.box, lay.chapters); throw new PatchFail('conflict', `There is no chapter ${op.box}.${nn ? ` Did you mean ${nn}?` : ` Chapters: ${lay.chapters.join(', ')}.`} To add a chapter, paste it whole.`); }
+  return b;
+}
+const whereOf = (op) => [op.box, op.sec].filter(Boolean).join(' › ') || 'the project';
+function patchSection(ctx, op, create) {
+  const b = patchBox(ctx, op); let sec = b.secs[op.sec];
+  if (!sec && create) {
+    const T = ctx.T, pos = b.end, pre = pos > 0 && T[pos - 1] !== '\n' ? '\n' : '', atHead = pos < T.length;
+    ctx.edit(pos, 0, pre + '@' + op.sec + '\n' + (atHead ? '\n' : '')); sec = patchBox(ctx, op).secs[op.sec];
+  }
+  return sec || null;
+}
+function sectionStmts(ctx, op) { const sec = patchSection(ctx, op, false); return sec ? stmtsIn(ctx.T, sec.a, sec.b) : []; }
+function notThere(ctx, op, sel, what) {
+  const names = sectionStmts(ctx, op).map(s => s.sel).filter(Boolean), nn = nearName(sel, names);
+  return new PatchFail('conflict', `There is no ${what || ''}${sel} in ${whereOf(op)}.${nn ? ` Did you mean ${nn}?` : ''}`);
+}
+function insertAtEnd(ctx, op, code) {
+  const sec = patchSection(ctx, op, true), T = ctx.T; let p = sec.b; while (p > sec.a && /\s/.test(T[p - 1])) p--;
+  if (p > sec.a) ctx.edit(p, 0, '\n' + code); else ctx.edit(sec.a, 0, code + '\n');
+}
+function removeSpan(ctx, s, e) {
+  const T = ctx.T; let a = s, b = e; while (b < T.length && (T[b] === ' ' || T[b] === '\t')) b++;
+  const ls = T.lastIndexOf('\n', a - 1) + 1; let le = T.indexOf('\n', b); if (le < 0) le = T.length;
+  const after = T.slice(b, le).trim();
+  if (!T.slice(ls, a).trim() && (!after || after.startsWith('//'))) { a = ls; b = le < T.length ? le + 1 : le; }
+  ctx.edit(a, b - a, '');
+}
+function insertDecl(ctx, st, key, val) {
+  let ds = declsIn(ctx.T, st), last = ds.filter(d => !d.member).pop() || ds[ds.length - 1];
+  if (last && !last.semi && !last.member) { ctx.edit(last.end, 0, ';'); st = { ...st, close: st.close + 1 }; last = { ...last, end: last.end + 1 }; }
+  const T = ctx.T; let j = st.close; while (j > st.open + 1 && (T[j - 1] === ' ' || T[j - 1] === '\t')) j--;
+  if (T[j - 1] === '\n') ctx.edit(j, 0, `${last ? indentOf(T, last.start) : indentOf(T, st.start) + '  '}${key}: ${val};\n`);
+  else ctx.edit(j, 0, ` ${key}: ${val};${T[j] === '}' ? ' ' : ''}`);
+}
+const brief = (s, n = 70) => { s = String(s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; };
+function applyOp(ctx, op, r, force) {
+  if (op.kind !== 'rename' && !op.sec) throw new PatchFail('error', 'Say which section first: a line @scene, @style or @motion above this change.');
+  const T0 = () => ctx.T;
+  if (op.kind === 'set') {
+    if (op.sec === 'motion') throw new PatchFail('error', 'In @motion, rules for one part add up, so a property has no single place to set. Use replace Part { … } with { … }, or add and remove.');
+    let sts = sectionStmts(ctx, op).filter(s => s.sel === op.sel && s.open >= 0);
+    if (!sts.length) {
+      if (op.sec !== 'style') throw notThere(ctx, op, op.sel, op.sec === 'scene' && /^[A-Z]/.test(op.sel) ? 'part ' : '');
+      if (op.props.some(p => p.old != null) && !force) throw new PatchFail('conflict', `There is no style rule ${op.sel} in ${whereOf(op)}, so its old values are not there.`, { forceable: true });
+      insertAtEnd(ctx, op, `${op.sel} { ${op.props.map(p => p.key + ': ' + p.val + ';').join(' ')} }`); r.changes.push(`new rule ${op.sel}`); return;
+    }
+    for (const p of op.props) {
+      sts = sectionStmts(ctx, op).filter(s => s.sel === op.sel && s.open >= 0);
+      let hit = null; for (const s of sts) for (const d of declsIn(T0(), s)) if (d.key === p.key) hit = d;
+      if (hit) {
+        if (p.old != null && !force && normVal(hit.value) !== normVal(p.old)) throw new PatchFail('conflict', `${op.sel} has ${p.key}: ${hit.value}, not ${p.old}. The code changed since the patch was written.`, { now: `${p.key}: ${hit.value};`, forceable: true });
+        if (normVal(hit.value) === normVal(p.val)) continue;
+        ctx.edit(hit.vs, hit.ve - hit.vs, p.val); r.changes.push(`${p.key}: ${brief(hit.value, 40)} → ${brief(p.val, 40)}`);
+      } else {
+        if (p.old != null && !force) throw new PatchFail('conflict', `${op.sel} has no ${p.key} (the patch expected ${p.old}).`, { forceable: true });
+        insertDecl(ctx, sts[sts.length - 1], p.key, p.val); r.changes.push(`${p.key}: ${brief(p.val, 40)} (added)`);
+      }
+    }
+    for (const s of sectionStmts(ctx, op)) if (s.sel === op.sel) ctx.span(s.start, s.end);
+    return;
+  }
+  if (op.kind === 'unset') {
+    if (!sectionStmts(ctx, op).some(s => s.sel === op.sel)) throw notThere(ctx, op, op.sel);
+    for (const nm of op.names) {
+      for (;;) {
+        const sts = sectionStmts(ctx, op).filter(s => s.sel === op.sel && s.open >= 0);
+        let hit = null; for (const s of sts) for (const d of declsIn(T0(), s)) if (d.key === nm.key) hit = d;
+        if (!hit) break;
+        if (nm.old != null && !force && normVal(hit.value) !== normVal(nm.old)) throw new PatchFail('conflict', `${op.sel} has ${nm.key}: ${hit.value}, not ${nm.old}.`, { now: `${nm.key}: ${hit.value};`, forceable: true });
+        removeSpan(ctx, hit.start, hit.end); r.changes.push(`${nm.key} removed`);
+      }
+    }
+    for (const s of sectionStmts(ctx, op)) if (s.sel === op.sel) ctx.span(s.start, s.end);
+    return;
+  }
+  if (op.kind === 'add') {
+    const head = stmtsIn(op.code, 0, op.code.length)[0];
+    if (!head || head.broken) throw new PatchFail('error', `"${brief(op.code, 50)}" is not a complete part or rule: close its block with }.`);
+    if (op.sec === 'scene' && head.name && sectionStmts(ctx, op).some(s => s.name === head.name)) throw new PatchFail('conflict', `${whereOf(op)} already has a part called ${head.name}. To change it, write ${head.name} { property: value; }.`);
+    if (op.pos) {
+      const st = sectionStmts(ctx, op).filter(s => s.sel === op.pos.name);
+      if (!st.length) throw notThere(ctx, op, op.pos.name);
+      const T = ctx.T, s = op.pos.where === 'after' ? st[st.length - 1] : st[0];
+      if (op.pos.where === 'after') { const le = T.indexOf('\n', s.end); ctx.edit(le < 0 ? T.length : le + 1, 0, (le < 0 ? '\n' : '') + op.code + (le < 0 ? '' : '\n')); }
+      else ctx.edit(T.lastIndexOf('\n', s.start - 1) + 1, 0, op.code + '\n');
+    } else insertAtEnd(ctx, op, op.code);
+    r.changes.push(`added ${head.name ? head.name + '::' + head.type : head.sel}`); return;
+  }
+  if (op.kind === 'remove') {
+    let sts = sectionStmts(ctx, op).filter(s => s.sel === op.sel);
+    if (!sts.length) throw notThere(ctx, op, op.sel);
+    const ent = op.sec === 'scene' && sts.some(s => s.name);
+    while (sts.length) { const s = sts[sts.length - 1]; removeSpan(ctx, s.start, s.end); sts = sectionStmts(ctx, op).filter(x => x.sel === op.sel); }
+    r.changes.push(`removed ${op.sel}`);
+    if (ent) for (const k of ['style', 'motion']) {
+      const o2 = { ...op, sec: k }; let n = 0, more;
+      while ((more = sectionStmts(ctx, o2).filter(x => x.sel === op.sel)).length) { const s = more[more.length - 1]; removeSpan(ctx, s.start, s.end); n++; }
+      if (n) r.changes.push(`removed its ${n === 1 ? 'rule' : n + ' rules'} in ${k}`);
+    }
+    return;
+  }
+  if (op.kind === 'rename') {
+    /* the scope is where the name is declared and every chapter that sees it: a part of @common is renamed everywhere,
+       a part of a chapter in that chapter and the chapters that extend it (whichever chapter the patch names) */
+    const lay = ctx.layout(); let boxes, wider = '';
+    if (!lay.film) { if (op.box) throw new PatchFail('error', `This project has no chapters, so leave out the line ${op.box === '@common' ? '@common' : '@chapter ' + op.box}.`); boxes = lay.boxes; }
+    else {
+      if (op.box) patchBox(ctx, op);
+      const decl = lay.boxes.filter(b => Object.values(b.secs).some(s => stmtsIn(ctx.T, s.a, s.b).some(x => x.name === op.from)));
+      if (!op.box || op.box === '@common' || decl.some(b => b.kind === 'common')) { boxes = lay.boxes; if (op.box && op.box !== '@common') wider = `${op.from} is declared in @common, so every chapter`; }
+      else {
+        const f = splitFilm(ctx.T), names = new Set(decl.length ? decl.map(b => b.name) : [op.box]); let grew = true;
+        while (grew) { grew = false; for (const c of f.chapters) if (c.ext && names.has(c.ext) && !names.has(c.name)) { names.add(c.name); grew = true; } }
+        boxes = lay.boxes.filter(b => names.has(b.name));
+        if (decl.length && !decl.some(b => b.name === op.box)) wider = `${op.from} is declared in ${decl.map(b => b.name).join(', ')}, so there and in the chapters that extend it`;
+      }
+    }
+    const ranges = boxes.flatMap(b => Object.values(b.secs).map(s => [s.a, s.b]));
+    const hits = (w) => { const out = [], T = ctx.T; for (const [a, b] of ranges) codeChars(T, a, b, (i, c) => { if (c === w[0] && T.startsWith(w, i) && !/::[ \t]*$/.test(T.slice(Math.max(0, i - 6), i)) && !/[\w.#]/.test(T[i - 1] || '') && !(T[i - 1] === '-' && /\w/.test(T[i - 2] || '')) && !/\w/.test(T[i + w.length] || '') && !(T[i + w.length] === '-' && /\w/.test(T[i + w.length + 1] || ''))) out.push(i); }); return out; };
+    if (op.from === op.to) return;
+    const h = hits(op.from);
+    if (!h.length) throw new PatchFail('conflict', `${op.from} is not used in ${op.box && op.box !== '@common' ? op.box + ' or the chapters that extend it' : 'the project'}.`);
+    if (hits(op.to).length) throw new PatchFail('conflict', `${op.to} is already a name there; pick another name.`);
+    for (const i of h.sort((a, b) => b - a)) ctx.edit(i, op.from.length, op.to);
+    r.changes.push(`${op.from} → ${op.to} (${h.length} place${h.length === 1 ? '' : 's'}${wider ? '; ' + wider : ''})`); return;
+  }
+  if (op.kind === 'replace') {
+    const sec = patchSection(ctx, op, false); if (!sec) throw new PatchFail('conflict', `${whereOf(op)} is empty, so there is nothing to replace.`);
+    const T = ctx.T, targets = op.sel ? stmtsIn(T, sec.a, sec.b).filter(s => s.sel === op.sel) : [{ start: sec.a, end: sec.b }];
+    if (!targets.length) throw notThere(ctx, op, op.sel);
+    const toks = op.find.match(/"(?:[^"\\\n]|\\.)*"|[A-Za-z0-9_.#%]+|\S/g);
+    if (!toks) throw new PatchFail('error', 'replace has no text to find.');
+    const rx = new RegExp(toks.map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s*'), 'g'), found = [];
+    for (const tg of targets) { rx.lastIndex = tg.start; let m; while ((m = rx.exec(T)) && m.index < tg.end) { if (m.index + m[0].length <= tg.end) found.push([m.index, m[0]]); if (!m[0].length) rx.lastIndex++; } }
+    const now = targets.map(tg => T.slice(tg.start, tg.end)).join('\n').slice(0, 1200);
+    if (!found.length) throw new PatchFail('conflict', `"${brief(op.find, 60)}" is not in ${op.sel || whereOf(op)}.`, { now });
+    if (found.length > 1) throw new PatchFail('conflict', `"${brief(op.find, 60)}" is in ${op.sel || whereOf(op)} ${found.length} times; give more of the text around it.`, { now });
+    const [at, txt] = found[0];
+    if (!op.repl.trim()) { removeSpan(ctx, at, at + txt.length); r.changes.push(`removed ${brief(txt, 50)}`); return; }
+    const ind = indentOf(T, at), repl = op.repl.split('\n').map((l, i) => i && l ? ind + l : l).join('\n');
+    if (repl === txt) return;
+    ctx.edit(at, txt.length, repl); r.changes.push(`${brief(txt, 40)} → ${brief(op.repl, 40)}`);
+    if (op.sel) for (const s of sectionStmts(ctx, op)) if (s.sel === op.sel) ctx.span(s.start, s.end);
+    return;
+  }
+  throw new PatchFail('error', `Unknown change "${op.kind}".`);
+}
+/* ---- checking a whole project text: the problems (on lines of the text, with chapter and section) and a model per chapter ----
+   cache (a Map) keeps the compiled result of a chapter's text, so checking a patched project only compiles the chapters it changed */
+function checkText(text, opts = {}) {
+  const cache = opts.cache || new Map(), budget = opts.overlapMs == null ? 1500 : opts.overlapMs;
+  const run = (files) => {
+    const sig = JSON.stringify(files); if (cache.has(sig)) return cache.get(sig);
+    let m; try { m = compile(files, { layered: true }); } catch (e) { m = { diags: [new Diag(null, 'E0999', 'The compiler hit an internal error: ' + e.message, 'This is a bug in GearScript.')], order: [], duration: 0 }; }
+    if (budget > 0 && m.ents && !m.diags.some(d => d.sev === 'error')) try { m.diags.push(...overlapCheck(m, { budgetMs: budget })); } catch (e) {}
+    const out = { sig, model: m, diags: m.diags.map(d => d.json()), ok: !m.diags.some(d => d.sev === 'error') }; cache.set(sig, out); return out;
+  };
+  if (isFilmText(text)) {
+    const f = splitFilm(text), seen = new Set(), diagnostics = f.issues.map(d => ({ ...d.json(), file: 'project' })), units = [];
+    f.chapters.forEach((c, i) => {
+      const cf = chapterFiles(f, i), u = run(cf.files);
+      for (const j of u.diags) {
+        const L = j.file && layerOf(cf.layers, j.file, j.line); let b = i, line = j.line;
+        if (L) { b = L.box; const bx = L.box < 0 ? f.common : f.chapters[L.box]; line = bx.start[j.file] ? bx.start[j.file] + L.line - 1 : j.line; }
+        const out = { ...j, section: j.file || undefined, chapter: b < 0 ? '@common' : f.chapters[b].name, file: 'project', line };
+        if (out.edit) out.edit = { ...out.edit, line: line + (out.edit.line - j.line) };
+        const k = [out.code, out.line, out.col, out.message].join('|'); if (seen.has(k)) continue; seen.add(k); diagnostics.push(out);
+      }
+      units.push({ name: c.name, sig: u.sig, model: u.model, ok: u.ok });
+    });
+    return { ok: !diagnostics.some(d => d.severity === 'error'), film: true, diagnostics, units };
+  }
+  const sp = splitProject(text), u = run(sp.files);
+  const diagnostics = [...sp.issues.map(d => d.json()), ...u.diags.map(d => { const line = projectLine(sp, d.file, d.line); return { ...d, section: d.file || undefined, file: 'project', line, ...(d.edit ? { edit: { ...d.edit, line: line + (d.edit.line - d.line) } } : {}) }; })];
+  return { ok: !diagnostics.some(d => d.severity === 'error'), film: false, diagnostics, units: [{ name: null, sig: u.sig, model: u.model, ok: u.ok }] };
+}
+/* ---- what a patch did: problems fixed and new (matched by code, chapter, section and message, not by line, since lines move),
+   which change brought each new problem, and how the motion of every chapter it touched changed ---- */
+function patchReport(before, after, res) {
+  const renames = (res ? res.ops : []).filter(o => o.status === 'ok' && o.kind === 'rename').map(o => { const m = o.src.match(/rename\s+(\S+)\s+(?:to|->|=>)\s+(\S+)/); return m ? [m[1], m[2]] : null; }).filter(Boolean);
+  const norm = (m, ren) => { let s = String(m || ''); if (ren) for (const [a, b] of renames) s = s.replace(new RegExp('\\b' + a + '\\b', 'g'), b); return s.replace(/-?\d+(?:\.\d+)?/g, '#'); };
+  const key = (d, ren) => [d.severity, d.code, d.chapter || '', d.section || '', norm(d.message, ren)].join('|');
+  const pool = new Map(); after.diagnostics.forEach((d, i) => { const k = key(d, false); if (!pool.has(k)) pool.set(k, []); pool.get(k).push(i); });
+  const usedA = new Set(), fixed = [], kept = [];
+  for (const d of before.diagnostics) {
+    const k = key(d, true), cand = (pool.get(k) || []).filter(i => !usedA.has(i));
+    if (!cand.length) { fixed.push(d); continue; }
+    const want = res ? res.mapLine(d.line).line : d.line;
+    cand.sort((x, y) => Math.abs(after.diagnostics[x].line - want) - Math.abs(after.diagnostics[y].line - want));
+    usedA.add(cand[0]); kept.push(after.diagnostics[cand[0]]);
+  }
+  const fresh = after.diagnostics.filter((d, i) => !usedA.has(i)).map(d => {
+    let by = null, likely = false; const ok = res ? res.ops.filter(o => o.status === 'ok') : [];
+    for (const o of ok) if (o.lines.some(([a, b]) => d.line >= a && d.line <= b)) { by = o.i; break; }
+    if (by == null) for (const o of ok) if (o.span.some(([a, b]) => d.line >= a && d.line <= b)) { by = o.i; break; }
+    if (by == null && ok.length === 1) { by = ok[0].i; likely = true; }
+    return { ...d, byOp: by, likely };
+  });
+  return { fixed, fresh, kept, motion: motionDiff(before, after) };
+}
+function motionDiff(before, after) {
+  const out = [], FR = [0, 0.13, 0.29, 0.5, 0.71, 0.87, 1];
+  const pose = (m, t) => { const mats = solve(m, t), o = new Map(); for (const e of m.order) { const X = mats.get(e.name); if (!X) continue; const p = new THREE.Vector3(), q = new THREE.Quaternion(), s = new THREE.Vector3(); X.decompose(p, q, s); o.set(e.name, [p, q]); } return o; };
+  for (const ub of after.units) {
+    const ua = before.units.find(u => u.name === ub.name), name = ub.name;
+    if (!ua) { out.push({ name, status: 'added' }); continue; }
+    if (ua.sig === ub.sig) { out.push({ name, status: 'same' }); continue; }
+    if (!ua.ok || !ub.ok || !ua.model.ents || !ub.model.ents) { out.push({ name, status: ub.ok ? 'built' : 'broken' }); continue; }
+    try {
+      const A = ua.model, B = ub.model, na = new Set(A.order.map(e => e.name)), nb = new Set(B.order.map(e => e.name));
+      let move = 0, turn = 0, part = null;
+      for (const f of FR) {
+        const pa = pose(A, Math.round(f * A.duration * 1000) / 1000), pb = pose(B, Math.round(f * B.duration * 1000) / 1000);
+        for (const [n, [p, q]] of pb) { const o = pa.get(n); if (!o) continue; const d = p.distanceTo(o[0]), a = 2 * Math.acos(Math.min(1, Math.abs(q.dot(o[1])))) * 180 / Math.PI; if (d > move) { move = d; if (d > 0.05) part = n; } if (a > turn) { turn = a; if (a > 0.05 && !part) part = n; } }
+      }
+      const added = [...nb].filter(n => !na.has(n)), removed = [...na].filter(n => !nb.has(n));
+      const moved = move > 0.05 || turn > 0.05;
+      out.push({ name, status: moved || added.length || removed.length || Math.abs(A.duration - B.duration) > 1e-6 ? 'changed' : 'looks', move: Math.round(move * 10) / 10, turn: Math.round(turn * 10) / 10, part, added, removed, duration: [A.duration, B.duration] });
+    } catch (e) { out.push({ name, status: 'built' }); }
+  }
+  for (const ua of before.units) if (!after.units.some(u => u.name === ua.name)) out.push({ name: ua.name, status: 'removed' });
+  return out;
+}
+/* a short text for an AI: what applied, what did not and why, with the code as it is now where a change missed, and the new problems */
+function patchReportText(res, rep) {
+  const lines = [`PATCH RESULT${res.title ? ': ' + res.title : ''}`];
+  for (const o of res.ops) lines.push(`- ${o.status.toUpperCase()} ${o.label}${o.message ? ': ' + o.message : ''}${o.now ? `\n  The code there now:\n  ${o.now.split('\n').join('\n  ')}` : ''}`);
+  for (const x of res.issues || []) lines.push(`- UNREADABLE patch line ${x.line}: ${x.message}`);
+  if (rep) {
+    if (rep.fixed.length) lines.push('', 'FIXED', ...rep.fixed.map(d => `- ${d.code}${d.chapter ? ' (' + d.chapter + ')' : ''} ${d.message}`));
+    if (rep.fresh.length) lines.push('', 'NEW PROBLEMS', ...rep.fresh.map(d => `- ${d.severity} ${d.code}${d.chapter ? ' (' + [d.chapter, d.section].filter(Boolean).join(' › ') + ')' : d.section ? ' (' + d.section + ')' : ''} line ${d.line}: ${d.message}${d.fix ? ' Fix: ' + d.fix : ''}`));
+    const mv = rep.motion.filter(m => m.status === 'changed');
+    if (mv.length) lines.push('', 'MOTION CHANGED', ...mv.map(m => `- ${m.name || 'the animation'}: parts move up to ${m.move}mm and turn up to ${m.turn}° differently${m.part ? ' (most: ' + m.part + ')' : ''}`));
+  }
+  lines.push('', 'Reply with a new patch for what is left (start it with @patch 1).');
+  return lines.join('\n');
+}
+root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, loudness, masterMix, normalizeClip, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, lineDiff, overlapSteps, patchSource, isPatchText, parsePatch, applyPatch, checkText, patchReport, patchReportText, EASINGS, version: '1.0.0-beta' };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -4677,6 +5283,34 @@ Observer { position: (0, 60mm, 420mm); look-at: G2; }
 @motion
 G1 { forever: rotate: 40deg/s; }
 Scene { 0s..4s: say: Narrator "The small gear turns three times as fast"; }
+\`\`\``;
+
+/* a reply that holds only the changes: for a fix or a small edit to a large project, where rewriting everything is where replies drift */
+const AI_FORMAT_PATCH = `OUTPUT: reply with ONE fenced code block labelled gearpatch that holds ONLY the changes (do not repeat the project), then one or two sentences.
+The block starts with @patch 1 "what it does". A line @chapter Name (or @common) says which chapter the changes below it are in (only in a
+project with chapters), and a line @scene, @style or @motion says which section. Then the changes, one per line or block:
+  Coupler { length: 120mm => 125mm; }      change a property: the old value exactly as it is in the code, =>, the new value
+  Coupler { overlap: allow; }              add a property that is not there yet
+  unset Rocker { pin; }                    remove properties
+  add Spring::Spring { ... } after Rocker  a new part or rule (after or before another one, or at the end of the section without after)
+  remove Bracket                           a part (with its style and motion rules) or a rule
+  rename Crank to Driver                   a name, everywhere it is used
+  replace Crank { forever: rotate: 180deg/s; } with { forever: rotate: 90deg/s; }
+                                           text inside one part's rules (leave out the name to search the whole section)
+Rules that patches often break:
+- Every property that is already in the code is written old => new, with the old value copied exactly. A wrong old value stops that change.
+- Name parts and rules exactly as the code does, capital letters included; a style rule by its whole selector (Base, .post { ... }).
+- In @motion, rules for one part add up, so change them with replace, add or remove, never with Part { property: value; }.
+- The text to replace must appear exactly once in that part's rules: copy enough of it.
+- A patch cannot add a chapter; for a new chapter, reply with the chapter whole in a gearscript block instead.
+Example:
+\`\`\`gearpatch
+@patch 1 "Close the loop and slow the crank"
+@chapter Ratio
+@scene
+Coupler { length: 120mm => 125mm; }
+@motion
+replace Crank { forever: rotate: 180deg/s; } with { forever: rotate: 90deg/s; }
 \`\`\``;
 
 /* ---------------- examples ---------------- */
@@ -6629,7 +7263,7 @@ const SETTINGS_SCHEMA = [
   ] },
   { section: 'Preview', items: [
     { key: 'delay', label: 'Update the preview', type: 'select', def: '220', options: [['120', 'Instantly'], ['220', 'Soon after typing'], ['700', 'When I pause'], ['manual', 'Only on Ctrl+Enter']] },
-    { key: 'autoplay', label: 'Play on open', type: 'toggle', def: true },
+    { key: 'autoplay', label: 'Play on open', type: 'toggle', def: false },
     { key: 'loop', label: 'Loop playback', type: 'toggle', def: true },
     { key: 'speed', label: 'Playback speed', type: 'select', def: '1', options: [['0.25', '0.25×'], ['0.5', '0.5×'], ['1', '1×'], ['1.5', '1.5×'], ['2', '2×']] },
     { key: 'guides', label: 'Joint axes and gear lines', hint: 'Dashed lines along every hinge axis, and between meshed or belted parts.', type: 'toggle', def: false },
@@ -6662,8 +7296,13 @@ const SETTINGS_SCHEMA = [
 ];
 const SDEF = {}; for (const sec of SETTINGS_SCHEMA) for (const it of sec.items) if ('def' in it) SDEF[it.key] = it.def;
 SDEF.codeSize = 0.44; SDEF.probH = 150;
+/* what goes with a request to an AI (Copy for AI and Prompt AI share them) */
+Object.assign(SDEF, { aiProbs: true, aiWarns: true, aiState: false, aiCode: true, aiReply: 'patch', aiScope: 'chapter' });
 const S = (() => { let saved = {}; try { saved = PLAYER ? { ...PLAYER.settings, view: PLAYER.view, autoplay: true, loop: true } : JSON.parse(localStorage.getItem(SKEY) || '{}') || {}; } catch (e) {} const s = { ...SDEF, ...saved };
   if (s.theme !== 'system' && s.theme !== 'light' && s.theme !== 'dark' && !THEMES[s.theme]) s.theme = 'dark';
+  /* settings 2: projects open paused. Saved settings hold every value, so "on" from before cannot be told from a choice: reset it once */
+  if (!PLAYER && (s.setv || 0) < 2) { s.autoplay = false; s.setv = 2; }
+  if (typeof s.aiCode !== 'boolean') s.aiCode = s.aiCode !== 'never';   /* it was when-needed / always / never: a plain yes or no now */
   return s; })();
 const saveSettings = () => { if (PLAYER || STORY_SANDBOX) return; try { localStorage.setItem(SKEY, JSON.stringify(S)); } catch (e) {} };
 const darkNow = () => THEMES[S.theme] ? THEMES[S.theme].dark : S.theme === 'dark' || (S.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
@@ -7459,7 +8098,7 @@ async function edCopy(cut) {
   if (cut) insertText('');
 }
 async function edPaste() {
-  try { const txt = await navigator.clipboard.readText(); ta.focus(); insertText(txt); }
+  try { const txt = await navigator.clipboard.readText(); if (GearScript.isPatchText(txt)) { openPatchPanel(txt, { source: 'paste' }); return; } ta.focus(); insertText(txt); }
   catch (e) { toast('The browser keeps the clipboard private here: press Ctrl+V to paste'); ta.focus(); }
 }
 function edHistory(redo) {
@@ -7485,6 +8124,7 @@ function edCtxItems() {
     '-',
     ...(has ? [{ label: 'Cut', kbd: 'Ctrl X', run: () => edCopy(true) }, { label: 'Copy', kbd: 'Ctrl C', run: () => edCopy(false) }] : []),
     { label: 'Paste', kbd: 'Ctrl V', run: edPaste },
+    { label: 'Apply a patch…', run: () => openPatchPanel('') },
     { label: 'Select all', kbd: 'Ctrl A', run: () => { ta.focus(); ta.setSelectionRange(0, ta.value.length); } },
     '-',
     { label: 'Beautify the code', kbd: 'Shift Alt F', run: beautifyCode },
@@ -8043,7 +8683,25 @@ function setSync(state, text) {
   b.title = msg; $('syncText').textContent = msg;
   if (state === 'ok') syncRest = setTimeout(() => b.classList.add('rest'), 1800);
 }
+/* the overlap check after a build, in slices of a few milliseconds between which the page answers keys; a key press stops it
+   (onEdit), and the next build starts it again. In one go it could hold the page for most of a second */
+function overlapStop() { clearTimeout(build.ov); if (overlapRun.job) overlapRun.job.stop = true; overlapRun.job = null; }
+function overlapRun(m) {
+  if (model !== m) return; let g; try { g = GearScript.overlapSteps(m, { budgetMs: 6000 }); } catch (e) { return; }
+  const job = overlapRun.job = { stop: false };
+  const step = () => {
+    if (job.stop || model !== m) return;
+    const t0 = performance.now(); let r;
+    try { do r = g.next(); while (!r.done && performance.now() - t0 < 8); } catch (e) { overlapRun.job = null; return; }
+    if (!r.done) { setTimeout(step, 0); return; }
+    overlapRun.job = null; const w = r.value || [];
+    if (!w.length || model !== m) return;
+    lastDiags = [...lastDiags, ...w]; renderProblems(); renderEditor();
+  };
+  step();
+}
 function onEdit() {
+  overlapStop();
   if (isSingle()) {
     if (GearScript.isFilmText(ta.value)) { readFilmEditor(); }
     else { if (film) { film = null; box = 0; filmCache.clear(); renderChapters(); } proj = GearScript.splitProject(ta.value); files = proj.files; }
@@ -8184,6 +8842,207 @@ function applyMerge(r, take, opts) {
   return msg;
 }
 function restoreProject(text, b) { if (isSingle()) replaceEditorText(text); else if (GearScript.isFilmText(text)) { setFilmText(text, b); filmChanged(b); } else { film = null; filmCache.clear(); files = GearScript.splitProject(text).files; box = 0; filmChanged(0); } toast('Undone.'); }
+/* ---------------- patches: small corrections, checked and shown before they apply ----------------
+   A patch (see SPEC.md, Patches) names what it changes: a chapter, a section, a part, a property. The panel applies it to a copy of the
+   project, compiles the chapters it changed and shows each change as before and after lines (applied, already so, or a conflict with
+   the code as it is now), the new problems under the change that brought them, the problems it fixes, and how the motion changed.
+   Untick a change to leave it out; a conflict over an old value can be applied anyway. Nothing changes until Apply, then one Undo.
+   The panel never reads the clipboard: the person pastes, and the panel catches the paste */
+const patchUi = { back: null, base: null, cache: null, before: null, skip: new Set(), force: new Set(), res: null, rep: null, timer: 0, source: '', editing: false };
+function patchBaseText() { return isSingle() ? ta.value : projText(); }
+function setWholeProject(txt, b) {
+  if (isSingle()) { replaceEditorText(txt); return; }
+  if (GearScript.isFilmText(txt)) { setFilmText(txt, b); filmChanged(b); }
+  else { if (film) { film = null; filmCache.clear(); } files = GearScript.splitProject(txt).files; box = 0; filmChanged(0); }
+}
+/* large projects get patches from the AI by default: rewriting a long project to change one value is where replies drift */
+function aiPatchFormat() { return AI_FORMAT_PATCH + (film ? `\nThe chapters are: ${film.chapters.map(c => c.name).join(', ')}.` : '\nThis project has no chapters: leave out @common and @chapter lines.'); }
+function openPatchPanel(text, opts = {}) {
+  if (PLAYER) return;
+  closeMenus();
+  let back = patchUi.back;
+  if (!back) {
+    back = document.createElement('div'); back.className = 'modal-back patch'; back.hidden = true;
+    back.innerHTML = `<div class="modal patchdlg" role="dialog" aria-modal="true" aria-labelledby="ptTitle">
+      <div class="phead"><div><h2 id="ptTitle">Paste the AI's reply</h2><p class="sub" id="ptSub"></p></div><div class="pstats" id="ptStats" hidden></div></div>
+      <div class="pscroll">
+        <div class="pdrop" id="ptDrop"><textarea class="psrc" id="ptSrc" spellcheck="false" aria-label="Patch text" placeholder="Paste the AI's reply or the patch here (${/Mac|iP/.test(navigator.platform) ? '⌘V' : 'Ctrl+V'})"></textarea>
+          <p class="phint" id="ptHint">Paste the AI's whole reply: its sentences and code fences are fine. A <b>patch</b> is checked change by change; <b>whole code</b> is compared with yours. Either way you see the problems it fixes and brings, and nothing changes until you apply it. To ask for a reply, use <b>Copy for AI</b> under Problems or <b>Prompt AI</b>.</p></div>
+        <div class="psrcbar" id="ptSrcBar" hidden><span id="ptSrcInfo"></span><button type="button" class="linkbtn" id="ptEdit">Edit the pasted text</button><button type="button" class="linkbtn" id="ptNew">Paste another</button></div>
+        <div id="ptBody"></div>
+      </div>
+      <div class="pfoot"><button type="button" class="btn grow" data-a="copy" title="What applied, what did not and why, and the new problems: ready to paste back into the AI chat" hidden>Copy the result for the AI</button><button type="button" class="btn" data-a="no">Cancel</button><button type="button" class="btn primary" data-a="ok" disabled>Apply</button></div>
+    </div>`;
+    document.body.appendChild(back); patchUi.back = back;
+    const m = back.firstElementChild, done = () => { back.hidden = true; clearTimeout(patchUi.timer); patchUi.before = null; patchUi.cache = null; };
+    patchUi.close = done;
+    $('ptSrc').addEventListener('input', () => { patchUi.skip.clear(); patchUi.force.clear(); patchSoon(); });
+    /* a paste anywhere in the panel goes into the patch box (no clipboard permission needed: the browser hands over what is pasted) */
+    m.addEventListener('paste', (e) => {
+      if (e.target === $('ptSrc')) { patchUi.editing = false; return; }
+      const t = (e.clipboardData || window.clipboardData).getData('text'); if (!t) return;
+      e.preventDefault(); $('ptSrc').value = t; patchUi.editing = false; patchUi.skip.clear(); patchUi.force.clear(); patchAnalyse();
+    });
+    $('ptEdit').onclick = () => { patchUi.editing = !patchUi.editing; patchView(); if (patchUi.editing) $('ptSrc').focus(); };
+    $('ptNew').onclick = () => { $('ptSrc').value = ''; patchUi.editing = false; patchUi.skip.clear(); patchUi.force.clear(); patchAnalyse(); $('ptSrc').focus(); };
+    m.querySelector('[data-a="no"]').onclick = done;
+    m.querySelector('[data-a="ok"]').onclick = applyPatchUi;
+    m.querySelector('[data-a="copy"]').onclick = (e) => { if (!patchUi.res) return; copyText(GearScript.patchReportText(patchUi.res, patchUi.rep)).then(ok => flashBtn(e.target, ok ? 'Copied' : 'Copy blocked', 'Copy the result for the AI')); };
+    $('ptBody').addEventListener('change', (e) => { const c = e.target.closest('[data-op]'); if (!c) return; const i = +c.dataset.op; if (c.checked) patchUi.skip.delete(i); else patchUi.skip.add(i); patchAnalyse(); });
+    $('ptBody').addEventListener('click', (e) => { const f = e.target.closest('[data-force]'); if (!f) return; const i = +f.dataset.force; if (patchUi.force.has(i)) patchUi.force.delete(i); else patchUi.force.add(i); patchAnalyse(); });
+    /* on the document, not the panel: ticking a change redraws the list, and focus can fall back to the page */
+    document.addEventListener('keydown', (e) => {
+      if (back.hidden) return;
+      if (e.key === 'Escape') { e.stopPropagation(); done(); return; }
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); applyPatchUi(); return; }
+      trapFocus(e, back);
+    });
+    back.addEventListener('mousedown', (e) => { if (e.target === back) done(); });
+  }
+  patchUi.base = patchBaseText(); patchUi.cache = new Map(); patchUi.before = null; patchUi.skip = new Set(); patchUi.force = new Set(); patchUi.res = null; patchUi.source = opts.source || ''; patchUi.editing = false;
+  $('ptSrc').value = text || '';
+  back.hidden = false; patchAnalyse();
+  setTimeout(() => (text ? back.querySelector('[data-a="ok"]') : $('ptSrc')).focus(), 0);
+  track('patch_open', { source: patchUi.source || 'button' });
+}
+function patchSoon() { clearTimeout(patchUi.timer); patchUi.timer = setTimeout(patchAnalyse, 250); }
+/* the box is big while there is nothing to check; once a patch reads, it folds to one line with Edit and Paste another */
+function patchView() {
+  const has = !!patchUi.res, drop = $('ptDrop');
+  drop.hidden = has && !patchUi.editing; drop.classList.toggle('small', has || !!$('ptSrc').value.trim());
+  $('ptHint').hidden = has; $('ptSrcBar').hidden = !has;
+  $('ptEdit').textContent = patchUi.editing ? 'Hide the pasted text' : 'Edit the pasted text';
+}
+const diffHtml = (rows, cls = '') => rows.length ? `<div class="pdiff ${cls}">${rows.map(r => `<div class="${r.t === '-' ? 'dm' : r.t === '+' ? 'dp' : r.t === '…' ? 'dg' : 'dc'}"><span class="ln">${r.n || ''}</span>${r.t === '…' ? (r.s ? '… ' + escH(r.s) : '…') : escH(r.t + ' ' + r.s)}</div>`).join('')}</div>` : '';
+/* a reply with whole code instead of a patch: the project it would make, as the editor's paste would (a film merged by chapter name) */
+function replyProject(text) {
+  const b = replyBlocks(text), base = film ? GearScript.joinFilm(film) : patchUi.base;
+  if (b.gearscript && GearScript.isFilmText(b.gearscript)) {
+    if (!film) return { text: b.gearscript, base, what: 'a project with chapters' };
+    const pasted = GearScript.splitFilm(b.gearscript); if (!pasted.chapters.length) return { text: b.gearscript, base, what: 'the whole project' };
+    const r = GearScript.mergeFilm(film, pasted), names = r.changes.filter(c => c.kind !== 'kept').map(c => `${c.name}${c.kind === 'added' ? ' (new)' : c.kind === 'same' ? ' (same)' : ''}`);
+    return { text: GearScript.joinFilm(r.film), base, what: `chapter${names.length === 1 ? '' : 's'} ${names.join(', ')}${r.common === 'changed' ? ' and @common' : ''}` };
+  }
+  if (b.gearscript) { const sp = GearScript.splitProject(b.gearscript); if (sp.issues.some(d => d.sev === 'error')) return { error: 'The reply\'s code has broken section markers (@scene, @style, @motion).' }; return { text: GearScript.joinProject(sp.files), base: film ? base : GearScript.joinProject(files), what: 'the whole project' }; }
+  if (b.scene || b.style || b.motion) { const nf = { ...files }; for (const k of GearScript.SECTIONS) if (b[k] !== undefined) nf[k] = b[k]; return { text: GearScript.joinProject(nf), base: GearScript.joinProject(files), what: GearScript.SECTIONS.filter(k => b[k] !== undefined).map(k => '.' + k).join(', ') }; }
+  return null;
+}
+function patchAnalyse() {
+  const back = patchUi.back, body = $('ptBody'), ok = back.querySelector('[data-a="ok"]'), cp = back.querySelector('[data-a="copy"]'), src = $('ptSrc').value, stats = $('ptStats');
+  patchUi.res = null; cp.hidden = true; ok.disabled = true; ok.textContent = 'Apply'; stats.hidden = true; body.innerHTML = '';
+  $('ptSub').textContent = 'Only the changes, each checked against your code. Nothing changes until you press Apply.';
+  const fail = (html) => { body.innerHTML = `<p class="pempty">${html}</p>`; patchView(); };
+  if (!src.trim()) { $('ptTitle').textContent = 'Paste the AI\'s reply'; return patchView(); }
+  patchUi.kind = 'patch';
+  if (!GearScript.isPatchText(src)) {
+    const rp = replyProject(src);
+    if (!rp) return fail('There is no GearScript in this: paste the AI\'s reply with its code block (a <code>```gearpatch</code> patch, or <code>```gearscript</code> code).');
+    if (rp.error) return fail(escH(rp.error));
+    return codePreview(src, rp);
+  }
+  $('ptTitle').textContent = 'Apply patch';
+  if (patchBaseText() !== patchUi.base) { patchUi.base = patchBaseText(); patchUi.before = null; }
+  let res, rep;
+  try {
+    const parsed = GearScript.parsePatch(src);
+    if (!patchUi.before) patchUi.before = GearScript.checkText(patchUi.base, { cache: patchUi.cache, overlapMs: 800 });
+    res = GearScript.applyPatch(patchUi.base, parsed, { skip: patchUi.skip, force: patchUi.force });
+    const after = res.changed ? GearScript.checkText(res.text, { cache: patchUi.cache, overlapMs: 800 }) : patchUi.before;
+    rep = GearScript.patchReport(patchUi.before, after, res);
+  } catch (e) { console.error(e); return fail(`This patch could not be checked: ${escH(e.message || String(e))}`); }
+  patchUi.res = res; patchUi.rep = rep;
+  if (res.title) $('ptSub').textContent = res.title;
+  $('ptSrcInfo').textContent = `Patch: ${res.ops.length} change${res.ops.length === 1 ? '' : 's'}${res.issues.length ? `, ${res.issues.length} unreadable line${res.issues.length === 1 ? '' : 's'}` : ''}`;
+  /* the summary at the top: what applies, what does not, problems fixed and new, chapters that move differently */
+  const notIn = res.ops.filter(o => o.status === 'conflict' || o.status === 'error').length + res.issues.length;
+  const moved = rep.motion.filter(m => m.status === 'changed').length, broken = rep.motion.filter(m => m.status === 'broken').length;
+  const stat = (n, label, cls) => `<span class="pstat ${cls || ''}"><b>${n}</b> ${label}</span>`;
+  stats.innerHTML = [
+    stat(res.applied, res.applied === 1 ? 'change applies' : 'changes apply', res.applied ? 'good' : ''),
+    notIn ? stat(notIn, 'cannot', 'bad') : '',
+    stat(rep.fixed.length, rep.fixed.length === 1 ? 'problem fixed' : 'problems fixed', rep.fixed.length ? 'good' : ''),
+    stat(rep.fresh.length, rep.fresh.length === 1 ? 'new problem' : 'new problems', rep.fresh.length ? 'bad' : ''),
+    broken ? (film ? stat(broken, broken === 1 ? 'chapter stops building' : 'chapters stop building', 'bad') : stat('✗', 'the animation stops building', 'bad')) : moved ? (film ? stat(moved, moved === 1 ? 'chapter moves differently' : 'chapters move differently', 'warn') : stat('Motion', 'changes', 'warn')) : res.changed ? stat('✓', 'motion as before') : '',
+  ].join('');
+  stats.hidden = false;
+  const word = { ok: 'applies', same: 'already so', conflict: 'conflict', error: 'cannot apply', skipped: 'left out' };
+  const probRow = (d) => `<li><span class="chip ${d.severity === 'error' ? 'new' : 'warn'}">new ${d.severity === 'error' ? 'error' : 'warning'}</span> <b>${escH(d.code)}</b> ${escH(d.message)}${d.likely ? ' <span class="w">(likely from this change)</span>' : ''}${d.fix ? `<small>${escH(d.fix)}</small>` : ''}</li>`;
+  const cards = res.ops.map(o => {
+    const forced = patchUi.force.has(o.i), live = o.status === 'ok' || o.status === 'same' || o.status === 'skipped', mine = rep.fresh.filter(d => d.byOp === o.i);
+    const msg = o.status === 'ok' ? (forced ? 'Applied without checking the old value. <button type="button" class="goto" data-force="' + o.i + '">Check it again</button>' : '')
+      : o.status === 'same' ? escH(o.message) : o.status === 'skipped' ? 'Left out: tick it to apply it.'
+      : escH(o.message) + (o.forceable ? ` <button type="button" class="goto" data-force="${o.i}">Apply anyway</button>` : '');
+    return `<li class="pcard ${o.status}"><div class="pc-head"><input type="checkbox" data-op="${o.i}" ${live && !patchUi.skip.has(o.i) ? 'checked' : ''} ${live ? '' : 'disabled'} aria-label="Apply this change"><div class="pc-top"><span class="chip ${o.status}">${word[o.status] || o.status}</span>${o.where ? `<span class="pc-where">${escH(o.where)}</span>` : ''}</div><span class="pc-what">${escH(o.what)}</span></div>`
+      + (msg ? `<div class="pc-msg${live ? '' : ' bad'}">${msg}</div>` : '')
+      + (o.status === 'ok' ? diffHtml(o.diff) : '')
+      + (o.now ? `<div class="pc-msg">The code there now:</div><div class="pdiff now">${o.now.split('\n').map(l => `<div class="dc">${escH(l)}</div>`).join('')}</div>` : '')
+      + (mine.length ? `<ul class="pc-probs">${mine.map(probRow).join('')}</ul>` : '') + '</li>';
+  }).join('') + res.issues.map(x => `<li class="pcard error"><div class="pc-head"><input type="checkbox" disabled><div class="pc-top"><span class="chip error">unreadable</span><span class="pc-where">patch line ${x.line}</span></div></div><div class="pc-msg bad">${escH(x.message)}</div></li>`).join('');
+  const other = rep.fresh.filter(d => d.byOp == null);
+  const where = (d) => [d.chapter, d.section].filter(Boolean).join(' › ');
+  const motion = rep.motion.filter(m => m.status !== 'same' && m.status !== 'looks').map(m => {
+    const txt = m.status === 'changed' ? `parts move up to ${m.move} mm and turn up to ${m.turn}° away from where they were${m.part ? `, most of all ${m.part}` : ''}${m.added.length ? `; new: ${m.added.join(', ')}` : ''}${m.removed.length ? `; gone: ${m.removed.join(', ')}` : ''}${m.duration[0] !== m.duration[1] ? `; ${m.duration[0]} s → ${m.duration[1]} s long` : ''}`
+      : m.status === 'broken' ? 'does not build after the patch' : m.status === 'built' ? 'builds again' : m.status === 'added' ? 'is a new chapter' : 'is removed';
+    return `<li><span class="chip ${m.status === 'broken' ? 'new' : m.status === 'built' ? 'fixed' : 'warn'}">${m.status === 'changed' ? 'moves differently' : m.status === 'broken' ? 'broken' : m.status}</span><span><b>${escH(m.name || 'The animation')}</b> <span class="w">${escH(txt)}</span></span></li>`;
+  }).join('');
+  const looks = rep.motion.filter(m => m.status === 'looks').map(m => m.name || 'The animation');
+  body.innerHTML = `<h3>Changes</h3><ul class="pcards">${cards || '<li class="pempty">No changes.</li>'}</ul>`
+    + (other.length ? `<h3>New problems elsewhere</h3><ul class="plist">${other.map(d => `<li><span class="chip ${d.severity === 'error' ? 'new' : 'warn'}">new</span><span><b>${escH(d.code)}</b> ${escH(d.message)} <span class="w">${escH(where(d))}</span></span></li>`).join('')}</ul>` : '')
+    + (rep.fixed.length ? `<h3>Fixed</h3><ul class="plist">${rep.fixed.map(d => `<li><span class="chip fixed">fixed</span><span><b>${escH(d.code)}</b> ${escH(d.message)} <span class="w">${escH(where(d))}</span></span></li>`).join('')}</ul>` : '')
+    + (motion || looks.length ? `<h3>Motion</h3>${motion ? `<ul class="plist">${motion}</ul>` : ''}${looks.length ? `<p class="pempty">${escH(looks.join(', '))} ${looks.length === 1 ? 'moves' : 'move'} as before: only looks or words change.</p>` : ''}` : '')
+    + (!res.changed ? '<p class="pempty">Nothing would change.</p>' : rep.kept.length ? `<p class="pempty">${rep.kept.length} other problem${rep.kept.length === 1 ? ' stays' : 's stay'} as ${rep.kept.length === 1 ? 'it is' : 'they are'}.</p>` : '');
+  ok.disabled = !res.changed;
+  ok.innerHTML = res.changed ? `Apply ${res.applied} change${res.applied === 1 ? '' : 's'}<kbd>${/Mac|iP/.test(navigator.platform) ? '⌘↵' : 'Ctrl ↵'}</kbd>` : 'Apply';
+  cp.hidden = false; patchView();
+}
+/* whole code: one card with the lines it changes against the project, then the same problems and motion report as a patch */
+function codePreview(src, rp) {
+  const back = patchUi.back, body = $('ptBody'), ok = back.querySelector('[data-a="ok"]'), stats = $('ptStats');
+  $('ptTitle').textContent = 'Replace the code'; $('ptSub').textContent = `The reply has ${rp.what}. Compared with your code below; nothing changes until you press Replace.`;
+  let after, rep;
+  try {
+    if (!patchUi.before) patchUi.before = GearScript.checkText(patchUi.base, { cache: patchUi.cache, overlapMs: 800 });
+    after = GearScript.checkText(rp.text, { cache: patchUi.cache, overlapMs: 800 }); rep = GearScript.patchReport(patchUi.before, after, null);
+  } catch (e) { console.error(e); body.innerHTML = `<p class="pempty">This reply could not be checked: ${escH(e.message || String(e))}</p>`; patchView(); return; }
+  const rows = GearScript.lineDiff(rp.base, rp.text, 1, 300), same = !rows.some(r => r.t === '-' || r.t === '+');
+  const nAdd = rows.filter(r => r.t === '+').length, nDel = rows.filter(r => r.t === '-').length;
+  patchUi.kind = 'code'; patchUi.res = { changed: !same, applied: 1, conflicts: 0, ops: [], issues: [], title: '' }; patchUi.rep = rep; patchUi.src = src;
+  $('ptSrcInfo').textContent = `Whole code: ${rp.text.split('\n').length} lines`;
+  const stat = (n, label, cls) => `<span class="pstat ${cls || ''}"><b>${n}</b> ${label}</span>`;
+  const moved = rep.motion.filter(m => m.status === 'changed').length, broken = rep.motion.filter(m => m.status === 'broken').length;
+  stats.innerHTML = [stat('+' + nAdd + ' −' + nDel, 'lines'), stat(rep.fixed.length, rep.fixed.length === 1 ? 'problem fixed' : 'problems fixed', rep.fixed.length ? 'good' : ''), stat(rep.fresh.length, rep.fresh.length === 1 ? 'new problem' : 'new problems', rep.fresh.length ? 'bad' : ''),
+    broken ? stat('✗', 'stops building', 'bad') : moved ? (film ? stat(moved, moved === 1 ? 'chapter moves differently' : 'chapters move differently', 'warn') : stat('Motion', 'changes', 'warn')) : !same ? stat('✓', 'motion as before') : ''].join('');
+  stats.hidden = false;
+  const where = (d) => [d.chapter, d.section].filter(Boolean).join(' › ');
+  body.innerHTML = `<h3>Changes</h3><ul class="pcards"><li class="pcard ${same ? 'same' : 'ok'}"><div class="pc-head"><span></span><div class="pc-top"><span class="chip ${same ? 'same' : 'ok'}">${same ? 'already so' : 'replaces'}</span><span class="pc-where">${escH(rp.what)}</span></div><span class="pc-what">${same ? 'The reply is the code you have.' : `${nAdd} line${nAdd === 1 ? '' : 's'} added or changed, ${nDel} removed`}</span></div>${diffHtml(rows)}</li></ul>`
+    + (rep.fresh.length ? `<h3>New problems</h3><ul class="plist">${rep.fresh.map(d => `<li><span class="chip ${d.severity === 'error' ? 'new' : 'warn'}">new</span><span><b>${escH(d.code)}</b> ${escH(d.message)} <span class="w">${escH(where(d))}</span></span></li>`).join('')}</ul>` : '')
+    + (rep.fixed.length ? `<h3>Fixed</h3><ul class="plist">${rep.fixed.map(d => `<li><span class="chip fixed">fixed</span><span><b>${escH(d.code)}</b> ${escH(d.message)} <span class="w">${escH(where(d))}</span></span></li>`).join('')}</ul>` : '')
+    + (rep.motion.some(m => m.status === 'changed' || m.status === 'broken') ? `<h3>Motion</h3><ul class="plist">${rep.motion.filter(m => m.status === 'changed' || m.status === 'broken').map(m => `<li><span class="chip ${m.status === 'broken' ? 'new' : 'warn'}">${m.status === 'broken' ? 'broken' : 'moves differently'}</span><span><b>${escH(m.name || 'The animation')}</b> <span class="w">${m.status === 'broken' ? 'does not build with this code' : `parts move up to ${m.move} mm and turn up to ${m.turn}°${m.part ? `, most of all ${m.part}` : ''}`}</span></span></li>`).join('')}</ul>` : '');
+  ok.disabled = same; ok.innerHTML = same ? 'Replace' : `Replace the code<kbd>${/Mac|iP/.test(navigator.platform) ? '⌘↵' : 'Ctrl ↵'}</kbd>`;
+  back.querySelector('[data-a="copy"]').hidden = true; patchView();
+}
+function applyPatchUi() {
+  const res = patchUi.res; if (!res || !res.changed || patchUi.back.hidden) return;
+  if (patchUi.kind === 'code') {   /* whole code goes in as the editor's paste would put it, with one Undo */
+    if (patchBaseText() !== patchUi.base) { patchAnalyse(); toast('The code changed while the panel was open, so the reply was compared again. Look it over, then Replace.', 4200); return; }
+    const was = patchUi.base, b0 = box, rep = patchUi.rep; patchUi.close();
+    const r = applyAiReply(patchUi.src);
+    if (!r.ok) { toast(r.why, 5000); return; }
+    toastActions(['Replaced the code with the reply', rep.fixed.length ? `fixed ${rep.fixed.length} problem${rep.fixed.length === 1 ? '' : 's'}` : '', rep.fresh.length ? `${rep.fresh.length} new problem${rep.fresh.length === 1 ? '' : 's'}` : ''].filter(Boolean).join(', ') + '.', [['Undo', () => restoreProject(was, b0)]], 9000);
+    track('reply_apply', { kind: 'code', source: patchUi.source || 'button' }); return;
+  }
+  if (patchBaseText() !== patchUi.base) { patchAnalyse(); toast('The code changed while the panel was open, so the patch was checked again. Look it over, then Apply.', 4200); return; }
+  const was = patchUi.base, b0 = box, rep = patchUi.rep;
+  const first = res.ops.find(o => o.status === 'ok' && o.lines.length);
+  patchUi.close();
+  if (fp.on) filmStop(true);
+  setWholeProject(res.text, box);
+  if (isSingle() && first) setTimeout(() => goTo('project', first.lines[0][0], 1), 0);
+  const out = res.ops.filter(o => o.status !== 'ok' && o.status !== 'same').length;
+  const parts = [`Applied ${res.applied} change${res.applied === 1 ? '' : 's'}`, out ? `left out ${out}` : '', rep.fixed.length ? `fixed ${rep.fixed.length} problem${rep.fixed.length === 1 ? '' : 's'}` : '', rep.fresh.length ? `${rep.fresh.length} new problem${rep.fresh.length === 1 ? '' : 's'}` : ''].filter(Boolean);
+  toastActions(parts.join(', ') + '.', [['Undo', () => restoreProject(was, b0)]], 9000);
+  track('patch_apply', { ops: res.applied, conflicts: res.conflicts, fixed: rep.fixed.length, fresh: rep.fresh.length, source: patchUi.source || 'button' });
+}
 function reviewMerge(r, go) {
   let back = document.querySelector('.modal-back.merge');
   if (!back) { back = document.createElement('div'); back.className = 'modal-back merge'; back.innerHTML = '<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mgTitle"></div>'; document.body.appendChild(back); }
@@ -8202,6 +9061,13 @@ function moveChapter(i, d) {
   if (!film) return; const j = i + d; if (j < 0 || j >= film.chapters.length) return;
   const [c] = film.chapters.splice(i, 1); film.chapters.splice(j, 0, c); filmChanged(j);
 }
+/* the strip fades at an edge when there are more chapters beyond it; a mouse wheel scrolls it sideways */
+function chipFades() { const c = $('chapChips'); if (!c) return; c.classList.toggle('fadel', c.scrollLeft > 2); c.classList.toggle('fader', c.scrollLeft + c.clientWidth < c.scrollWidth - 2); }
+if ($('chapChips')) {
+  $('chapChips').addEventListener('scroll', chipFades, { passive: true });
+  $('chapChips').addEventListener('wheel', (e) => { const c = e.currentTarget; if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && c.scrollWidth > c.clientWidth) { c.scrollLeft += e.deltaY; e.preventDefault(); } }, { passive: false });
+  window.addEventListener('resize', chipFades);
+}
 function renderChapters() {
   const bar = $('chapBar'); if (!bar) return;
   const on = !!film && !PLAYER;
@@ -8213,8 +9079,15 @@ function renderChapters() {
   const dot = (b) => { const f = flags.get(b); return f && f.e ? '<span class="dot" title="Has errors"></span>' : f && f.w ? '<span class="dot w" title="Has warnings"></span>' : ''; };
   const trn = (c, i) => { const k = c.trans ? c.trans.kind : 'cut'; return i === 0 && k === 'cut' ? '' : k === 'cut' ? '' : `<small>${k === 'crossfade' ? '⇄ ' : '◐ '}${k}</small>`; };
   const chips = $('chapChips');
-  chips.innerHTML = `<button class="chip common" role="tab" type="button" data-b="-1" aria-selected="${box === -1}" title="@common: the scene, style and motion every chapter starts with">common${dot(-1)}</button>`
-    + film.chapters.map((c, i) => { const d = filmDurs[i], k = c.trans ? c.trans.kind : 'cut'; return `<button class="chip tl${fp.on && fp.idx === i ? ' playing' : ''}" role="tab" type="button" draggable="true" data-b="${i}" aria-selected="${box === i}" style="--g:${d ? Math.max(0.5, Math.min(6, d / 4)).toFixed(2) : 1}" title="${escH(chapTitle(c))}${c.ext ? ' · extends ' + escH(c.ext) : ''}${d ? ' · ' + d.toFixed(1) + ' s' : ''} · starts with ${k === 'crossfade' ? 'a crossfade' : k === 'fade' ? 'a fade' : 'a cut'}. Double-click for its settings; drag to move it">${i > 0 && k !== 'cut' ? `<span class="tr ${k}" aria-hidden="true"></span>` : ''}<i>${i + 1}</i><b>${escH(c.name)}</b>${dot(i)}<small class="len">${d ? d.toFixed(1) + ' s' : ''}</small></button>`; }).join('');
+  /* rebuilt only when something on the strip changes: in the One file view this runs on every key press */
+  const sig = JSON.stringify([film.chapters.map(c => [c.name, c.ext, chapTitle(c), c.trans ? c.trans.kind : 'cut']), filmDurs, box, fp.on ? fp.idx : -2, [...flags]]);
+  const moved = renderChapters.box !== box; renderChapters.box = box;
+  if (sig === renderChapters.sig && chips.childElementCount) { renderTitle(); return; }
+  renderChapters.sig = sig;
+  chips.innerHTML = `<button class="chip common" role="tab" type="button" data-b="-1" aria-selected="${box === -1}" title="@common: the scene, style and motion every chapter starts with"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></svg>Common${dot(-1)}</button><span class="csep" aria-hidden="true"></span>`
+    + film.chapters.map((c, i) => { const d = filmDurs[i], k = c.trans ? c.trans.kind : 'cut';
+      const sep = i === 0 ? '' : k === 'cut' ? '<span class="tsep" aria-hidden="true"></span>' : `<span class="tsep ${k}" title="${escH(c.name)} starts with a ${k}">${k === 'crossfade' ? '⇄' : '◐'}</span>`;
+      return sep + `<button class="chip tl${fp.on && fp.idx === i ? ' playing' : ''}" role="tab" type="button" draggable="true" data-b="${i}" aria-selected="${box === i}" title="${escH(chapTitle(c))}${c.ext ? ' · extends ' + escH(c.ext) : ''}${d ? ' · ' + d.toFixed(1) + ' s' : ''} · starts with ${k === 'crossfade' ? 'a crossfade' : k === 'fade' ? 'a fade' : 'a cut'}. Double-click for its settings; drag to move it"><i>${i + 1}</i><b>${escH(c.name)}</b>${dot(i)}<small class="len">${d ? d.toFixed(1) + ' s' : ''}</small></button>`; }).join('');
   chips.querySelectorAll('.chip').forEach(ch => {
     const b = +ch.dataset.b;
     if (b >= 0) { const x = document.createElement('span'); x.className = 'chx'; x.textContent = '×'; x.setAttribute('aria-hidden', 'true'); x.title = `Close ${film.chapters[b].name} (Shift skips the question)`; ch.append(x);
@@ -8230,8 +9103,8 @@ function renderChapters() {
       ch.addEventListener('drop', (e) => { const from = +e.dataTransfer.getData('text/x-gearscript-chapter'); if (!(from >= 0)) return; e.preventDefault(); const r = ch.getBoundingClientRect(); let to = b + (e.clientX > r.left + r.width / 2 ? 1 : 0); if (from < to) to--; if (to === from) return; const [c] = film.chapters.splice(from, 1); film.chapters.splice(to, 0, c); filmChanged(to); toast(`Moved ${c.name} to place ${to + 1}.`); });
     }
   });
-  const sel = chips.querySelector('[aria-selected="true"]'); if (sel && sel.scrollIntoView) sel.scrollIntoView({ block: 'nearest', inline: 'nearest' });
-  renderTitle();
+  const sel = chips.querySelector('[aria-selected="true"]'); if (moved && sel && sel.scrollIntoView) sel.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  chipFades(); renderTitle();
 }
 function chapterMenuItems(b) {
   if (b < 0) return [{ head: '@common' }, { label: 'What goes here: parts, styles and sounds every chapter shares', run: () => {} }, '-', { label: 'Add a chapter', run: () => addChapter('blank') }];
@@ -8566,6 +9439,7 @@ function replyBlocks(text) {
 }
 let aiUndo = null;   /* the whole project before the last AI change, so one click puts it back */
 function applyAiReply(text) {
+  if (GearScript.isPatchText(text)) { openPatchPanel(text, { source: 'ai' }); return { ok: true, review: true }; }   /* a patch goes to its panel: the person sees what it changes first */
   const b = replyBlocks(text), before = { text: projText(), film: !!film, box };
   if (b.gearscript && GearScript.isFilmText(b.gearscript)) { if (fp.on) filmStop(true); if (film) pasteFilm(b.gearscript, { review: false, quiet: true }); else { setFilmText(b.gearscript, Math.max(0, Math.min(box, 99))); filmChanged(box); } }
   else if (b.gearscript) { const sp = GearScript.splitProject(b.gearscript); if (sp.issues.some(d => d.sev === 'error')) return { ok: false, why: 'The reply\'s project has broken section markers.' }; for (const k of GearScript.SECTIONS) files[k] = sp.files[k]; selectTab(current); build(); persist(); markDirty(); }
@@ -8596,27 +9470,26 @@ async function runAi(prompt, kind) {
   try {
     const text = await askAi(prompt, kind); const r = applyAiReply(text);
     if (!r.ok) { setAiStat(escH(r.why) + ' Try rewording the request.', true); return; }
+    if (r.review) { setAiStat('The AI replied with a patch. Check its changes in the panel, then Apply.'); track('ai_run', { kind, patch: true, chapters: film ? film.chapters.length : 0 }); return; }
     const note = text.replace(/```[\s\S]*?```/g, '').trim().split('\n').filter(Boolean).slice(-2).join(' ').slice(0, 300);
     setTimeout(() => { const n = lastDiags.filter(d => d.sev === 'error').length; setAiStat(`${n ? `Done, with ${n} error${n === 1 ? '' : 's'} left (see Problems).` : 'Done: the preview shows the new code.'}${note ? ' ' + escH(note) : ''} <button type="button" class="linkbtn" id="aiUndoBtn">Undo the AI change</button>`, !!n); }, 50);
     track('ai_run', { kind, chapters: film ? film.chapters.length : 0 });
   } catch (e) { setAiStat(escH(e.message || String(e)), true); }
   finally { runAi.busy = false; $('aiRun').disabled = false; $('fixMain').disabled = false; $('aiBar').hidden = true; }
 }
-$('aiRun').addEventListener('click', () => { const task = $('aiTask').value.trim(); if (!task) { setAiStat('Describe what to animate first.', true); $('aiTask').focus(); return; } runAi(buildPrompt(), 'generate'); });
+$('aiRun').addEventListener('click', () => { const task = $('aiTask').value.trim(); if (!task && (aiMode === 'new' || !(aiPickedProblems().length || S.aiState))) { setAiStat(aiMode === 'new' ? 'Describe what to animate first.' : 'Say what should change, or tick something to send.', true); $('aiTask').focus(); return; } runAi(aiMode === 'change' ? aiRequest({ task, syntax: true, site: true }) : buildPrompt(), 'generate'); });
 /* Fix with AI: the prompt, the problems and the whole project go to the AI on this site; its answer replaces the code (undoable) */
 function aiFixFor(errs) {
   if (!errs.length || !aiOn) return;
   const $s = $('aiSheet'); $s.hidden = false; $('sheet').hidden = true;
-  const prompt = aiBase('', projText(), !!film) + '\n\n' + (film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES)
-    + '\n\nTASK\nFix these problems. Keep everything that already works, and change as little as you can.\n```json\n' + JSON.stringify(errs.slice(0, 20).map(d => d.json ? d.json() : d), null, 1) + '\n```\n'
-    + (film ? '\nCURRENT PROJECT\n```gearscript\n' + projText().trim() + '\n```\n' : '\nCURRENT PROJECT\n```gearscript\n' + GearScript.joinProject(files).trim() + '\n```\n');
+  const prompt = aiRequest({ syntax: true, site: true, problems: errs });
   runAi(prompt, 'fix');
 }
 function syncAiUi() {
   $('aiRun').hidden = !aiOn; $('aiCopy').classList.toggle('primary', !aiOn);
   $('aiSheet').querySelector('.note').textContent = aiOn
     ? 'Generate asks the AI on this site and puts its answer in the editor (you can undo it). Copy prompt gives you the same instructions for any chat assistant.'
-    : 'Copies the GearScript syntax as instructions any chat assistant can follow, plus your request. Paste its reply back into the editor: a single-file reply fills all three sections.';
+    : 'Copies the GearScript syntax as instructions any chat assistant can follow, plus your request. Paste its reply into the editor: code goes in, and a patch opens in Apply patch.';
   renderProblems();
 }
 
@@ -8652,7 +9525,7 @@ function renderProblems() {
   list.querySelectorAll('.more').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (probOpen.has(g.key)) probOpen.delete(g.key); else probOpen.add(g.key); renderProblems(); }));
   list.querySelectorAll('.locchip').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const d = groups[+b.closest('li').dataset.i].list[+b.dataset.j]; if (d.file) goToDiag(d); }));
   list.querySelectorAll('.rowfix').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (b.dataset.fix === 'edit') { const fx = g.list.filter(canApply); const r = applyFixes(fx); if (r) reportFix(r.changes, r.before, fx[0].edit.guess ? 'guess' : 'sure'); } else aiFixFor(g.list); }));
-  renderFixBtn(); renderCopyBtn();
+  renderFixBtn(); renderAskBtn();
   document.querySelectorAll('.tab').forEach(t => { const f = t.dataset.file; const mine = (d) => f === 'project' || d.file === f; const e = lastDiags.some(d => mine(d) && d.sev === 'error'), w = lastDiags.some(mine); t.innerHTML = `${f === 'project' ? esc(projName) + '.gscript' : '.' + f}${e ? '<span class="dot"></span>' : w ? '<span class="dot w"></span>' : ''}`; });
   const st = $('status'); st.className = 'status' + (errs.length ? ' bad' : wr.length ? ' warn' : '');
   st.lastElementChild.textContent = errs.length ? `${errs.length} error${errs.length === 1 ? '' : 's'}` : wr.length ? `Running · ${wr.length} warning${wr.length === 1 ? '' : 's'}` : 'Running';
@@ -8697,7 +9570,7 @@ function rowFixBtn(d, n = 1) {
 function fixPlan() {
   const ok = lastDiags.filter(canApply);
   const plan = { sure: ok.filter(d => !d.edit.guess), guess: ok.filter(d => d.edit.guess), errs: lastDiags.filter(d => d.sev === 'error'), ai: !!(aiOn && !PLAYER) };
-  plan.main = plan.sure.length ? 'sure' : plan.guess.length ? 'guess' : plan.ai && plan.errs.length ? 'ai' : null;
+  plan.main = plan.sure.length ? 'sure' : plan.guess.length ? 'guess' : null;   /* the AI has its own button (Copy for AI / Fix with AI) beside this one */
   return plan;
 }
 const plural = (n, w, ws) => `${n} ${n === 1 ? w : ws || w + 's'}`;
@@ -8717,8 +9590,6 @@ function renderFixMenu(P = fixPlan()) {
   set('sure', P.sure.length, P.sure.length, P.sure.length ? list(P.sure) : 'Nothing to fix for sure right now');
   set('guess', P.guess.length, P.guess.length, P.guess.length ? list(P.guess) : 'No suggestions right now');
   set('max', P.sure.length + P.guess.length, 0, P.sure.length + P.guess.length ? 'Repeats both until nothing more can be fixed' : 'Nothing to fix right now');
-  m.querySelectorAll('[data-ai]').forEach(x => { x.hidden = !P.ai; });
-  if (P.ai) set('ai', P.errs.length && !runAi.busy, 0, P.errs.length ? `Asks the AI about the ${plural(P.errs.length, 'error')} left` : 'No errors to send');
 }
 /* the editor's text, and the other sections' when they are in tabs: for Undo, and to see that a round of fixes changed nothing new */
 function editorSnapshot() { return { single: isSingle(), cur: current, text: ta.value, files: { ...files } }; }
@@ -8805,81 +9676,148 @@ function copyText(txt) {
   return Promise.resolve(legacy());
 }
 function flashBtn(b, msg, label) { b.textContent = msg; setTimeout(() => b.textContent = label, 1600); }
-/* Copy as JSON, or Copy with code. When the code in the editor is what was last pasted (or what the site's AI wrote), the AI already has
-   it and the problems are enough; once it has been edited by hand (or by Fix), the default is the message with the code */
+/* ---------------- asking the AI: one set of options, shared by Copy for AI (under Problems) and Prompt AI ----------------
+   What goes with a request: the errors and warnings, where every part is at the current time, the code, the reply wanted (a patch or the
+   whole code) and, with chapters, whether it is about this chapter or the whole film. The choices are kept in the settings, so every
+   request is made the same way until they are changed. Whether the AI still has the code cannot be known (a new chat, a long one that
+   dropped it, another assistant), so the code goes when it is ticked */
 const aiCopy = { key: null };
-function markAiCode() { setTimeout(() => { aiCopy.key = snapKey(); renderCopyBtn(); }, 0); }
-const copyDefault = () => aiCopy.key !== null && snapKey() === aiCopy.key ? 'json' : 'code';
-function renderCopyBtn() {
-  $('copySplit').hidden = !lastDiags.length;   /* nothing to copy */
-  const k = copyDefault(), b = $('copyJson'); b.dataset.copy = k; b.textContent = k === 'code' ? 'Copy with code' : 'Copy as JSON';
-  b.title = k === 'code' ? 'The code was changed since the last paste, so this copies a message with the problems and the code' : 'The code is as pasted, so this copies just the problems as JSON';
-  $('copyMenu').querySelectorAll('[data-copy]').forEach(x => { x.querySelector('[data-k]').textContent = x.dataset.copy === k ? 'default' : ''; });
-}
+function markAiCode() { setTimeout(() => { aiCopy.key = snapKey(); renderAskBtn(); }, 0); }
 /* the problems as JSON, with lines as the AI will see them: in the one-file view (and for a film), lines in the whole file */
-function problemsForAi(keepEdit = true) {
-  return lastDiags.map(d => { const j = d.json(); if (isSingle()) { const L = shownLine(d); if (j.edit) j.edit = { ...j.edit, line: L + (j.edit.line - j.line) }; j.section = d.file === 'film' ? undefined : j.file; j.file = 'project'; j.line = L; } if (!keepEdit) delete j.edit; return j; });
+function problemsForAi(keepEdit = true, list = lastDiags) {
+  return list.map(d => { const j = d.json(); if (isSingle()) { const L = shownLine(d); if (j.edit) j.edit = { ...j.edit, line: L + (j.edit.line - j.line) }; j.section = d.file === 'film' ? undefined : j.file; j.file = 'project'; j.line = L; } if (!keepEdit) delete j.edit; return j; });
 }
-const problemsJson = () => JSON.stringify(problemsForAi(), null, 2);
-/* the current code, in the format the AI is asked to reply in */
-function codeForAi() {
-  if (film) return '```gearscript\n' + projText().trim() + '\n```\n';
-  if (S.view === 'single') return '```gearscript\n' + GearScript.joinProject(files).trim() + '\n```\n';
-  return '```scene\n' + files.scene.trim() + '\n```\n```style\n' + files.style.trim() + '\n```\n```motion\n' + files.motion.trim() + '\n```\n';
+const aiChapterScope = () => film && box >= 0 && S.aiScope !== 'film' ? film.chapters[box] : null;
+const aiPickedProblems = (list = lastDiags) => list.filter(d => d.sev === 'error' ? S.aiProbs : S.aiWarns);
+const aiSendsCode = (site) => site || S.aiCode !== false;
+function aiReplyFormat(oneCh) { return S.aiReply === 'patch' ? aiPatchFormat() : oneCh ? AI_FORMAT_CHAPTER(oneCh.name) : film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES; }
+function aiCodeText(oneCh) {
+  if (oneCh) return `\nCURRENT CHAPTER ${oneCh.name}, with @common${oneCh.ext ? ' and the chapter it extends' : ''} (change ${oneCh.name}; keep what already works)\n\`\`\`gearscript\n` + GearScript.joinFilm({ ...film, chapters: [...(oneCh.ext ? film.chapters.filter(c => c.name === oneCh.ext) : []), oneCh] }).trim() + '\n```\n';
+  if (film) return `\nCURRENT PROJECT (keep what already works. The chapter on screen is ${box < 0 ? '@common' : film.chapters[box].name})\n\`\`\`gearscript\n` + projText().trim() + '\n```\n';
+  if (S.view === 'single' || S.aiReply === 'patch') return '\nCURRENT PROJECT (keep what already works)\n```gearscript\n' + GearScript.joinProject(files).trim() + '\n```\n';
+  return '\nCURRENT PROJECT (keep what already works)\n```scene\n' + files.scene.trim() + '\n```\n```style\n' + files.style.trim() + '\n```\n```motion\n' + files.motion.trim() + '\n```\n';
 }
-function copyProblems(kind) {
-  closeMenus();
-  const txt = kind === 'code'
-    ? `Fix these problems in my GearScript project. Change as little as you can, keep what already works, and reply with the whole project in the same format as the code below.\n\nPROBLEMS\n\`\`\`json\n${problemsJson()}\n\`\`\`\n\nCURRENT PROJECT\n${codeForAi()}`
-    : problemsJson();
-  copyText(txt).then(ok => flashBtn($('copyJson'), ok ? 'Copied' : 'Copy blocked', kind === 'code' ? 'Copy with code' : 'Copy as JSON'));
-}
-$('copyJson').addEventListener('click', () => copyProblems($('copyJson').dataset.copy));
-$('copyMenuBtn').addEventListener('click', (e) => { e.stopPropagation(); renderCopyBtn(); toggleMenu($('copyMenuBtn'), $('copyMenu')); });
-$('copyMenu').querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => copyProblems(b.dataset.copy)));
-
-/* AI prompt */
-function buildPrompt() {
-  const task = $('aiTask').value.trim() || '[Describe the animation you want here]';
-  const oneCh = aiChapterScope();
-  let out = aiBase($('aiTask').value, projText(), !!film) + '\n\n' + (oneCh ? AI_FORMAT_CHAPTER(oneCh.name) : film ? AI_FORMAT_FILM : S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES);
-  out += '\n\nTASK\n' + task + '\n';
-  if ($('aiProbs').checked && lastDiags.length) out += '\nPROBLEMS IN THE CURRENT CODE (fix these first; change as little else as you can)\n```json\n' + JSON.stringify(problemsForAi(false)).replace(/\},\{/g, '},\n{') + '\n```\n';
-  if ($('aiState').checked && model) out += '\nSTATE AT t = ' + t.toFixed(2) + ' s (what the current code produces at that moment; use it to find what is wrong)\n```text\n' + frameState(t, { header: false }).trim() + '\n```\n';
-  if ($('aiCode').checked && oneCh) out += `\nCURRENT CHAPTER ${oneCh.name}, with @common${oneCh.ext ? ' and the chapter it extends' : ''} (change ${oneCh.name} to do the task; keep what already works)\n\`\`\`gearscript\n` + GearScript.joinFilm({ ...film, chapters: [...(oneCh.ext ? film.chapters.filter(c => c.name === oneCh.ext) : []), oneCh] }).trim() + '\n```\n';
-  else if ($('aiCode').checked && film) out += `\nCURRENT PROJECT (change it to do the task; keep what already works. The chapter on screen is ${box < 0 ? '@common' : film.chapters[box].name})\n\`\`\`gearscript\n` + projText().trim() + '\n```\n';
-  else if ($('aiCode').checked) out += S.view === 'single'
-    ? '\nCURRENT PROJECT (change it to do the task; keep what already works)\n```gearscript\n' + GearScript.joinProject(files).trim() + '\n```\n'
-    : '\nCURRENT PROJECT (change it to do the task; keep what already works)\n```scene\n' + files.scene.trim() + '\n```\n```style\n' + files.style.trim() + '\n```\n```motion\n' + files.motion.trim() + '\n```\n';
+/* a request about this project. syntax: start with the GearScript prompt (a new chat, or the AI on this site, which keeps no chat);
+   site: for the AI on this site, which never has the code; problems: a given list instead of the ticked ones */
+function aiRequest({ task = '', syntax = false, site = false, problems = null } = {}) {
+  const oneCh = aiChapterScope(), probs = problems || aiPickedProblems(), state = S.aiState && model, code = aiSendsCode(site);
+  let out = syntax ? aiBase(task, projText(), !!film) + '\n\n' : '';
+  out += aiReplyFormat(oneCh) + '\n\nTASK\n';
+  out += task ? task + (probs.length ? '\nFix the problems below too.' : '') : probs.length ? `Fix the problems below in my GearScript project${oneCh ? ` (chapter ${oneCh.name})` : ''}.` : 'Something is wrong with my GearScript project: find it from the state below and fix it.';
+  out += ' Change as little as you can and keep what already works.\n';
+  if (probs.length) out += '\nPROBLEMS IN THE CURRENT CODE\n```json\n' + JSON.stringify(problemsForAi(false, probs.slice(0, 40))).replace(/\},\{/g, '},\n{') + '\n```\n';
+  if (state) out += '\nSTATE AT t = ' + t.toFixed(2) + ' s (what the current code produces at that moment; use it to find what is wrong)\n```text\n' + frameState(t, { header: false }).trim() + '\n```\n';
+  if (code) out += aiCodeText(oneCh);
   return out;
 }
-/* in a project with chapters, the prompt can be about the chapter on screen only: a shorter prompt and reply, and the other chapters stay safe */
-let aiScope = 'chapter';
-function aiChapterScope() { return film && box >= 0 && aiScope === 'chapter' ? film.chapters[box] : null; }
-$('aiScope').addEventListener('click', (e) => { const b = e.target.closest('[data-s]'); if (!b) return; aiScope = b.dataset.s; $('aiScope').querySelectorAll('[data-s]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); updateAiLen(); });
+/* the options, drawn the same way in the Copy for AI popover and in Prompt AI; a change in one shows in the other */
+function renderAiOpts() {
+  const e = lastDiags.filter(d => d.sev === 'error').length, w = lastDiags.length - e, oneCh = film && box >= 0 ? film.chapters[box] : null;
+  const seg = (k, opts) => `<div class="seg" role="group" data-o="${k}">${opts.map(([v, l]) => `<button type="button" data-v="${v}" aria-pressed="${S[k] === v}">${escH(l)}</button>`).join('')}</div>`;
+  const html = `<div class="aio"><span class="aio-k">Send</span><span class="aio-v">
+      <label class="check"><input type="checkbox" data-o="aiProbs" ${S.aiProbs ? 'checked' : ''}> Errors <i>${e}</i></label>
+      <label class="check"><input type="checkbox" data-o="aiWarns" ${S.aiWarns ? 'checked' : ''}> Warnings <i>${w}</i></label>
+      <label class="check" title="Your code (or the chapter, with About: This chapter). Untick it when the AI already has exactly this code"><input type="checkbox" data-o="aiCode" ${S.aiCode !== false ? 'checked' : ''}> Code</label>
+      <label class="check" title="Where every part is at this moment: how an AI finds what moves wrongly"><input type="checkbox" data-o="aiState" ${S.aiState ? 'checked' : ''}> State at ${t.toFixed(2)} s</label></span></div>
+    <div class="aio"><span class="aio-k">Reply as</span><span class="aio-v">${seg('aiReply', [['patch', 'A patch'], ['whole', 'The whole code']])}</span></div>
+    ${oneCh ? `<div class="aio"><span class="aio-k">About</span><span class="aio-v">${seg('aiScope', [['chapter', 'This chapter (' + oneCh.name + ')'], ['film', 'The whole film']])}</span></div>` : ''}`;
+  for (const id of ['askOpts', 'aiOpts']) { const el = $(id); if (el) el.innerHTML = html; }
+}
+function aiOptChanged() { saveSettings(); renderAiOpts(); renderAskBtn(); if (!$('aiSheet').hidden) updateAiLen(); }
+for (const id of ['askOpts', 'aiOpts']) {
+  const el = $(id);
+  el.addEventListener('change', (e) => { const x = e.target.closest('[data-o]'); if (!x) return; S[x.dataset.o] = x.type === 'checkbox' ? x.checked : x.value; aiOptChanged(); });
+  el.addEventListener('click', (e) => { const b = e.target.closest('.seg[data-o] [data-v]'); if (!b) return; S[b.closest('.seg').dataset.o] = b.dataset.v; aiOptChanged(); });
+}
+/* Copy for AI (Fix with AI where this site has an AI): the request, made with the options above. Copied, it is a follow-up for a chat
+   that already has the GearScript prompt, so it leaves the prompt out; sent to the AI on this site, it carries the prompt and the code */
+const askCanSend = () => !!($('askTask').value.trim() || aiPickedProblems().length || S.aiState);
+function askSummary() {
+  const p = aiPickedProblems(), e = p.filter(d => d.sev === 'error').length, w = p.length - e, bits = [];
+  if ($('askTask').value.trim()) bits.push('your request');
+  if (e) bits.push(plural(e, 'error')); if (w) bits.push(plural(w, 'warning')); if (S.aiState && model) bits.push('the state');
+  if (aiSendsCode(aiOn)) bits.push(aiChapterScope() ? 'the chapter' : 'the code');
+  return `Sends ${bits.length ? bits.join(', ').replace(/, ([^,]*)$/, ' and $1') : 'nothing yet'}; asks for ${S.aiReply === 'patch' ? 'a patch' : 'the whole code'}.`;
+}
+function renderAskBtn() {
+  const b = $('askBtn'); if (!b) return;
+  const label = aiOn ? 'Fix with AI' : 'Copy for AI';
+  if (!b.dataset.flash) b.textContent = label;
+  $('askGo').textContent = label;
+  b.title = askCanSend() ? askSummary() + ' The arrow changes what is sent.' : 'No problems are ticked: press it to say what should change.';
+  if (!$('askPop').hidden) updateAskLen();
+}
+function updateAskLen() {
+  const can = askCanSend(), txt = can ? aiRequest({ task: $('askTask').value.trim(), syntax: aiOn, site: aiOn }) : '';
+  $('askLen').textContent = can ? `${askSummary()} About ${txt.split(/\s+/).length.toLocaleString()} words.` : 'Type what should change, or tick something to send.';
+  $('askGo').disabled = !can;
+  $('askNote').textContent = aiOn ? 'Goes to the AI on this site, with the GearScript prompt and your code.' : 'For a chat that already has the GearScript prompt (for a new chat, use Prompt AI).';
+}
+function askOpen(show) {
+  const pop = $('askPop'), open = show === undefined ? pop.hidden : show;
+  pop.hidden = !open; $('askMore').setAttribute('aria-expanded', String(open));
+  if (open) { closeMenus(); renderAiOpts(); updateAskLen(); askPlace(); setTimeout(() => (askCanSend() ? $('askGo') : $('askTask')).focus(), 0); }
+}
+/* above the button, kept on the screen: the Problems panel can be narrower than the popover */
+function askPlace() {
+  const pop = $('askPop'), r = $('copySplit').getBoundingClientRect(), w = pop.offsetWidth, vw = document.documentElement.clientWidth;
+  pop.style.left = Math.max(8, Math.min(r.right - w, vw - w - 8)) + 'px'; pop.style.bottom = (window.innerHeight - r.top + 6) + 'px';
+  pop.style.maxHeight = Math.max(200, r.top - 14) + 'px'; pop.style.overflow = 'auto';
+}
+window.addEventListener('resize', () => { if (!$('askPop').hidden) askPlace(); });
+function askGo() {
+  if (!askCanSend()) { askOpen(true); $('askTask').focus(); return; }
+  const task = $('askTask').value.trim();
+  if (aiOn) { askOpen(false); runAi(aiRequest({ task, syntax: true, site: true }), task ? 'generate' : 'fix'); $('askTask').value = ''; return; }
+  const b = $('askBtn'), txt = aiRequest({ task });
+  copyText(txt).then(ok => { if (ok && task) { $('askTask').value = ''; updateAskLen(); }   /* a request is sent once: the next click is not the same feature again */
+    if (ok) toastActions('Copied for the AI. When it answers, copy its reply and press Paste reply.', [['Paste reply', () => openPatchPanel('')]], 8000);
+    b.dataset.flash = '1'; b.textContent = ok ? 'Copied' : 'Copy blocked'; setTimeout(() => { delete b.dataset.flash; renderAskBtn(); }, 1600); if (ok && !$('askPop').hidden) { $('askGo').textContent = 'Copied'; setTimeout(renderAskBtn, 1600); } });
+  track('ai_copy', { reply: S.aiReply, code: S.aiCode, task: !!task });
+}
+$('askBtn').addEventListener('click', askGo);
+$('askGo').addEventListener('click', askGo);
+$('askMore').addEventListener('click', (e) => { e.stopPropagation(); askOpen(); });
+$('askTask').addEventListener('input', () => { renderAskBtn(); updateAskLen(); });
+$('askTask').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); askGo(); } });
+$('askJson').addEventListener('click', (e) => { copyText(JSON.stringify(problemsForAi(), null, 2)).then(ok => flashBtn(e.target, ok ? 'Copied' : 'Copy blocked', 'Just the problems as JSON')); });
+document.addEventListener('mousedown', (e) => { const pop = $('askPop'); if (!pop.hidden && !pop.contains(e.target) && !$('askMore').contains(e.target)) askOpen(false); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('askPop').hidden) { e.stopPropagation(); askOpen(false); $('askMore').focus(); } }, true);
+$('replyBtn').addEventListener('click', () => openPatchPanel(''));
+
+/* Prompt AI: a new animation (the GearScript prompt and the request), or a change to this project, made with the shared options */
+let aiMode = 'new';
+function buildPrompt() {
+  const task = $('aiTask').value.trim();
+  if (aiMode === 'change') return aiRequest({ task, syntax: true });
+  return aiBase(task, projText(), !!film) + '\n\n' + (S.view === 'single' ? AI_FORMAT_SINGLE : AI_FORMAT_FILES) + '\n\nTASK\n' + (task || '[Describe the animation you want here]') + '\n';
+}
+function setAiMode(m) { aiMode = m; updateAiLen(); }
+$('aiMode').addEventListener('click', (e) => { const b = e.target.closest('[data-m]'); if (b) setAiMode(b.dataset.m); });
 function updateAiLen() {
-  $('aiScopeRow').hidden = !film || box < 0;
-  if (film && box >= 0) $('aiScope').querySelector('[data-s="chapter"]').textContent = `This chapter (${film.chapters[box].name})`;
-  $('aiStateLbl').textContent = `Include the state at ${t.toFixed(2)} s: where every part is, so it can see what is wrong`;
-  { const e = lastDiags.filter(d => d.sev === 'error').length, w = lastDiags.length - e, cb = $('aiProbs');
-    cb.disabled = !lastDiags.length; if (!lastDiags.length) cb.checked = false;
-    $('aiProbsLbl').textContent = lastDiags.length ? `Include the problems (${plural(e, 'error')}, ${plural(w, 'warning')}), so it fixes them first` : 'Include the problems (there are none right now)'; }
+  const change = aiMode === 'change';
+  $('aiMode').querySelectorAll('[data-m]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.m === aiMode)));
+  $('aiTaskLbl').textContent = change ? 'What should change? (leave it empty to fix what is ticked)' : 'What should it animate?';
+  $('aiTask').placeholder = change ? 'For example: add a second pendulum that swings the other way' : 'For example: a crane that lifts a box with a pulley, then swings it 90 degrees';
+  $('aiOpts').hidden = !change; if (change) renderAiOpts();
   const txt = buildPrompt(); $('aiLen').textContent = `${txt.split(/\s+/).length.toLocaleString()} words`;
-  const single = S.view === 'single';
-  $('aiFmt').textContent = aiChapterScope() ? `One file with chapter ${aiChapterScope().name} (merged back by name)` : film ? 'One file with every chapter' : single ? 'One file (@scene, @style, @motion)' : 'Three files: three code blocks';
-  $('aiFmtSwitch').textContent = single ? 'use three files' : 'use one file'; $('aiFmtSwitch').hidden = !!film;
+  const single = S.view === 'single', oneCh = change && aiChapterScope();
+  $('aiFmt').textContent = change && S.aiReply === 'patch' ? 'A patch: only the changes, checked when you paste the reply' : oneCh ? `One file with chapter ${oneCh.name} (merged back by name)` : change && film ? 'One file with every chapter' : single ? 'One file (@scene, @style, @motion)' : 'Three files: three code blocks';
+  $('aiFmtSwitch').textContent = single ? 'use three files' : 'use one file'; $('aiFmtSwitch').hidden = $('aiFmtSep').hidden = !!film;
+  $('aiFmtRow').hidden = change && S.aiReply === 'patch';   /* Reply as, just above, already says it */
 }
 $('aiFmtSwitch').addEventListener('click', () => { setSetting('view', S.view === 'single' ? 'files' : 'single'); updateAiLen(); });
-$('aiBtn').addEventListener('click', () => { const s = $('aiSheet'); s.hidden = !s.hidden; $('sheet').hidden = true; if (!s.hidden) { if (lastDiags.length && !$('aiProbs').dataset.touched) { $('aiProbs').checked = true; $('aiCode').checked = true; } updateAiLen(); $('aiTask').focus(); } });
-$('aiProbs').addEventListener('change', () => { $('aiProbs').dataset.touched = '1'; if ($('aiProbs').checked) $('aiCode').checked = true; updateAiLen(); });
+$('aiBtn').addEventListener('click', () => { const s = $('aiSheet'); s.hidden = !s.hidden; $('sheet').hidden = true; if (!s.hidden) { if (lastDiags.some(d => d.sev === 'error')) aiMode = 'change'; updateAiLen(); $('aiTask').focus(); } });
 $('aiClose').addEventListener('click', () => { $('aiSheet').hidden = true; });
 $('aiTask').addEventListener('input', updateAiLen);
-$('aiSheet').querySelector('.note').textContent = 'Copies the GearScript syntax as instructions any chat assistant can follow, plus your request. Paste its reply back into the editor: a single-file reply fills all three sections.'; $('aiCode').addEventListener('change', updateAiLen); $('aiState').addEventListener('change', updateAiLen);
-$('aiCopy').addEventListener('click', () => (track('ai_prompt_copy', { view: S.view }), copyText(buildPrompt())).then(ok => flashBtn($('aiCopy'), ok ? 'Copied' : 'Copy blocked', 'Copy prompt')));
+$('aiSheet').querySelector('.note').textContent = 'Copies the GearScript syntax as instructions any chat assistant can follow, plus your request. Paste its reply back into the editor: code goes in, and a patch opens in Apply patch.';
+$('aiCopy').addEventListener('click', () => (track('ai_prompt_copy', { view: S.view, mode: aiMode }), copyText(buildPrompt())).then(ok => flashBtn($('aiCopy'), ok ? 'Copied' : 'Copy blocked', 'Copy prompt')));
 
 /* ---------------- 3D ---------------- */
 const stage = $('stage');
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+/* reading every new shader's log makes the page wait for the graphics card to finish compiling it: only with ?debug */
+renderer.debug.checkShaderErrors = /[?&]debug\b/.test(location.search);
 renderer.localClippingEnabled = true;   /* cut: section planes on single parts */
 renderer.setPixelRatio(Math.min(+S.quality, window.devicePixelRatio || 1));
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -9015,6 +9953,9 @@ function buildLabels() {
     l.geom.computeBoundingSphere(); l.sprite = sp; l.labelH = h; sp.material.opacity = Math.max(0, Math.min(1, l.liveOpacity !== undefined ? l.liveOpacity : l.opacity !== undefined ? l.opacity : 1));
   }
 }
+/* the last build's parts are let go once the new build has been drawn: let go at once, the shaders the two share would be freed
+   and compiled again on every build, which made typing stutter */
+function disposeLater(o) { setTimeout(() => { if (!o.parent) disposeTree(o); }, 400); }
 function disposeTree(o) { o.traverse(x => { if (x.geometry) x.geometry.dispose(); if (x.material) (Array.isArray(x.material) ? x.material : [x.material]).forEach(m => { if (m.map) m.map.dispose(); if (m.alphaMap) m.alphaMap.dispose(); m.dispose(); }); }); }
 
 /* ---------------- sky and ground: a hollow, glowing sphere that travels with the camera, and a floor that fades into it ---------------- */
@@ -9319,19 +10260,15 @@ function build() {
   setStale(hasErr, 'Showing the parts that compiled');
   install(m);
   /* overlap check: a moment after the build, so typing stays smooth; its warnings join the Problems list */
-  clearTimeout(build.ov); if (!hasErr && !PLAYER) build.ov = setTimeout(() => {
-    if (model !== m) return; let w = []; try { w = GearScript.overlapCheck(m, { budgetMs: 600 }); } catch (e) { return; }
-    if (!w.length || model !== m) return;
-    lastDiags = [...lastDiags, ...w]; renderProblems(); renderEditor();
-  }, 700);
+  overlapStop(); if (!hasErr && !PLAYER) build.ov = setTimeout(() => overlapRun(m), 700);
 }
 
 function install(m) {
-  setTimeout(() => { renderSoundBtn(); if (soundPanel && !soundPanel.hidden) openSoundPanel(); }, 0);
-  if (contentGroup) { scene3.remove(contentGroup); disposeTree(contentGroup); }
+  setTimeout(() => { renderSoundBtn(); if (soundPanel && !soundPanel.hidden) openSoundPanel(); if (!$('sheet').hidden && !exporting) syncExportUI(); }, 0);   /* the export panel's size, length, frames, sounds and lines follow the code */
+  if (contentGroup) { scene3.remove(contentGroup); disposeLater(contentGroup); }
   if (lightGroup) { scene3.remove(lightGroup); }
-  if (guideGroup) { scene3.remove(guideGroup); disposeTree(guideGroup); }
-  if (gridObj) { scene3.remove(gridObj); disposeTree(gridObj); gridObj = null; }
+  if (guideGroup) { scene3.remove(guideGroup); disposeLater(guideGroup); }
+  if (gridObj) { scene3.remove(gridObj); disposeLater(gridObj); gridObj = null; }
   model = m; contentGroup = m.root; scene3.add(contentGroup);
   for (const e of m.order) e.node.matrixAutoUpdate = false;
   // reflections for metals
@@ -9361,7 +10298,7 @@ function install(m) {
   }
   for (const l of m.leaves) { const flat = ['Line', 'Arrow', 'Curve'].includes(l.type); l.shadowOk = !flat; l.mesh.receiveShadow = !flat; GearScript.setOpacity(l); }
   buildGlow(m);
-  if (shadowCatcher) { scene3.remove(shadowCatcher); shadowCatcher.geometry.dispose(); shadowCatcher.material.dispose(); }
+  if (shadowCatcher) { scene3.remove(shadowCatcher); disposeLater(shadowCatcher); }
   shadowCatcher = new THREE.Mesh(new THREE.PlaneGeometry(size * 6, size * 6), new THREE.ShadowMaterial({ opacity: 0.32, depthWrite: false }));
   shadowCatcher.rotation.x = -Math.PI / 2; shadowCatcher.position.set(center.x, gy(m) - size * 0.002, center.z); shadowCatcher.receiveShadow = true; shadowCatcher.renderOrder = -1;
   scene3.add(shadowCatcher);
@@ -9580,7 +10517,9 @@ function resize() {
   if (fr) { const pad = 10, aw = Math.max(1, r.width - 2 * pad), ah = Math.max(1, r.height - 2 * pad); if (aw / ah > fr.aspect) { h = ah; w = ah * fr.aspect; } else { w = aw; h = aw / fr.aspect; } x = (r.width - w) / 2; y = (r.height - h) / 2; }
   const cv = renderer.domElement; Object.assign(cv.style, fr ? { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' } : { left: '', top: '', width: '', height: '' });
   stage.classList.toggle('framed', !!fr);
-  renderer.setSize(Math.max(1, Math.round(w)), Math.max(1, Math.round(h)), false); persp.aspect = w / Math.max(1, h); fitFov(); persp.updateProjectionMatrix();
+  const rw = Math.max(1, Math.round(w)), rh = Math.max(1, Math.round(h)), sz = renderer.getSize(new THREE.Vector2());
+  if (sz.x !== rw || sz.y !== rh) renderer.setSize(rw, rh, false);   /* setting the same size again clears the canvas and costs a frame */
+  persp.aspect = w / Math.max(1, h); fitFov(); persp.updateProjectionMatrix();
   placeSafe(fr, x, y, w, h); if (model) frame(t);
 }
 /* a tall picture keeps the Observer's field of view across its width, so turning a scene portrait does not crop it */
@@ -10282,6 +11221,23 @@ $('modelIn').addEventListener('change', async () => {
 });
 
 /* ---------------- export: MP4 and WebM (WebCodecs) or GIF ---------------- */
+/* a pause between frames that a background tab does not slow down: there, timers wait a second or more (a minute, after a while),
+   while a message between two ports is delivered at once. So a render goes on when the person switches to another tab */
+const yieldNow = (() => { const ch = new MessageChannel(), q = []; ch.port1.onmessage = () => { const f = q.shift(); if (f) f(); }; return () => new Promise(r => { q.push(r); ch.port2.postMessage(0); }); })();
+/* while a render runs: its progress in the browser tab's title, and a note if the tab was in the background, to show from other tabs */
+const renderWatch = { on: false, title: '', away: 0, hiddenAt: 0 };
+function renderWatchStart() { Object.assign(renderWatch, { on: true, title: document.title, away: 0, hiddenAt: document.hidden ? performance.now() : 0 }); const w = $('renderWarn'); w.hidden = false; w.classList.remove('away'); w.textContent = 'Keep this tab open until it finishes. Rendering goes on in a background tab in most browsers, but Safari, a sleeping laptop or a battery saver can pause it.'; }
+function renderWatchProgress(x) { if (renderWatch.on) document.title = `${Math.round(x * 100)}% · Rendering · ${renderWatch.title}`; }
+function renderWatchEnd(ok) {
+  if (!renderWatch.on) return; renderWatch.on = false; $('renderWarn').hidden = true;
+  if (document.hidden && ok) { document.title = `✓ Rendered · ${renderWatch.title}`; const back = () => { if (!document.hidden) { document.title = renderWatch.title; document.removeEventListener('visibilitychange', back); } }; document.addEventListener('visibilitychange', back); }
+  else document.title = renderWatch.title;
+}
+document.addEventListener('visibilitychange', () => {
+  if (!renderWatch.on) return;
+  if (document.hidden) renderWatch.hiddenAt = performance.now();
+  else if (renderWatch.hiddenAt) { renderWatch.away += performance.now() - renderWatch.hiddenAt; renderWatch.hiddenAt = 0; const w = $('renderWarn'); w.classList.add('away'); w.textContent = `This tab was in the background for ${Math.round(renderWatch.away / 1000)} s. Rendering kept going, but some browsers slow or pause a background tab, so it can take longer.`; }
+});
 var outBlob = null, outExt = 'gif', outSig = null;   /* var: read by checkStale, which can run before this line during start-up */
 /* everything that changes what an export looks like: if any of it changes after a render, the file on hand is out of date */
 function exportSig() { const p = model ? exportPlan() : {}; return JSON.stringify([p.f, p.W, p.H, p.fps, $('expSound').checked, S.exportSpeak !== false, S.exportLoud || 'standard', +S.exportBal || 0, S.exportVoice || '', $('vidQ').value, $('expAspect').value, film ? projText() : files, exportScope, Object.keys(modelFiles || {}), S.bg, S.shadows, S.labels, S.trails, S.guides, S.grid, S.theme, S.accent]); }
@@ -10546,8 +11502,8 @@ async function encodeVideoFrames(M, f, W, H, fps, n, quality, progress) {
     if (failure) throw failure;
     const vf = new VideoFrame(src, { timestamp: Math.round(i * dur), duration: Math.round(dur) });
     enc.encode(vf, { keyFrame: i % Math.max(1, Math.round(fps * 2)) === 0 }); vf.close();
-    while (enc.encodeQueueSize > 6) await new Promise(r => setTimeout(r, 4));
-    if (i % 3 === 0) { progress(i / n); await new Promise(r => setTimeout(r, 0)); }
+    while (enc.encodeQueueSize > 6) await yieldNow();
+    if (i % 3 === 0) { progress(i / n); await yieldNow(); }
   });
   await enc.flush(); enc.close(); if (failure) throw failure;
   muxer.finalize();
@@ -10573,8 +11529,14 @@ async function piperLoad() {
    KOKORO_RECYCLE lines, and the memory goes back with it. Kokoro and Piper are never loaded at the same time: the worker is closed first */
 const KOKORO_RECYCLE = 16;
 function kokoroWorkerMain() {
-  let tts = null;
+  let tts = null, cur = 0;
+  /* the page learns that this code runs (ready), and why it stops: an error outside the request below would end the worker with no
+     reason given ("the voice worker stopped") */
+  self.addEventListener('error', (ev) => { self.postMessage({ req: cur, fatal: String((ev && (ev.message || (ev.error && ev.error.message))) || 'an error in the voice code') }); });
+  self.addEventListener('unhandledrejection', (ev) => { const r = ev && ev.reason; self.postMessage({ req: cur, fatal: String((r && r.message) || r || 'an error in the voice code') }); });
+  self.postMessage({ ready: true });
   self.onmessage = async (e) => {
+    cur = e.data.req;
     const { req, url, model, text, voice, speed } = e.data, post = (m, t) => self.postMessage(m, t || []);
     try {
       if (!tts) {
@@ -10592,17 +11554,22 @@ function kokoroWorkerMain() {
       const gap = Math.round(0.18 * sr), n = parts.reduce((x, y) => x + y.length, 0) + gap * Math.max(0, parts.length - 1), data = new Float32Array(n);
       let o = 0; parts.forEach((pt, i) => { data.set(pt, o); o += pt.length + (i < parts.length - 1 ? gap : 0); });
       post({ req, sr, data }, [data.buffer]);
-    } catch (err) { post({ req, error: String(err && err.message || err) }); }
+    } catch (err) { const m = String(err && err.message || err); post({ req, error: /memory|allocation|out of bounds|RangeError/i.test(m) ? `ran out of memory (${m})` : m }); }
   };
 }
 class KokoroWorker {
   constructor() {
     const url = URL.createObjectURL(new Blob(['(' + kokoroWorkerMain.toString() + ')()'], { type: 'text/javascript' }));
     /* the address is let go once the worker has answered or failed: letting it go at once can stop some browsers loading the worker */
-    this.w = new Worker(url, { type: 'module' }); this.url = url; this.n = 0; this.pend = new Map(); this.lines = 0;
+    /* a classic worker that loads the library with import(): a module worker made from a blob does not start at all on a page opened
+       as a file (Chrome gives no reason: "the voice worker stopped"), and import() works in both */
+    this.w = new Worker(url); this.url = url; this.n = 0; this.pend = new Map(); this.lines = 0;
     const free = () => { if (this.url) { URL.revokeObjectURL(this.url); this.url = null; } };
-    this.w.onmessage = (e) => { free(); const m = e.data, p = this.pend.get(m.req); if (!p) return; if (m.progress !== undefined) { p.progress(m.progress); return; } this.pend.delete(m.req); if (m.error) p.reject(new Error(m.error)); else p.resolve({ sr: m.sr, data: m.data }); };
-    this.w.onerror = (e) => { free(); e.preventDefault && e.preventDefault(); this.fail(new Error(e.message || 'the voice worker stopped')); };
+    this.ready = false;
+    this.w.onmessage = (e) => { free(); const m = e.data; if (m.ready) { this.ready = true; return; } if (m.fatal) { this.fail(new Error(m.fatal)); return; } const p = this.pend.get(m.req); if (!p) return; if (m.progress !== undefined) { p.progress(m.progress); return; } this.pend.delete(m.req); if (m.error) p.reject(new Error(m.error)); else p.resolve({ sr: m.sr, data: m.data }); };
+    /* no reason from the browser: before the code ran, it could not start (blocked or not supported); after, it crashed, which is
+       almost always memory, as the voice model is large */
+    this.w.onerror = (e) => { free(); e.preventDefault && e.preventDefault(); this.fail(new Error(e.message || (this.ready ? 'the voice stopped while it worked, most likely out of memory' : 'the voice could not start in this browser (blocked, offline or not supported)'))); };
   }
   speak(text, voice, speed, progress) {
     this.lines++;
@@ -10653,10 +11620,17 @@ async function speakClip(job, id, text, rate, progress0) {
       return { sr: r.sr, data: GearScript.normalizeClip(r.data, r.sr), voice: id };
     } catch (e) {
       if (job.cancelled) throw cancelledError();
-      console.error('Kokoro', e); job.kokoroFailed = true; job.kokoroError = String(e.message || e); dropKokoroWorker(job);
+      console.error('Kokoro', e); dropKokoroWorker(job);
+      /* a crash is often a one-off (memory that a fresh worker gets back): try once more before giving up on the natural voice */
+      if (!job.kokoroRetried) {
+        job.kokoroRetried = true;
+        try { job.worker = new KokoroWorker(); const r = await job.worker.speak(String(text), id, Math.max(0.5, Math.min(2, rate || 1)), (x) => progress(`Downloading the natural voice: ${Math.round(x * 100)}%`)); return { sr: r.sr, data: GearScript.normalizeClip(r.data, r.sr), voice: id }; }
+        catch (e2) { if (job.cancelled) throw cancelledError(); console.error('Kokoro, again', e2); e = e2; dropKokoroWorker(job); }
+      }
+      job.kokoroFailed = true; job.kokoroError = String(e.message || e);
       /* Sample previews the chosen voice, so it says why it failed instead of playing another voice; an export goes on with the fast voice */
       if (!job.fallback) throw Object.assign(new Error(job.kokoroError), { kokoro: true });
-      toast(`The natural voice ${KOKORO_VOICES[id][0]} could not load (${job.kokoroError.slice(0, 90).replace(/\.+$/, '')}). The lines use the fast voice ${kokoroToPiper(id)} instead.`, 9000);
+      toast(`The natural voice ${KOKORO_VOICES[id][0]} failed twice: ${job.kokoroError.slice(0, 110).replace(/\.+$/, '')}. This render uses the fast voice ${kokoroToPiper(id) === 'en_GB-alan-medium' ? 'Alan (British)' : 'HFC (American)'} instead; Render again tries ${KOKORO_VOICES[id][0]} again.`, 12000);
     }
   }
   const pid = isKokoro(id) ? kokoroToPiper(id) : id, mod = await Promise.race([piperLoad(), job.cancelP]);
@@ -10738,9 +11712,9 @@ async function encodeGifBlob(W, H, fps, n, progress) {
   const cv = document.createElement('canvas'); cv.width = W; cv.height = H; const cx = cv.getContext('2d', { willReadFrequently: true }); const frames = [];
   await exportFrames(fps, n, async (src, i) => {
     cx.clearRect(0, 0, W, H); cx.drawImage(src, 0, 0, W, H); frames.push(cx.getImageData(0, 0, W, H).data);
-    if (i % 4 === 0) { progress(i / n * 0.7); await new Promise(r => setTimeout(r, 0)); }
+    if (i % 4 === 0) { progress(i / n * 0.7); await yieldNow(); }
   });
-  progress(0.75); await new Promise(r => setTimeout(r, 0));
+  progress(0.75); await yieldNow();
   return new Blob([GearScript.encodeGif(frames, W, H, Math.round(100 / fps), bgClear)], { type: 'image/gif' });
 }
 /* sets the renderer to an exact export size, runs fn, and puts everything back */
@@ -10799,8 +11773,8 @@ $('gifGo').addEventListener('click', async () => {
     $('gifSave').textContent = 'Save HTML'; $('gifSave').hidden = false; outSig = exportSig(); return;
   }
   $('gifGo').disabled = true; $('gifNote').textContent = ''; delete $('gifNote').dataset.done; $('gifNote').classList.remove('outdated'); $('staleMark').hidden = true; $('sheet').classList.remove('outofdate'); $('gifSave').hidden = true; $('gifSave').disabled = false; outSig = null; $('gifImg').hidden = true; $('vidOut').hidden = true; $('gifBar').hidden = false; $('gifNote').textContent = 'Rendering frames…';
-  const bar = (x) => { $('gifBar').firstElementChild.style.width = Math.round(x * 100) + '%'; };
-  const t0 = performance.now();
+  const bar = (x) => { $('gifBar').firstElementChild.style.width = Math.round(x * 100) + '%'; renderWatchProgress(x); };
+  const t0 = performance.now(); renderWatchStart(); let rendered = false;
   beginSpeechJob((on) => { const g = $('gifGo'); g.disabled = !on; g.textContent = on ? 'Cancel' : 'Render'; g.classList.toggle('primary', !on); });
   try {
     outBlob = await withFilmExport(() => withExportSize(W, H, () => f === 'gif' ? encodeGifBlob(W, H, fps, n, bar) : f === 'png' ? encodePngZip(W, H, fps, n, bar) : encodeVideo(f, W, H, fps, n, q, bar), f === 'gif' ? 2 : f === 'png' ? 2 : SS_FOR_QUALITY(q)));
@@ -10812,9 +11786,9 @@ $('gifGo').addEventListener('click', async () => {
     const kb = outBlob.size / 1024;
     const au = (f === 'mp4' || f === 'webm') ? encodeVideoFrames.lastAudio : null;
     $('gifNote').textContent = `${f === 'png' ? 'PNG frames' : f.toUpperCase()} · ${W}×${H} · ${n} frames${f === 'png' && bgClear ? ' · transparent' : ''}${au === 'aac' || au === 'opus' ? ` · sound (${au === 'aac' ? 'AAC' : 'Opus'})` : au === 'unsupported' ? ' · no sound: this browser cannot encode audio' : ''}${(f === 'mp4' || f === 'webm') && encodeVideoFrames.lastHw === 'no-preference' ? ' · GPU encoder (this browser has no software one at this size, so fine detail may be softer; try WebM or a smaller width)' : ''} · ${kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb.toFixed(0) + ' KB'} · made in ${((performance.now() - t0) / 1000).toFixed(1)} s`;
-    $('gifSave').textContent = f === 'png' ? 'Save .zip' : `Save ${f.toUpperCase()}`; $('gifSave').hidden = false; outSig = exportSig(); $('gifGo').textContent = 'Render';
+    $('gifSave').textContent = f === 'png' ? 'Save .zip' : `Save ${f.toUpperCase()}`; $('gifSave').hidden = false; outSig = exportSig(); $('gifGo').textContent = 'Render'; rendered = true;
   } catch (e) { if (e.cancelled) $('gifNote').textContent = 'Cancelled.'; else { console.error(e); $('gifNote').textContent = 'Export failed: ' + e.message; } }
-  endSpeechJob(); $('gifGo').textContent = 'Render'; $('gifGo').classList.add('primary');
+  endSpeechJob(); renderWatchEnd(rendered); $('gifGo').textContent = 'Render'; $('gifGo').classList.add('primary');
   $('gifGo').disabled = false; setTimeout(() => $('gifBar').hidden = true, 600);
 });
 $('gifSave').addEventListener('click', () => { checkStale(); if ($('gifSave').disabled) return; saveExport(); });
@@ -11025,6 +11999,7 @@ function replyCode(txt) {
 ta.addEventListener('paste', (e) => {
   markAiCode();   /* pasted code is what the AI (or wherever it came from) already has */
   let txt = (e.clipboardData || window.clipboardData).getData('text');
+  if (GearScript.isPatchText(txt)) { e.preventDefault(); openPatchPanel(txt, { source: 'paste' }); return; }   /* a patch is checked in its panel, not pasted as code */
   const rc = replyCode(txt);
   if (rc && rc.files) {
     e.preventDefault();
@@ -11348,7 +12323,7 @@ const TOUR = [
   { sel: '.stage', title: 'The live preview', text: 'Rebuilds every time the code changes. Click a part to jump to its code; <b>Free</b> lets you drag to look around.' },
   { sel: '.timeline', title: 'The timeline', text: 'Play, pause and scrub. The last button copies the <b>state</b> at this moment (where every part is), ready to paste into an AI chat when something moves wrongly.' },
   { sel: '#aiBtn', title: 'Prompt AI: the fastest way in', text: 'Describe what you want, copy the prompt, and paste it into any AI assistant. It teaches the assistant GearScript; paste its reply back into the editor.' },
-  { sel: '.problems', title: 'Problems', text: 'Every problem names its line and what to do. <b>Fix</b> (the spanner) handles slips and typos, and its menu has more ways to fix; <b>Copy as JSON</b> hands the rest to your AI assistant.' },
+  { sel: '.problems', title: 'Problems', text: 'Every problem names its line and what to do. <b>Fix</b> (the spanner) handles slips and typos, and its menu has more ways to fix; <b>Copy for AI</b> hands the rest to your AI assistant (its arrow picks what goes with it).' },
   { sel: '#exportBtn', title: 'Export', text: 'Save the animation as an MP4 or WebM video, a GIF, or a 3D player: one .html file anyone can open and orbit.' },
   { sel: '#helpBtn', title: 'Help is here', text: 'Come back here for the <b>interactive tour</b>, which walks you through building, fixing and exporting a crane, or for the language guide. Everything else explains itself when you point at it.' },
 ];
@@ -11427,7 +12402,7 @@ $('tourBtn').addEventListener('click', () => { closeMenus(); openWelcome(); });
 
 /* ---------------- interactive tour: build, fix and export a crane on a scratch project, with a simulated AI ----------------
    The visitor clicks the real buttons. The AI's replies are written in advance (CRANE_*): two mistakes, one that stops the
-   build (found with Copy as JSON) and one that builds but moves wrongly (found with the timeline and Copy state).
+   build (found with Copy for AI) and one that builds but moves wrongly (found with the timeline and Copy state).
    The visitor's project, undo history, settings and save target are kept aside and put back when the tour ends. */
 const STORY_REQUEST = 'A tower crane that swings round, runs its trolley out and lowers a crate to the ground';
 const CRANE_B1 = `@gearscript 1
@@ -11527,7 +12502,7 @@ const STORY_STEPS = [
     text: 'Normally you type your own idea here. For the tour it is a fixed example, because the simulated AI has only one answer. The prompt teaches any AI assistant the GearScript language, then adds your request.',
     act: 'Click <b>Copy prompt</b>.', alt: 'Copy it for me',
     enter(c) {
-      $('aiCode').checked = false; $('aiState').checked = false; $('aiProbs').checked = false;
+      aiMode = 'new'; updateAiLen();
       storyLockTask(true); c.type($('aiTask'), STORY_REQUEST, updateAiLen);
       const go = () => setTimeout(() => { $('aiSheet').hidden = true; c.done('Copied. The prompt is on your clipboard.'); }, 500);
       c.on($('aiCopy'), 'pointerdown', () => c.finishTyping()); c.on($('aiCopy'), 'keydown', () => c.finishTyping());
@@ -11553,11 +12528,11 @@ const STORY_STEPS = [
     enter(c) { c.on($('probList'), 'click', (e) => { if (e.target.closest('li')) setTimeout(() => c.done(), 80); }); },
     doAlt() { const li = $('probList').querySelector('li'); if (li) li.click(); } },
 
-  { ch: 1, sel: '#copyJson', allow: ['#copyJson'], title: 'Hand the problem to the AI',
-    text: '<b>Fix</b> repairs simple slips by itself, but this one needs a real change. Give the AI the exact problem list: its code, line and suggested fix.',
-    act: 'Click <b>Copy as JSON</b>.', alt: 'Copy it for me',
-    enter(c) { c.on($('copyJson'), 'click', () => c.done('Copied the problem list.')); },
-    doAlt() { $('copyJson').click(); } },
+  { ch: 1, sel: '#askBtn', allow: ['#askBtn'], title: 'Hand the problem to the AI',
+    text: '<b>Fix</b> repairs simple slips by itself, but this one needs a real change. Give the AI the exact problem list (its code, line and suggested fix) and ask for only the change.',
+    act: 'Click <b>Copy for AI</b>.', alt: 'Copy it for me',
+    enter(c) { c.on($('askBtn'), 'click', () => c.done('Copied the problem list.')); },
+    doAlt() { $('askBtn').click(); } },
   { ch: 1, chat: true, sim: true, title: 'The AI explains the fix',
     text: 'You would paste the list into your assistant. The simulated one has found the mistake and sent back the corrected line.',
     act: 'Click <b>Copy fix</b> in the chat.', alt: 'Copy it for me',
@@ -11588,7 +12563,7 @@ const STORY_STEPS = [
     },
     doAlt() { storyPause(7.2); this._c && this._c.done('7.2 s: the crate is half under the ground.'); } },
   { ch: 2, sel: '#copyState', allow: ['#copyState'], title: 'Copy what the preview shows',
-    text: 'An AI cannot see your screen. This button copies where every part is at this moment: positions, rotations and boxes.<div class="sc-tip">Tip: the <b>Prompt AI</b> dialog has two boxes that send your code and this state together, in one prompt.</div>',
+    text: 'An AI cannot see your screen. This button copies where every part is at this moment: positions, rotations and boxes.<div class="sc-tip">Tip: tick <b>State</b> in the <b>Copy for AI</b> menu, and the state goes with your code in one message.</div>',
     act: 'Click the <b>copy state</b> button.', alt: 'Copy it for me',
     enter(c) { c.on($('copyState'), 'click', () => c.done(`Copied the state at ${t.toFixed(2)} s.`)); },
     doAlt() { $('copyState').click(); } },
@@ -11610,7 +12585,7 @@ const STORY_STEPS = [
     enter(c) { storyPause(0); c.every(() => { if (playing && t >= LANDED_AT) { storyPause(); c.done('The crate lands on the ground.', 1400); } }); },
     doAlt() { if (!playing) $('play').click(); } },
   { ch: 2, sel: '.stage', place: 'left', title: 'That\'s the loop',
-    text: '<ol class="sc-loop"><li><b>Describe</b> it and copy the prompt.</li><li><b>Paste</b> the AI\'s code.</li><li><b>Fix</b>: Copy as JSON when it will not build, copy the state when it moves wrongly.</li></ol>Repeat until it looks right. One last thing: make a file.', next: 'Next' },
+    text: '<ol class="sc-loop"><li><b>Describe</b> it and copy the prompt.</li><li><b>Paste</b> the AI\'s code.</li><li><b>Fix</b>: Copy for AI when it will not build, copy the state when it moves wrongly.</li></ol>Repeat until it looks right. One last thing: make a file.', next: 'Next' },
 
   { ch: 3, sel: '#exportBtn', allow: ['#exportBtn'], title: 'Make a file',
     text: 'Export turns the animation into a file you can share or post.', act: 'Click <b>Export</b>.', alt: 'Open it for me',
@@ -11647,7 +12622,7 @@ function storyKeep() {
     files: { ...files }, filmText: film ? projText() : null, box, current, t, playing,
     name: projName, dirty: projDirty, example: $('example').value, id: projId, handle: fileHandle, handleFmt,
     S: JSON.parse(JSON.stringify(S)), hist: ta.keepHistory ? ta.keepHistory() : null,
-    aiTask: $('aiTask').value, aiCode: $('aiCode').checked, aiState: $('aiState').checked,
+    aiTask: $('aiTask').value, aiMode,
   };
 }
 /* the simulated AI has one answer, so the tour's request cannot be edited */
@@ -11660,7 +12635,7 @@ function storyPutBack(k) {
   film = null; filmCache.clear(); box = 0;
   if (k.filmText) setFilmText(k.filmText, k.box); else files = { ...k.files };
   projName = k.name; projDirty = k.dirty; $('example').value = k.example; projId = k.id; fileHandle = k.handle; handleFmt = k.handleFmt;
-  storyLockTask(false); $('aiTask').value = k.aiTask; $('aiCode').checked = k.aiCode; $('aiState').checked = k.aiState;
+  storyLockTask(false); $('aiTask').value = k.aiTask; aiMode = k.aiMode; renderAiOpts(); renderAskBtn();
   $('aiSheet').hidden = true; $('sheet').hidden = true;
   storyClearExport();
   if (ta.restoreHistory) ta.restoreHistory(k.hist);

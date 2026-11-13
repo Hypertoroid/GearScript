@@ -56,7 +56,8 @@ You drive only the crank. GearScript solves the closed loop at every frame, so t
 - **Words, charts and narration.** Text on parts or as parts (flat or solid 3D letters, in nine bundled video fonts that look the same in every export), `Plot` charts that draw themselves on, and `say:` lines spoken by the browser with captions burned into exports and saved as .srt or .vtt, and spoken into videos by a natural neural voice that runs in the browser (Kokoro for English, Piper for other languages). Audio files work as voice-overs and music.
 - **Any format.** `frame: reel;` (or youtube-short, tiktok, slides, 4k, a ratio or pixels) shows the exact picture with its safe area; `sky: dusk;` wraps the scene in a sky.
 - **Many outputs.** MP4, WebM, GIF, PNG frames (with transparency), a self-contained `.html` 3D player, and the project itself as one `.gscript` file or three files.
-- **Made for AI.** A short syntax prompt (and, on a server with an API key, Generate and Fix with AI in the studio), a JSON schema of the language (`gearscript schema`), `check --fix`, an MCP server for agents, a command-line checker, "copy the state at time t" to show an AI exactly what went wrong, and an evaluation set.
+- **Patches for small fixes.** An AI can reply with only the changes, named by chapter, part and property (`Coupler { length: 120mm => 125mm; }`). Apply patch checks each one against your code and shows the problems it fixes and brings, and how the motion changes, before anything is applied.
+- **Made for AI.** A short syntax prompt (and, on a server with an API key, Generate and Fix with AI in the studio), a JSON schema of the language (`gearscript schema`), `check --fix`, an MCP server for agents, `gearscript patch`, a command-line checker, "copy the state at time t" to show an AI exactly what went wrong, and an evaluation set.
 
 ## Quick start
 
@@ -70,6 +71,7 @@ node gearscript.js check   ../examples/linkage.gscript
 node gearscript.js sample  ../examples/linkage.gscript --at 0,1,2 --parts Rocker
 node gearscript.js render  ../examples/linkage.gscript -o linkage.mp4     # also .webm .gif .png frames.zip sound.wav
 node gearscript.js format  ../examples/linkage.gscript --write            # beautify: lay the code out like CSS
+node gearscript.js patch   ../examples/linkage.gscript fix.gpatch        # apply a patch (dry run; --write saves)
 node gearscript.js test                                              # every example still moves as saved
 node gearscript.js prompt  "a pendulum clock"                        # the AI syntax prompt
 node gearscript.js mcp                                               # an MCP server for AI agents

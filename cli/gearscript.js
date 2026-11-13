@@ -9,6 +9,7 @@
    gearscript eval    <tasks.json> <answers-folder> [--json]
    gearscript examples <folder>
    gearscript format  <project> [--write]
+   gearscript patch   <project> <patch-file|-> [--write | -o out.gscript] [--json] [--force]
    gearscript mcp     (a Model Context Protocol server on stdin/stdout)
 
    A project is a folder with .scene, .style and .motion files, a project.gscript.json file,
@@ -66,13 +67,13 @@ function fromSingle(text) {
 const plain = (p) => ({ scene: p.scene || '', style: p.style || '', motion: p.motion || '' });
 
 /* the base prompt the studio's AI prompt button copies, in the three-file or one-file reply format */
-function aiPrompt(single, chapters, task) {
+function aiPrompt(single, chapters, task, patch) {
   const html = fs.readFileSync(STUDIO, 'utf8');
   const get = (name) => { const m = html.match(new RegExp('const ' + name + ' = `([\\s\\S]*?)`;')); return m ? m[1].replace(/\\`/g, '`').replace(/\\\\/g, '\\') : ''; };
   /* as in the studio: narration and chapters only when the task asks for them (with no task words, both, as a full reference) */
   const rx = (name) => { const m = html.match(new RegExp(name + ' = (/.*?/i)')); try { return m ? new Function('return ' + m[1])() : null; } catch (e) { return null; } };
   const narr = !task || (rx('AI_NARR_RX') || /narrat/i).test(task), chap = chapters || !task || (rx('AI_CHAP_RX') || /chapter/i).test(task);
-  return [get('AI_PROMPT').trim(), narr ? get('AI_NARRATION').trim() : '', chap ? get('AI_CHAPTERS').trim() : '', get('AI_CHECK').trim(), get(chapters ? 'AI_FORMAT_FILM' : single ? 'AI_FORMAT_SINGLE' : 'AI_FORMAT_FILES')].filter(Boolean).join('\n\n');
+  return [get('AI_PROMPT').trim(), narr ? get('AI_NARRATION').trim() : '', chap ? get('AI_CHAPTERS').trim() : '', get('AI_CHECK').trim(), get(patch ? 'AI_FORMAT_PATCH' : chapters ? 'AI_FORMAT_FILM' : single ? 'AI_FORMAT_SINGLE' : 'AI_FORMAT_FILES')].filter(Boolean).join('\n\n');
 }
 
 /* ---------- schema: the language as data, for editors and AI tools ---------- */
@@ -178,6 +179,42 @@ function fixProject(p, guesses) {
   return { applied, changes, check: check(readProject(p)) };
 }
 function fmtDiag(d) { return `${d.severity === 'error' ? 'error' : 'warning'} ${d.code} ${d.file || ''}:${d.line}:${d.col}${d.chapter || d.section ? ' (' + [d.chapter, d.section].filter(Boolean).join(' › ') + ')' : ''}  ${d.message}${d.edit ? (d.edit.guess ? '  [--fix --suggestions]' : '  [--fix]') : ''}${d.fix ? '\n    fix: ' + d.fix : ''}`; }
+
+/* ---------- patch: small corrections addressed by name (see SPEC.md, Patches) ----------
+   The project as one text, the patch applied to it, and what changed: every operation's result, the problems the patch fixed and the
+   ones it brought (with the operation that brought each), and how the motion of each chapter it touched changed. */
+function projectText(p) {
+  const where = sourcePaths(p);
+  if (where && where.project) return { text: fs.readFileSync(where.project, 'utf8'), where };
+  const pr = readProject(p); return { text: pr.film ? pr.text : core().joinProject(plain(pr)), where };
+}
+function runPatch(text, patchText, opts = {}) {
+  const M = core(), parsed = M.parsePatch(patchText);
+  const res = M.applyPatch(text, parsed, { force: opts.force ? new Set(parsed.ops.map(o => o.i)) : undefined });
+  const cache = new Map(), before = M.checkText(text, { cache, overlapMs: 2000 }), after = res.changed ? M.checkText(res.text, { cache, overlapMs: 2000 }) : before;
+  const rep = M.patchReport(before, after, res);
+  return { res, rep, after, json: {
+    ok: !res.conflicts && !res.issues.length && after.ok, changed: res.changed, title: res.title || undefined,
+    operations: res.ops.map(o => ({ status: o.status, change: o.label, message: o.message || undefined, done: o.changes.length ? o.changes : undefined, lines: o.lines.length ? o.lines : undefined, now: o.now })),
+    unreadable: res.issues.length ? res.issues : undefined,
+    fixed: rep.fixed.map(d => ({ code: d.code, chapter: d.chapter, section: d.section, message: d.message })),
+    new: rep.fresh.map(d => ({ severity: d.severity, code: d.code, chapter: d.chapter, section: d.section, line: d.line, message: d.message, fix: d.fix, from: d.byOp == null ? undefined : res.ops[d.byOp].label })),
+    motion: rep.motion.filter(m => m.status !== 'same'),
+    problems: after.diagnostics.length } };
+}
+function fmtPatch(r) {
+  const out = [], sym = { ok: '✓', same: '=', conflict: '✗', error: '✗', skipped: '·' };
+  if (r.res.title) out.push(r.res.title);
+  for (const o of r.res.ops) out.push(`${sym[o.status] || '?'} ${o.status.padEnd(8)} ${o.label}${o.changes.length ? '\n             ' + o.changes.join('; ') : ''}${o.message ? '\n             ' + o.message : ''}${o.now ? '\n             now: ' + o.now.split('\n')[0] : ''}`);
+  for (const x of r.res.issues) out.push(`✗ unreadable line ${x.line}: ${x.message}`);
+  for (const d of r.rep.fixed) out.push(`fixed  ${d.code}${d.chapter ? ' (' + d.chapter + ')' : ''} ${d.message}`);
+  for (const d of r.rep.fresh) out.push(`new    ${fmtDiag(d)}${d.byOp != null ? `\n    from: ${r.res.ops[d.byOp].label}${d.likely ? ' (likely)' : ''}` : ''}`);
+  for (const m of r.rep.motion) if (m.status === 'changed') out.push(`motion ${m.name || 'the animation'}: up to ${m.move}mm and ${m.turn}° different${m.part ? ' (most: ' + m.part + ')' : ''}${m.added.length ? ', new parts ' + m.added.join(', ') : ''}${m.removed.length ? ', removed ' + m.removed.join(', ') : ''}`);
+    else if (m.status === 'looks') out.push(`motion ${m.name || 'the animation'}: moves as before (looks or words changed)`);
+    else if (m.status !== 'same') out.push(`motion ${m.name || 'the animation'}: ${({ broken: 'does not build after the patch', built: 'builds now (it did not before)', added: 'a new chapter', removed: 'chapter removed' })[m.status] || m.status}`);
+  out.push(`${r.res.applied} applied, ${r.res.conflicts} not applied; ${r.rep.fixed.length} problem${r.rep.fixed.length === 1 ? '' : 's'} fixed, ${r.rep.fresh.length} new`);
+  return out.join('\n');
+}
 
 /* ---------- sample: numbers an agent can assert on ---------- */
 const r3 = v => v.map(x => Math.round(x * 1000) / 1000);
@@ -401,7 +438,8 @@ function mcp() {
     { name: 'gearscript_check', description: 'Compile a GearScript project and return its diagnostics (errors with line, column and a suggested fix). Call this after every edit.', inputSchema: projSchema() },
     { name: 'gearscript_sample', description: 'Solve the animation at given times and return part positions, rotations and the world position of named anchors such as Crank.end.b. Use it to verify motion numerically.', inputSchema: projSchema({ at: { type: 'array', items: { type: 'number' }, description: 'Times in seconds.' }, points: { type: 'array', items: { type: 'string' }, description: 'Anchors to report, such as Coupler.tip.' }, parts: { type: 'array', items: { type: 'string' } }, chapter: { type: 'string', description: 'With chapters: which chapter to sample (its name); the first by default.' } }) },
     { name: 'gearscript_render', description: 'Render the project to an animated GIF and return it as an image. Needs a headless browser on this machine.', inputSchema: projSchema({ width: { type: 'number' }, fps: { type: 'number' }, out: { type: 'string', description: 'Optional file path to save the GIF.' } }) },
-    { name: 'gearscript_prompt', description: 'Return the short GearScript syntax prompt (the same one the studio copies). Set single to get the one-file reply format, or chapters for a project with chapters.', inputSchema: { type: 'object', properties: { single: { type: 'boolean' }, chapters: { type: 'boolean' } } } },
+    { name: 'gearscript_prompt', description: 'Return the short GearScript syntax prompt (the same one the studio copies). Set single to get the one-file reply format, chapters for a project with chapters, or patch for a reply that holds only the changes (a patch).', inputSchema: { type: 'object', properties: { single: { type: 'boolean' }, chapters: { type: 'boolean' }, patch: { type: 'boolean' } } } },
+    { name: 'gearscript_patch', description: 'Apply a GearScript patch (small changes addressed by chapter, section and part, starting with @patch 1) to a project, and return the patched project, the result of every change (applied, already so, or a conflict with the code as it is now), the problems it fixed, the new ones with the change that brought each, and how the motion changed. Prefer patches to rewriting a large project.', inputSchema: projSchema({ patch: { type: 'string', description: 'The patch text: @patch 1, then @common or @chapter Name lines, @scene/@style/@motion lines and the changes.' }, force: { type: 'boolean', description: 'Apply changes even when an old => new value does not match.' } }) },
     { name: 'gearscript_spec', description: 'Return the GearScript language reference written for AI agents.', inputSchema: { type: 'object', properties: {} } },
     { name: 'gearscript_schema', description: 'Return the language as JSON: every shape with its properties, required properties and anchors; style, motion and Scene properties with examples; units, easings, sound kinds, sky and frame presets. Use it to write valid code without guessing names.', inputSchema: { type: 'object', properties: {} } },
   ];
@@ -430,7 +468,12 @@ function mcp() {
     const text = (o) => ({ content: [{ type: 'text', text: typeof o === 'string' ? o : pretty(o) }] });
     if (name === 'gearscript_check') { const c = check(project); return text({ ok: c.ok, duration: c.duration, parts: c.parts, diagnostics: c.diagnostics }); }
     if (name === 'gearscript_sample') return text(sample(project, { at: a.at, points: a.points, parts: a.parts, chapter: a.chapter }));
-    if (name === 'gearscript_prompt') return text(aiPrompt(!!a.single, !!a.chapters, a.task || ''));
+    if (name === 'gearscript_patch') {
+      const txt = typeof a.project === 'string' && a.project.trim() ? a.project : core().joinProject({ scene: a.scene || '', style: a.style || '', motion: a.motion || '' });
+      const r = runPatch(txt, String(a.patch || ''), { force: !!a.force });
+      return text({ ...r.json, project: r.res.text });
+    }
+    if (name === 'gearscript_prompt') return text(aiPrompt(!!a.single, !!a.chapters, a.task || '', !!a.patch));
     if (name === 'gearscript_spec') return text(fs.readFileSync(path.join(__dirname, '..', 'SPEC.md'), 'utf8'));
     if (name === 'gearscript_schema') return text(schema());
     if (name === 'gearscript_render') {
@@ -452,7 +495,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '-o' || a === '--out') o.out = argv[++i];
-    else if (a.startsWith('--')) { const k = a.slice(2); const v = !['single', 'json', 'write', 'update', 'fix', 'suggestions', 'speak', 'chapters'].includes(k) && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true; o[k] = v; }
+    else if (a.startsWith('--')) { const k = a.slice(2); const v = !['single', 'json', 'write', 'update', 'fix', 'suggestions', 'speak', 'chapters', 'force', 'patch'].includes(k) && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[++i] : true; o[k] = v; }
     else pos.push(a);
   }
   return { pos, o };
@@ -520,12 +563,27 @@ async function main() {
       else { const k = (pos[0].match(/\.(scene|style|motion)$/) || [])[1]; fmtFile(pos[0], k || 'project'); }
       break;
     }
+    case 'patch': {   /* apply a patch: a dry run by default, --write saves it, -o writes the patched project elsewhere */
+      if (!pos[0] || !pos[1]) throw usage('patch needs a project and a patch file: gearscript patch project.gscript fix.gpatch [--write]  (use - to read the patch from stdin)');
+      const { text: src, where } = projectText(pos[0]);
+      const patchText = pos[1] === '-' ? fs.readFileSync(0, 'utf8') : fs.readFileSync(pos[1], 'utf8');
+      const r = runPatch(src, patchText, { force: !!o.force });
+      if (o.json) console.log(pretty(r.json)); else console.log(fmtPatch(r));
+      if (o.out) { fs.writeFileSync(o.out, r.res.text); if (!o.json) console.log('wrote ' + o.out); }
+      else if (o.write && r.res.changed) {
+        if (where && where.project) fs.writeFileSync(where.project, r.res.text);
+        else if (where && where.scene) { const sp = core().splitProject(r.res.text); for (const k of ['scene', 'style', 'motion']) if (where[k]) fs.writeFileSync(where[k], sp.files[k]); else if (sp.files[k].trim()) fs.writeFileSync(where.scene.replace(/\.scene$/, '.' + k), sp.files[k]); }
+        else throw usage('--write works on .gscript files and .scene/.style/.motion files; use -o out.gscript.');
+        if (!o.json) console.log('saved');
+      } else if (!o.json && r.res.changed && !o.write) console.log('(a dry run: add --write to save it, or -o out.gscript)');
+      process.exitCode = r.json.ok ? 0 : 1; break;
+    }
     case 'test': {   /* motion snapshots of every example */
       motionTest(pos[0] || path.join(__dirname, '..', 'examples'), pos[1] || path.join(__dirname, '..', 'tests', 'motion'), !!o.update); break;
     }
     case 'prompt': {
       const task = pos.join(' ').trim();
-      console.log(aiPrompt(!!o.single, !!o.chapters, task) + (task ? '\n\nTASK\n' + task : '')); break;
+      console.log(aiPrompt(!!o.single, !!o.chapters, task, !!o.patch) + (task ? '\n\nTASK\n' + task : '')); break;
     }
     case 'mcp': mcp(); break;
     case 'schema': console.log(JSON.stringify(schema(), null, 1)); break;
@@ -546,12 +604,15 @@ async function main() {
   gearscript test     [examples] [snapshots] [--update]
                                             check that every example still moves as saved
   gearscript format   <project> [--write]       beautify: lay the code out like CSS
+  gearscript patch    <project> <patch|-> [--write | -o out.gscript] [--json] [--force]
+                                            apply a patch (small changes by name, @patch 1) and report
+                                            what applied, the problems fixed and new, and the motion change
   gearscript eval     <tasks.json> <answers-folder> [--json]
                                             score AI answers against the task set
   gearscript examples <folder> [--single]       write the studio's examples as projects
   gearscript join     <project> [-o out.gscript]     combine three files into one
   gearscript split    <project.gscript> <folder>     split a single file into three
-  gearscript prompt   [task words] [--single | --chapters]   print the AI prompt
+  gearscript prompt   [task words] [--single | --chapters] [--patch]   print the AI prompt (--patch: reply with a patch)
   gearscript mcp                                run as an MCP server for AI agents
 
 A project is a folder with .scene, .style and .motion files, a single .gscript file (sections start with

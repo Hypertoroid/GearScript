@@ -16,6 +16,7 @@ A project has three files:
 2. Run `gearscript check <project> --json`, or call the MCP tool `gearscript_check`, and fix every error. Each diagnostic has a `code`, a `line`, a `message` and a `fix`.
 3. Verify the motion with numbers: `gearscript sample <project> --at 0,1 --points Crank.end.b`, or the MCP tool `gearscript_sample`.
 4. Render with `gearscript render <project> -o out.gif`, or the MCP tool `gearscript_render`.
+5. To fix or change a large project later, write a patch (below) rather than the whole project, and apply it with `gearscript patch` or the MCP tool `gearscript_patch`.
 
 ## Versions and stability
 
@@ -343,10 +344,41 @@ Scene { 0s..1s: sound: VoiceOver; }
 
 **Timing lines:** a voice speaks about 2.6 words a second at `rate: 100%`. Leave that long before the next line of the same voice (a new line ends the caption), make the block or `Scene { duration }` long enough for the last line, and keep each line to one idea of 4 to 14 words. W0519 warns when a line takes longer to say than the motion lasts (everything has stopped and no `forever` rule runs), or when it runs past the end of the animation: stretch the motion over the words, rather than a quick move followed by a still picture.
 
+## Patches
+
+A patch is a small correction that names what it changes: a chapter, a section, a part, a property. For a fix or a small edit to a large project, reply with a patch instead of the whole project: the rest of the project cannot drift, and every change is checked against the code before it applies. Put it in a fenced block labelled `gearpatch` (or send the text alone, starting with `@patch 1`).
+
+```gearpatch
+@patch 1 "Close the loop and slow the crank"
+@chapter Ratio
+@scene
+Coupler { length: 120mm => 125mm; }        // change: the old value as it is now, =>, the new value
+Coupler { overlap: allow; }                // add a property that is not there yet
+unset Rocker { pin; }                      // remove properties
+add Spring::Spring { … } after Rocker      // a new part or rule; before Name, after Name, or at the end of the section
+remove Bracket                             // a part, with its rules in the same chapter's style and motion; or a rule
+@motion
+replace Crank { forever: rotate: 180deg/s; } with { forever: rotate: 90deg/s; }
+rename Crank to Driver                     // every reference, wherever the name is visible
+```
+
+- `@patch 1 "summary"` starts the patch. `@chapter Name` or `@common` says which chapter the changes below it are in (only in a project with chapters; a chapter line in a patch only points, it does not change the chapter). `@scene`, `@style` or `@motion` says which section. These lines carry over until the next one.
+- **Set** (`Part { property: value; }`) changes or adds properties in a part (scene) or a rule (style). A style rule is named by its whole selector (`Base, .post { … }`); when no rule has that selector, a new rule is added. When the same property appears in several rules with one selector, the last one is changed, as that is the one that counts.
+- **`old => new`** checks the code first: when the property is not `old` now (spaces and the case of colours do not matter), the change is a **conflict** and is not applied. Write it for every value that is already in the code. Without it the value is set whatever it was.
+- **`unset Part { a; b; }`** removes properties (`unset Part { a: old; }` checks the value first).
+- **`add`** writes a new part or rule as given. In the scene, a part whose name is already there is a conflict.
+- **`remove Name`** removes the part (and, in the scene, the style and motion rules with exactly that name in the same chapter), or every rule with that selector.
+- **`replace Name { text } with { text }`** finds the text inside the named part's rules (or the whole section, when the name is left out), ignoring spaces, and replaces it. It must be found exactly once, or the change is a conflict. An empty `with { }` deletes the text. In `@motion`, rules for one part add up, so a property has no single place: change motion with `replace`, `add` and `remove`, never with set.
+- **`rename Old to New`** renames every use of a name outside comments and strings, where it is visible: a name declared in `@common` everywhere, a name declared in a chapter in that chapter and the chapters that extend it. A new name that is already used is a conflict.
+- A patch cannot add or remove chapters; send the chapter whole for that (it is merged by name).
+- Each change is all or nothing, and one that cannot apply does not stop the others. A change reports **applied**, **already so** (nothing to do), **conflict** (with the code as it is now, so a new patch can be written) or **cannot apply** (the patch is wrong, such as set in `@motion`). Text, comments and layout outside the changed places stay exactly as they were.
+- `gearscript patch <project> <patch> [--write | -o out.gscript] [--json] [--force]` (and the MCP tool `gearscript_patch`) applies a patch and reports every change, the problems it fixed, the new ones with the change that brought each, and how the motion of each chapter changed (how far parts move from where they were). Without `--write` it is a dry run. `--force` applies changes whose `old` value does not match. In the studio, a pasted patch opens **Apply patch**, which shows the same report before anything changes. `gearscript prompt --patch` gives the reply format.
+
 ## Tools for AI agents
 
 - `gearscript schema` (and the MCP tool `gearscript_schema`) prints the language as JSON: every shape with its properties, required properties and anchors, the style, motion and block properties with examples, units, easings, sound kinds, sky and frame presets. `docs/gearscript-schema.json` is the same file.
 - `gearscript check --json` lists every problem with a fix in words, and an `edit` for those that can be applied by machine; `gearscript check --fix` applies the sure ones, and `--fix --suggestions` the guesses too.
+- `gearscript patch <project> <patch>` (and the MCP tool `gearscript_patch`) applies a patch and reports what applied, the problems fixed and new, and how the motion changed. `gearscript prompt --patch` (MCP: `gearscript_prompt` with `patch`) gives the patch reply format.
 - `gearscript eval evals/tasks.json <answers>` scores a folder of AI answers against the task set.
 
 ## Common mistakes

@@ -2248,6 +2248,9 @@ function compile(files, opts) {
     for (const p of decl.props) if (!def.props.includes(p.name) && !COMMON_PROPS.includes(p.name) && !(p.name === 'margin' && P.fixed)) nearFix(warn(p, 'W0202', `${decl.type} does not use "${p.name}".`, `${decl.type} properties: ${[...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')).join(', ')}.`), p.name, [...def.props, ...COMMON_PROPS].filter(k => !k.startsWith('__')));
     const g = (k, d) => P[k] ? P[k].items[0] : null;
     const need = (k) => { if (!P[k]) throw new Diag(decl, 'E0203', `${decl.type} "${path}" needs "${k}".`, `Add ${k}: ...; to its block.`); return P[k].items[0]; };
+    /* Line and Arrow ends: on a part of its own, anchors of parts placed above it work, as in at:; inside a group they stay coordinates */
+    const endEnv = () => top ? { ...env, ref: (parts) => { throw new Diag(decl, 'E0305', `Inside a group, ${decl.type} ends are coordinates in the group (${parts.join('.')} is an anchor).`, `Move ${path} out of the group to use anchors, or write the end as (x, y, z).`); } }
+      : { ...env, ref: (parts, at) => { leaf.endsUseAnchors = true; return worldAnchor(parts, at).p.toArray(); } };
     const leaf = { name: path, type: decl.type, decl, top, path, spec: {}, classes: decl.classes || [] };
     let geom;
     switch (decl.type) {
@@ -2264,8 +2267,8 @@ function compile(files, opts) {
         const m = g('module') ? num(g('module'), env) : 2; const w = g('width') ? num(g('width'), env) : m * 5;
         leaf.spec = { teeth: z, module: m, width: w }; geom = gearGeometry(z, m, w); break;
       }
-      case 'Line': {
-        leaf.spec.from = vec3(need('from'), env); leaf.spec.to = vec3(need('to'), env); leaf.spec.stroke = g('stroke') ? num(g('stroke'), env) : 2;
+      case 'Line': {   /* from and to are points: coordinates, or anchors of parts placed above it (Third.center + (0, 22mm, 0)) */
+        leaf.spec.from = vec3(need('from'), endEnv(), 'from'); leaf.spec.to = vec3(need('to'), endEnv(), 'to'); leaf.spec.stroke = g('stroke') ? num(g('stroke'), env) : 2;
         const a = new THREE.Vector3(...leaf.spec.from), b = new THREE.Vector3(...leaf.spec.to); const L = a.distanceTo(b) || 1;
         geom = new THREE.CylinderGeometry(leaf.spec.stroke / 2, leaf.spec.stroke / 2, L, 12);
         const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
@@ -2294,7 +2297,7 @@ function compile(files, opts) {
         geom = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), N, wire / 2, 8, false); break;
       }
       case 'Arrow': {
-        leaf.spec.from = vec3(need('from'), env); leaf.spec.to = vec3(need('to'), env); const st = g('stroke') ? num(g('stroke'), env) : 3; leaf.spec.stroke = st;
+        leaf.spec.from = vec3(need('from'), endEnv(), 'from'); leaf.spec.to = vec3(need('to'), endEnv(), 'to'); const st = g('stroke') ? num(g('stroke'), env) : 3; leaf.spec.stroke = st;
         const a = new THREE.Vector3(...leaf.spec.from), b = new THREE.Vector3(...leaf.spec.to); const L = a.distanceTo(b) || 1; const hd = Math.min(L * 0.5, g('head') ? num(g('head'), env) : st * 4);
         const shaft = new THREE.CylinderGeometry(st / 2, st / 2, L - hd, 12); shaft.translate(0, (L - hd) / 2, 0);
         const head = new THREE.ConeGeometry(st * 1.6, hd, 16); head.translate(0, L - hd / 2, 0);
@@ -2937,6 +2940,16 @@ function compile(files, opts) {
       }
     });
   }
+
+  /* Line and Arrow ends that name anchors are read again here, once every connection is in place
+     (a part placed by mesh:, attach: or hinge: only reaches its place in the passes above) */
+  for (const e of model.order) if (e.kind === 'leaf' && e.leaf.endsUseAnchors) tryDo(() => {
+    const n0 = diags.length, l0 = model.leaves.length, l = e.leaf;
+    const fresh = makeLeaf(e.decl, null, e.name);
+    model.leaves.length = l0; diags.length = n0;   /* only the geometry is wanted; its warnings were given the first time */
+    l.spec = fresh.spec; l.geom.dispose(); l.geom = fresh.geom; l.mesh.geometry = fresh.geom;
+  });
+  root.updateMatrixWorld(true);
 
   /* base matrices + clusters */
   model.find = find;

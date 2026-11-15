@@ -1,0 +1,31 @@
+@gearscript 1
+
+@scene
+// Pictures on cards. Add your own with Insert › 3D models, images and audio,
+// or write src: \select; and the studio asks you to pick the file.
+Ground::Box { size: (900mm, 6mm, 640mm); at: (0, -3mm, 0); }
+
+// Cut-outs stand on the ground and turn to the camera about the vertical only.
+Tree::Image.cutout { src: "tree.svg"; size: (auto, 240mm); facing: upright; align: face.bottom; at: (-300mm, 0, -120mm); repeat: 3 step (200mm, 0, 90mm); }
+
+// A sign: the picture is fixed in the scene, facing the front, and cropped a little.
+Post::Rod { length: 200mm; radius: 4mm; align: end.a; at: (260mm, 0, 60mm); }
+Sign::Image { src: "sun.svg"; size: (140mm, auto); crop: (4%, 4%, 4%, 4%); attach: face.bottom to Post.end.b; }
+
+// A badge that always faces the viewer, whatever the camera does.
+Badge::Image { src: "sun.svg"; size: (70mm, auto); facing: camera; at: (0, 300mm, -240mm); }
+
+Observer { position: (0, 320mm, 1050mm); look-at: (0, 140mm, 0); }
+Light { kind: directional; direction: (-0.6, -1, -0.5); power: 0.8; }
+Scene { duration: 6s; sky: day; }
+
+@style
+Ground  { color: #9fb57a; material: matte; }
+Post    { color: graphite; material: metal; }
+Tree2   { filter: hue-rotate(-30deg) saturate(120%); }   // one tree in autumn colours
+Badge   { shadow: none; }
+// Sign { material: matte; }   would make the sign take the light, like a printed board
+
+@motion
+Observer { forever: orbit: Ground 30deg/s; }
+Badge    { 0s..1s: opacity: 0 -> 1 ease-out; forever: y: 300mm + 20mm * sin(t * 2); }   // it bobs, and still faces the camera

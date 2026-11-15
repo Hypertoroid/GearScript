@@ -37,6 +37,31 @@ function core() {
 
 /* ---------- projects ---------- */
 function readProject(p) {
+  const out = readProjectText(p);
+  try { Object.defineProperty(out, 'dir', { value: fs.statSync(p).isDirectory() ? p : path.dirname(p), enumerable: false }); } catch (e) {}
+  return out;
+}
+/* the files a project names in src: "..." (pictures, models, audio), found next to it or in its images/, models/ or assets/ folder.
+   Pictures are registered by size, so Image parts get their true shape in check and sample; render sends every file to the studio */
+const IMAGE_RX = /\.(png|jpe?g|gif|webp|svg)$/i;
+function projectFiles(project) {
+  const M = core(); for (const k of Object.keys(M.images)) delete M.images[k];
+  const dir = project && project.dir, files = {}; if (!dir) return files;
+  const text = project.film ? project.text : [project.scene, project.style, project.motion].join('\n');
+  const root = path.resolve(dir);
+  for (const m of String(text).matchAll(/\bsrc\s*:\s*"([^"\n]+)"/g)) {
+    const name = m[1]; if (files[name]) continue;
+    for (const d of ['', 'images', 'models', 'assets']) {
+      const f = path.resolve(root, d, name); if (!f.startsWith(root + path.sep)) continue;
+      if (!fs.existsSync(f) || !fs.statSync(f).isFile()) continue;
+      const b = fs.readFileSync(f); files[name] = b;
+      if (IMAGE_RX.test(name)) { const info = M.imageInfo(new Uint8Array(b)); if (info) M.images[name] = { w: info.w, h: info.h }; }
+      break;
+    }
+  }
+  return files;
+}
+function readProjectText(p) {
   if (!p) throw usage('Name a project: a folder, a .json project file, or a .scene file.');
   const st = fs.statSync(p);
   const out = { scene: '', style: '', motion: '' };
@@ -46,9 +71,9 @@ function readProject(p) {
       if (f) out[k] = fs.readFileSync(path.join(p, f), 'utf8');
     }
     const j = fs.readdirSync(p).find(n => n.endsWith('.gscript.json'));
-    if (!out.scene && j) return readProject(path.join(p, j));
+    if (!out.scene && j) return readProjectText(path.join(p, j));
     const single = fs.readdirSync(p).find(n => /\.gscript$/.test(n));
-    if (!out.scene && single) return readProject(path.join(p, single));
+    if (!out.scene && single) return readProjectText(path.join(p, single));
     return out;
   }
   if (/\.gscript(\.txt)?$/.test(p) || (p.endsWith('.txt') && /^[ \t]*@(scene|chapter|common)\b/m.test(fs.readFileSync(p, 'utf8')))) return fromSingle(fs.readFileSync(p, 'utf8'));
@@ -124,6 +149,7 @@ function checkFilm(project) {
   return { ok: !diagnostics.some(d => d.severity === 'error'), duration: Math.round(times.total * 1000) / 1000, chapters, parts: [...new Set(models.flatMap(m => m.order.map(e => e.name)))], sounds, diagnostics, model: models[0], models, film: f };
 }
 function check(project) {
+  projectFiles(project);
   if (project.film) return checkFilm(project);
   const m = core().compile(plain(project));
   if (!m.diags.some(d => d.sev === 'error')) try { m.diags.push(...core().overlapCheck(m, { budgetMs: 4000 })); } catch (e) {}
@@ -354,6 +380,8 @@ async function render(project, opts = {}) {
     });
     await page.goto('file://' + path.resolve(STUDIO));
     await page.waitForFunction(() => window.GearScriptStudio, null, { timeout: 20000 });
+    const named = projectFiles(project), b64 = Object.fromEntries(Object.entries(named).map(([k, v]) => [k, v.toString('base64')]));
+    if (Object.keys(b64).length) { const bad = await page.evaluate((f) => window.GearScriptStudio.useFiles(f), b64); if (bad && bad.length) process.stderr.write(bad.join('\n') + '\n'); }
     const fmt = /\.mp4$/i.test(opts.out || '') ? 'mp4' : /\.webm$/i.test(opts.out || '') ? 'webm' : /\.png$/i.test(opts.out || '') ? 'png' : /\.zip$/i.test(opts.out || '') ? 'zip' : 'gif';
     if (fmt === 'png' || fmt === 'zip') {
       const r = await page.evaluate(([p, o]) => window.GearScriptStudio.renderPng(p, o), [apiProject(project), { format: fmt, width: opts.width, height: opts.height, fps: opts.fps, time: opts.time }]);

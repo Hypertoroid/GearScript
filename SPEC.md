@@ -188,10 +188,35 @@ Every shape also has the anchors `center` and `com`, its true centre of mass for
 | Sector | radius, angle (90deg), start, inner, thickness: a pie slice or ring segment | axis, normal, tip, mid, edge.start, edge.end |
 | Arc | radius, angle (180deg), start, stroke: a curved line | start, mid, end, axis |
 | Path | points: (x, y) (x, y) …; thickness | axis, normal, start, end |
-| Text | text: "Two lines\nof text"; size (letter height, 20mm); facing: camera (default) \| front | like Box, plus normal |
+| Text | text: "Two lines\nof text"; size (letter height, 20mm); facing: camera (default) \| front \| upright | like Box, plus normal |
+| Image | src "cat.png" or `\select`; size (w, h), (w, auto) or (auto, h); fit: contain \| cover \| stretch; crop (left, top, right, bottom); facing: front (default) \| camera \| upright | like Box, plus normal |
 | Plot | size (w, h); function of x (and t) or data: (x, y) …; kind: line \| bars \| points \| area; x-axis / y-axis: 0..10 step 2 "label"; x-label, y-label; stroke; reveal (0 to 1, may use t); axes: none; grid: none | like Box, plus normal, origin (the point (0, 0) of the chart), end |
 
 For a head-on 2D view use `Observer { projection: orthographic; position: (0, 0, 1000mm); look-at: (0, 0, 0); }`.
+
+### Images
+
+An Image shows a picture the user added to the project (PNG, JPG, WebP, GIF or SVG; a GIF shows its first frame) on a flat card, 1mm thick, printed on both sides (the back reads the right way round). It is unlit: it keeps the picture's own colours whatever the lights, unless its style asks for a material that takes light (`matte`, `plastic`, `metal` …; `flat`, `glow` and `ghost` stay unlit). Transparent parts of the picture stay transparent, in its shadow too. A style `color` tints it.
+
+```
+Cat::Image  { src: "cat.png"; size: (200mm, auto); align: face.bottom; at: Table.face.top; }
+Logo::Image { src: "logo.svg"; size: (60mm, auto); fixed: top-right; }
+Tree::Image { src: "tree.png"; size: (auto, 300mm); facing: upright; crop: (0, 0, 0, 8%); }
+```
+```
+Cat { filter: brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg); }
+```
+
+- `size: (w, auto)` or `(auto, h)` keeps the picture's shape (after the crop). With both sides, `fit` decides: `contain` (the default) shrinks the card to the picture's shape inside them, `cover` keeps the size and trims the picture evenly, `stretch` keeps the size and changes the picture's shape. Without `size`, the long side is 200mm.
+- `crop: (left, top, right, bottom)` trims each side by a share of the picture (E0315 when it is not four shares under 100% or trims everything away; E0316 for a bad `size`).
+- `facing: front` (the default) keeps the card fixed in the scene, facing +z. `facing: camera` (also written `observer`) turns it to the viewer every frame; `facing: upright` turns it about the vertical only, like a cut-out standing on the floor. Text takes the same values.
+- `filter` (style) adjusts the picture as CSS filters do, always in this order: `brightness()`, `contrast()`, `saturate()` (each 0 to 400%, 100% leaves it as it is) and `hue-rotate()` (an angle). `filter: none;` clears it. On a part that is not an Image it is ignored (W0631); an unknown filter or a value out of range is E0632.
+- Images are left out of the overlap check and exploded views, like Text.
+- A file that is not in the project shows a grey card (W0629). The command line finds files next to the project or in its `images/`, `models/` or `assets/` folder: `check` and `sample` read each picture's size from the file, and `render` uses the files themselves.
+
+### Files still to pick: `src: \select;`
+
+`src: \select;` on an Image, Mesh or Sound means the file is not chosen yet: the project compiles with a stand-in (a grey card, a box, or silence) and warning W0630. Write it when a picture, model or audio file is needed but the user has not added it; do not invent file names. In the studio, the Select panel opens by itself when the code gains a `\select`: it names each part, picks its file, previews it, crops an Image and adjusts its light, then writes `src`, `crop` (scene) and `filter` (style) into the code as one change. Typing `src:` offers **Pick an image…** (or a 3D model, or an audio file), which opens the file chooser and writes the name in.
 
 A Mesh uses a 3D model the user added to the project (STL, GLB or glTF), fitted inside its size box, so its anchors work like a Box. Without the file, a box stands in and you get warning W0611.
 
@@ -244,6 +269,7 @@ Selectors work like CSS: `Gear` (a type or a define), `Door` (a part, including 
 | `label-color`, `label-size` | the label's text colour, and its size (`140%`) |
 | `label-background` | a panel behind the label, such as `#10203080`; left out, there is none; `none` removes one |
 | `cut` | a section plane in scene coordinates: a direction (`x`, `-x`, `y`, `-y`, `z`, `-z` or a vector) and an offset. The side the direction points to is cut away: `cut: z 0mm;` opens the half towards the viewer. Animatable in motion: `cut: 90mm -> 0mm;` slides the plane (the direction comes from the style) |
+| `filter` | an Image's picture: `brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg)`, in that order; `none` clears it (see Images) |
 | `cut-color` | the colour of the cut faces (a darker shade of the part by default) |
 | `explode` | on a part: its weight in an exploded view, `0` (stays put) to `10`; see `Scene { explode }` |
 | `trail` | `[anchor] [time] [colour]`, for example `trail: tip 1.5s #c2410c;` draws the path the anchor follows (no time means the whole run) |
@@ -339,7 +365,7 @@ Crank { 0s..3s: rotate: 0deg -> 180deg; say: Narrator "The crank turns half a re
 Scene { 0s..1s: sound: VoiceOver; }
 ```
 
-`neural: bf_emma;` on a Voice picks the voice for exports (below). `say: Voice "words" [at end | at 1.5s];` speaks a line (the voice can be left out when there is only one) and shows it as a caption until the words are likely spoken or the voice's next line starts; `captions: off;` speaks without them. Lines are spoken with the browser's own voices in the preview and in the 3D player. A video file cannot record those voices, so captions are drawn into MP4, WebM, GIF and PNG exports and the export panel saves them as `.srt` or `.vtt`. For speech in MP4 and WebM, keep **Speak them into the video** ticked, as it is by default (or `gearscript render --speak`, which stays opt-in): each line is generated by a neural voice running in the browser, and the voice downloads from huggingface.co the first time and is kept for offline use. English lines use Kokoro, a natural-sounding voice (about 90 MB): American voices `af_heart`, `af_bella`, `af_nicole`, `af_sarah`, `am_michael`, `am_fenrir`, `am_puck` and British voices `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable`. Other languages use Piper (20 to 70 MB, for example `de_DE-thorsten-medium`), which also takes over if Kokoro cannot load. `neural:` on a Voice picks one; without it, the export panel's **Voice** choice is used, and **Automatic** gives `af_heart` for `en-US` and `bf_emma` for other English. `rate:` sets how fast Kokoro speaks; Piper voices speak at their own pace. The panel's **Sample** button plays a sentence in the chosen voice, and **Listen** plays the first seconds of the video's sound, speaking only the lines in them. Or add a voice-over recorded or made with any text-to-speech tool as an audio file. Audio files (MP3, WAV, OGG, M4A, up to 25 MB) are added with Insert › 3D models and audio, play with `sound:` like any Sound, are mixed into video exports and saved in the project `.zip`.
+`neural: bf_emma;` on a Voice picks the voice for exports (below). `say: Voice "words" [at end | at 1.5s];` speaks a line (the voice can be left out when there is only one) and shows it as a caption until the words are likely spoken or the voice's next line starts; `captions: off;` speaks without them. Lines are spoken with the browser's own voices in the preview and in the 3D player. A video file cannot record those voices, so captions are drawn into MP4, WebM, GIF and PNG exports and the export panel saves them as `.srt` or `.vtt`. For speech in MP4 and WebM, keep **Speak them into the video** ticked, as it is by default (or `gearscript render --speak`, which stays opt-in): each line is generated by a neural voice running in the browser, and the voice downloads from huggingface.co the first time and is kept for offline use. English lines use Kokoro, a natural-sounding voice (about 90 MB): American voices `af_heart`, `af_bella`, `af_nicole`, `af_sarah`, `am_michael`, `am_fenrir`, `am_puck` and British voices `bf_emma`, `bf_isabella`, `bm_george`, `bm_fable`. Other languages use Piper (20 to 70 MB, for example `de_DE-thorsten-medium`), which also takes over if Kokoro cannot load. `neural:` on a Voice picks one; without it, the export panel's **Voice** choice is used, and **Automatic** gives `af_heart` for `en-US` and `bf_emma` for other English. `rate:` sets how fast Kokoro speaks; Piper voices speak at their own pace. The panel's **Sample** button plays a sentence in the chosen voice, and **Listen** plays the first seconds of the video's sound, speaking only the lines in them. Or add a voice-over recorded or made with any text-to-speech tool as an audio file. Audio files (MP3, WAV, OGG, M4A, up to 25 MB) are added with Insert › 3D models, images and audio, play with `sound:` like any Sound, are mixed into video exports and saved in the project `.zip`.
 - Captions are shown like subtitles: a spoken line is split into parts of at most about 84 characters (two short lines), at sentence ends, then at clause marks, then between words, with short neighbours joined; each part shows for its share of the line's speaking time, the last until the caption ends. Exports and .srt/.vtt files use the same parts. W0550: a line is still being spoken when the next line of the same voice starts. W0551: a line of more than 40 words. W0625: a Text of more than 16 words.
 
 **Timing lines:** a voice speaks about 2.6 words a second at `rate: 100%`. Leave that long before the next line of the same voice (a new line ends the caption), make the block or `Scene { duration }` long enough for the last line, and keep each line to one idea of 4 to 14 words. W0519 warns when a line takes longer to say than the motion lasts (everything has stopped and no `forever` rule runs), or when it runs past the end of the animation: stretch the motion over the words, rather than a quick move followed by a still picture.

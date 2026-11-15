@@ -986,8 +986,8 @@
    "properties": [
     {
      "name": "src",
-     "example": "src: \"piston.stl\";",
-     "doc": "A model file added to the project (STL, GLB or glTF)"
+     "example": "src: \"cat.png\";  or  src: \\select;",
+     "doc": "A file added to the project: a picture (Image), a model (Mesh, STL, GLB or glTF) or audio (Sound). \\select: pick it later in the Select panel"
     },
     {
      "name": "size",
@@ -997,7 +997,7 @@
     {
      "name": "fit",
      "example": "fit: contain;",
-     "doc": "contain keeps proportions; stretch fills the size box"
+     "doc": "Mesh: contain keeps proportions; stretch fills the size box. Image with both sides given: contain keeps the picture's shape inside them; cover fills them and trims the picture; stretch fills them"
     }
    ],
    "required": [
@@ -1041,6 +1041,75 @@
    ],
    "doc": "src \"file.stl\" or \"file.glb\", size (x, y, z), fit: contain | stretch"
   },
+  "Image": {
+   "properties": [
+    {
+     "name": "src",
+     "example": "src: \"cat.png\";  or  src: \\select;",
+     "doc": "A file added to the project: a picture (Image), a model (Mesh, STL, GLB or glTF) or audio (Sound). \\select: pick it later in the Select panel"
+    },
+    {
+     "name": "size",
+     "example": "size: (x, y, z);",
+     "doc": "Box size; Rect takes (w, h)"
+    },
+    {
+     "name": "fit",
+     "example": "fit: contain;",
+     "doc": "Mesh: contain keeps proportions; stretch fills the size box. Image with both sides given: contain keeps the picture's shape inside them; cover fills them and trims the picture; stretch fills them"
+    },
+    {
+     "name": "crop",
+     "example": "crop: (10%, 0, 10%, 5%);",
+     "doc": "Image: trims the picture: left, top, right, bottom, each a share of the picture"
+    },
+    {
+     "name": "facing",
+     "example": "facing: front;  or  camera  or  upright",
+     "doc": "Text and Image: camera (also called observer) keeps it turned to the viewer; upright turns it about the vertical only, like a cut-out on the floor; front keeps it fixed in the scene, facing +z, like a sign on a wall. Text faces the camera by default, Image the front"
+    }
+   ],
+   "required": [
+    "src"
+   ],
+   "anchors": [
+    "face.top",
+    "face.bottom",
+    "face.left",
+    "face.right",
+    "face.front",
+    "face.back",
+    "edge.top",
+    "edge.bottom",
+    "edge.left",
+    "edge.right",
+    "edge.front",
+    "edge.back",
+    "edge.left-top",
+    "edge.right-top",
+    "edge.left-bottom",
+    "edge.right-bottom",
+    "edge.top-front",
+    "edge.top-back",
+    "edge.bottom-front",
+    "edge.bottom-back",
+    "edge.left-front",
+    "edge.right-front",
+    "edge.left-back",
+    "edge.right-back",
+    "corner.left-top-front",
+    "corner.right-top-front",
+    "corner.left-bottom-front",
+    "corner.right-bottom-front",
+    "corner.left-top-back",
+    "corner.right-top-back",
+    "corner.left-bottom-back",
+    "corner.right-bottom-back",
+    "axis",
+    "normal"
+   ],
+   "doc": "src \"cat.png\" (or \\select), size (w, auto), fit, crop (l, t, r, b), facing: front | camera | upright: a picture on a card"
+  },
   "Sound": {
    "properties": [
     {
@@ -1050,8 +1119,8 @@
     },
     {
      "name": "src",
-     "example": "src: \"piston.stl\";",
-     "doc": "A model file added to the project (STL, GLB or glTF)"
+     "example": "src: \"cat.png\";  or  src: \\select;",
+     "doc": "A file added to the project: a picture (Image), a model (Mesh, STL, GLB or glTF) or audio (Sound). \\select: pick it later in the Select panel"
     },
     {
      "name": "pitch",
@@ -1271,8 +1340,8 @@
     },
     {
      "name": "facing",
-     "example": "facing: front;",
-     "doc": "Text: camera (the default) keeps it turned to the viewer, so it reads straight at any zoom; front keeps it fixed in the scene, facing +z, like a sign on a wall"
+     "example": "facing: front;  or  camera  or  upright",
+     "doc": "Text and Image: camera (also called observer) keeps it turned to the viewer; upright turns it about the vertical only, like a cut-out on the floor; front keeps it fixed in the scene, facing +z, like a sign on a wall. Text faces the camera by default, Image the front"
     }
    ],
    "required": [],
@@ -1703,6 +1772,11 @@
    "name": "luminosity",
    "example": "luminosity: 80% [colour] [range];  motion: luminosity: 0 -> 100%;",
    "doc": "The part shines and lights what is near it"
+  },
+  {
+   "name": "filter",
+   "example": "filter: brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg);",
+   "doc": "Image: adjusts the picture like CSS filters, in that order; 100% leaves it as it is; none clears it"
   },
   {
    "name": "text",

@@ -595,6 +595,51 @@ html.player.see, html.player.see body, html.player.see .bench, html.player.see .
 .modal.thanks .ways a, .modal.thanks .ways button { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-2); color: var(--fg); text-decoration: none; font: inherit; text-align: left; cursor: pointer; }
 .modal.thanks .ways a:hover, .modal.thanks .ways button:hover { border-color: var(--accent); }
 .modal.thanks .ways b { font-weight: 600; } .modal.thanks .ways span { color: var(--muted); font-size: 12.5px; margin-left: auto; }
+/* the Select panel: files still to pick (src: \select), and an Image's crop and light */
+.modal.selpanel { width: min(920px, 100%); max-height: calc(100vh - 32px); padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.selpanel .sp-head { padding: 16px 20px 10px; border-bottom: 1px solid var(--line); }
+.selpanel .sp-head h2 { margin: 0; }
+.selpanel .sp-head .sub { margin: 2px 0 0; }
+.selpanel .sp-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.selpanel .sp-chips button { border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); border-radius: 999px; padding: 3px 10px 3px 8px; font-size: 12px; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.selpanel .sp-chips button::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: .5; }
+.selpanel .sp-chips button.done::before { background: var(--ok, #3fb950); opacity: 1; }
+.selpanel .sp-chips button[aria-current="true"] { border-color: var(--accent); color: var(--fg); }
+.selpanel .sp-body { display: grid; grid-template-columns: minmax(250px, 300px) 1fr; min-height: 0; flex: 1; overflow: hidden; }
+.selpanel .sp-side { padding: 14px 16px; border-right: 1px solid var(--line); overflow: auto; display: flex; flex-direction: column; gap: 12px; }
+.selpanel .sp-part { display: flex; flex-direction: column; gap: 2px; }
+.selpanel .sp-part b { font-size: calc(16px * var(--ui)); }
+.selpanel .sp-part span { color: var(--muted); font-size: 12px; }
+.selpanel .sp-have { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+.selpanel .sp-have button { border: 1px solid var(--line); background: var(--panel-2); border-radius: 8px; padding: 3px; cursor: pointer; display: flex; flex-direction: column; gap: 2px; align-items: stretch; min-width: 0; }
+.selpanel .sp-have button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.selpanel .sp-have img { width: 100%; aspect-ratio: 1; object-fit: contain; border-radius: 5px; background: repeating-conic-gradient(#8881 0 25%, #8882 0 50%) 0 0 / 12px 12px; }
+.selpanel .sp-have span { font-size: 10.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.selpanel .sp-have .nf { font-size: 11.5px; padding: 6px; text-align: left; }
+.selpanel .sp-label { font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 6px; }
+.selpanel .sp-sl { display: grid; grid-template-columns: 82px 1fr 46px; gap: 8px; align-items: center; font-size: 12.5px; margin-bottom: 6px; }
+.selpanel .sp-sl input { width: 100%; accent-color: var(--accent); }
+.selpanel .sp-sl output { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.selpanel .sp-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.selpanel .sp-main { display: flex; flex-direction: column; min-height: 0; min-width: 0; }
+.selpanel .sp-stage { flex: 1; min-height: 260px; display: grid; place-items: center; padding: 18px; background: repeating-conic-gradient(#8881 0 25%, #8882 0 50%) 0 0 / 18px 18px; position: relative; overflow: hidden; }
+.selpanel .sp-frame { position: relative; line-height: 0; user-select: none; touch-action: none; }
+.selpanel .sp-frame img { max-width: 100%; max-height: min(52vh, 460px); display: block; }
+.selpanel .sp-crop { position: absolute; border: 2px solid #fff; box-shadow: 0 0 0 9999px rgba(0, 0, 0, .5), 0 0 0 1px rgba(0,0,0,.6); cursor: move; }
+.selpanel .sp-crop i { position: absolute; width: 12px; height: 12px; background: #fff; border: 1px solid #0008; border-radius: 3px; }
+.selpanel .sp-crop i[data-h="nw"] { left: -7px; top: -7px; cursor: nwse-resize; } .selpanel .sp-crop i[data-h="ne"] { right: -7px; top: -7px; cursor: nesw-resize; }
+.selpanel .sp-crop i[data-h="sw"] { left: -7px; bottom: -7px; cursor: nesw-resize; } .selpanel .sp-crop i[data-h="se"] { right: -7px; bottom: -7px; cursor: nwse-resize; }
+.selpanel .sp-crop i[data-h="n"] { left: calc(50% - 6px); top: -7px; cursor: ns-resize; } .selpanel .sp-crop i[data-h="s"] { left: calc(50% - 6px); bottom: -7px; cursor: ns-resize; }
+.selpanel .sp-crop i[data-h="w"] { top: calc(50% - 6px); left: -7px; cursor: ew-resize; } .selpanel .sp-crop i[data-h="e"] { top: calc(50% - 6px); right: -7px; cursor: ew-resize; }
+.selpanel .sp-empty { color: var(--muted); text-align: center; line-height: 1.5; max-width: 340px; }
+.selpanel .sp-empty svg { width: 46px; height: 46px; fill: none; stroke: currentColor; stroke-width: 1.5; opacity: .6; display: block; margin: 0 auto 8px; }
+.selpanel .sp-file { text-align: center; line-height: 1.6; }
+.selpanel .sp-file code { font-size: 13px; }
+.selpanel .sp-code { border-top: 1px solid var(--line); padding: 8px 14px; font: 12px/1.5 var(--mono, ui-monospace, monospace); color: var(--muted); white-space: pre-wrap; word-break: break-all; max-height: 74px; overflow: auto; }
+.selpanel .sp-foot { display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-top: 1px solid var(--line); }
+.selpanel .sp-foot .grow { flex: 1; }
+.selpanel .sp-foot .count { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+@media (max-width: 700px) { .selpanel .sp-body { grid-template-columns: 1fr; overflow: auto; } .selpanel .sp-side { border-right: 0; border-bottom: 1px solid var(--line); } .selpanel .sp-stage { min-height: 220px; } }
 .modal-back { position: fixed; inset: 0; z-index: 50; background: rgba(8, 12, 16, 0.5); display: grid; place-items: center; padding: 16px; }
 .modal { width: min(420px, 100%); max-height: calc(100vh - 32px); overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 60px rgba(0,0,0,0.35); padding: 20px; }
 .modal h2 { margin: 0 0 4px; font-size: calc(18px * var(--ui)); }
@@ -943,7 +988,7 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
   <div class="menuwrap">
     <button class="btn icon" id="menuBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="mainMenu" aria-label="More" title="More"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
     <div class="menu" id="mainMenu" role="menu" hidden>
-      <button role="menuitem" type="button" id="modelsBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg><span>3D models and audio…</span></button>
+      <button role="menuitem" type="button" id="modelsBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg><span>3D models, images and audio…</span></button>
       <button role="menuitem" type="button" id="openProject" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h6l2 2h10v10H3z"/></svg><span>Open project…</span></button>
       <button role="menuitem" type="button" id="tbState"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg><span>Copy the state, for an AI</span></button>
       <hr>
@@ -964,7 +1009,8 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
   <button class="btn icon" id="helpBtn" type="button" aria-haspopup="dialog" aria-label="Help and tours" title="Help: tours and the language guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.6"/><circle cx="12" cy="17.2" r="0.6"/></svg></button>
   <a class="btn icon ghlink" id="ghLink" href="https://github.com/Hypertoroid/GearScript" target="_blank" rel="noopener" aria-label="GearScript on GitHub" title="Source code on GitHub"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.23c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.49l-.01-1.7c-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.57 2.34 1.12 2.91.85.09-.66.35-1.12.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.04 1.03-2.76-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.36 9.36 0 0 1 12 6.98c.85 0 1.71.12 2.51.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.64 1.03 2.76 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9l-.01 2.81c0 .27.18.6.69.49A10.1 10.1 0 0 0 22 12.23C22 6.58 17.52 2 12 2z"/></svg></a>
   <input type="file" id="fileIn" accept=".gscript,.zip,.json" hidden>
-  <input type="file" id="modelIn" accept=".stl,.glb,.gltf,.mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*" multiple hidden>
+  <input type="file" id="modelIn" accept=".stl,.glb,.gltf,.png,.jpg,.jpeg,.gif,.webp,.svg,.mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*" multiple hidden>
+  <input type="file" id="pickIn" hidden>
 </header>
 
 <main class="bench">
@@ -1270,6 +1316,7 @@ function lex(src, file, notes) {
       else if (/[A-Za-z_]/.test(src[i] || '')) { const bad = at(RX.id); throw nearFix(new Diag({ file, line: L, col: C }, 'E0102', `Unknown unit "${bad}".`, 'Use one of: mm, cm, m, deg, rad, turn, s, ms, %, a speed such as mm/s, or an acceleration such as m/s2.'), bad, Object.keys(UNITS).filter(u => u.length > 1 || bad.length === 1), { line, col }); }
       toks.push({ type: 'num', v: val, unit, kind, rate, text: src.slice(pos, i), line: L, col: C, pos, end: i, file }); continue;
     }
+    if (c === '\\' && (m = at(/\\select(?![\w-])/y))) { adv(m.length); toks.push({ type: 'id', v: '\\select', line: L, col: C, pos, end: i, file }); continue; }   /* src: \select;  a file still to be picked in the studio */
     if ((m = at(RX.str))) { adv(m.length); toks.push({ type: 'str', v: m.slice(1, -1), line: L, col: C, pos, end: i, file }); continue; }
     if (c === '#' && /^[#\s]?$/.test(src[i + 1] === undefined ? '' : src[i + 1].replace(/[ \t\r\n#]/, '')) && /^[ \t]*$/.test(src.slice(src.lastIndexOf('\n', i - 1) + 1, i))) {   /* "# note" as a comment: read as //, with a warning that fixes it */
       let n = 0; while (src[i + n] === '#') n++;
@@ -1642,6 +1689,7 @@ const SHAPES = {
   Ring: { dim: 3, props: ['radius', 'inner', 'thickness'] }, Nut: { dim: 3, props: ['radius', 'thickness', 'hole'] }, Bolt: { dim: 3, props: ['radius', 'length', 'head'] },
   Cam: { dim: 3, props: ['radius', 'lift', 'width'] }, Star: { dim: 3, props: ['points', 'radius', 'inner', 'thickness'] },
   Mesh: { dim: 3, props: ['src', 'size', 'fit'] },
+  Image: { dim: 2, props: ['src', 'size', 'fit', 'crop', 'facing'] },
   Sound: { dim: -1, props: ['kind', 'src', 'pitch', 'volume', 'length'] },
   Voice: { dim: -1, props: ['voice', 'neural', 'rate', 'pitch', 'volume', 'captions'] },
   Triangle: { dim: 2, props: ['size', 'apex', 'thickness'] }, Ellipse: { dim: 2, props: ['size', 'thickness'] }, Polygon: { dim: 2, props: ['sides', 'radius', 'thickness'] },
@@ -1651,6 +1699,65 @@ const SHAPES = {
 };
 /* imported 3D models (STL or glTF), registered by name before a compile: GearScript.assets["piston.stl"] = BufferGeometry */
 const ASSETS = {};
+/* imported pictures, registered by name before a compile: GearScript.images["cat.png"] = { w, h, tex } (the command line knows only w and h).
+   placeholder is the texture a grey card shows while no file is there (set by the app) */
+const IMAGES = {}, IMAGE_HOOK = { placeholder: null };
+/* the width and height a picture file says it has, read from its first bytes: PNG, JPEG, GIF, WebP and SVG. null when unknown */
+function imageInfo(u8) {
+  try {
+    const b = u8 instanceof Uint8Array ? u8 : new Uint8Array(u8), n = b.length, be16 = (i) => (b[i] << 8) | b[i + 1], le16 = (i) => b[i] | (b[i + 1] << 8), be32 = (i) => ((b[i] << 24) >>> 0) + (b[i + 1] << 16) + (b[i + 2] << 8) + b[i + 3], le24 = (i) => b[i] | (b[i + 1] << 8) | (b[i + 2] << 16);
+    if (n > 24 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return { type: 'png', w: be32(16), h: be32(20) };
+    if (n > 10 && b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return { type: 'gif', w: le16(6), h: le16(8) };
+    if (n > 30 && b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 && b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) {
+      const k = String.fromCharCode(b[12], b[13], b[14], b[15]);
+      if (k === 'VP8 ') return { type: 'webp', w: le16(26) & 0x3fff, h: le16(28) & 0x3fff };
+      if (k === 'VP8L') { const v = b[21] | (b[22] << 8) | (b[23] << 16) | (b[24] << 24); return { type: 'webp', w: (v & 0x3fff) + 1, h: ((v >> 14) & 0x3fff) + 1 }; }
+      if (k === 'VP8X') return { type: 'webp', w: le24(24) + 1, h: le24(27) + 1 };
+    }
+    if (n > 4 && b[0] === 0xff && b[1] === 0xd8) {
+      let i = 2;
+      while (i + 9 < n) {
+        if (b[i] !== 0xff) { i++; continue; }
+        const m = b[i + 1]; if (m === 0xd8 || m === 0x01 || (m >= 0xd0 && m <= 0xd7)) { i += 2; continue; }
+        if ((m >= 0xc0 && m <= 0xcf) && m !== 0xc4 && m !== 0xc8 && m !== 0xcc) return { type: 'jpeg', w: be16(i + 7), h: be16(i + 5) };
+        i += 2 + be16(i + 2);
+      }
+      return null;
+    }
+    const head = new TextDecoder().decode(b.subarray(0, Math.min(n, 4096)));
+    const sv = head.match(/<svg\b[^>]*>/i);
+    if (sv) {
+      const at = (k) => { const m = sv[0].match(new RegExp('\\s' + k + '\\s*=\\s*["\']\\s*([\\d.]+)\\s*(px)?\\s*["\']', 'i')); return m ? +m[1] : null; };
+      let w = at('width'), h = at('height'); const vb = sv[0].match(/viewBox\s*=\s*["']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)/i);
+      if (vb) { const vw = +vb[1], vh = +vb[2]; if (w && !h) h = w * vh / vw; else if (h && !w) w = h * vw / vh; else if (!w && !h) { w = vw; h = vh; } }
+      return w && h ? { type: 'svg', w, h } : { type: 'svg', w: 0, h: 0 };
+    }
+  } catch (e) {}
+  return null;
+}
+/* an Image's look: the picture as its colour, CSS-style filters (brightness, contrast, saturate, hue-rotate, in that order) and,
+   unless its style asks for a lit material, its own colours whatever the lights (unlit) */
+function imageShader(mat, leaf) {
+  const u = leaf.imageUniforms = { uUnlit: { value: 1 }, uFilter: { value: new THREE.Vector4(1, 1, 1, 0) } };
+  mat.onBeforeCompile = (sh) => {
+    sh.uniforms.uUnlit = u.uUnlit; sh.uniforms.uFilter = u.uFilter;
+    sh.fragmentShader = 'uniform float uUnlit;\nuniform vec4 uFilter;\n' + sh.fragmentShader
+      .replace('#include <map_fragment>', `#include <map_fragment>
+  {
+    vec3 c = clamp(diffuseColor.rgb * uFilter.x, 0.0, 1.0);
+    c = clamp((c - 0.5) * uFilter.y + 0.5, 0.0, 1.0);
+    float s = uFilter.z;
+    c = clamp(mat3(0.213 + 0.787 * s, 0.213 - 0.213 * s, 0.213 - 0.213 * s, 0.715 - 0.715 * s, 0.715 + 0.285 * s, 0.715 - 0.715 * s, 0.072 - 0.072 * s, 0.072 - 0.072 * s, 0.072 + 0.928 * s) * c, 0.0, 1.0);
+    float hc = cos(uFilter.w), hs = sin(uFilter.w);
+    c = clamp(mat3(0.213 + hc * 0.787 - hs * 0.213, 0.213 - hc * 0.213 + hs * 0.143, 0.213 - hc * 0.213 - hs * 0.787,
+                   0.715 - hc * 0.715 - hs * 0.715, 0.715 + hc * 0.285 + hs * 0.140, 0.715 - hc * 0.715 + hs * 0.715,
+                   0.072 - hc * 0.072 + hs * 0.928, 0.072 - hc * 0.072 - hs * 0.283, 0.072 + hc * 0.928 + hs * 0.072) * c, 0.0, 1.0);
+    diffuseColor.rgb = c;
+  }`)
+      .replace('#include <tonemapping_fragment>', 'gl_FragColor.rgb = mix(gl_FragColor.rgb, diffuseColor.rgb + totalEmissiveRadiance, uUnlit);\n#include <tonemapping_fragment>');
+  };
+  mat.customProgramCacheKey = () => 'gearscript-image';
+}
 function parseSTL(buf) {
   const u8 = new Uint8Array(buf), dv = new DataView(u8.buffer, u8.byteOffset, u8.byteLength);
   const n = u8.length >= 84 ? dv.getUint32(80, true) : 0;
@@ -1884,7 +1991,7 @@ function shapeAnchor(leaf, parts, at) {
   const list = []; const add = (k, p, d) => list.push([k, p, d]);
   add('center', V(0, 0, 0), null);
   { const c = comOf(leaf); add('center-of-mass', c, null); add('com', c, null); add('com.x', c, V(1, 0, 0)); add('com.y', c, V(0, 1, 0)); add('com.z', c, V(0, 0, 1)); }
-  if (['Box', 'Rect', 'Wedge', 'Plate', 'Beam', 'Mesh', 'Triangle', 'Ellipse', 'Text', 'Plot'].includes(leaf.type)) {
+  if (['Box', 'Rect', 'Wedge', 'Plate', 'Beam', 'Mesh', 'Triangle', 'Ellipse', 'Text', 'Plot', 'Image'].includes(leaf.type)) {
     const h = s.size.map(x => x / 2);
     const names = Object.keys(FACES);
     for (const f of names) {
@@ -1907,7 +2014,7 @@ function shapeAnchor(leaf, parts, at) {
       for (const pr of perms) add('corner.' + pr.join('-'), pp, null);
     }
     add('axis', V(0, 0, 0), V(0, 1, 0));
-    if (['Rect', 'Plate', 'Triangle', 'Ellipse', 'Text', 'Plot'].includes(leaf.type)) add('normal', V(0, 0, 0), V(0, 0, 1));
+    if (['Rect', 'Plate', 'Triangle', 'Ellipse', 'Text', 'Plot', 'Image'].includes(leaf.type)) add('normal', V(0, 0, 0), V(0, 0, 1));
     if (leaf.type === 'Plot' && leaf.plotAt) { add('origin', leaf.plotAt(0, 0), null); add('end', leaf.plotEnd(), null); }
     if (leaf.type === 'Triangle') { add('apex', V(s.apexX, h[1], 0), null); add('corner.left', V(-h[0], -h[1], 0), null); add('corner.right', V(h[0], -h[1], 0), null); }
     if (leaf.type === 'Plate' && s.hole) add('hole', V(0, 0, 0), V(0, 0, 1));
@@ -1964,7 +2071,7 @@ function volumeOf(leaf) {
   const s = leaf.spec;
   switch (leaf.type) {
     case 'Box': return s.size[0] * s.size[1] * s.size[2];
-    case 'Rect': return s.size[0] * s.size[1] * s.size[2];
+    case 'Rect': case 'Image': return s.size[0] * s.size[1] * s.size[2];
     case 'Sphere': return 4 / 3 * Math.PI * s.radius ** 3;
     case 'Cylinder': return Math.PI * s.radius ** 2 * s.height;
     case 'Cone': return Math.PI * s.radius ** 2 * s.height / 3;
@@ -2267,7 +2374,8 @@ function compile(files, opts) {
         { const nw = leaf.spec.text.split(/\s+/).filter(Boolean).length; if (nw > 16) warn(P.text || decl, 'W0625', `This Text holds ${nw} words; a block of text that long covers the animation.`, 'Keep a Text to a title or a label (about a dozen words). Put longer words in narration (say:), which shows them as captions a line at a time, or split them into several Texts that take turns. With Scene { caption-band: 18%; }, fixed: band; puts a Text below the picture.'); }
         leaf.spec.fontSize = g('size') ? num(g('size'), env, 'size') : 20;
         const fk = g('facing'); leaf.spec.facing = fk ? (fk.t === 'ref' ? fk.parts[0] : '?') : 'camera';   /* text turns to the viewer unless told to stay put */
-        if (!['front', 'camera'].includes(leaf.spec.facing)) throw nearFix(new Diag(P.facing, 'E0312', 'facing is front or camera.', 'Write facing: camera;  to keep the text turned to the viewer, or facing: front;  to keep it fixed in the scene.'), leaf.spec.facing, ['front', 'camera'], P.facing.items[0]);
+        if (leaf.spec.facing === 'observer') leaf.spec.facing = 'camera';
+        if (!['front', 'camera', 'upright'].includes(leaf.spec.facing)) throw nearFix(new Diag(P.facing, 'E0312', 'facing is front, camera (also called observer) or upright.', 'Write facing: camera;  to keep the text turned to the viewer, facing: upright;  to turn it about the vertical only, or facing: front;  to keep it fixed in the scene.'), leaf.spec.facing, ['front', 'camera', 'observer', 'upright'], P.facing.items[0]);
         leaf.proxy = true; leaf.spec.size = textBox(leaf.spec.text, leaf.spec.fontSize, 0, 1.2); geom = new THREE.BoxGeometry(...leaf.spec.size); break;
       }
       case 'Plot': {   /* a chart: a function of x (and t) or data points, drawn as a line, bars, points or an area, on axes with ticks */
@@ -2381,14 +2489,68 @@ function compile(files, opts) {
         geom = extrudeZ(polyShape(pts), th, 12); break;
       }
       case 'Mesh': {
-        const srcV = need('src'); const src = srcV.t === 'str' ? srcV.v : null;
-        if (!src) throw new Diag(srcV, 'E0209', 'src is the model file name, in quotes.', 'Write src: "piston.stl";');
+        const srcV = need('src'); const pickM = isKw(srcV, '\\select'), src = srcV.t === 'str' ? srcV.v : pickM ? '' : null;
+        if (src === null) throw new Diag(srcV, 'E0209', 'src is the model file name, in quotes.', 'Write src: "piston.stl";  or  src: \\select;  to pick the file in the studio.');
         const sz = vec3(need('size'), env, 'size'); const fitV = g('fit'); const fit = fitV && fitV.t === 'ref' ? fitV.parts[0] : 'contain';
         if (!['contain', 'stretch'].includes(fit)) throw nearFix(new Diag(fitV, 'E0210', 'fit is contain or stretch.', 'Write fit: contain;'), String(fit), ['contain', 'stretch'], fitV);
         leaf.spec = { size: sz, src, fit };
         const a = ASSETS[src];
         if (a) { geom = fitGeometry(a, sz, fit); leaf.spec.com = meshCentroid(geom); }
+        else if (pickM) { warn(srcV, 'W0630', `No model picked yet for ${path}, so a box stands in for it.`, 'Pick the file in the studio (the Select panel opens by itself, or click the src: hint), or write src: "piston.glb"; with a file added to the project.'); geom = new THREE.BoxGeometry(...sz); }
         else { warn(srcV, 'W0611', `No model file named "${src}" in this project, so a box stands in for it.`, 'Add the file with More › Add a 3D model (STL or glTF/GLB), or check the name.'); geom = new THREE.BoxGeometry(...sz); }
+        break;
+      }
+      case 'Image': {   /* a picture file added to the project, on a flat card. src: \select; is a file still to be picked in the studio */
+        const srcV = need('src'), pick = isKw(srcV, '\\select'), src = srcV.t === 'str' ? srcV.v : null;
+        if (!src && !pick) throw new Diag(srcV, 'E0209', 'src is the image file name, in quotes.', 'Write src: "cat.png";  or  src: \\select;  to pick the file in the studio.');
+        const img = src ? IMAGES[src] : null;
+        if (pick) warn(srcV, 'W0630', `No image picked yet for ${path}, so a grey card stands in for it.`, 'Pick the file in the studio (the Select panel opens by itself, or click the src: hint), or write src: "cat.png"; with a file added to the project.');
+        else if (!img) warn(srcV, 'W0629', `No image named "${src}" in this project, so a grey card stands in for it.`, 'Add the file with Insert › 3D models, images and audio (PNG, JPG, WebP, GIF or SVG), or check the name.');
+        /* crop: (left, top, right, bottom), each a share of the picture trimmed from that side */
+        let crop = [0, 0, 0, 0];
+        if (P.crop) {
+          const bad = () => new Diag(P.crop, 'E0315', 'crop is (left, top, right, bottom): how much to trim from each side, as percentages.', 'Write crop: (10%, 0, 10%, 5%);');
+          const cn = P.crop.items[0]; if (!cn || cn.t !== 'tuple' || cn.items.length !== 4 || P.crop.items.length !== 1) throw bad();
+          crop = cn.items.map(n => { const v = num(n, env, 'crop'); if (!(v >= 0 && v < 1)) throw bad(); return v; });
+          if (crop[0] + crop[2] > 0.98 || crop[1] + crop[3] > 0.98) throw new Diag(P.crop, 'E0315', 'crop trims away the whole picture.', 'Keep left + right and top + bottom under 100%, such as crop: (10%, 0, 10%, 5%);');
+        }
+        const nat = img && img.w > 0 && img.h > 0 ? (img.w * (1 - crop[0] - crop[2])) / (img.h * (1 - crop[1] - crop[3])) : 4 / 3;   /* width / height of what shows */
+        /* size: (w, h), (w, auto), (auto, h); left out, the long side is 200mm */
+        let W = null, H = null;
+        if (P.size) {
+          const sn = P.size.items[0], badSize = () => new Diag(P.size, 'E0316', 'Image size is (width, height); either may be auto, to keep the picture\'s shape.', 'Write size: (200mm, auto);');
+          if (!sn || sn.t !== 'tuple' || sn.items.length !== 2) throw badSize();
+          const side = (n) => isKw(n, 'auto') ? null : num(n, env, 'size');
+          W = side(sn.items[0]); H = side(sn.items[1]);
+          if ((W !== null && !(W > 0)) || (H !== null && !(H > 0))) throw badSize();
+        }
+        const fitV = g('fit'), fit = fitV && fitV.t === 'ref' ? fitV.parts[0] : 'contain';
+        if (!['contain', 'cover', 'stretch'].includes(fit)) throw nearFix(new Diag(fitV, 'E0210', 'fit is contain, cover or stretch.', 'Write fit: contain;  (keeps the picture\'s shape inside the size),  cover  (fills the size and trims the picture)  or  stretch.'), String(fit), ['contain', 'cover', 'stretch'], fitV);
+        let uv = [crop[0], crop[3], 1 - crop[2], 1 - crop[1]];   /* u0, v0, u1, v1: the picture's bottom-left is (0, 0) */
+        if (W === null && H === null) { if (nat >= 1) { W = 200; H = 200 / nat; } else { H = 200; W = 200 * nat; } }
+        else if (W === null) W = H * nat;
+        else if (H === null) H = W / nat;
+        else if (fit === 'contain') { const k = Math.min(W / nat, H); H = k; W = k * nat; }
+        else if (fit === 'cover') {   /* the card keeps the size; trim the picture evenly to fill it */
+          const want = W / H, du = uv[2] - uv[0], dv = uv[3] - uv[1];
+          if (want > nat) { const keep = dv * nat / want, m = (dv - keep) / 2; uv = [uv[0], uv[1] + m, uv[2], uv[3] - m]; }
+          else { const keep = du * want / nat, m = (du - keep) / 2; uv = [uv[0] + m, uv[1], uv[2] - m, uv[3]]; }
+        }
+        const fk = g('facing'); let facing = fk ? (fk.t === 'ref' ? fk.parts[0] : '?') : 'front';
+        if (facing === 'observer') facing = 'camera';
+        if (!['front', 'camera', 'upright'].includes(facing)) throw nearFix(new Diag(P.facing, 'E0312', 'facing is front, camera (also called observer) or upright.', 'Write facing: front;  (fixed in the scene, the default),  facing: camera;  (always turned to the viewer)  or  facing: upright;  (turns to the viewer about the vertical only, like a cut-out standing on the floor).'), facing, ['front', 'camera', 'observer', 'upright'], P.facing.items[0]);
+        const th = 1;
+        leaf.spec = { size: [W, H, th], src: src || null, pick, crop, fit, facing };
+        leaf.image = { src: src || null, pick, uv, w: img ? img.w : 0, h: img ? img.h : 0 };
+        /* a card printed on both sides: the back reads the right way round, not mirrored */
+        {   /* two quads, front (+z) and back (-z), each mapping the shown part of the picture; mergeGeoms would drop the texture coordinates */
+          const w = W / 2, h = H / 2, z = th / 2, [u0, v0, u1, v1] = uv;
+          const pos = [-w, -h, z, w, -h, z, w, h, z, -w, h, z, w, -h, -z, -w, -h, -z, -w, h, -z, w, h, -z];
+          const nor = [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1];
+          const tex = [u0, v0, u1, v0, u1, v1, u0, v1, u0, v0, u1, v0, u1, v1, u0, v1];
+          geom = new THREE.BufferGeometry(); geom.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); geom.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); geom.setAttribute('uv', new THREE.Float32BufferAttribute(tex, 2));
+          geom.setIndex([0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7]);
+        }
         break;
       }
       case 'Curve': {
@@ -2406,6 +2568,15 @@ function compile(files, opts) {
     const mesh = new THREE.Mesh(geom, new THREE.MeshStandardMaterial({ color: 0x9aa4ae, metalness: 0.1, roughness: 0.6 }));
     mesh.userData.leaf = leaf; leaf.mesh = mesh;
     if (leaf.type === 'Plot') mesh.material.color.set(0x38bdf8);
+    if (leaf.type === 'Image') {   /* white, so the picture shows its own colours; a style colour tints it */
+      const img = leaf.image.src ? IMAGES[leaf.image.src] : null, tex = img && img.tex ? img.tex : IMAGE_HOOK.placeholder;
+      mesh.material.color.set(0xffffff); mesh.material.metalness = 0; mesh.material.roughness = 1; imageShader(mesh.material, leaf);
+      if (tex) {
+        mesh.material.map = tex; mesh.material.alphaTest = 0.02; leaf.alphaTex = true;
+        mesh.customDepthMaterial = new THREE.MeshDepthMaterial({ depthPacking: THREE.RGBADepthPacking, map: tex, alphaTest: 0.5 });
+        if (THREE.MeshDistanceMaterial) mesh.customDistanceMaterial = new THREE.MeshDistanceMaterial({ map: tex, alphaTest: 0.5 });
+      }
+    }
     if (leaf.plotChildren) { for (const c of leaf.plotChildren) { c.userData.flat = true; c.userData.baseOp = c.material.opacity; mesh.add(c); } leaf.extraObjs = leaf.plotChildren; }
     const node = new THREE.Group(); node.add(mesh); leaf.node = node;
     if (P.visible) { const v = evalE(P.visible.items[0], env); if (v && v.ref && v.ref[0] === 'false') node.visible = false; }
@@ -2579,7 +2750,10 @@ function compile(files, opts) {
           if (P.ground) {
             const gn = P.ground.items[0];
             if (!(gn && gn.t === 'ref' && gn.parts[0] === 'none')) { let c; try { c = colorOf(evalE(gn, {}), gn); } catch (e) { throw new Diag(P.ground, 'E0219', 'ground is a colour, or none.', 'Write ground: #3d4a35;  or  ground: #3d4a35 at 0mm;'); } model.sceneOpts.ground = '#' + c.getHexString(); }
-            const ga = P.ground.items;   /* ground: #3d4a35 at 0mm;  puts the ground at that height (y) */
+            let ga = P.ground.items;   /* ground: #3d4a35 at 0mm;  puts the ground at that height (y) */
+            /* "at -220mm" reads as at minus 220mm: split it back into the word and a negative height */
+            const atLead = (n) => n && n.t === 'bin' && (n.op === '-' || n.op === '+') ? (isKw(n.a, 'at') ? (n.op === '-' ? { t: 'neg', a: n.b, line: n.line, col: n.col, file: n.file } : n.b) : (() => { const r = atLead(n.a); return r ? { ...n, a: r } : null; })()) : null;
+            if (ga.length === 2) { const h = atLead(ga[1]); if (h) ga = [ga[0], { t: 'ref', parts: ['at'], line: ga[1].line, col: ga[1].col, file: ga[1].file }, h]; }
             if (ga.length > 1) { if (!isKw(ga[1], 'at') || !ga[2]) throw new Diag(P.ground, 'E0219', 'After the colour, ground takes "at" and a height.', 'Write ground: #3d4a35 at 0mm;'); model.sceneOpts.groundAt = num(ga[2], {}, 'ground height'); }
           }
         }
@@ -2825,7 +2999,7 @@ function setOpacity(leaf, op) {
   if (op === undefined || op === null) op = leaf.opacity === undefined ? 1 : leaf.opacity;
   const ca = leaf.colorAlpha === undefined ? 1 : leaf.colorAlpha, a = Math.max(0, Math.min(1, ca * op));
   const mat = leaf.mesh && leaf.mesh.material; if (!mat) return;
-  const was = mat.transparent; mat.transparent = a < 0.999; mat.opacity = a; mat.depthWrite = a >= 0.999; mat.visible = a > 0.002;
+  const was = mat.transparent; mat.transparent = a < 0.999 || !!leaf.alphaTex; mat.opacity = a; mat.depthWrite = a >= 0.999; mat.visible = a > 0.002;
   if (was !== mat.transparent) mat.needsUpdate = true;
   leaf.mesh.castShadow = leaf.shadowOk !== false && !leaf.noShadow && !leaf.lum && a > 0.3;   /* a lamp casts no shadow of itself */
   leaf.liveOpacity = op;
@@ -2952,6 +3126,22 @@ function liveStyle(model, t) {
     x.material.transparent = op < 0.999; x.material.opacity = op; x.material.depthWrite = op >= 0.999; x.visible = op > 0.01;
   }
 }
+/* filter: brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg), as in CSS; none clears it. Applied in that order */
+const IMAGE_FILTERS = ['brightness', 'contrast', 'saturate', 'hue-rotate'];
+function imageFilter(p) {
+  const f = { brightness: 1, contrast: 1, saturate: 1, hue: 0 };
+  if (p.items.length === 1 && isKw(p.items[0], 'none')) return null;
+  for (const n of p.items) {
+    const name = n.t === 'call' ? n.name : n.t === 'ref' ? n.parts.join('.') : null;
+    if (!name || !IMAGE_FILTERS.includes(name)) throw nearFix(new Diag(n, 'E0632', `${name ? `"${name}" is not a filter` : 'filter takes filters such as brightness(110%)'}.`, 'Write filter: brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg);  or  filter: none;'), String(name || ''), IMAGE_FILTERS, n);
+    if (n.t !== 'call' || n.args.length !== 1) throw new Diag(n, 'E0632', `${name} takes one value in brackets.`, name === 'hue-rotate' ? 'Write hue-rotate(20deg);' : `Write ${name}(110%);`);
+    const a = n.args[0], v = num(a, {}, name);
+    if (name === 'hue-rotate') { if (a.t === 'num' && a.kind !== 'ang' && a.v !== 0) throw new Diag(a, 'E0632', 'hue-rotate takes an angle.', 'Write hue-rotate(20deg);'); f.hue = v; continue; }
+    if (!(v >= 0 && v <= 4)) throw new Diag(a, 'E0632', `${name} runs from 0% to 400% (100% leaves the picture as it is).`, `Write ${name}(110%);`);
+    f[name] = v;
+  }
+  return f;
+}
 /* a colour value -> THREE.Color with .alpha (0..1): #rgb #rgba #rrggbb #rrggbbaa, rgb()/rgba()/hsl()/hsla(), transparent, CSS and named finishes */
 function colorOf(v, at) {
   const c = new THREE.Color(); c.alpha = 1;
@@ -3063,7 +3253,7 @@ function textStyle(leaf, st, warn) {
   return T.str ? T : null;
 }
 function applyStyle(model, warn, tryDo) {
-  const STYLE_PROPS = ['color', 'material', 'outline', 'opacity', 'label', 'trail', 'luminosity', 'roughness', 'metalness', 'wireframe', 'shadow', 'label-color', 'label-size', 'label-background', 'cut', 'cut-color', 'explode', ...TEXT_STYLE];
+  const STYLE_PROPS = ['color', 'material', 'outline', 'opacity', 'label', 'trail', 'luminosity', 'roughness', 'metalness', 'wireframe', 'shadow', 'label-color', 'label-size', 'label-background', 'cut', 'cut-color', 'explode', 'filter', ...TEXT_STYLE];
   const matches = (sel, leaf) => {
     const top = leaf.top;
     if (sel.kind === 'class') return leaf.classes.includes(sel.v) || (top && top.classes && top.classes.includes(sel.v));
@@ -3119,6 +3309,12 @@ function applyStyle(model, warn, tryDo) {
       if (st.roughness) rough = unit01(st.roughness, 'roughness');
       if (st.metalness && metal > 0.5 && !leaf.reflective) leaf.reflective = metal;
       mat.metalness = metal; mat.roughness = rough;
+      if (leaf.imageUniforms) {   /* an Image keeps its own colours (unlit) unless a material that takes light is asked for */
+        const mk = st.material && st.material.items[0].parts ? st.material.items[0].parts[0] : null;
+        leaf.imageUniforms.uUnlit.value = !mk || ['flat', 'glow', 'ghost'].includes(mk) ? 1 : 0;
+        const f = st.filter ? imageFilter(st.filter) : null; leaf.imageFilter = f;
+        leaf.imageUniforms.uFilter.value.set(f ? f.brightness : 1, f ? f.contrast : 1, f ? f.saturate : 1, f ? f.hue : 0);
+      } else if (st.filter) dropProp(warn(st.filter, 'W0631', `filter changes pictures; ${leaf.path} is not an Image, so it is ignored.`, 'Use filter on Image parts. For other parts, change color, or luminosity for brightness.'), st.filter);
       if (st.color) {
         const v = evalE(st.color.items[0], {});
         if (v && v.fn === 'gradient') {
@@ -3559,7 +3755,7 @@ function* solidOverlapSteps(model, opts = {}) {
   const budget = opts.budgetMs || 1500, t0 = Date.now(), out = [];
   if (!model || !model.order || !model.order.length) return out;
   const skipType = new Set(['Line', 'Arrow', 'Curve', 'Arc']);
-  const allow = (decl) => decl && (decl.type === 'Text' || decl.type === 'Plot' || (decl.props && decl.props.some(p => p.name === 'fixed')) || (decl.props && decl.props.some(p => p.name === 'overlap' && p.items[0] && p.items[0].t === 'ref' && p.items[0].parts[0] === 'allow')));
+  const allow = (decl) => decl && (decl.type === 'Text' || decl.type === 'Plot' || decl.type === 'Image' || (decl.props && decl.props.some(p => p.name === 'fixed')) || (decl.props && decl.props.some(p => p.name === 'overlap' && p.items[0] && p.items[0].t === 'ref' && p.items[0].parts[0] === 'allow')));
   const rel = new Set(), key = (a, b) => a < b ? a + '|' + b : b + '|' + a, link = (a, b) => { if (a && b && a !== b) rel.add(key(a, b)); };
   for (const j of model.joints || []) link(j.movingEnt, j.fixedEnt);
   for (const a of model.attaches || []) link(a.a[0], a.b[0]);
@@ -3835,8 +4031,9 @@ function compileSoundDecl(model, st, warn) {
   const P = {}; for (const p of st.props) P[p.name] = p;
   for (const p of st.props) if (!SHAPES.Sound.props.includes(p.name)) warn(p, 'W0202', `Sound does not use "${p.name}".`, 'Sound takes kind, pitch, volume and length.');
   if (P.src) {   /* an audio file added to the project: a voice-over, music, a recorded sound */
-    const n = P.src.items[0], src = n && n.t === 'str' ? n.v : null; if (!src) throw new Diag(P.src, 'E0204', 'src is a file name in quotes.', 'Write src: "voice-over.mp3";');
-    if (!AUDIO[src]) warn(P.src, 'W0549', `No audio file named "${src}" in this project, so it is silent.`, 'Add the file with Insert › 3D models and audio (MP3, WAV, OGG, M4A), or check the name.');
+    const n = P.src.items[0], pickS = isKw(n, '\\select'), src = n && n.t === 'str' ? n.v : pickS ? '' : null; if (src === null) throw new Diag(P.src, 'E0204', 'src is a file name in quotes.', 'Write src: "voice-over.mp3";  or  src: \\select;  to pick the file in the studio.');
+    if (pickS) warn(P.src, 'W0630', `No audio file picked yet for ${st.name}, so it is silent.`, 'Pick the file in the studio (the Select panel opens by itself, or click the src: hint), or write src: "voice-over.mp3"; with a file added to the project.');
+    else if (!AUDIO[src]) warn(P.src, 'W0549', `No audio file named "${src}" in this project, so it is silent.`, 'Add the file with Insert › 3D models, images and audio (MP3, WAV, OGG, M4A), or check the name.');
     const frac2 = (p, lo, hi, def) => p ? Math.max(lo, Math.min(hi, num(p.items[0], {}))) : def;
     model.sounds.set(st.name, { name: st.name, kind: null, src, pitch: frac2(P.pitch, 0.25, 4, 1), volume: frac2(P.volume, 0, 1, 1), length: null, decl: st }); return;
   }
@@ -5017,7 +5214,7 @@ function patchReportText(res, rep) {
   lines.push('', 'Reply with a new patch for what is left (start it with @patch 1).');
   return lines.join('\n');
 }
-root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, loudness, masterMix, normalizeClip, SHAPES, assets: ASSETS, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, lineDiff, overlapSteps, patchSource, isPatchText, parsePatch, applyPatch, checkText, patchReport, patchReportText, EASINGS, version: '1.0.0-beta' };
+root.GearScript = { audio: AUDIO, FRAME_PRESETS, SKY_PRESETS, TEXT_STYLE, WEBFONTS, textSpacing, LANGUAGE, beautify, MAX_GLOW_LIGHTS, overlapCheck, setOpacity, setLuminosity, liveStyle, lumColorOf, colorTrack, SOUND_KINDS, synthSound, mixSounds, loudness, masterMix, normalizeClip, SHAPES, assets: ASSETS, images: IMAGES, imageHook: IMAGE_HOOK, imageInfo, parseSTL, fitGeometry, joinProject, splitProject, projectLine, SECTIONS, splitFilm, joinFilm, chapterFiles, chapterHeaderText, layerOf, filmTimes, isFilmText, lex, Parser, compile, solve, cameraAt, track, sunAt, trailPath, encodeGif, lzw, Diag, applyEdits, nearName, captionCues, mergeFilm, lineDiff, overlapSteps, patchSource, isPatchText, parsePatch, applyPatch, patchLayout, stmtsIn, declsIn, checkText, patchReport, patchReportText, EASINGS, version: '1.0.0-beta' };
 })(typeof window !== 'undefined' ? window : globalThis);
 </script>
 
@@ -5110,8 +5307,10 @@ Disc, Ring (inner), Nut (hole), Star (points, inner): radius, thickness -> axis 
 Capsule radius, length; Bolt radius, length, head -> axis, end.a, end.b      Dome radius      Wedge size; Plate size (w, h), thickness, corner, hole; Beam length, height, width (I-beam along x): like Box
 Flat, facing +z: Rect, Triangle (apex), Ellipse size (w, h); Polygon sides, radius; Sector radius, angle, start, inner; Path points: (x, y) (x, y) ...; thickness defaults to 1mm
 Line, Arrow from, to, stroke -> start, end, mid      Arc radius, angle, start, stroke      Curve domain: u in 0..1; point: (f(u, t), ...); stroke
-Text text: "Two lines\\nof text"; size: 24mm; facing: camera (default) | front; -> like Box. Words in the scene that never hide the motion.
+Text text: "Two lines\\nof text"; size: 24mm; facing: camera (default) | front | upright; -> like Box. Words in the scene that never hide the motion.
 Plot size: (400mm, 240mm); function: sin(x - t) (or data: (1, 12) (2, 18) (3, 9);) kind: line | bars | points | area; x-axis: 0..10 step 2 "time (s)"; y-axis: -1..1; x-label: "time (s)"; y-label: "m"; reveal: min(1, t / 3s); axes: none; -> a chart with ticks and labels
+Image src: "photo.png"; size: (200mm, auto); fit: contain | cover | stretch; crop: (10%, 0, 10%, 0) (left, top, right, bottom); facing: front (default) | camera | upright -> a picture on a flat card, anchors like Box; style filter: brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg);
+Files (Image, Mesh, Sound src): only names of files the user has added. For a picture, model or audio file they have not added yet, write src: \\select; and the studio asks them to pick it.
 Mesh src: "file.stl" | "file.glb"; size; fit: contain | stretch  (only files the user added)      Sound kind: knock; pitch: 120%; volume: 60%; length: 2s;  or  Sound src: "voice-over.mp3";
 Voice voice: en-GB; rate: 100%; captions: on; neural: bf_emma;  (a narrator: in motion, say: Narrator "The valve opens"; the line is spoken in the preview and shown as a caption, burned into exports)
 
@@ -7574,7 +7773,7 @@ function makeCmEditor() {
       if (u.docChanged || u.transactions.length) emit('history', fakeEvent('history'));
       if (u.docChanged && !u.transactions.some(t => t.annotation(progAnn))) {
         const tr = u.transactions.find(t => t.annotation(C.Transaction.userEvent)); const ue = tr ? tr.annotation(C.Transaction.userEvent) : '';
-        const inputType = /^input\.type/.test(ue) ? 'insertText' : /^delete\.backward/.test(ue) ? 'deleteContentBackward' : /^input\.paste/.test(ue) ? 'insertFromPaste' : /^input/.test(ue) ? 'insertText' : 'other';
+        const inputType = /^input\.type/.test(ue) ? 'insertText' : /^delete\.backward/.test(ue) ? 'deleteContentBackward' : /^input\.paste/.test(ue) ? 'insertFromPaste' : /^input/.test(ue) ? 'insertText' : /^undo/.test(ue) ? 'historyUndo' : /^redo/.test(ue) ? 'historyRedo' : 'other';
         emit('input', fakeEvent('input', { inputType }));
       }
       if (u.selectionSet || u.docChanged) emit('select', fakeEvent('select'));
@@ -7693,7 +7892,7 @@ const ANCHORS = {
   Capsule: ['axis', 'end.a', 'end.b'], Bolt: ['axis', 'end.a', 'end.b', 'head'], Ring: ROUND, Nut: ROUND, Star: ROUND, Cam: [...ROUND, 'nose'],
   Wedge: [...BOX_ANCHORS, 'slope'], Plate: [...BOX_ANCHORS, 'normal', 'hole'], Beam: [...BOX_ANCHORS, 'end.a', 'end.b', 'line'], Mesh: BOX_ANCHORS,
   Triangle: [...BOX_ANCHORS, 'normal', 'apex', 'corner.left', 'corner.right'], Ellipse: [...BOX_ANCHORS, 'normal'], Polygon: [...ROUND, 'normal'], Path: [...ROUND, 'normal', 'start', 'end'],
-  Sector: [...ROUND, 'normal', 'tip', 'mid', 'edge.start', 'edge.end'], Arc: ['axis', 'start', 'mid', 'end'], Text: [...BOX_ANCHORS, 'normal'],
+  Sector: [...ROUND, 'normal', 'tip', 'mid', 'edge.start', 'edge.end'], Arc: ['axis', 'start', 'mid', 'end'], Text: [...BOX_ANCHORS, 'normal'], Image: [...BOX_ANCHORS, 'normal'],
 };
 const LINE_ANCHOR = (a) => /^(edge\.|axis|end\.|mid|line|normal|face\.|com\.)/.test(a);
 const SHAPE_DOC = {
@@ -7708,19 +7907,22 @@ const SHAPE_DOC = {
   Ring: 'radius, inner, thickness: a washer', Nut: 'radius, thickness, hole: a hex nut', Bolt: 'radius, length, head: a hex-head bolt', Cam: 'radius, lift, width: a pear cam',
   Triangle: 'size (w, h), apex, thickness: flat, facing +z', Ellipse: 'size (w, h), thickness: flat', Polygon: 'sides, radius, thickness: a flat regular polygon',
   Sector: 'radius, angle, start, inner, thickness: a pie slice or ring segment', Arc: 'radius, angle, start, stroke: a curved line', Path: 'points (x, y) (x, y) ..., thickness: any flat outline',
+  Image: 'src "cat.png" (or \\select), size (w, auto), fit, crop (l, t, r, b), facing: front | camera | upright: a picture on a card',
   Star: 'points, radius, inner, thickness', Plot: 'size (w, h), function of x (and t) or data (x, y) …, kind: line | bars | points | area, x-axis/y-axis: 0..10 step 2 "label", reveal', Text: 'text "Hello", size (letter height), facing: front | camera; style it with font-family, font-size, font-style: 3d …', Mesh: 'src "file.stl" or "file.glb", size (x, y, z), fit: contain | stretch',
 };
 const PROP_DOC = {
   overlap: ['overlap: allow;', 'Do not warn when this part passes through another (W0560)'],
   fixed: ['fixed: top-left;', 'Keeps the part at one place on the screen whatever the Observer does: top-left, top, top-right, left, center, right, bottom-left, bottom, bottom-right, then an optional margin written as a bare percentage (fixed: bottom 8%;); or (x%, y%) from the top-left. For titles and logos in a moving camera'],
   sound: ['sound: Knock at end;', 'Play a Sound: at start, at end, at 2s or every 1s; then an optional volume like 60%'], pitch: ['pitch: 120%;', 'Higher or lower than normal (Sound)'], volume: ['volume: 60%;', 'How loud (Sound)'],
-  size: ['size: (x, y, z);', 'Box size; Rect takes (w, h)'], radius: ['radius: 40mm;', 'Radius'], height: ['height: 100mm;', 'Height along the axis'],
+  size: ['size: (x, y, z);', 'Box size; Rect takes (w, h); Image takes (w, h), where either may be auto'], radius: ['radius: 40mm;', 'Radius'], height: ['height: 100mm;', 'Height along the axis'],
   length: ['length: 120mm;', 'Length (Rod, Link: centre to centre)'], width: ['width: 10mm;', 'Width'], thickness: ['thickness: 4mm;', 'Thickness'],
   teeth: ['teeth: 24;', 'Number of teeth (6 or more)'], module: ['module: 2mm;', 'Tooth size; meshed gears share it'], tube: ['tube: 3mm;', 'Tube radius'],
   turns: ['turns: 8;', 'Number of coils'], inner: ['inner: 30mm;', 'Inner radius (Tube, Ring, Star)'], sides: ['sides: 6;', 'Number of sides'],
   corner: ['corner: 6mm;', 'Corner rounding'], hole: ['hole: 8mm;', 'Radius of the centre hole'], lift: ['lift: 20mm;', 'How far the cam nose rises'],
   points: ['points: 5;  Path: points: (0, 0) (40mm, 0) (20mm, 30mm);', 'Star: number of points. Path: the outline, point after point'], apex: ['apex: 10mm;', 'Shifts the top corner sideways'],
-  angle: ['angle: 90deg;', 'How far the slice or arc goes round'], start: ['start: 0deg;', 'Where it starts, anticlockwise from +x'], src: ['src: "piston.stl";', 'A model file added to the project (STL, GLB or glTF)'], fit: ['fit: contain;', 'contain keeps proportions; stretch fills the size box'], wire: ['wire: 2mm;', 'Wire thickness'], from: ['from: (x, y, z);', 'Start point'], to: ['to: (x, y, z);', 'End point'],
+  angle: ['angle: 90deg;', 'How far the slice or arc goes round'], start: ['start: 0deg;', 'Where it starts, anticlockwise from +x'], src: ['src: "cat.png";  or  src: \\select;', 'A file added to the project: a picture (Image), a model (Mesh, STL, GLB or glTF) or audio (Sound). \\select: pick it later in the Select panel'], fit: ['fit: contain;', 'Mesh: contain keeps proportions; stretch fills the size box. Image with both sides given: contain keeps the picture\'s shape inside them; cover fills them and trims the picture; stretch fills them'],
+  crop: ['crop: (10%, 0, 10%, 5%);', 'Image: trims the picture: left, top, right, bottom, each a share of the picture'],
+  filter: ['filter: brightness(110%) contrast(95%) saturate(120%) hue-rotate(10deg);', 'Image: adjusts the picture like CSS filters, in that order; 100% leaves it as it is; none clears it'], wire: ['wire: 2mm;', 'Wire thickness'], from: ['from: (x, y, z);', 'Start point'], to: ['to: (x, y, z);', 'End point'],
   stroke: ['stroke: 3mm;', 'Line thickness'], head: ['head: 12mm;', 'Arrow head length'], domain: ['domain: u in 0..1;', 'Parameter range'], point: ['point: (f(u, t), ...);', 'Point as a function of u and t'],
   at: ['at: (x, y, z);  or  at: Other.face.top + (0, 10mm, 0);', 'Where the centre goes'], align: ['align: face.bottom;', 'Put this anchor on the at point'],
   orient: ['orient: 90deg about x;', 'Starting rotation'], visible: ['visible: false;', 'Hide but keep usable'], repeat: ['repeat: 4 step (100mm, 0, 0);', 'Numbered copies; i counts 0, 1, 2 ...'],
@@ -7738,7 +7940,7 @@ const PROP_DOC = {
   roll: ['roll: Ground;', 'Spin = distance travelled / radius'],
   follow: ['follow: Part offset (x, y, z);', 'Camera keeps an offset from a part'],
   text: ['text: "Inlet valve";  (\\n starts a new line)', 'Text: in the scene for a Text part; in style it prints on the part\'s faces'],
-  facing: ['facing: front;', 'Text: camera (the default) keeps it turned to the viewer, so it reads straight at any zoom; front keeps it fixed in the scene, facing +z, like a sign on a wall'],
+  facing: ['facing: front;  or  camera  or  upright', 'Text and Image: camera (also called observer) keeps it turned to the viewer; upright turns it about the vertical only, like a cut-out on the floor; front keeps it fixed in the scene, facing +z, like a sign on a wall. Text faces the camera by default, Image the front'],
   'text-side': ['text-side: front;  or  text-side: front top;  or  all', 'Which faces carry the text: front back left right top bottom; round parts wrap it round the side'],
   'font-family': ['font-family: Montserrat;  or  sans | serif | mono | "Playfair Display" | "Avenir Next"', 'Typeface: sans, serif, mono, a bundled font (Inter, Montserrat, Oswald, "Bebas Neue", "Playfair Display", "Space Grotesk", Caveat, "JetBrains Mono", "Noto Sans Devanagari"), or any font installed on the computer (3D letters: sans, serif, mono)'],
   'font-size': ['font-size: 24mm;  or  40%', 'Letter height; a % is a share of the face. Leave it out to fit the face'],
@@ -7775,9 +7977,9 @@ function styleNames() { const src = (isSingle() && ta ? ta.value : files.style) 
 const SKY_DOC = { day: 'blue, bright horizon', dawn: 'deep blue to peach', dusk: 'navy to orange glow', sunset: 'violet to amber', night: 'near black, with stars', space: 'black, full of stars', overcast: 'soft grey', studio: 'neutral backdrop' };
 const SHAPE_PROPS = (type) => (GearScript.SHAPES[type] ? GearScript.SHAPES[type].props : []);
 const COMMON = ['at', 'align', 'orient', 'visible', 'use', 'repeat', 'scatter', 'attach', 'hinge', 'slider', 'range', 'mesh', 'couple', 'belt', 'pin', 'overlap', 'fixed'];
-const REQUIRED = { Sound: ['kind'], Box: ['size'], Rect: ['size'], Sphere: ['radius'], Cylinder: ['radius', 'height'], Cone: ['radius', 'height'], Torus: ['radius'], Rod: ['length'], Link: ['length'], Gear: ['teeth'], Pulley: ['radius'], Wheel: ['radius'], Disc: ['radius'], Spring: ['radius', 'length'], Tube: ['radius', 'height'], Capsule: ['radius', 'length'], Prism: ['radius', 'height'], Pyramid: ['radius', 'height'], Dome: ['radius'], Wedge: ['size'], Plate: ['size'], Beam: ['length'], Ring: ['radius'], Nut: ['radius'], Bolt: ['radius', 'length'], Cam: ['radius'], Star: ['radius'], Mesh: ['src', 'size'], Triangle: ['size'], Ellipse: ['size'], Polygon: ['radius'], Sector: ['radius'], Arc: ['radius'], Path: ['points'], Line: ['from', 'to'], Arrow: ['from', 'to'], Curve: ['domain', 'point'] };
+const REQUIRED = { Sound: ['kind'], Box: ['size'], Rect: ['size'], Sphere: ['radius'], Cylinder: ['radius', 'height'], Cone: ['radius', 'height'], Torus: ['radius'], Rod: ['length'], Link: ['length'], Gear: ['teeth'], Pulley: ['radius'], Wheel: ['radius'], Disc: ['radius'], Spring: ['radius', 'length'], Tube: ['radius', 'height'], Capsule: ['radius', 'length'], Prism: ['radius', 'height'], Pyramid: ['radius', 'height'], Dome: ['radius'], Wedge: ['size'], Plate: ['size'], Beam: ['length'], Ring: ['radius'], Nut: ['radius'], Bolt: ['radius', 'length'], Cam: ['radius'], Star: ['radius'], Mesh: ['src', 'size'], Image: ['src'], Triangle: ['size'], Ellipse: ['size'], Polygon: ['radius'], Sector: ['radius'], Arc: ['radius'], Path: ['points'], Line: ['from', 'to'], Arrow: ['from', 'to'], Curve: ['domain', 'point'] };
 const SPECIAL_PROPS = { Observer: ['position', 'look-at', 'zoom', 'fov', 'projection'], Light: ['kind', 'direction', 'power', 'at', 'color'], Scene: ['duration', 'frame', 'caption-band', 'sky', 'sun', 'ground', 'stars', 'background', 'grid', 'explode'] };
-const STYLE_KEYS = ['use', 'color', 'material', 'outline', 'opacity', 'luminosity', 'text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height', 'text-transform', 'letter-spacing', 'label', 'label-color', 'label-size', 'label-background', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'cut', 'cut-color', 'explode'];
+const STYLE_KEYS = ['use', 'color', 'material', 'outline', 'opacity', 'luminosity', 'filter', 'text', 'text-side', 'font-family', 'font-size', 'font-weight', 'font-style', 'text-color', 'text-depth', 'text-align', 'text-padding', 'text-background', 'line-height', 'text-transform', 'letter-spacing', 'label', 'label-color', 'label-size', 'label-background', 'trail', 'roughness', 'metalness', 'wireframe', 'shadow', 'cut', 'cut-color', 'explode'];
 const MATERIALS = [['metal', 'soft metal'], ['brushed', 'satin metal'], ['chrome', 'mirror metal'], ['gold', 'polished gold'], ['plastic', 'smooth'], ['matte', 'no shine'], ['glass', 'see-through'], ['ghost', 'x-ray: faint faces, clear edges'], ['flat', 'faceted'], ['glow', 'shines: luminosity 60%']];
 const NAMED = ['steel', 'brass', 'oak', 'copper', 'aluminium', 'iron', 'rubber', 'walnut', 'glass', 'graphite'];
 const EASE = ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out', 'cubic-bezier(0.4, 0, 0.2, 1)'];
@@ -8238,6 +8440,52 @@ $('tbShape').addEventListener('click', () => openShapePicker({}));
 $('tbSound').addEventListener('click', () => openSoundPicker({ mode: 'decl' }));
 $('tbModel').addEventListener('click', () => $('modelsBtn').click());
 $('tbState').addEventListener('click', () => copyState());
+/* src: hints. Pick a file… opens the file chooser for that kind of file; the file is added to the project and its name written in */
+const PICK_KIND = {
+  Image: { label: 'Pick an image…', accept: '.png,.jpg,.jpeg,.gif,.webp,.svg,image/png,image/jpeg,image/gif,image/webp,image/svg+xml', rx: () => IMAGE_RX, doc: 'Choose a picture (PNG, JPG, WebP, GIF or SVG): it is added to the project and kept with it' },
+  Mesh: { label: 'Pick a 3D model…', accept: '.stl,.glb,.gltf', rx: () => /\.(stl|glb|gltf)$/i, doc: 'Choose an STL, GLB or glTF file: it is added to the project and kept with it' },
+  Sound: { label: 'Pick an audio file…', accept: '.mp3,.wav,.ogg,.m4a,.aac,.flac,audio/*', rx: () => AUDIO_RX, doc: 'Choose an MP3, WAV, OGG or M4A file: it is added to the project and kept with it' },
+};
+const pickFileItem = (type) => ({ label: PICK_KIND[type].label, kind: 'file', doc: PICK_KIND[type].doc, pin: true, action: (pre) => pickIntoCode(type, pre) });
+const laterItem = (type) => ({ label: '\\select', kind: 'later', doc: `Pick the file later: a stand-in shows until then, and the Select panel asks for it`, pin: true, action: (pre) => {
+  const e = ta.selectionStart; let s0 = e - (pre || '').length; if (ta.value[s0 - 1] === '\\') s0--;
+  ta.setSelectionRange(s0, e); insertText('\\select'); ta.focus();
+} });
+/* adds files to the project (a name already used by another file gets -2, -3 …); resolves with the names that could be read */
+async function addProjectFiles(list) {
+  const next = { ...modelFiles }, added = [];
+  const same = (a, b) => a && b && a.byteLength === b.byteLength && a.every((x, i) => x === b[i]);
+  for (const f of list) {
+    if (f.size > 25e6) { toast(`${f.name} is over 25 MB; ${AUDIO_RX.test(f.name) ? 'shorten or compress it' : IMAGE_RX.test(f.name) ? 'make it smaller' : 'simplify it'} first`, 4000); continue; }
+    const bytes = new Uint8Array(await f.arrayBuffer()); let name = f.name.replace(/[^\w.\- ]+/g, '-');
+    if (next[name] && !same(next[name], bytes)) { const m = name.match(/^(.*?)(\.[^.]*)?$/); let k = 2; while (next[`${m[1]}-${k}${m[2] || ''}`]) k++; name = `${m[1]}-${k}${m[2] || ''}`; }
+    next[name] = bytes; added.push(name);
+  }
+  if (!added.length) return [];
+  await setModels(next); markDirty();
+  if (document.querySelector('.modal-back.models:not([hidden])')) renderModels();
+  return added.filter(n => GearScript.assets[n] || GearScript.images[n] || GearScript.audio[n]);
+}
+/* the file chooser for one kind of file; resolves with the names added ([] when cancelled) */
+function chooseFiles(type, multiple) {
+  const inp = $('pickIn'); inp.accept = PICK_KIND[type].accept; inp.multiple = !!multiple; inp.value = '';
+  return new Promise((res) => {
+    let done = false; const finish = (v) => { if (!done) { done = true; res(v); } };
+    inp.onchange = async () => { const list = [...inp.files]; inp.value = ''; finish(list.length ? await addProjectFiles(list) : []); };
+    inp.oncancel = () => finish([]);
+    inp.click();
+  });
+}
+/* Pick a file… from the src: hint: the name goes where the caret was (or where it is now, if the code changed meanwhile) */
+function pickIntoCode(type, pre) {
+  const end = ta.selectionStart, start = end - (pre || '').length, before = ta.value;
+  chooseFiles(type).then((names) => {
+    if (!names.length) { ta.focus(); return; }
+    if (ta.value === before) ta.setSelectionRange(start, end);
+    insertText(`"${names[0]}"`); ta.focus();
+    if (type === 'Image') setTimeout(() => toastActions(`Added ${names[0]}.`, [['Crop and adjust…', () => openSelectPanel({ src: names[0] })]], 6000), 0);
+  });
+}
 const pickSoundItem = (mode) => ({ label: 'Pick a sound…', kind: 'picker', doc: 'Hear every built-in sound and choose one.', pin: true, action: (pre) => openSoundPicker({ mode, prefix: pre }) });
 
 /* ---------------- examples: a dialog with a picture of each; each opens in a new tab ---------------- */
@@ -8326,7 +8574,7 @@ const SHAPE_CATS = [
   ['Mechanisms', ['Gear', 'Pulley', 'Wheel', 'Cam', 'Link', 'Rod', 'Spring']],
   ['Hardware and structure', ['Bolt', 'Nut', 'Beam']],
   ['Lines and curves', ['Line', 'Arrow', 'Arc', 'Curve']],
-  ['Assemblies and models', ['Group', 'Mesh']],
+  ['Assemblies and models', ['Group', 'Mesh', 'Image']],
   ['Text, charts and sky', ['Text', 'Plot', 'Sky']],
 ];
 const SHAPE_TEMPLATES = {
@@ -8344,6 +8592,7 @@ const SHAPE_TEMPLATES = {
   Curve: 'domain: u in 0..1; point: (u * 120mm, 20mm * sin(u * 720deg), 0); stroke: 3mm;',
   Group: 'base: Box { size: (60mm, 10mm, 40mm); } post: Cylinder { radius: 6mm; height: 50mm; at: (0, 30mm, 0); }',
   Mesh: 'src: "model.stl"; size: (60mm, 60mm, 60mm);',
+  Image: 'src: \\select; size: (200mm, auto);',
   Text: 'text: "Hello"; size: 24mm; facing: camera;',
   Plot: 'size: (400mm, 240mm); function: sin(x); x-axis: 0..10 step 2 "time (s)"; y-axis: -1.2..1.2 step 0.5; reveal: min(1, t / 3s);',
   Sound: 'kind: knock;',
@@ -8357,6 +8606,7 @@ function shapeThumb(type) {
   if (type === 'Plot') return (shapeThumbs[type] = ico('<path d="M10 10v44h46"/><path d="M14 40c6-18 10-22 14-10s8 14 12 2 6-14 12-16" stroke="#38bdf8"/>'));
   if (type === 'Text') return (shapeThumbs[type] = ico('<path d="M14 16h36M32 16v34M24 50h16"/><path d="M44 30l8 0M48 26v8" stroke-opacity=".55"/>'));
   if (type === 'Sky') return (shapeThumbs[type] = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2a55"/><stop offset=".62" stop-color="#f29c6b"/><stop offset=".63" stop-color="#3a3340"/><stop offset="1" stop-color="#241f2a"/></linearGradient></defs><circle cx="32" cy="32" r="26" fill="url(#g)"/><circle cx="32" cy="32" r="26" fill="none" stroke="#9aa6b2" stroke-width="2"/><g fill="#fff"><circle cx="22" cy="20" r="1"/><circle cx="38" cy="15" r="1.2"/><circle cx="44" cy="25" r=".9"/></g></svg>'));
+  if (type === 'Image') return (shapeThumbs[type] = ico('<rect x="12" y="14" width="40" height="36" rx="3"/><path d="M15 44l12-13 9 9 6-5 9 9"/><circle cx="41" cy="24" r="4"/>'));
   if (type === 'Mesh') return (shapeThumbs[type] = ico('<path d="M32 8l20 11v22L32 52 12 41V19z"/><path d="M32 30l20-11M32 30v22M32 30L12 19"/><path d="M22 24l20 12M42 24L22 36" stroke-opacity=".5"/>'));
   try {
     if (!shapeThumb.r) {
@@ -8496,6 +8746,10 @@ function suggestions() {
       return { prefix, items: [...new Set(props)].map(p => it(p, req.includes(p) ? 'required' : special ? special : (SHAPE_PROPS(type).includes(p) ? type : 'placement'), (PROP_DOC[p] || [''])[0], p === 'anchor' ? 'anchor ' : p + ': ')) };
     }
     const prop = pm[1], val = pm[2]; doc = (PROP_DOC[prop] || [''])[0];
+    if (prop === 'crop' && type === 'Image') {   /* the crop box in the Select panel, or numbers */
+      const path = om && om[1] ? om[1] + (cx.depth >= 2 ? '.' + ((inner.match(/^(\w+)\s*:/) || [])[1] || '') : '') : null;
+      return { prefix, doc, items: [...(path && !PLAYER ? [{ label: 'Crop in the panel…', kind: 'panel', doc: 'Drag a crop box over the picture, and adjust its light', pin: true, action: () => openSelectPanel({ path }) }] : []), it('(10%, 0, 10%, 0)', 'crop', 'left, top, right, bottom')] };
+    }
     if (isGroup && !COMMON.includes(prop) && !PROP_DOC[prop] && /^[A-Z]?\w*$/.test(val)) return { prefix, doc: 'A member: name: Shape { ... }', items: [browseItem()].concat(Object.keys(GearScript.SHAPES).filter(k => k !== 'Group').map(k => it(k, 'shape', SHAPE_DOC[k], k + ' { '))).concat([...facts.defines.keys()].map(k => it(k, 'define', '', k + ' { '))) };
     const own = (ANCHORS[type] || []).map(a => [a, LINE_ANCHOR(a) ? 'line' : 'point']);
     const words = val.trim().split(/\s+/);
@@ -8531,7 +8785,11 @@ function suggestions() {
     if (prop === 'ground') { const cpre = (val.match(/#[0-9a-fA-F]*$|[a-z]*$/) || [''])[0]; return { prefix: cpre, doc, items: [it('#2c3328', 'colour', 'dark earth'), it('#3d4a35', 'colour', 'grass at dusk'), it('#c9c2b4', 'colour', 'sand'), it('#d8dde2', 'colour', 'studio floor'), it('none', 'value', 'no ground'), ...colourItems(cpre).filter(x => x.kind !== 'named finish')] }; }
     if (prop === 'frame') return { prefix, doc, items: [['youtube', '16:9 · 1920×1080'], ['youtube-short', '9:16 · 1080×1920, with its safe area'], ['reel', '9:16 · Instagram Reels'], ['tiktok', '9:16 · TikTok'], ['instagram', '4:5 · 1080×1350 feed post'], ['linkedin', '4:5 · 1080×1350'], ['square', '1:1 · 1080×1080'], ['slides', '16:9 · for PowerPoint, Keynote, Google Slides'], ['4k', '16:9 · 3840×2160'], ['cinema', '2.39:1 wide screen'], ['portrait', '9:16'], ['landscape', '16:9'], ['9:16', 'any ratio'], ['1080x1920', 'exact pixels']].map(([k, d]) => it(k, 'frame', d)) };
     if (prop === 'stars') return { prefix, doc, items: [it('400', 'value', 'a few'), it('900', 'value', 'a clear night'), it('2200', 'value', 'deep space')] };
-    if (prop === 'src' && type === 'Sound') { const au = Object.keys(modelFiles || {}).filter(n => AUDIO_RX.test(n)); return { prefix, doc: 'An audio file added with Insert › 3D models and audio', items: au.length ? au.map(n => it(`"${n}"`, 'audio file', '')) : [it('"voice-over.mp3"', 'file', 'add the file first: Insert › 3D models and audio')] }; }
+    if (prop === 'src' && (type === 'Sound' || type === 'Image' || type === 'Mesh')) {   /* Pick a file… opens the file chooser; the files already in the project; \select to pick later */
+      const rx = type === 'Sound' ? AUDIO_RX : type === 'Image' ? IMAGE_RX : /\.(stl|glb|gltf)$/i, have = Object.keys(modelFiles || {}).filter(n => rx.test(n));
+      const what = type === 'Sound' ? 'audio file' : type === 'Image' ? 'picture' : '3D model';
+      return { prefix, doc: `A ${what} in the project (Insert › 3D models, images and audio)`, items: [pickFileItem(type), laterItem(type), ...have.map(n => it(`"${n}"`, what, type === 'Image' && GearScript.images[n] ? `${Math.round(GearScript.images[n].w)}×${Math.round(GearScript.images[n].h)}` : ''))] };
+    }
     if (prop === 'voice' && type === 'Voice') { const vs = speechOK ? speechSynthesis.getVoices() : []; return { prefix, doc, items: [it('en-US', 'language', ''), it('en-GB', 'language', ''), it('en-IN', 'language', ''), ...vs.slice(0, 30).map(v => it(`"${v.name}"`, v.lang, 'installed voice'))] }; }
     if (prop === 'captions') return { prefix, doc, items: [it('on', 'value', 'show each line in the picture'), it('off', 'value', 'speak only')] };
     if (prop === 'kind' && type === 'Plot') return { prefix, doc, items: [it('line', 'plot', 'a curve'), it('bars', 'plot', 'a bar for each value'), it('points', 'plot', 'a dot for each value'), it('area', 'plot', 'filled down to the axis')] };
@@ -8548,6 +8806,11 @@ function suggestions() {
     if (!pm) return { prefix, items: STYLE_KEYS.map(k => it(k, 'style', (PROP_DOC[k] || [''])[0], k + ': ')) };
     const prop = pm[1]; doc = (PROP_DOC[prop] || [''])[0];
     if (prop === 'material') return { prefix, doc, items: MATERIALS.map(([m, d]) => it(m, 'material', d)) };
+    if (prop === 'filter') {   /* Image light: the panel, or the filter words */
+      const sel = (cx.headers[0] || '').trim(), one = /^[A-Z]\w*(\.\w+)?$/.test(sel) ? sel : null;
+      return { prefix, doc, items: [...(one && !PLAYER ? [{ label: 'Adjust in the panel…', kind: 'panel', doc: 'Sliders for brightness, contrast, saturation and hue, with the picture beside them', pin: true, action: () => openSelectPanel({ path: one }) }] : []),
+        it('brightness(110%)', 'filter', '100% leaves it as it is'), it('contrast(110%)', 'filter', ''), it('saturate(120%)', 'filter', '0% is grey'), it('hue-rotate(20deg)', 'filter', 'turns every colour round the colour wheel'), it('none', 'value', 'no filter')] };
+    }
     if (prop === 'use') return { prefix, doc, items: styleNames().filter(n => !new RegExp('^\\s*' + n + '::Style\\b').test(cx.headers[0] || '')).map(n => it(n, 'style', 'a named style')) };
     const cpre = (pm[2].match(/#[0-9a-fA-F]*$|[a-z]*$/) || [''])[0];
     if (prop === 'color') return { prefix: cpre, doc, items: [...colourItems(cpre), it('gradient(#16181b, #5d6670, axis: x)', 'function', 'two colours along an axis; shows spin')] };
@@ -9532,13 +9795,13 @@ function renderProblems() {
   if (!lastDiags.length) { list.innerHTML = '<li class="none" style="cursor:default">No problems. The preview is up to date.</li>'; }
   else list.innerHTML = groups.map((g, i) => {
     const d = g.list[0], n = g.list.length, fx = g.list.filter(canApply), open = probOpen.has(g.key);
-    const act = fx.length ? rowFixBtn(d, fx.length) : aiOn && !PLAYER ? `<button type="button" class="rowfix ai" data-fix="ai" title="Ask the AI on this site to fix ${n > 1 ? 'these problems' : 'this problem'} (you can undo it)">${SPARK_SVG}<span>Ask AI</span></button>` : '';
+    const act = (d.code === 'W0630' || d.code === 'W0629') && !PLAYER ? `<button type="button" class="rowfix" data-fix="pick" title="Open the Select panel to pick the file${n > 1 ? 's' : ''}"><span>Pick…</span></button>` : fx.length ? rowFixBtn(d, fx.length) : aiOn && !PLAYER ? `<button type="button" class="rowfix ai" data-fix="ai" title="Ask the AI on this site to fix ${n > 1 ? 'these problems' : 'this problem'} (you can undo it)">${SPARK_SVG}<span>Ask AI</span></button>` : '';
     return `<li class="${d.sev === 'error' ? 'e' : 'w'}" data-i="${i}"><span class="loc" title="${esc(locOf(d))}">${esc(locOf(d))}</span><span class="msg"><b class="pcode">${d.code}</b>${msgHtml(d)}${n > 1 ? ` <button type="button" class="more" aria-expanded="${open}" title="${open ? 'Hide' : 'Show'} the ${n} places">×${n}</button>` : ''}</span><span class="act">${act}</span>${d.fix ? `<span class="fix">${esc(d.fix)}</span>` : ''}${n > 1 ? `<span class="locs"${open ? '' : ' hidden'}>${g.list.map((x, j) => `<button type="button" class="locchip" data-j="${j}">${esc(locOf(x))}${x.col > 1 ? ':' + x.col : ''}</button>`).join('')}</span>` : ''}</li>`;
   }).join('') || '<li class="none" style="cursor:default">Nothing matches this filter.</li>';
   list.querySelectorAll('li[data-i]').forEach(li => li.addEventListener('click', () => { const d = groups[+li.dataset.i].list[0]; if (d.file) goToDiag(d); }));
   list.querySelectorAll('.more').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (probOpen.has(g.key)) probOpen.delete(g.key); else probOpen.add(g.key); renderProblems(); }));
   list.querySelectorAll('.locchip').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const d = groups[+b.closest('li').dataset.i].list[+b.dataset.j]; if (d.file) goToDiag(d); }));
-  list.querySelectorAll('.rowfix').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (b.dataset.fix === 'edit') { const fx = g.list.filter(canApply); const r = applyFixes(fx); if (r) reportFix(r.changes, r.before, fx[0].edit.guess ? 'guess' : 'sure'); } else aiFixFor(g.list); }));
+  list.querySelectorAll('.rowfix').forEach(b => b.addEventListener('click', (e) => { e.stopPropagation(); const g = groups[+b.closest('li').dataset.i]; if (b.dataset.fix === 'edit') { const fx = g.list.filter(canApply); const r = applyFixes(fx); if (r) reportFix(r.changes, r.before, fx[0].edit.guess ? 'guess' : 'sure'); } else if (b.dataset.fix === 'pick') openSelectPanel({ pending: true }); else aiFixFor(g.list); }));
   renderFixBtn(); renderAskBtn();
   document.querySelectorAll('.tab').forEach(t => { const f = t.dataset.file; const mine = (d) => f === 'project' || d.file === f; const e = lastDiags.some(d => mine(d) && d.sev === 'error'), w = lastDiags.some(mine); t.innerHTML = `${f === 'project' ? esc(projName) + '.gscript' : '.' + f}${e ? '<span class="dot"></span>' : w ? '<span class="dot w"></span>' : ''}`; });
   const st = $('status'); st.className = 'status' + (errs.length ? ' bad' : wr.length ? ' warn' : '');
@@ -10240,20 +10503,29 @@ function buildTexts(m) {
     GearScript.setOpacity(l, l.liveOpacity);
   }
 }
-/* each frame: Text parts that face the camera turn to it, and a Text takes the colour its motion rules give it */
-const _q1 = new THREE.Quaternion(), _q2 = new THREE.Quaternion();
+/* each frame: Text and Image parts that face the camera turn to it, and a Text takes the colour its motion rules give it.
+   camera (or observer): the whole face turns to the viewer, like a label; upright: it turns about the vertical only, like a cut-out on the floor */
+const _q1 = new THREE.Quaternion(), _q2 = new THREE.Quaternion(), _q3 = new THREE.Quaternion(), _v1 = new THREE.Vector3(), _v2 = new THREE.Vector3(), _yAxis = new THREE.Vector3(0, 1, 0);
+function facingQuat(obj, c, mode, out) {   /* the rotation, in obj's parent, that turns obj's +z face to the camera c */
+  obj.parent.updateWorldMatrix(true, false); obj.parent.getWorldQuaternion(_q1);
+  if (mode === 'upright') { obj.getWorldPosition(_v1); c.getWorldPosition(_v2); _q3.setFromAxisAngle(_yAxis, Math.atan2(_v2.x - _v1.x, _v2.z - _v1.z)); }
+  else _q3.copy(c.quaternion);
+  return out.copy(_q1).invert().multiply(_q3);
+}
 function textFollow(c) {
   if (!model) return;
   for (const l of model.leaves) {
+    if (l.type === 'Image') { if (l.spec.facing === 'camera' || l.spec.facing === 'upright') facingQuat(l.mesh, c, l.spec.facing, l.mesh.quaternion); continue; }
     if (l.type !== 'Text' || !l.textObjs) continue;
-    if (l.spec.facing === 'camera' && l.textHolder) { l.mesh.updateWorldMatrix(true, false); l.mesh.getWorldQuaternion(_q1); _q2.copy(_q1).invert().multiply(c.quaternion); l.textHolder.quaternion.copy(_q2); }
+    if ((l.spec.facing === 'camera' || l.spec.facing === 'upright') && l.textHolder) facingQuat(l.textHolder, c, l.spec.facing, l.textHolder.quaternion);
     if (l.textMat && l.colorTracked) l.textMat.color.copy(l.mesh.material.color);
   }
 }
 
 /* the note over the view when it is not showing the code as written. Every path of build() sets it, so it never sits beside a green tick */
 function setStale(on, text) { $('stale').hidden = !on; $('stale').textContent = text || 'Showing the last build that compiled'; }
-function build() {
+function build() { try { return buildNow(); } finally { selectSoon(); } }
+function buildNow() {
   let m;
   try { m = compileBox(box); }
   catch (e) { console.error(e); lastDiags = [new GearScript.Diag(null, 'E0999', 'The compiler hit an internal error: ' + e.message, 'This is a bug in GearScript. Undo the last edit to continue.')]; setSync('err'); renderProblems(); renderEditor(); setStale(true); return; }
@@ -10494,7 +10766,7 @@ function applyExplode(tt) {
   }
   const ax = model.sceneOpts.explodeAxis || (model.sceneOpts.explode && model.sceneOpts.explode.axis) || null, off = new THREE.Vector3(), T = new THREE.Matrix4();
   for (const e of model.order) {
-    const w = e.fixed ? 0 : e.explodeW !== undefined ? e.explodeW : (e.type === 'Text' || e.type === 'Plot' ? 0 : 1); if (!w) continue;
+    const w = e.fixed ? 0 : e.explodeW !== undefined ? e.explodeW : (e.type === 'Text' || e.type === 'Plot' || e.type === 'Image' ? 0 : 1); if (!w) continue;
     const c = model.explodeC.cs.get(e.name); if (!c) continue;
     off.copy(c).sub(model.explodeC.mid).multiplyScalar(k * w);
     if (ax) { const keep = off[ax]; off.set(0, 0, 0); off[ax] = keep; }
@@ -11128,6 +11400,244 @@ async function readZip(u8) {
   return out;
 }
 
+/* ---------------- the Select panel: files still to pick, and an Image's crop and light ----------------
+   src: \select; stands for a file not chosen yet (an AI reply often has them). When the code gains one, the panel opens by itself:
+   for each part it shows the name and a Select button, a preview on the right, Previous and Next through every one, and for an Image
+   a crop box and light sliders. Apply writes everything into the code as one change (src and crop in the scene, filter in the style),
+   with Undo. The same panel crops and adjusts an Image that already has its file (from the src: hint or the Problems panel) */
+const SP_TYPES = ['Image', 'Mesh', 'Sound'];
+const spRx = (type) => PICK_KIND[type].rx();
+/* every Image, Mesh and Sound in the project text (top-level parts and group members), with where its src, crop and filter are written */
+function fileSlots(T) {
+  const G = GearScript, lay = G.patchLayout(T), out = [];
+  const lineAt = (pos) => { let n = 1; for (let i = 0; i < pos; i++) if (T.charCodeAt(i) === 10) n++; return n; };
+  const valOf = (decls, key) => { let d = null; for (const x of decls) if (x.key === key) d = x; return d; };
+  for (const bx of lay.boxes) {
+    const sec = bx.secs.scene; if (!sec) continue;
+    const styleSec = bx.secs.style, styleStmts = styleSec ? G.stmtsIn(T, styleSec.a, styleSec.b) : [];
+    const filterOf = (path) => { let v = null; for (const st of styleStmts) if (st.sel === path) { const d = valOf(G.declsIn(T, st), 'filter'); if (d) v = d.value; } return v; };
+    const add = (path, type, block) => {
+      if (!SP_TYPES.includes(type)) return;
+      const ds = G.declsIn(T, block), src = valOf(ds, 'src'); if (!src) return;
+      const crop = valOf(ds, 'crop');
+      out.push({ box: bx.kind === 'single' ? null : bx.name, film: lay.film, path, type, srcDecl: src, cropDecl: crop, srcText: src.value, pick: /^\\select$/.test(src.value.trim()),
+        cropText: crop ? crop.value : null, filterText: type === 'Image' ? filterOf(path) : null, line: lineAt(block.open) });
+    };
+    for (const st of G.stmtsIn(T, sec.a, sec.b)) {
+      if (st.open < 0) continue;
+      const head = T.slice(st.start, st.open), m = head.match(/^\s*([A-Z]\w*)\s*::\s*([A-Z]\w*)/); if (!m) continue;
+      if (m[2] === 'Group') {
+        for (const d of G.declsIn(T, st)) if (d.member) {
+          const txt = T.slice(d.start, d.end), mm = txt.match(/^([A-Za-z_]\w*)\s*:\s*([A-Z]\w*)[^{]*\{/); if (!mm) continue;
+          add(m[1] + '.' + mm[1], mm[2], { open: d.start + mm[0].length - 1, close: d.end - 1 });
+        }
+      } else add(m[1], m[2], st);
+    }
+  }
+  return out;
+}
+const spPct = (v) => { const r = Math.round(v * 1000) / 10; return r ? `${r}%` : '0'; };
+function parseCrop(t) {
+  if (!t) return [0, 0, 0, 0];
+  const n = String(t).replace(/[()]/g, '').split(',').map(x => { x = x.trim(); const v = parseFloat(x); return !isFinite(v) ? 0 : /%$/.test(x) ? v / 100 : v; });
+  return n.length === 4 && n.every(v => v >= 0 && v < 1) ? n : [0, 0, 0, 0];
+}
+const cropText = (c) => c.some(v => v > 0.0005) ? `(${c.map(spPct).join(', ')})` : null;
+const SP_DEF = { brightness: 1, contrast: 1, saturate: 1, hue: 0 };
+function parseFilter(t) {
+  const f = { ...SP_DEF }; if (!t) return f;
+  for (const m of String(t).matchAll(/(brightness|contrast|saturate|hue-rotate)\(\s*(-?[\d.]+)\s*(%|deg|rad|turn)?\s*\)/g)) {
+    const v = parseFloat(m[2]), u = m[3];
+    if (m[1] === 'hue-rotate') f.hue = u === 'rad' ? v * 180 / Math.PI : u === 'turn' ? v * 360 : v;
+    else f[m[1]] = u === '%' ? v / 100 : v;
+  }
+  return f;
+}
+function filterText(f) {
+  const out = []; const p = (v) => `${Math.round(v * 100)}%`;
+  if (Math.abs(f.brightness - 1) > 0.004) out.push(`brightness(${p(f.brightness)})`);
+  if (Math.abs(f.contrast - 1) > 0.004) out.push(`contrast(${p(f.contrast)})`);
+  if (Math.abs(f.saturate - 1) > 0.004) out.push(`saturate(${p(f.saturate)})`);
+  if (Math.round(f.hue)) out.push(`hue-rotate(${Math.round(f.hue)}deg)`);
+  return out.length ? out.join(' ') : null;
+}
+const cssFilter = (f) => `brightness(${f.brightness}) contrast(${f.contrast}) saturate(${f.saturate}) hue-rotate(${f.hue}deg)`;
+/* code that still asks for files: how many src: \select; */
+function selectCount(T) { return (codeOnly(T).match(/\\select(?![\w-])/g) || []).length; }
+var sp = { back: null, items: [], i: 0, base: '', urls: new Map(), seen: 0, seenProj: null, timer: 0 };
+function spUrl(name) {
+  if (sp.urls.has(name)) return sp.urls.get(name);
+  const b = modelFiles[name]; if (!b) return null;
+  const ext = (name.match(/\.(\w+)$/) || ['', ''])[1].toLowerCase();
+  const u = URL.createObjectURL(new Blob([b], { type: IMAGE_MIME[ext] || (AUDIO_RX.test(name) ? 'audio/' + (ext === 'mp3' ? 'mpeg' : ext) : 'application/octet-stream') }));
+  sp.urls.set(name, u); return u;
+}
+const spFileName = (srcText) => { const m = String(srcText || '').match(/^"([^"]*)"$/); return m ? m[1] : null; };
+/* opts.pending: every part still to pick (\select) or naming a file that is not in the project; opts.src: the Images showing that file;
+   opts.path: one part (and opts.box, its chapter) */
+function openSelectPanel(opts = {}) {
+  if (PLAYER) return;
+  const T = patchBaseText(), all = fileSlots(T);
+  let list;
+  if (opts.src) list = all.filter(s => s.type === 'Image' && spFileName(s.srcText) === opts.src);
+  else if (opts.path) list = all.filter(s => s.path === opts.path && (opts.box === undefined || s.box === opts.box));
+  else list = all.filter(s => s.pick || (spFileName(s.srcText) !== null && !modelFiles[spFileName(s.srcText)]));
+  if (!list.length) { if (!opts.quiet) toast(opts.src || opts.path ? 'That part is not in the code any more.' : 'Every file is picked: nothing asks for one.', 3200); return; }
+  sp.base = T; sp.i = 0; sp.mode = opts.src || opts.path ? 'edit' : 'pending';
+  sp.items = list.map(s => { const f = spFileName(s.srcText); return { ...s, src: f && modelFiles[f] ? f : null, crop: parseCrop(s.cropText), filter: parseFilter(s.filterText), src0: f && modelFiles[f] ? f : null, crop0: parseCrop(s.cropText), filter0: parseFilter(s.filterText) }; });
+  if (opts.src && list.length > 1) { const caretLine = isSingle() ? ta.value.slice(0, ta.selectionStart).split('\n').length : 0; let best = 0; sp.items.forEach((x, k) => { if (Math.abs(x.line - caretLine) < Math.abs(sp.items[best].line - caretLine)) best = k; }); sp.i = best; }
+  if (!sp.back) {
+    sp.back = document.createElement('div'); sp.back.className = 'modal-back selback'; sp.back.hidden = true;
+    sp.back.innerHTML = '<div class="modal selpanel" role="dialog" aria-modal="true" aria-labelledby="spTitle"></div>';
+    document.body.appendChild(sp.back);
+    sp.back.addEventListener('mousedown', (e) => { if (e.target === sp.back) spClose(false); });
+    sp.back.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); spClose(false); }
+      else if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && e.altKey) { e.preventDefault(); spGo(sp.i + (e.key === 'ArrowRight' ? 1 : -1)); }
+      else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); spApply(); }
+    });
+    sp.back.addEventListener('dragover', (e) => { if (e.dataTransfer && [...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
+    sp.back.addEventListener('drop', async (e) => {
+      const fl = e.dataTransfer && [...e.dataTransfer.files]; if (!fl || !fl.length) return; e.preventDefault();
+      const it = sp.items[sp.i], ok = fl.filter(f => spRx(it.type).test(f.name)); if (!ok.length) { toast(`Drop ${PICK_KIND[it.type].label.replace(/^Pick (an? )?|…$/g, '')} here.`, 3000); return; }
+      const names = await addProjectFiles([ok[0]]); if (names[0]) { it.src = names[0]; spRender(); }
+    });
+  }
+  sp.back.hidden = false; spRender();
+  setTimeout(() => { const b = sp.back.querySelector('[data-sp="select"]') || sp.back.querySelector('[data-sp="apply"]'); if (b) b.focus(); }, 0);
+  track('select_panel', { mode: sp.mode, items: sp.items.length });
+}
+const spChanged = (x) => x.src !== x.src0 || cropText(x.crop) !== cropText(x.crop0) || filterText(x.filter) !== filterText(x.filter0);
+function spGo(k) { if (!sp.items.length) return; sp.i = Math.max(0, Math.min(sp.items.length - 1, k)); spRender(); }
+function spClose(applied) {
+  if (!sp.back || sp.back.hidden) return;
+  const lost = !applied && sp.items.some(spChanged);
+  sp.back.hidden = true; for (const u of sp.urls.values()) URL.revokeObjectURL(u); sp.urls.clear();
+  if (lost) toast('Closed without changing the code. The files you picked stay in the project.', 4200);
+  try { ta.focus(); } catch (e) {}
+}
+function spRender() {
+  const m = sp.back.querySelector('.selpanel'), it = sp.items[sp.i], n = sp.items.length, kind = PICK_KIND[it.type];
+  const what = it.type === 'Image' ? 'image' : it.type === 'Mesh' ? '3D model' : 'audio file';
+  const have = Object.keys(modelFiles).filter(f => spRx(it.type).test(f));
+  const where = [it.box && it.box !== '@common' ? `chapter ${it.box}` : it.box === '@common' ? '@common' : '', isSingle() || film ? `line ${it.line}` : ''].filter(Boolean).join(' · ');
+  const pend = sp.items.filter(x => x.pick && !x.src).length;
+  const head = sp.mode === 'pending'
+    ? `<h2 id="spTitle">Pick files</h2><p class="sub">${n === 1 ? 'One part asks' : `${n} parts ask`} for a file. Pick each one, or leave it for later: a stand-in shows until then.</p>`
+    : `<h2 id="spTitle">${it.type === 'Image' ? 'Crop and adjust' : 'Pick a file'}</h2><p class="sub">Changes go into the code when you apply them; the file itself is never changed.</p>`;
+  const chips = n > 1 ? `<div class="sp-chips" role="tablist">${sp.items.map((x, k) => `<button type="button" role="tab" data-go="${k}" aria-current="${k === sp.i}" class="${x.src ? 'done' : ''}" title="${esc(x.type)}${x.box ? ' in ' + esc(x.box) : ''}">${esc(x.path)}</button>`).join('')}</div>` : '';
+  const sl = (k, label, min, max, unit) => { const v = k === 'hue' ? it.filter.hue : Math.round(it.filter[k] * 100); return `<label class="sp-sl"><span>${label}</span><input type="range" data-f="${k}" min="${min}" max="${max}" step="1" value="${v}" title="Double-click to reset"><output>${v}${unit}</output></label>`; };
+  const adjust = it.type === 'Image' && it.src ? `<div><p class="sp-label">Light and colour</p>${sl('brightness', 'Brightness', 0, 200, '%')}${sl('contrast', 'Contrast', 0, 200, '%')}${sl('saturate', 'Saturation', 0, 200, '%')}${sl('hue', 'Hue', -180, 180, '°')}
+      <div class="sp-row"><button type="button" class="linkbtn" data-sp="resetf">Reset light</button><button type="button" class="linkbtn" data-sp="resetc">Reset crop</button></div>
+      <p class="sub small" style="margin:6px 0 0">Drag the box on the picture to crop it.</p></div>` : '';
+  const haveHtml = have.length ? `<div><p class="sp-label">In this project</p><div class="sp-have">${have.map(f => it.type === 'Image'
+      ? `<button type="button" data-use="${esc(f)}" aria-pressed="${f === it.src}" title="${esc(f)}"><img alt="" src="${esc(spUrl(f) || '')}"><span>${esc(f)}</span></button>`
+      : `<button type="button" class="nf" data-use="${esc(f)}" aria-pressed="${f === it.src}" title="${esc(f)}">${esc(f)}</button>`).join('')}</div></div>` : '';
+  let stage;
+  if (!it.src) stage = `<div class="sp-empty"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M4 17l5-5 4 4 3-3 4 4"/><circle cx="16" cy="9" r="1.6"/></svg>No ${what} picked for <b>${esc(it.path)}</b> yet.<br>Select one, choose one from the project, or drop a file here.</div>`;
+  else if (it.type === 'Image') {
+    const c = it.crop;
+    stage = `<div class="sp-frame"><img alt="${esc(it.src)}" src="${esc(spUrl(it.src) || '')}" style="filter:${cssFilter(it.filter)}"><div class="sp-crop" style="left:${c[0] * 100}%;top:${c[1] * 100}%;width:${(1 - c[0] - c[2]) * 100}%;height:${(1 - c[1] - c[3]) * 100}%">${['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].map(h => `<i data-h="${h}"></i>`).join('')}</div></div>`;
+  } else if (it.type === 'Sound') stage = `<div class="sp-file"><code>${esc(it.src)}</code><br><audio controls src="${esc(spUrl(it.src) || '')}"></audio></div>`;
+  else stage = `<div class="sp-file"><code>${esc(it.src)}</code><br><span class="sub small">3D model · its size and place stay as the code says</span></div>`;
+  const cd = it.src ? [`${it.path} { src: "${it.src}";${it.type === 'Image' && cropText(it.crop) ? ` crop: ${cropText(it.crop)};` : ''} }`, it.type === 'Image' && filterText(it.filter) ? `${it.path} { filter: ${filterText(it.filter)}; }   // style` : ''].filter(Boolean).join('\n') : `${it.path} { src: \\select; }   // not picked yet`;
+  const nch = sp.items.filter(spChanged).length;
+  m.innerHTML = `<div class="sp-head">${head}${chips}</div>
+    <div class="sp-body"><div class="sp-side">
+      <div class="sp-part"><b>${esc(it.path)}</b><span>${esc(it.type)}${where ? ' · ' + esc(where) : ''}${it.src ? ' · ' + esc(it.src) : ''}</span></div>
+      <div class="sp-row"><button type="button" class="btn primary" data-sp="select">${it.src ? `Choose another ${what}…` : `Select ${it.type === 'Image' ? 'image' : what}…`}</button></div>
+      ${haveHtml}${adjust}
+    </div><div class="sp-main"><div class="sp-stage">${stage}</div><div class="sp-code">${esc(cd)}</div></div></div>
+    <div class="sp-foot">${n > 1 ? `<button type="button" class="btn" data-sp="prev" ${sp.i ? '' : 'disabled'}>Previous</button><span class="count">${sp.i + 1} of ${n}</span><button type="button" class="btn" data-sp="next" ${sp.i < n - 1 ? '' : 'disabled'}>Next</button>` : ''}
+      <span class="grow"></span>${sp.mode === 'pending' && pend ? `<span class="count">${pend} still to pick</span>` : ''}
+      <button type="button" class="btn" data-sp="cancel">Cancel</button><button type="button" class="btn primary" data-sp="apply" ${nch ? '' : 'disabled'}>${nch > 1 ? `Apply ${nch} changes` : 'Apply'}</button></div>`;
+  const on = (sel, fn) => { const el = m.querySelector(sel); if (el) el.onclick = fn; };
+  on('[data-sp="select"]', async () => { const names = await chooseFiles(it.type); if (names[0]) { it.src = names[0]; if (it.src !== it.src0) it.crop = [0, 0, 0, 0]; spRender(); } });
+  on('[data-sp="prev"]', () => spGo(sp.i - 1)); on('[data-sp="next"]', () => spGo(sp.i + 1));
+  on('[data-sp="cancel"]', () => spClose(false)); on('[data-sp="apply"]', () => spApply());
+  on('[data-sp="resetf"]', () => { it.filter = { ...SP_DEF }; spRender(); }); on('[data-sp="resetc"]', () => { it.crop = [0, 0, 0, 0]; spRender(); });
+  m.querySelectorAll('[data-go]').forEach(b => b.onclick = () => spGo(+b.dataset.go));
+  m.querySelectorAll('[data-use]').forEach(b => b.onclick = () => { if (it.src !== b.dataset.use) { it.src = b.dataset.use; it.crop = [0, 0, 0, 0]; } spRender(); });
+  m.querySelectorAll('input[data-f]').forEach(r => {
+    const k = r.dataset.f, out = r.nextElementSibling, img = m.querySelector('.sp-frame img'), code = m.querySelector('.sp-code');
+    const set = () => { const v = +r.value; it.filter[k] = k === 'hue' ? v : v / 100; out.textContent = v + (k === 'hue' ? '°' : '%'); if (img) img.style.filter = cssFilter(it.filter); spFoot(m, code, it); };
+    r.oninput = set; r.ondblclick = () => { r.value = k === 'hue' ? 0 : 100; set(); };
+  });
+  const box = m.querySelector('.sp-crop'); if (box) box.onpointerdown = (e) => spCropDrag(e, it, box, m);
+}
+/* the code line and the Apply button, after a slider or the crop box moved (without redrawing the panel) */
+function spFoot(m, code, it) {
+  code.textContent = [`${it.path} { src: "${it.src}";${cropText(it.crop) ? ` crop: ${cropText(it.crop)};` : ''} }`, filterText(it.filter) ? `${it.path} { filter: ${filterText(it.filter)}; }   // style` : ''].filter(Boolean).join('\n');
+  const nch = sp.items.filter(spChanged).length, b = m.querySelector('[data-sp="apply"]'); b.disabled = !nch; b.textContent = nch > 1 ? `Apply ${nch} changes` : 'Apply';
+}
+function spCropDrag(e, it, box, m) {
+  e.preventDefault(); const fr = box.parentElement.getBoundingClientRect(), h = e.target.dataset.h || 'move', c0 = it.crop.slice(), x0 = e.clientX, y0 = e.clientY, MIN = 0.04;
+  const cl = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  box.setPointerCapture(e.pointerId);
+  const move = (ev) => {
+    const dx = (ev.clientX - x0) / fr.width, dy = (ev.clientY - y0) / fr.height, c = c0.slice();
+    if (h === 'move') { const mx = cl(dx, -c0[0], c0[2]), my = cl(dy, -c0[1], c0[3]); c[0] = c0[0] + mx; c[2] = c0[2] - mx; c[1] = c0[1] + my; c[3] = c0[3] - my; }
+    else {
+      if (h.includes('w')) c[0] = cl(c0[0] + dx, 0, 1 - c0[2] - MIN);
+      if (h.includes('e')) c[2] = cl(c0[2] - dx, 0, 1 - c0[0] - MIN);
+      if (h.includes('n')) c[1] = cl(c0[1] + dy, 0, 1 - c0[3] - MIN);
+      if (h.includes('s')) c[3] = cl(c0[3] - dy, 0, 1 - c0[1] - MIN);
+    }
+    it.crop = c.map(v => Math.round(v * 1000) / 1000);
+    Object.assign(box.style, { left: it.crop[0] * 100 + '%', top: it.crop[1] * 100 + '%', width: (1 - it.crop[0] - it.crop[2]) * 100 + '%', height: (1 - it.crop[1] - it.crop[3]) * 100 + '%' });
+    spFoot(m, m.querySelector('.sp-code'), it);
+  };
+  const up = () => { box.removeEventListener('pointermove', move); box.removeEventListener('pointerup', up); box.removeEventListener('pointercancel', up); };
+  box.addEventListener('pointermove', move); box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
+}
+/* writes every change: src (and crop) where the part is written, filter in the style of the same chapter; one change, with Undo */
+function spApply() {
+  const todo = sp.items.filter(spChanged); if (!todo.length) { spClose(true); return; }
+  let T = patchBaseText();
+  const slots = fileSlots(T), used = new Set(), edits = [], styleOps = [];
+  for (const it of todo) {
+    const s = slots.find(x => !used.has(x) && x.path === it.path && x.box === it.box && x.type === it.type); if (!s) continue; used.add(s);
+    if (it.src && it.src !== it.src0) edits.push({ pos: s.srcDecl.vs, del: s.srcDecl.ve - s.srcDecl.vs, ins: `"${it.src}"` });
+    if (it.type === 'Image') {
+      const ct = it.src ? cropText(it.crop) : null;
+      if (s.cropDecl) { if (ct) edits.push({ pos: s.cropDecl.vs, del: s.cropDecl.ve - s.cropDecl.vs, ins: ct }); else { let a = s.cropDecl.start, b = s.cropDecl.end; while (a > 0 && (T[a - 1] === ' ' || T[a - 1] === '\t')) a--; edits.push({ pos: a, del: b - a, ins: '' }); } }
+      else if (ct) edits.push({ pos: s.srcDecl.end + (s.srcDecl.semi ? 0 : 0), del: 0, ins: `${s.srcDecl.semi ? '' : ';'} crop: ${ct};` });
+      const ft = filterText(it.filter); if (ft !== filterText(it.filter0) || (ft && !s.filterText)) styleOps.push({ box: s.box, film: s.film, path: s.path, val: ft, had: !!s.filterText });
+    }
+  }
+  edits.sort((a, b) => b.pos - a.pos); for (const e of edits) T = T.slice(0, e.pos) + e.ins + T.slice(e.pos + e.del);
+  if (styleOps.length) {
+    const lines = ['@patch 1 "Image light"'];
+    for (const o of styleOps) {
+      if (o.film) lines.push(o.box === '@common' ? '@common' : `@chapter ${o.box}`);
+      lines.push('@style', o.val ? `${o.path} { filter: ${o.val}; }` : o.had ? `unset ${o.path} { filter; }` : '');
+    }
+    try { const r = GearScript.applyPatch(T, lines.filter(Boolean).join('\n'), { diff: false }); T = r.text; } catch (e) { console.warn('filter patch', e); }
+  }
+  const was = sp.base, b0 = box, picked = todo.filter(x => x.src && x.src !== x.src0).length;
+  if (patchBaseText() !== was) { toast('The code changed while the panel was open; open it again to pick.', 4200); spClose(true); return; }
+  spClose(true);
+  if (fp.on) filmStop(true);
+  setWholeProject(T, box); persist(); markDirty();
+  sp.seen = selectCount(patchBaseText());
+  toastActions(picked ? `Picked ${picked} file${picked === 1 ? '' : 's'}${todo.length > picked ? ' and adjusted the rest' : ''}.` : `Updated ${todo.length} image${todo.length === 1 ? '' : 's'}.`, [['Undo', () => { sp.undone = true; restoreProject(was, b0); }]], 8000);
+  track('select_apply', { picked, changed: todo.length });
+}
+/* an Undo or Redo that brings back a \select does not open the panel again */
+try { ta.addEventListener('input', (e) => { if (e && /^history/.test(e.inputType || '')) sp.undone = true; }); } catch (e) {}
+/* after every build: when the code asks for more files than before (a paste, an AI reply, a typed \select), the panel opens by itself */
+function selectSoon() {
+  if (!sp || PLAYER || apiMode) return;
+  clearTimeout(sp.timer);
+  sp.timer = setTimeout(() => {
+    let n = 0; try { n = selectCount(patchBaseText()); } catch (e) { return; }
+    if (sp.seenProj !== projId) { sp.seenProj = projId; sp.seen = 0; }
+    const more = n > sp.seen && !sp.undone; sp.seen = n; sp.undone = false;
+    if (!more || (sp.back && !sp.back.hidden) || tourAt >= 0 || document.querySelector('.modal-back:not([hidden]):not(.selback)')) return;
+    openSelectPanel({ pending: true, quiet: true });
+  }, 450);
+}
+
 /* ---------------- 3D models (STL, GLB, glTF) used by Mesh parts ---------------- */
 let modelFiles = {};   /* file name -> Uint8Array, kept in IndexedDB so they survive a reload */
 const MODEL_DB = 'gearscript-models';
@@ -11170,14 +11680,47 @@ async function modelGeometry(name, bytes) {
   const pos = [], nor = []; for (const g of parts) { pos.push(...g.attributes.position.array); nor.push(...g.attributes.normal.array); }
   const out = new THREE.BufferGeometry(); out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); out.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); return out;
 }
+/* pictures for Image parts: decoded once into a texture (at most 2048 pixels on the long side; SVGs are drawn at that size so they stay sharp).
+   Decoded pictures are kept by name and bytes, so a rebuild or re-registering the same file does not decode it again */
+const IMAGE_RX = /\.(png|jpe?g|gif|webp|svg)$/i;
+const IMAGE_MIME = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml' };
+const imageCache = new Map();
+async function decodeImageFile(name, bytes) {
+  const hit = imageCache.get(name); if (hit && hit.bytes === bytes) return hit.img;
+  const ext = (name.match(/\.(\w+)$/) || ['', ''])[1].toLowerCase(), svg = ext === 'svg', info = GearScript.imageInfo(bytes) || {};
+  const url = URL.createObjectURL(new Blob([bytes], { type: IMAGE_MIME[ext] || 'application/octet-stream' }));
+  try {
+    const el = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error(svg ? 'could not draw this SVG' : 'could not read this picture')); im.src = url; });
+    let w = el.naturalWidth || info.w || 0, h = el.naturalHeight || info.h || 0;
+    if (svg && info.w > 0 && info.h > 0) { w = info.w; h = info.h; }
+    if (!(w > 0 && h > 0)) { w = 512; h = 512; }
+    const k = svg ? 2048 / Math.max(w, h) : Math.min(1, 2048 / Math.max(w, h)), cv = document.createElement('canvas');
+    cv.width = Math.max(1, Math.round(w * k)); cv.height = Math.max(1, Math.round(h * k));
+    cv.getContext('2d').drawImage(el, 0, 0, cv.width, cv.height);
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 8; tex.needsUpdate = true;
+    const img = { w, h, tex, type: ext }; imageCache.set(name, { bytes, img }); return img;
+  } finally { URL.revokeObjectURL(url); }
+}
+/* the grey card an Image shows while its file is missing or still to be picked */
+function imagePlaceholderTexture() {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256; const c = cv.getContext('2d');
+  for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) { c.fillStyle = (x + y) % 2 ? '#8d959e' : '#a3abb3'; c.fillRect(x * 32, y * 32, 32, 32); }
+  c.strokeStyle = '#f4f6f8'; c.lineWidth = 9; c.lineJoin = 'round'; c.strokeRect(70, 82, 116, 92);
+  c.beginPath(); c.moveTo(78, 166); c.lineTo(116, 124); c.lineTo(142, 148); c.lineTo(158, 134); c.lineTo(180, 166); c.stroke();
+  c.beginPath(); c.arc(156, 108, 10, 0, Math.PI * 2); c.fillStyle = '#f4f6f8'; c.fill();
+  const t = new THREE.CanvasTexture(cv); t.needsUpdate = true; return t;
+}
+try { GearScript.imageHook.placeholder = imagePlaceholderTexture(); } catch (e) {}
 async function registerModels(map) {
   for (const k of Object.keys(GearScript.assets)) delete GearScript.assets[k];
+  for (const k of Object.keys(GearScript.images)) delete GearScript.images[k];
   const problems = [];
   for (const k of Object.keys(GearScript.audio)) delete GearScript.audio[k];
   for (const [name, bytes] of Object.entries(map)) {
-    try { if (AUDIO_RX.test(name)) GearScript.audio[name] = await decodeAudioFile(bytes); else GearScript.assets[name] = await modelGeometry(name, bytes); }
+    try { if (AUDIO_RX.test(name)) GearScript.audio[name] = await decodeAudioFile(bytes); else if (IMAGE_RX.test(name)) GearScript.images[name] = await decodeImageFile(name, bytes); else GearScript.assets[name] = await modelGeometry(name, bytes); }
     catch (e) { problems.push(`${name}: ${e.message || 'could not be read'}`); }
   }
+  for (const k of [...imageCache.keys()]) if (!map[k]) imageCache.delete(k);
   return problems;
 }
 async function setModels(map) { modelFiles = { ...map }; const p = await registerModels(modelFiles); storeModels(); build(); renderTitle(); if (p.length) toast(p.join(' · '), 5000); }
@@ -11190,13 +11733,13 @@ function openModels() {
 function renderModels() {
   const m = document.querySelector('.modal-back.models .modal'); const names = Object.keys(modelFiles);
   const kb = (n) => { const v = modelFiles[n].byteLength / 1024; return v > 1024 ? (v / 1024).toFixed(1) + ' MB' : v.toFixed(0) + ' KB'; };
-  m.innerHTML = `<h2 id="modelsTitle">3D models and audio</h2><p class="sub">Use real parts: an STL, GLB or glTF file becomes a part you can size, move and connect. An audio file (MP3, WAV, OGG, M4A) becomes a Sound: a voice-over, music or a recorded effect, played and exported with the animation.</p>
-    <ul class="mlist">${names.length ? names.map(n => `<li><code>${escH(n)}</code><span>${kb(n)}${AUDIO_RX.test(n) ? (GearScript.audio[n] ? ` · audio, ${(GearScript.audio[n].data.length / GearScript.audio[n].sr).toFixed(1)} s` : ' · could not be read') : GearScript.assets[n] ? '' : ' · could not be read'}</span><button type="button" class="linkbtn" data-ins="${escH(n)}">${AUDIO_RX.test(n) ? 'Insert sound' : 'Insert part'}</button><button type="button" class="linkbtn" data-del="${escH(n)}">Remove</button></li>`).join('') : '<li class="none">No files yet.</li>'}</ul>
+  m.innerHTML = `<h2 id="modelsTitle">3D models, images and audio</h2><p class="sub">Use real parts: an STL, GLB or glTF file becomes a part you can size, move and connect. A picture (PNG, JPG, WebP, GIF or SVG) becomes an Image: a card you can place, turn to the viewer, crop and fade. An audio file (MP3, WAV, OGG, M4A) becomes a Sound: a voice-over, music or a recorded effect, played and exported with the animation.</p>
+    <ul class="mlist">${names.length ? names.map(n => `<li><code>${escH(n)}</code><span>${kb(n)}${AUDIO_RX.test(n) ? (GearScript.audio[n] ? ` · audio, ${(GearScript.audio[n].data.length / GearScript.audio[n].sr).toFixed(1)} s` : ' · could not be read') : IMAGE_RX.test(n) ? (GearScript.images[n] ? ` · picture, ${Math.round(GearScript.images[n].w)}×${Math.round(GearScript.images[n].h)}` : ' · could not be read') : GearScript.assets[n] ? '' : ' · could not be read'}</span><button type="button" class="linkbtn" data-ins="${escH(n)}">${AUDIO_RX.test(n) ? 'Insert sound' : IMAGE_RX.test(n) ? 'Insert image' : 'Insert part'}</button><button type="button" class="linkbtn" data-del="${escH(n)}">Remove</button></li>`).join('') : '<li class="none">No files yet.</li>'}</ul>
     <div class="acts2"><span class="sub small" style="margin:0 auto 0 0">Saved with the project (in the .zip)</span><button type="button" class="btn" data-close>Done</button><button type="button" class="btn primary" id="modelAdd">Add a file…</button></div>`;
   m.querySelector('[data-close]').onclick = () => { document.querySelector('.modal-back.models').hidden = true; };
   m.querySelector('#modelAdd').onclick = () => $('modelIn').click();
   m.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => { const k = b.dataset.del; const next = { ...modelFiles }; delete next[k]; await setModels(next); renderModels(); markDirty(); });
-  m.querySelectorAll('[data-ins]').forEach(b => b.onclick = () => { if (AUDIO_RX.test(b.dataset.ins)) insertAudioSound(b.dataset.ins); else insertMeshPart(b.dataset.ins); document.querySelector('.modal-back.models').hidden = true; });
+  m.querySelectorAll('[data-ins]').forEach(b => b.onclick = () => { if (AUDIO_RX.test(b.dataset.ins)) insertAudioSound(b.dataset.ins); else if (IMAGE_RX.test(b.dataset.ins)) insertImagePart(b.dataset.ins); else insertMeshPart(b.dataset.ins); document.querySelector('.modal-back.models').hidden = true; });
   setTimeout(() => m.querySelector('#modelAdd').focus(), 0);
 }
 /* adds Name::Sound { src: "file.mp3"; } to the scene; play it from a rule with sound: Name at 0s; */
@@ -11206,6 +11749,25 @@ function insertAudioSound(file) {
   if (!isSingle() && current !== 'scene') selectTab('scene');
   const v = ta.value; let pos = v.length; if (isSingle() && proj && proj.start && proj.start.style) { const lines = v.split('\n'); pos = lines.slice(0, proj.start.style - 2).join('\n').replace(/\s*$/, '').length; }
   ta.setSelectionRange(pos, pos); insertText(`\n${n}::Sound { src: "${file}"; }   // play it: Scene { 0s..1s: sound: ${n}; }`); ta.focus();
+}
+/* a part name made from a file name: "my cat.png" -> MyCat */
+function partNameFromFile(name, fallback) {
+  const base = name.replace(/\.[^.]+$/, '').replace(/[^A-Za-z0-9]+/g, ' ').trim().split(' ').filter(Boolean).map(w => w[0].toUpperCase() + w.slice(1)).join('') || fallback;
+  let nm = /^[A-Z]/.test(base) ? base : fallback[0] + base, i = 2; const taken = (n) => new RegExp('^\\s*' + n + '\\s*::', 'm').test(isSingle() ? ta.value : files.scene);
+  while (taken(nm)) nm = (/^[A-Z]/.test(base) ? base : fallback[0] + base) + i++;
+  return nm;
+}
+/* adds an Image line to the scene for a picture already in the project: 200mm on its long side, beside the model */
+function insertImagePart(name) {
+  const im = GearScript.images[name], nm = partNameFromFile(name, 'Picture');
+  const size = im && im.h > im.w ? '(auto, 200mm)' : '(200mm, auto)';
+  let at = '(0, 0, 0)';
+  if (model && model.box && !model.box.isEmpty()) { const b = model.box; at = `(${Math.round(b.max.x + 120)}mm, ${Math.round((b.min.y + b.max.y) / 2)}mm, 0)`; }
+  const line = `${nm}::Image { src: "${name}"; size: ${size}; at: ${at}; }`;
+  const sc = files.scene.replace(/\s*$/, '');
+  const obs = sc.search(/^\s*(Observer|Light|Scene)\s*\{/m);
+  files.scene = obs >= 0 ? sc.slice(0, obs).replace(/\s*$/, '') + '\n' + line + '\n' + sc.slice(obs).replace(/^\n*/, '\n') + '\n' : sc + '\n' + line + '\n';
+  selectTab(isSingle() ? 'project' : 'scene'); build(); persist(); markDirty(); toast(`Added ${nm}. Set its size and place in the code, or crop it from the src: hint.`);
 }
 /* adds a Mesh line to the scene, sized from the model (its units read as millimetres) */
 function insertMeshPart(name) {
@@ -11223,15 +11785,8 @@ function insertMeshPart(name) {
 }
 $('modelIn').addEventListener('change', async () => {
   const list = [...$('modelIn').files]; $('modelIn').value = ''; if (!list.length) return;
-  const next = { ...modelFiles }; const added = [];
-  for (const f of list) {
-    if (f.size > 25e6) { toast(`${f.name} is over 25 MB; ${AUDIO_RX.test(f.name) ? 'shorten or compress it' : 'simplify it'} first`, 4000); continue; }
-    const name = f.name.replace(/[^\w.\- ]+/g, '-'); next[name] = new Uint8Array(await f.arrayBuffer()); added.push(name);
-  }
-  await setModels(next); markDirty();
-  const ok = added.filter(n => GearScript.assets[n]);
-  if (document.querySelector('.modal-back.models:not([hidden])')) renderModels();
-  if (ok.length === 1 && !new RegExp('src:\\s*"' + ok[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"').test(files.scene)) insertMeshPart(ok[0]);
+  const ok = (await addProjectFiles(list)).filter(n => GearScript.assets[n] || GearScript.images[n]);
+  if (ok.length === 1 && !new RegExp('src:\\s*"' + ok[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '"').test(files.scene)) { if (IMAGE_RX.test(ok[0])) insertImagePart(ok[0]); else insertMeshPart(ok[0]); }
 });
 
 /* ---------------- export: MP4 and WebM (WebCodecs) or GIF ---------------- */
@@ -11285,7 +11840,7 @@ function syncExportUI() {
   $('chapListRow').hidden = !film || html; $('scopeRow').hidden = !film;
   $('scopeSeg').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.s === exportScope)));
   { const ns = filmExportOn() ? filmSayEvents().length : model && model.sayEvents ? model.sayEvents.length : 0; $('sayRow').hidden = !ns || html;
-    if (ns) { const n = $('sayNote'); n.textContent = `${ns} line${ns === 1 ? '' : 's'}, captioned in the picture.`; n.title = 'The 3D player speaks the lines itself. A browser cannot record its own voices: tick the box below to generate speech for MP4 and WebM, or add a voice-over file (Insert › 3D models and audio).'; }
+    if (ns) { const n = $('sayNote'); n.textContent = `${ns} line${ns === 1 ? '' : 's'}, captioned in the picture.`; n.title = 'The 3D player speaks the lines itself. A browser cannot record its own voices: tick the box below to generate speech for MP4 and WebM, or add a voice-over file (Insert › 3D models, images and audio).'; }
     $('expSpeak').checked = S.exportSpeak !== false; $('expSpeak').disabled = f === 'gif' || f === 'png'; }
   syncLevelRow(); syncVoiceRow();
   const clearNote = bgClear ? (gif ? ' The transparent background is kept (GIF pixels are fully clear or solid).' : f === 'png' ? '' : ' Video has no transparency, so the background is filled with ' + (S.bg === 'clear' || !(model && model.sceneOpts.bg && model.sceneOpts.bg.alpha > 0.001) ? 'the theme colour' : 'the background colour') + '. For a clear background, use PNG frames, GIF or the 3D player.') : '';
@@ -12862,7 +13417,9 @@ function apiSize(opts, defW, defAsp, even) {
 }
 /* loads a project for the command line: three sections, a one-file project, or a project with chapters (rendered as one film).
    Returns the errors that stop a render */
+var apiMode = false;   /* the command line is rendering through the page: no panels open by themselves */
 function apiLoad(project) {
+  apiMode = true;
   if (fp.on) filmStop(true);
   film = null; box = 0; filmCache.clear();
   if (typeof project === 'string' && GearScript.isFilmText(project)) { setFilmText(project, 0); exportScope = 'film'; }
@@ -12874,6 +13431,11 @@ function apiLoad(project) {
 const b64of = (bytes) => { let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(bin); };
 window.GearScriptStudio = {
   version: GearScript.version,
+  /* the project's files (pictures, models, audio) by name, as base64, for the renders that follow; returns the problems */
+  async useFiles(map) {
+    const u8 = {}; for (const [k, v] of Object.entries(map || {})) { const b = atob(v), a = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); u8[k] = a; }
+    modelFiles = u8; return registerModels(u8);
+  },
   async renderGif(project, opts = {}) {
     const errs = apiLoad(project); if (errs.length) return { ok: false, diagnostics: errs };
     await textReady();

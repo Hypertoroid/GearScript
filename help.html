@@ -730,7 +730,7 @@ Bolts  { explode: 2; }   // moves twice as far as the rest</div>
         <tr><td><code>x</code>, <code>y</code>, <code>z</code></td><td class="code-cell">x: 0;</td><td>Pin one coordinate</td></tr>
         <tr><td><code>opacity</code></td><td class="code-cell">0s..1s: opacity: 0 -&gt; 1 ease-in;</td><td>Fade in or out; works on a part or a whole group, with any easing or an expression of t</td></tr>
         <tr><td><code>color</code></td><td class="code-cell">0s..2s: color: #2f6fb0 -&gt; #e0a63a;</td><td>Change colour over a block (alpha too); the latest started block wins</td></tr>
-        <tr><td><code>luminosity</code></td><td class="code-cell">0s..1s: luminosity: 0 -&gt; 100%;</td><td>Turn a light on, off or up; the colour and range come from the style</td></tr>
+        <tr><td><code>luminosity</code></td><td class="code-cell">0s..1s: luminosity: 0 -&gt; 100% #ffd27a;</td><td>Turn a light on, off or up. A colour and a range may follow, as in the style; otherwise they come from the style</td></tr>
       </table></div>
       <h3>Properties for hinged and sliding parts</h3>
       <p>Every kind of motion uses one of two verbs: <b>rotate</b> turns and <b>move</b> slides. On a hinged part, <code>rotate</code> turns it about its hinge; on a slider, <code>move</code> takes a number along its line. <code>opacity</code>, <code>color</code> and <code>luminosity</code> change only how a part looks, so they work on hinged and sliding parts too, in the same rule or a rule of their own.</p>

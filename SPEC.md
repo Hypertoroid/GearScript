@@ -313,7 +313,7 @@ Target, .class, DefineName { forever: prop: value;   0s..2s: prop: value;   then
 | Target | Properties |
 |---|---|
 | free parts | `rotate: 60deg/s [about x \| y \| z \| Part.axis];`, `orbit: Center 30deg/s;`, `move: vector;` (several move lines add up), `along: CurveName 12s;`, `x:` / `y:` / `z:`, `opacity:`, `color: #a -> #b;`, `luminosity: 0 -> 100%;`, `cut: 90mm -> 0mm;` |
-| hinged parts | `rotate:` (an angle such as `0deg -> 90deg`, a rate, or a function of t; no `about`), and `roll: Ground;` (spin = distance / radius); `opacity:`, `color:`, `luminosity:` (they change the look, not the motion) |
+| hinged parts | `rotate:` (an angle such as `0deg -> 90deg`, a rate, or a function of t; no `about`), and `roll: Ground;` (spin = distance / radius); `opacity:`, `color:`, `luminosity:` (they change the look, not the motion; `luminosity: 0% -> 100% #ffd27a 400mm;` takes the same optional colour and range as the style, held for the whole film, and the colour itself cannot change inside `->`: use `color: #a -> #b;`) |
 | sliding parts | `move:` with a number along the slider, such as `move: -90mm -> 90mm;`; `opacity:`, `color:`, `luminosity:` |
 | Observer | `follow: Part offset (x, y, z);`, `orbit: Part 60deg/s;`, `look-at:`, `zoom:`, `move:`, `x:` / `y:` / `z:`, `position:` |
 | Scene | `sound:`, `say:`, `sun: -5deg -> 10deg;` (the height of the Scene sun), and `explode: 0 -> 1 [along x \| y \| z];` (an exploded view: each part moves from the middle of the model by its distance times the amount; joints and the camera keep the assembled positions; also as a still value in the scene, `Scene { explode: 1; }`) |

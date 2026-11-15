@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **The voice picked in the export panel is the one you hear.** `neural:` on a Voice in the code used to win over it without a word, while Sample played the panel's choice. Now a voice picked there is used (a note says what it replaces), the first choice reads **As in the code (Emma)** and keeps the code's voices, and Sample plays exactly what the render will.
+- **Export panel:** every dropdown is one width, and the ones with a button beside them (Voice + Sample, Audio level + Listen) line up with the rest.
+- **`luminosity` in motion takes a colour and a range after the level**, as in the style: `luminosity: 0% -> 100% #ffd27a 400mm;` (they hold for the whole film; a colour that changes inside `->` is a clear error that points to `color: #a -> #b;`). `luminosity: 80% rgb(255, 200, 100);` works in the style.
+
 - **Paste reply**, beside Copy for AI, is where the AI's answer goes back in. A patch is checked change by change (with line numbers now); a reply with **whole code** is compared with your project (a reply with one chapter is merged by name) and shows the same problems and motion report, then **Replace the code** puts it in, with Undo. Copying for the AI ends with a reminder to use it.
 - **Code** in the Copy for AI options is a plain tick box. Whether the AI still has your code cannot be known, so it is sent when ticked.
 - **Rendering keeps going in a background tab.** The pause between frames used timers, which a background tab slows to a second or more (a minute after a while), so a render nearly stopped when you switched tabs. While it renders, the tab's title shows the progress, a note says to keep the tab open (Safari or a sleeping laptop can still pause it), and the title says ✓ Rendered when it is done.

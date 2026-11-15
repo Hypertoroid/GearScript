@@ -306,7 +306,7 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 #sheet .sayrow { align-items: flex-start; gap: 4px 14px; }
 #sheet .sayrow .saynote { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; text-align: right; }
 #sheet .levelctl { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px 12px; }
-#sheet .bal { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: var(--muted); } #sheet .bal input[type=range] { width: 120px; accent-color: var(--accent); } #sheet .levelctl select { width: auto; min-width: 0; flex: 0 0 auto; }
+#sheet .bal { display: flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; color: var(--muted); } #sheet .bal input[type=range] { width: 120px; accent-color: var(--accent); } #sheet .levelctl select { width: auto; min-width: 0; flex: 1 1 auto; } #sheet .levelctl { width: var(--pick-w); max-width: 100%; gap: 8px; } #sheet .levelctl .bal { flex-basis: 100%; justify-content: flex-end; }
 #sheet details.xsec { border-top: 1px solid var(--line); } #sheet details.xsec:first-child { border-top: 0; } #sheet details.xsec[hidden] { display: none; }
 #sheet details.xsec > summary { list-style: none; display: flex; align-items: center; gap: 8px; min-height: 34px; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--fg); user-select: none; }
 #sheet details.xsec > summary::-webkit-details-marker { display: none; }
@@ -316,7 +316,11 @@ body.dragging-row, body.dragging-row * { cursor: row-resize !important; }
 #sheet details.xsec[open] > summary .sum { visibility: hidden; }
 #sheet details.xsec > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
 #sheet .xbody { display: grid; gap: 6px; padding: 0 0 10px 22px; }
-#sheet .voicectl { display: flex; align-items: center; gap: 8px; } #sheet .voicectl select { min-width: 170px; max-width: 220px; }
+/* every choice in the export panel is one width, and a choice with a button beside it (Voice + Sample, Audio level + Listen) takes the
+   same width in all, so the right edges line up */
+#sheet { --pick-w: 230px; }
+#sheet select { width: var(--pick-w); min-width: 0; max-width: 100%; box-sizing: border-box; }
+#sheet .voicectl { display: flex; align-items: center; gap: 8px; width: var(--pick-w); max-width: 100%; } #sheet .voicectl select { flex: 1 1 auto; width: auto; min-width: 0; }
 #sheet .sayrow .check { margin: 0; color: var(--fg); } #sheet .sayrow .check small { display: block; color: var(--muted); font-size: 11px; }
 .capbar { position: absolute; z-index: 3; transform: translateX(-50%); max-width: 86%; padding: .35em .7em; border-radius: 8px; background: rgba(10,14,20,.74); color: #fff; font: 500 15px/1.35 var(--font-ui); text-align: center; pointer-events: none; text-wrap: balance; }
 .stale {
@@ -1077,7 +1081,8 @@ kbd { font-family: var(--font-code); font-size: 11px; border: 1px solid var(--li
           <span class="caplinks">Save the captions: <button type="button" class="linkbtn" id="srtBtn" title="SubRip captions, for YouTube and video editors">.srt</button> · <button type="button" class="linkbtn" id="vttBtn" title="WebVTT captions, for web players">.vtt</button></span>
           <label class="check" title="A voice generated in your browser speaks each line into the MP4 or WebM. It downloads the first time (about 90 MB for the natural English voices), then works offline"><input type="checkbox" id="expSpeak"> <span>Speak them into the video <small>neural voice, made in your browser</small></span></label>
         </div></div>
-        <div class="row" id="voiceRow"><label for="expVoice">Voice</label><div class="voicectl"><select id="expVoice" title="The voice that speaks the lines in the video. neural: on a Voice in the code still picks its own"></select><button class="btn" id="voiceSample" type="button" title="Hear a short sentence in this voice">Sample</button></div></div>
+        <div class="row" id="voiceRow"><label for="expVoice">Voice</label><div class="voicectl"><select id="expVoice" title="The voice that speaks the lines in the video. As in the code uses neural: on each Voice; a voice picked here is used instead"></select><button class="btn" id="voiceSample" type="button" title="Hear a short sentence in this voice">Sample</button></div></div>
+        <p class="renderwarn" id="voiceNote" hidden></p>
         </div></details>
         <details class="xsec" id="secSnd"><summary><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg><span>Sound</span><span class="sum" id="sumSnd"></span></summary><div class="xbody">
         <div class="row" id="soundRow" hidden><span>Sounds</span><label class="check" style="margin:0"><input type="checkbox" id="expSound" checked> <span id="expSoundLbl">Include the project's sounds</span></label></div>
@@ -2791,7 +2796,8 @@ function compile(files, opts) {
   if (model.pins.length && !diags.some(d => d.sev === 'error')) tryDo(() => prepareLoops(model));
   /* luminous parts: each lights the scene, and renderers keep only a few lights fast */
   for (const r of [...model.rules, ...(model.lookRules || [])]) if (r.compiled && r.compiled.lum && r.compiled.lum.length && r.target.ent) {
-    const e = r.target.ent; for (const l of (e.kind === 'group' ? [...e.members.values()] : [e.leaf])) if (l && !l.lum) l.lum = { level: 0, color: null, range: null };
+    const e = r.target.ent, last = (k) => { let v = null; for (const x of r.compiled.lum) if (x[k] != null) v = x[k]; return v; }, col = last('color'), rng = last('range');
+    for (const l of (e.kind === 'group' ? [...e.members.values()] : [e.leaf])) { if (!l) continue; if (!l.lum) l.lum = { level: 0, color: null, range: null }; if (col) l.lum.color = col; if (rng != null) l.lum.range = rng; }   /* a colour or range written in motion wins over the style's */
   }
   { const lum = model.leaves.filter(l => l.lum && !l.hidden); if (lum.length > MAX_GLOW_LIGHTS) warn(lum[MAX_GLOW_LIGHTS].style && lum[MAX_GLOW_LIGHTS].style.luminosity || null, 'W0610', `${lum.length} parts have luminosity; the first ${MAX_GLOW_LIGHTS} light the scene, the rest only shine.`, 'Give luminosity to the parts that matter most, or group small lamps under one part.'); }
   /* the ground sits at the foot of the model. Glowing parts (a sun, a lamp) and fixed parts do not push it down, so a sun can rise from below it */
@@ -3131,7 +3137,7 @@ function applyStyle(model, warn, tryDo) {
         const L = { level: 1, color: null, range: null };
         for (const n of st.luminosity.items) {
           if (n.t === 'num' && n.kind === 'len') { L.range = n.v; continue; }
-          if (n.t === 'num' || (n.t !== 'color' && n.t !== 'ref')) { const v = num(n, {}, 'luminosity'); if (v < 0 || v > 4) rangeFix(warn(st.luminosity, 'W0609', 'luminosity runs from 0 (dark) to 100% (bright); up to 400% for a strong light.', 'Write luminosity: 60%;'), n, 0, 4); L.level = Math.max(0, Math.min(4, v)); continue; }
+          if (n.t === 'num' || (n.t !== 'color' && n.t !== 'ref' && !(n.t === 'call' && /^(rgba?|hsla?)$/i.test(n.name)))) { const v = num(n, {}, 'luminosity'); if (v < 0 || v > 4) rangeFix(warn(st.luminosity, 'W0609', 'luminosity runs from 0 (dark) to 100% (bright); up to 400% for a strong light.', 'Write luminosity: 60%;'), n, 0, 4); L.level = Math.max(0, Math.min(4, v)); continue; }
           try { L.color = colorOf(evalE(n, {}), n); } catch (e) { throw new Diag(n, 'E0607', 'luminosity takes a level, then optionally a colour and a range.', 'Write luminosity: 80%;  or  luminosity: 80% #ffd27a 400mm;'); }
         }
         leaf.lum = L;
@@ -4037,8 +4043,16 @@ function compileDriver(model, r) {
     } else if (p.name === 'opacity') {
       out.opac.push({ p, n: it[0] });
     } else if (p.name === 'luminosity') {
-      if (it.length !== 1) throw new Diag(p, 'E0515', 'luminosity in motion is one level, or a change.', 'Write luminosity: 0 -> 100%;  The colour and range come from the style.');
-      out.lum.push({ p, n: it[0] });
+      /* as in the style: the level (here one level or a change), then optionally a colour and a range, which hold for the whole film */
+      const bad = () => new Diag(p, 'E0515', 'luminosity in motion is a level or a change, then optionally a colour and a range.', 'Write luminosity: 0% -> 100% #ffd27a;  The colour cannot change over time: to change it, use color: #a -> #b;');
+      if (!it.length) throw bad();
+      const L = { p, n: it[0], color: null, range: null };
+      if (it[0].t === 'interp' && [it[0].from, it[0].to].some(x => x && (x.t === 'color' || (x.t === 'call' && /^(rgba?|hsla?)$/i.test(x.name))))) throw bad();
+      for (const n of it.slice(1)) {
+        if (n.t === 'num' && n.kind === 'len') { L.range = n.v; continue; }
+        try { L.color = colorOf(evalE(n, {}), n); } catch (e) { throw bad(); }
+      }
+      out.lum.push(L);
     } else if (p.name === 'color') {
       if (it.length !== 1) throw new Diag(p, 'E0515', 'color in motion is one colour, or a change.', 'Write color: #2f6fb0 -> #e0a63a;');
       const n = it[0]; for (const c of n.t === 'interp' ? [n.from, n.to] : [n]) colorOf(evalE(c, {}), c);
@@ -5138,7 +5152,7 @@ a rate (60deg/s, (500mm/s, 0, 0)) moves during the block and what moved stays mo
 An expression of t is evaluated directly: rotate: 30deg * sin(t * 180deg/s);      Easings: linear ease ease-in ease-out ease-in-out cubic-bezier(a, b, c, d).
 Free parts: rotate: 60deg/s [about x | y | z | Part.axis];  orbit: Center 30deg/s;  move: (x, y, z);  along: CurveName 12s;  x: / y: / z:
 Hinged parts take rotate (an angle, a change or a rate) or roll: Ground;   sliders take move: -90mm -> 90mm;  (one number along the slider)
-Look rules work on any part, beside its motion: opacity: 0 -> 1;  color: #a -> #b;  luminosity: 0 -> 100%;  A motion opacity replaces the style opacity, so fade a glass part to its own value (opacity: 0 -> 0.2).
+Look rules work on any part, beside its motion: opacity: 0 -> 1;  color: #a -> #b;  luminosity: 0 -> 100%;  (a colour and range may follow the level, as in the style: luminosity: 0 -> 100% #ffd27a 400mm; they hold for the whole film; the colour itself does not change inside the ->)  A motion opacity replaces the style opacity, so fade a glass part to its own value (opacity: 0 -> 0.2).
 Observer: position: (a) -> (b) ease-in-out; look-at: Part; follow: Part offset (x, y, z); orbit: Part 60deg/s; zoom: 2;
   Smooth tours: animate an invisible Aim::Sphere { radius: 1mm; visible: false; } with move, and give the Observer forever: look-at: Aim; plus position changes.
 Narration: say: Narrator "words" [at end | at 1s]; in any rule (Scene too). Keep lines short; one at a time per voice. (NARRATION below.)
@@ -11293,8 +11307,8 @@ const KOKORO_VOICES = {
   bf_emma: ['Emma', 'British', 'woman'], bf_isabella: ['Isabella', 'British', 'woman'], bm_george: ['George', 'British', 'man'], bm_fable: ['Fable', 'British', 'man'],
 };
 const isKokoro = (id) => Object.prototype.hasOwnProperty.call(KOKORO_VOICES, id);
-/* Narration voice: Automatic (Kokoro for English, chosen by each Voice's language; Piper for other languages), one of the natural English
-   voices, or the fast Piper voices. neural: on a Voice in the code still wins */
+/* Narration voice: As in the code (neural: on each Voice, else Kokoro for English by the Voice's language and Piper for other
+   languages), one of the natural English voices, or the fast Piper voices. A voice picked here is used for every Voice */
 { const sel = $('expVoice'), grp = (label, ids) => `<optgroup label="${label}">` + ids.map(id => `<option value="${id}">${KOKORO_VOICES[id][0]} · ${KOKORO_VOICES[id][2]}</option>`).join('') + '</optgroup>';
   const ids = Object.keys(KOKORO_VOICES);
   sel.innerHTML = '<option value="">Automatic</option>' + grp('Natural · American English', ids.filter(i => i[0] === 'a')) + grp('Natural · British English', ids.filter(i => i[0] === 'b'))
@@ -11303,11 +11317,18 @@ function syncVoiceRow() {
   const f = S.exportFormat || 'mp4', vid = f === 'mp4' || f === 'webm';
   $('voiceRow').hidden = !vid || S.exportSpeak === false || $('sayRow').hidden;
   $('expVoice').value = isKokoro(S.exportVoice) || S.exportVoice === 'piper' ? S.exportVoice : '';
+  /* the first choice says which voice the code gives; a pick here says what it replaces */
+  const vs = model && model.voices ? [...model.voices.entries()] : [], named = vs.filter(([, v]) => v.neural && isKokoro(v.neural));
+  const nm = (id) => isKokoro(id) ? KOKORO_VOICES[id][0] : id;
+  $('expVoice').options[0].textContent = named.length ? `As in the code (${[...new Set(named.map(([, v]) => nm(v.neural)))].join(', ')})` : 'Automatic';
+  const pick = S.exportVoice || '', over = named.filter(([, v]) => v.neural !== pick);
+  $('voiceNote').hidden = !(pick && (over.length || vs.length > 1));
+  $('voiceNote').textContent = !pick ? '' : ((over.length ? `Used instead of ${over.map(([n, v]) => `neural: ${v.neural} on ${n}`).join(', ')} in the code. ` : '') + (vs.length > 1 ? `Every Voice (${vs.map(([n]) => n).join(', ')}) speaks with it; pick "As in the code" to give each its own.` : '')).trim();
   syncSections();
 }
-$('expVoice').addEventListener('change', () => { S.exportVoice = $('expVoice').value; saveSettings(); checkStale(); stopListen(); syncSections(); });
+$('expVoice').addEventListener('change', () => { S.exportVoice = $('expVoice').value; saveSettings(); checkStale(); stopListen(); syncVoiceRow(); });
 /* the export panel's sections: hidden when they have nothing to show, with a one-line summary when closed; open or closed is remembered */
-const voiceLabel = (id) => isKokoro(id) ? KOKORO_VOICES[id][0] : id === 'piper' ? 'fast voice' : 'automatic voice';
+const voiceLabel = (id) => { if (isKokoro(id)) return KOKORO_VOICES[id][0]; if (id === 'piper') return 'fast voice'; const v = model && model.voices && [...model.voices.values()][0]; const n = v && v.neural; return n && isKokoro(n) ? KOKORO_VOICES[n][0] : 'automatic voice'; };
 function syncSections() {
   const vis = (id) => !$(id).hidden, f = S.exportFormat || 'mp4', vid = f === 'mp4' || f === 'webm';
   $('secSay').hidden = !vis('sayRow'); $('secSnd').hidden = !vis('soundRow') && !vis('levelRow');
@@ -11321,7 +11342,7 @@ for (const id of ['secPic', 'secSay', 'secSnd']) {
   const d = $(id), want = (S.exportOpen || {})[id]; if (want !== undefined) d.open = want;
   d.addEventListener('toggle', () => { S.exportOpen = { ...(S.exportOpen || {}), [id]: d.open }; saveSettings(); });
 }
-/* Sample: one sentence in the chosen voice (for Automatic, the voice the project's first narrator gets), at the export's speech level */
+/* Sample: one sentence in the voice the project's first narrator gets in the render, at the export's speech level */
 let sampleBusy = false, sampleSrc = null;
 $('voiceSample').addEventListener('click', async () => {
   if (sampleSrc) { try { sampleSrc.stop(); } catch (e) {} sampleSrc = null; $('voiceSample').textContent = 'Sample'; return; }
@@ -11329,7 +11350,7 @@ $('voiceSample').addEventListener('click', async () => {
   if (exporting || listenBusy || !model) return;
   const b = $('voiceSample'), note = (m) => { $('gifNote').textContent = m; };
   const v = model && model.voices && [...model.voices.values()][0], lang = String(v && v.voice || 'en-US').toLowerCase();
-  const id = S.exportVoice === 'piper' ? piperVoiceFor(lang) : isKokoro(S.exportVoice) && /^en\b/.test(lang) ? S.exportVoice : neuralVoiceId(v ? { ...v, neural: null } : null);
+  const id = neuralVoiceId(v || null);   /* exactly the voice the render gives the first narrator */
   const text = /^en\b/.test(lang) || isKokoro(id) ? 'This is how the narration will sound in your video.' : (model.sayEvents[0] && model.sayEvents[0].text) || 'GearScript';
   sampleBusy = true; b.textContent = 'Cancel'; b.title = 'Stop making the sample'; $('gifGo').disabled = true; $('expListen').disabled = true;
   const job = beginSpeechJob(null, { noFallback: true }); let used = id;
@@ -11597,14 +11618,16 @@ function piperVoiceFor(lang) {
   const map = [['en-gb', 'en_GB-alan-medium'], ['en-in', 'en_GB-alan-medium'], ['en-au', 'en_GB-alba-medium'], ['en', 'en_US-hfc_female-medium'], ['de', 'de_DE-thorsten-medium'], ['fr', 'fr_FR-siwis-medium'], ['es-mx', 'es_MX-claude-high'], ['es', 'es_ES-davefx-medium'], ['it', 'it_IT-riccardo-x_low'], ['pt-br', 'pt_BR-faber-medium'], ['pt', 'pt_PT-tugão-medium'], ['nl', 'nl_NL-mls-medium'], ['pl', 'pl_PL-gosia-medium'], ['ru', 'ru_RU-irina-medium'], ['uk', 'uk_UA-ukrainian_tts-medium'], ['tr', 'tr_TR-dfki-medium'], ['zh', 'zh_CN-huayan-medium'], ['vi', 'vi_VN-vais1000-medium'], ['ne', 'ne_NP-google-medium'], ['sv', 'sv_SE-nst-medium'], ['fi', 'fi_FI-harri-medium'], ['cs', 'cs_CZ-jirka-medium'], ['ro', 'ro_RO-mihai-medium'], ['hu', 'hu_HU-anna-medium']];
   const hit = map.find(([k]) => l.startsWith(k)); return hit ? hit[1] : 'en_US-hfc_female-medium';
 }
-/* the voice a line is spoken with: neural: on the Voice wins; then the export panel's choice; then, for English, Kokoro (American or British
-   from the Voice's language), and Piper for other languages. A Kokoro voice is only used for English lines */
+/* the voice a line is spoken with: a voice picked in the export panel wins (it is the latest choice: picked there and ignored, it
+   looked broken); then neural: on the Voice in the code; then, for English, Kokoro (American or British from the Voice's language),
+   and Piper for other languages. A Kokoro voice is only used for English lines */
 function neuralVoiceId(v) {
-  if (v && v.neural) return v.neural;
   const lang = String(v && v.voice || 'en-US').toLowerCase().replace('_', '-'), en = /^en\b/.test(lang) || !/^[a-z]{2}(-|$)/.test(lang);
   const pick = S.exportVoice || '';
-  if (!en || pick === 'piper') return piperVoiceFor(lang);
-  if (isKokoro(pick)) return pick;
+  if (pick === 'piper') return piperVoiceFor(lang);
+  if (isKokoro(pick) && en) return pick;
+  if (v && v.neural) return v.neural;
+  if (!en) return piperVoiceFor(lang);
   return /^en-(us|ca)\b/.test(lang) || lang === 'en' ? 'af_heart' : 'bf_emma';
 }
 const kokoroToPiper = (id) => id[0] === 'b' ? 'en_GB-alan-medium' : 'en_US-hfc_female-medium';

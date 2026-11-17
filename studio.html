@@ -1640,6 +1640,16 @@ function evalE(n, env) {
       if (isVec(a) && isVec(b) && (op === '+' || op === '-')) { if (a.length !== b.length) throw new Diag(n, 'E0300', 'These vectors have different lengths.', 'Use (x, y, z) on both sides.'); return a.map((x, i) => f(x, b[i])); }
       if (isVec(a) && typeof b === 'number' && (op === '*' || op === '/')) return a.map(x => f(x, b));
       if (typeof a === 'number' && isVec(b) && op === '*') return b.map(x => a * x);
+      /* say which side is not a number: a name that means nothing here is the usual cause */
+      const nm = [a, b].find(v => v && v.ref);
+      if (nm) {
+        const w = nm.ref.join('.');
+        const fix = w === 'i' ? 'i is the copy number of a part made with repeat:, so it works in that part\u2019s properties and its motion rules.'
+          : w === 't' ? 't is the time, and works in motion rules.'
+          : nm.ref.length > 1 ? `Anchors such as ${w} work in at:, attach:, hinge:, look-at and Line or Arrow ends, not here; write the value as a number or (x, y, z).`
+          : `Write a number, or define it first with let ${w} = ...; in the scene.`;
+        throw new Diag(nm.node || n, 'E0301', `Cannot use "${op}" with ${w}: here it is a name, not a number.`, fix);
+      }
       throw new Diag(n, 'E0301', `Cannot use "${op}" here.`, 'Arithmetic works on numbers, and on a point plus or minus a vector.');
     }
     case 'tuple': return n.items.map(it => evalE(it, env));
@@ -2204,7 +2214,7 @@ function compile(files, opts) {
       const stepNode = rp.items.slice(1).find(x => x.t === 'call' && x.name === 'step');
       for (let i = 0; i < n; i++) {
         const c = subst(JSON.parse(JSON.stringify({ ...d, props: d.props.filter(p => p.name !== 'repeat') })), { i });
-        c.name = d.name + (i + 1);
+        c.name = d.name + (i + 1); c.repIndex = i;   /* motion rules read i from here: .pulse { y: 10mm * i; } */
         if (stepNode) {
           const stepV = stepNode.args.length === 1 ? stepNode.args[0] : { t: 'tuple', items: stepNode.args, line: rp.line, col: rp.col, file: rp.file };
           const off = { t: 'bin', op: '*', a: stepV, b: { t: 'num', v: i }, line: rp.line, col: rp.col, file: rp.file };
@@ -3428,9 +3438,22 @@ function compileMotion(model, ast, warn, tryDo) {
     }
     return [tg];
   });
-  for (const rule of ast.filter(r0 => r0.targets).flatMap(r0 => expandT(r0).map(tg => ({ ...r0, target: tg })))) {
+  /* i in a motion rule is the copy number of a repeated part (0, 1, 2 ...), as in the scene: each copy gets its own copy of the rule */
+  const usesI = (n) => Array.isArray(n) ? n.some(usesI) : !!n && typeof n === 'object' && ((n.t === 'ref' && n.parts.length === 1 && n.parts[0] === 'i') || Object.keys(n).some(k => k !== 'easing' && usesI(n[k])));
+  const withI = (n, i) => {
+    if (Array.isArray(n)) return n.map(x => withI(x, i));
+    if (!n || typeof n !== 'object') return n;
+    if (n.t === 'ref' && n.parts.length === 1 && n.parts[0] === 'i') return { t: 'num', v: i, line: n.line, col: n.col, file: n.file };
+    const o = {}; for (const k in n) o[k] = k === 'easing' ? n[k] : withI(n[k], i); return o;
+  };
+  for (let rule of ast.filter(r0 => r0.targets).flatMap(r0 => expandT(r0).map(tg => ({ ...r0, target: tg })))) {
     tryDo(() => {
       const name = rule.target.join('.');
+      if (usesI(rule.blocks)) {
+        const ent = model.ents.get(name), k = ent && ent.decl ? ent.decl.repIndex : undefined;
+        if (k === undefined) throw new Diag(rule, 'E0509', `i is the copy number of a repeated part, and ${name} is not repeated.`, `Use i in the rules of parts made with repeat:, such as .pulse { y: 10mm * i; }  or write a number instead.`);
+        rule = { ...rule, blocks: withI(rule.blocks, k) };
+      }
       let target;
       if (name === 'Observer') target = { kind: 'observer' };
       else if (name === 'Scene') target = { kind: 'scene' };

@@ -1,0 +1,26 @@
+<div class="wrap">
+<header class="hero">
+  <div class="kick">Gallery</div>
+  <h1>Made with <em>GearScript.</em></h1>
+  <p class="lede">Engines, clocks, robots and scenes, each written as a short text file. Open any of them in the studio, change a number, and watch the whole machine respond.</p>
+</header>
+<div class="gallery">
+{{gallery}}
+</div>
+<p style="color:var(--fg-3);font-size:14.5px;margin-top:28px">Clips are short, silent previews. In the studio, the examples play in full, with their sounds.</p>
+</div>
+
+<div class="wrap"><div class="closing">
+  <h2>Make the <em>next one.</em></h2>
+  <p>Start from an example or from one line. Export a video, a GIF or a 3D page anyone can turn.</p>
+  <div class="ctas"><a class="btn sun" href="studio.html">Open the Studio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="help.html">Read the documentation</a></div>
+</div></div>
+<script data-page>
+/* the clips play only while they are on screen, and not at all for people who ask for less motion */
+(function () {
+  var vids = [].slice.call(document.querySelectorAll('.gcard video'));
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { var v = e.target; if (e.isIntersecting) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } else v.pause(); }); }, { threshold: 0.35 });
+  vids.forEach(function (v) { io.observe(v); });
+})();
+</script>

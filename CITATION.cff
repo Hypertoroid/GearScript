@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use GearScript in your work, please cite it as below."
+title: "GearScript: a CSS-like language for describing and animating mechanisms"
+type: software
+authors:
+  - family-names: Murali
+    given-names: Sivaprasad
+version: 1.0.0-beta
+license: Apache-2.0
+url: "https://gearscript.org"
+repository-code: "https://github.com/Hypertoroid/GearScript"
+abstract: >-
+  GearScript is a small, CSS-like language and browser-based studio for describing
+  mechanisms and animating them in 3D. Parts are connected by hinges, sliders, pins,
+  gears and belts, and a solver closes every loop at every frame, so connected parts
+  move the way real ones would. Projects are plain text, and the toolchain reports
+  numbered errors with fixes, which lets people and AI models write and correct them.
+keywords:
+  - animation
+  - mechanisms
+  - kinematics
+  - domain-specific language
+  - education
+  - visualization

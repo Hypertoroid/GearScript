@@ -1610,7 +1610,7 @@ const onScroll = () => {
 addEventListener('scroll', onScroll, { passive: true }); onScroll();
 })();
 </script>
-<footer class="sitefoot">© <span data-site="year"></span> <span data-site="owner"></span>. Open source under the <a href="LICENSE">Apache License 2.0</a>. · <a href="privacy.html">Privacy policy</a> · <a href="terms.html">Terms of use</a> · <a data-site="coffeeUrl" href="#" target="_blank" rel="noopener">Buy me a coffee</a></footer>
+<footer class="sitefoot">© <span data-site="year"></span> <span data-site="owner"></span>. Open source under the <a href="LICENSE">Apache License 2.0</a>. · <a href="why.html">Why GearScript</a> · <a href="gallery.html">Gallery</a> · <a href="whats-new.html">What’s new</a> · <a href="about.html">About</a> · <a href="privacy.html">Privacy policy</a> · <a href="terms.html">Terms of use</a> · <a data-site="coffeeUrl" href="#" target="_blank" rel="noopener">Buy me a coffee</a></footer>
 <script src="site-config.js"></script>
 <script>(function () { var S = Object.assign({ owner: "Sivaprasad Murali", year: new Date().getFullYear(), coffeeUrl: "#" }, window.GEARSCRIPT_SITE || {}); document.querySelectorAll("[data-site]").forEach(function (el) { var k = el.getAttribute("data-site"); if (k === "coffeeUrl") { el.href = S.coffeeUrl; if (!/^https:\/\//.test(S.coffeeUrl || "") || /yourname/.test(S.coffeeUrl)) el.hidden = true; } else el.textContent = S[k]; }); })();</script>
 </body>

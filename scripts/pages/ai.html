@@ -1,0 +1,86 @@
+<div class="wrap">
+<header class="hero">
+  <div class="kick">For AI and agents</div>
+  <h1>A language AI can write,<br><em>check and fix.</em></h1>
+  <p class="lede">Most code an AI writes is judged by eye. GearScript code can be judged by the toolchain: it compiles or it does not, the mechanism moves as asked or it locks, and every problem comes back with a reason and a fix the model can apply. That makes it a good target for assistants, agents and models built for it.</p>
+  <div class="ctas"><a class="btn sun" href="#tools">See the tools <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="help.html">Read the documentation</a></div>
+</header>
+</div>
+
+<section class="block"><div class="wrap">
+  <h2>Why it suits a model</h2>
+  <div class="grid">
+    <div class="card"><h3>Small and predictable</h3><p>Three sections, CSS-like rules and named anchors instead of coordinates: <code>at: Base.face.top</code>, <code>hinge: end.a on Crank.end.b</code>. There is less to guess, so there is less to get wrong.</p></div>
+    <div class="card"><h3>Errors that explain</h3><p>More than 100 numbered errors and warnings, each with a line, a reason and a suggested fix, available as JSON. A model reads <code>E0353</code> and its fix once, instead of guessing.</p></div>
+    <div class="card"><h3>Answers that can be verified</h3><p>Compiling, solving and sampling the motion give an exact verdict on generated code: a feedback loop for agents, and a reward signal and evaluation harness for training.</p></div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <h2>The loop</h2>
+  <p class="sub">A request becomes code, the toolchain checks it, and problems go back to the model with their fixes until the mechanism compiles and moves as asked.</p>
+  <div class="grid five" role="list">
+    <div class="card" role="listitem"><h3>Request</h3><p>“A crank that drives a rocker.”</p></div>
+    <div class="card" role="listitem"><h3>Model</h3><p>Writes GearScript, guided by the syntax prompt.</p></div>
+    <div class="card" role="listitem"><h3><code>check</code></h3><p>Compiles it and lists each problem with a fix.</p></div>
+    <div class="card" role="listitem"><h3><code>sample</code></h3><p>Solves the motion and reports where parts are.</p></div>
+    <div class="card" role="listitem"><h3>Result</h3><p>Video, 3D player and source, ready to share.</p></div>
+  </div>
+</div></section>
+
+<section class="block" id="tools"><div class="wrap">
+  <h2>The tools</h2>
+  <div class="grid two">
+    <div class="card"><h3>The syntax prompt</h3><p>A short guide to the language for any assistant. In the studio, <b>Prompt AI</b> copies it with your request; from the command line, <code>gearscript prompt "a pendulum clock"</code> prints it. Options give the one-file, chapters or patch reply format.</p></div>
+    <div class="card"><h3>The JSON schema</h3><p>Every shape with its properties, required properties and anchors, plus style, motion and Scene properties with examples. Print it with <code>gearscript schema</code>, or fetch <a href="docs/gearscript-schema.json">gearscript-schema.json</a>.</p></div>
+    <div class="card"><h3>Patches</h3><p>Small changes named by chapter, part and property, so a model fixes one value without rewriting the file. The studio and <code>gearscript patch</code> check each change, then show the problems it fixes and brings, and how the motion changes.</p></div>
+    <div class="card"><h3>Motion sampling</h3><p><code>gearscript sample</code> solves the animation at chosen times and returns positions, rotations and the world position of named anchors, so an agent can verify that the mechanism does what was asked.</p></div>
+  </div>
+<pre class="code"><code><span class="c">@patch 1 "Close the loop and slow the crank"</span>
+<span class="c">@scene</span>
+<span class="n">Coupler</span> { length: <span class="v">120mm</span> =&gt; <span class="v">125mm</span>; }
+<span class="c">@motion</span>
+<span class="k">replace</span> <span class="n">Crank</span> { forever: rotate: 180deg/s; } <span class="k">with</span> { forever: rotate: 90deg/s; }</code></pre>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="grid two">
+    <div>
+      <h2>An MCP server for agents</h2>
+      <p style="color:var(--fg-2)">Run <code>gearscript mcp</code> and any agent that speaks the Model Context Protocol can check, sample, patch and render projects. It offers seven tools:</p>
+      <ul style="color:var(--fg-2)">
+        <li><code>gearscript_check</code>: diagnostics with lines and fixes</li>
+        <li><code>gearscript_sample</code>: positions and anchors over time</li>
+        <li><code>gearscript_patch</code>: apply a patch and report the result</li>
+        <li><code>gearscript_render</code>: an animated GIF of the project</li>
+        <li><code>gearscript_prompt</code>, <code>gearscript_spec</code>, <code>gearscript_schema</code>: the language, for the agent</li>
+      </ul>
+    </div>
+    <div>
+<pre class="code"><code><span class="c"># once, in the repository</span>
+cd cli &amp;&amp; npm install
+
+<span class="c"># in your agent's MCP settings</span>
+{
+  <span class="s">"mcpServers"</span>: {
+    <span class="s">"gearscript"</span>: {
+      <span class="s">"command"</span>: <span class="s">"node"</span>,
+      <span class="s">"args"</span>: [<span class="s">"/path/to/GearScript/cli/gearscript.js"</span>, <span class="s">"mcp"</span>]
+    }
+  }
+}</code></pre>
+    </div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <h2>An evaluation set</h2>
+  <p class="sub">The repository includes evaluation tasks with reference answers. Score any model’s answers with one command, and use it as a baseline before you fine-tune.</p>
+<pre class="code"><code>gearscript eval evals/tasks.json my-model-answers/ --json</code></pre>
+</div></section>
+
+<div class="wrap"><div class="closing">
+  <h2>Building a model for GearScript? <em>So are we.</em></h2>
+  <p>We are hiring an LLM Engineer to build a model that writes GearScript from a plain request.</p>
+  <div class="ctas"><a class="btn sun" href="careers.html">See the role <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" data-site="repoUrl" href="#" hidden>Source code</a></div>
+</div></div>

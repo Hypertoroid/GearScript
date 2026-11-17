@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://gearscript.org/</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://gearscript.org/studio.html</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://gearscript.org/help.html</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://gearscript.org/privacy.html</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://gearscript.org/terms.html</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://gearscript.org/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/studio.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/why.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/gallery.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/educators.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/researchers.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/ai.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/help.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/whats-new.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/about.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/careers.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/privacy.html</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://gearscript.org/terms.html</loc><lastmod>2026-11-17</lastmod></url>
 </urlset>

@@ -1,0 +1,63 @@
+<div class="wrap">
+<header class="hero">
+  <div class="kick">For researchers</div>
+  <h1>Figures and videos for your paper,<br><em>from a text file.</em></h1>
+  <p class="lede">Show a mechanism, a test rig or a robot the way it really moves. GearScript draws it to scale from a short description you can keep next to your code, check into your repository and render again whenever a dimension changes.</p>
+  <div class="ctas"><a class="btn sun" href="studio.html">Open the Studio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="#cite">How to cite</a></div>
+</header>
+</div>
+
+<section class="block"><div class="wrap">
+  <h2>What it is good for</h2>
+  <div class="grid">
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg></div><h3>Method and apparatus figures</h3><p>Parts are sized in real units, so the figure is to scale. Export PNG up to 4K, with a transparent background for layouts and posters.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M10 9l5 3-5 3z"/></svg></div><h3>Supplementary videos</h3><p>A narrated, captioned MP4 or WebM showing how the mechanism or experiment works, often clearer than a page of stills. Captions also save as .srt or .vtt.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg></div><h3>Interactive 3D material</h3><p>A single self-contained .html player that readers can turn, pause and scrub. Put it in supplementary material or on a project page.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 12h6M9 16h6M9 8h3"/></svg></div><h3>Talks and posters</h3><p>The same project makes loops for slides (<code>frame: slides</code>), stills for the poster and the video for the paper.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg></div><h3>Quick kinematic checks</h3><p>See whether a linkage closes, its range of motion and where it locks before you build it, and read part positions over time as JSON for your own plots.</p></div>
+    <div class="card"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h10M4 17h7"/><circle cx="18" cy="16" r="3"/></svg></div><h3>Grant proposals and patents</h3><p>A clear moving picture of a proposed mechanism, made in an afternoon and changed in minutes when the design changes.</p></div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <h2>Reproducible figures</h2>
+  <p class="sub">The figure is code. Review it like code, keep it in version control, and rebuild every figure and video from the command line, with the same engine the studio uses.</p>
+<pre class="code"><code><span class="c"># a still for the paper, a video for the supplement, and the positions behind them</span>
+gearscript render  rig.gscript -o figure-3.png --width 3840 --time 1.5
+gearscript render  rig.gscript -o supplement-1.mp4 --width 1920
+gearscript sample  rig.gscript --at 0,0.5,1 --points Coupler.end.b   <span class="c"># JSON, for your own plots</span>
+gearscript check   rig.gscript                                        <span class="c"># fails the build if the model breaks</span></code></pre>
+  <p style="color:var(--fg-2);margin-top:18px">A project starts with <code>@gearscript 1</code>, the language version. Note the tool version you used (<code>{{version}}</code> today) for full reproducibility.</p>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="note">
+    <h3>What it does not do</h3>
+    <ul>
+      <li><b>Motion only.</b> GearScript solves kinematics: how connected parts move. It does not compute forces, stress, friction or dynamics, and should not be presented as a physics simulation.</li>
+      <li><b>Raster output.</b> Figures export as PNG (and video), not SVG or PDF. Most journals accept high-resolution PNG; check yours if it asks for vector line art.</li>
+      <li><b>Beta.</b> Version 1.0 beta. Pin the version you used, as above.</li>
+    </ul>
+  </div>
+</div></section>
+
+<section class="block" id="cite"><div class="wrap narrow">
+  <h2>How to cite GearScript</h2>
+  <p style="color:var(--fg-2)">If GearScript helped your work, a citation helps others find it. The repository includes a <code>CITATION.cff</code> file, so GitHub’s <b style="color:var(--fg)">Cite this repository</b> button gives APA and BibTeX. Or copy this:</p>
+<pre class="code"><code>@software{gearscript,
+  author  = {{{ownerLast}}, {{ownerFirst}}},
+  title   = {GearScript: a CSS-like language for describing and animating mechanisms},
+  year    = {{{year}}},
+  version = {{{version}}},
+  url     = {https://gearscript.org},
+  license = {Apache-2.0}
+}</code></pre>
+  <p style="color:var(--fg-2);margin-top:18px">{{owner}}. ({{year}}). <i>GearScript: a CSS-like language for describing and animating mechanisms</i> (Version {{version}}) [Computer software]. https://gearscript.org</p>
+  <p style="color:var(--fg-2)">Using GearScript in a paper or a course? We would love to hear about it: <a data-site="contactEmail" data-subject="GearScript in research" href="#"></a>.</p>
+</div></section>
+
+<div class="wrap"><div class="closing">
+  <h2>Your next figure, <em>in motion.</em></h2>
+  <p>Free and open source. Nothing to install, and your files never leave your machine.</p>
+  <div class="ctas"><a class="btn sun" href="studio.html">Open the Studio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="help.html">Read the documentation</a></div>
+</div></div>

@@ -1,0 +1,90 @@
+<div class="wrap">
+<header class="hero">
+  <div class="kick">For educators</div>
+  <h1>Show how things work.<br><em>Let students build them.</em></h1>
+  <p class="lede">Textbooks show machines standing still. GearScript shows them moving, from a pendulum to a gearbox, and lets students change one number and watch what happens. It is free, it runs in any browser, and there are no accounts for students to create.</p>
+  <div class="ctas"><a class="btn sun" href="studio.html?example=pendulum">Try a lesson example <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="gallery.html">Browse the gallery</a></div>
+</header>
+</div>
+
+<section class="block"><div class="wrap">
+  <h2>Lessons that move</h2>
+  <p class="sub">Topics that are hard to see on a page, and easy to see in motion. Each example opens in the studio, ready to change.</p>
+  <div class="grid">
+    <div class="card"><h3>Physics</h3><p>Pendulums, levers, pulleys, gear ratios and simple machines. Show why a longer pendulum swings more slowly, or how a small gear turns a large one.</p><a class="go" href="studio.html?example=pendulum">Open the pendulum →</a></div>
+    <div class="card"><h3>Mechanical engineering</h3><p>Four-bar linkages, slider-cranks, pistons, belts and gearboxes. Students change a length and see at once whether the linkage still turns, and the studio explains why if it locks.</p><a class="go" href="studio.html?example=linkage">Open the four-bar linkage →</a></div>
+    <div class="card"><h3>Mathematics</h3><p>Curves, motion as a function of time, and charts that draw themselves on. Parametric motion becomes something you can watch and adjust.</p><a class="go" href="studio.html?example=projectile">Open the projectile →</a></div>
+    <div class="card"><h3>Biology</h3><p>Joints are mechanisms too. A knee or a jaw can be shown as links, hinges and pins, which makes the mechanics of the body easy to discuss.</p><a class="go" href="studio.html?example=arm">Open the two-link arm →</a></div>
+    <div class="card"><h3>History of technology</h3><p>Clocks, steam locomotives and engines, told as short narrated films, with each part named as it appears.</p><a class="go" href="studio.html?example=locomotive">Open the locomotive →</a></div>
+    <div class="card"><h3>Computing</h3><p>A gentle first language. The syntax reads like CSS, the result appears at once, and every mistake comes with an explanation and a fix.</p><a class="go" href="help.html">Read the documentation →</a></div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="grid two">
+    <div>
+      <h2>A short explainer, in an afternoon</h2>
+      <p style="color:var(--fg-2)">Flipped lessons need short videos, and video editing takes time teachers do not have. In GearScript the story is written next to the machine:</p>
+      <ul style="color:var(--fg-2)">
+        <li><b style="color:var(--fg)">Narration</b> spoken by a natural voice, from lines you type</li>
+        <li><b style="color:var(--fg)">Captions</b> burned into the video or saved as .srt and .vtt, for accessibility and for students learning in a second language</li>
+        <li><b style="color:var(--fg)">Chapters</b> joined into one video with fades</li>
+        <li><b style="color:var(--fg)">Sounds</b> that follow the motion: a tick on every swing, a knock when a part lands</li>
+        <li><b style="color:var(--fg)">Frames</b> for slides, YouTube, Shorts and Reels</li>
+      </ul>
+    </div>
+    <div>
+<pre class="code"><code><span class="c">// a pendulum that ticks, with a caption</span>
+<span class="n">Narrator</span>::Voice { captions: on; }
+<span class="n">Tick</span>::Sound { kind: tick; }
+
+<span class="c">@motion</span>
+<span class="n">Scene</span> {
+  <span class="k">0s..60s</span>: sound: Tick every 1s;
+  <span class="k">1s..5s</span>:  say: Narrator <span class="s">"One swing, one second."</span>;
+}</code></pre>
+    </div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <h2>Put it in your course</h2>
+  <p class="sub">Export the animation as a single <b style="color:var(--fg)">.html 3D player</b>. Students can play, pause, scrub and turn the model themselves, and it needs no install. Upload the file to your course site, or embed it in Moodle, Canvas, Google Sites or any page that accepts an iframe:</p>
+<pre class="code"><code>&lt;iframe src=<span class="s">"pendulum.html"</span> width=<span class="s">"800"</span> height=<span class="s">"500"</span> style=<span class="s">"border:0"</span> allowfullscreen&gt;&lt;/iframe&gt;</code></pre>
+  <p style="color:var(--fg-2);margin-top:18px">MP4, WebM and GIF work everywhere else: slides, learning platforms and messaging apps.</p>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <h2>As an assignment, not just a demonstration</h2>
+  <div class="grid">
+    <div class="card"><h3>They build it, so they understand it</h3><p>Ask students to make a mechanism move a certain way. Writing it shows whether they understand it, not whether they can draw it.</p></div>
+    <div class="card"><h3>Errors that teach</h3><p>More than 100 numbered problems, each with a plain reason and a fix: <code>E0353: The linkage locks at 1.20s</code>, then what to change. It is a patient tutor at 11 at night.</p></div>
+    <div class="card"><h3>Easy to collect and check</h3><p>Projects are plain text, so they are easy to submit, compare and keep. The command line can check a folder of submissions and report where parts are at any moment.</p></div>
+  </div>
+<pre class="code"><code>gearscript check  submissions/aisha.gscript --json        <span class="c"># does it compile, and what is wrong</span>
+gearscript sample submissions/aisha.gscript --at 0,1,2   <span class="c"># where each part is at 0, 1 and 2 seconds</span></code></pre>
+</div></section>
+
+<section class="block"><div class="wrap">
+  <div class="grid two">
+    <div class="card"><h3>Private by design</h3><p>No accounts, no sign-in and nothing uploaded: students’ work stays on their own device unless they save or share it. That makes GearScript simple to use in schools. See the <a href="privacy.html">privacy policy</a>.</p></div>
+    <div class="card"><h3>With an AI assistant</h3><p><b>Prompt AI</b> copies a short guide to the language for any AI assistant. Teachers can draft a lesson animation from a sentence; students can ask an AI for help and still have to understand what it wrote.</p></div>
+  </div>
+</div></section>
+
+<section class="block"><div class="wrap narrow">
+  <h2>Ready in ten minutes</h2>
+  <ol class="steps">
+    <li><b>Open the studio</b> and take the short tour.</li>
+    <li><b>Open an example</b> close to your topic, from the Examples menu or the <a href="gallery.html">gallery</a>.</li>
+    <li><b>Change one number</b>, such as a length or a speed, and watch the whole mechanism respond.</li>
+    <li><b>Add a line of narration</b> and a caption.</li>
+    <li><b>Export</b> a video for your slides, or a 3D player for your course page.</li>
+  </ol>
+</div></section>
+
+<div class="wrap"><div class="closing">
+  <h2>Teach the <em>moving</em> version.</h2>
+  <p>Free and open source. Nothing to install, and no accounts for you or your students.</p>
+  <div class="ctas"><a class="btn sun" href="studio.html">Open the Studio <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><a class="btn ghost" href="help.html">Read the documentation</a></div>
+</div></div>

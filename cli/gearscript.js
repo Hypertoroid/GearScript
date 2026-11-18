@@ -62,7 +62,7 @@ function projectFiles(project) {
   return files;
 }
 function readProjectText(p) {
-  if (!p) throw usage('Name a project: a folder, a .json project file, or a .scene file.');
+  if (!p) throw usage('Name a project: a .gscript file (or a folder, a .json project file, or a .scene file).');
   const st = fs.statSync(p);
   const out = { scene: '', style: '', motion: '' };
   if (st.isDirectory()) {
@@ -111,7 +111,7 @@ function schema() {
   const common = ['at', 'align', 'orient', 'visible', 'repeat', 'scatter', 'attach', 'hinge', 'slider', 'range', 'mesh', 'couple', 'belt', 'pin', 'overlap', 'fixed'];
   return {
     language: M.LANGUAGE, studio: M.version, versionLine: '@gearscript 1', sections: ['scene', 'style', 'motion'], fileExtension: '.gscript',
-    syntax: { part: 'Name::Type.class { prop: value; }', group: 'Name::Group { member: Type { ... } }', define: 'define Name(param, other = 10mm) :: Type { ... }', let: 'let name = value;', comment: '// line  or  /* block */', styleRule: 'Selector, .class, #Name { prop: value; }', motionRule: 'Target { forever: prop: value;  0s..2s: prop: a -> b ease-in-out;  then 2s: ... }' },
+    syntax: { part: 'Name::Type.class { prop: value; }', group: 'Name::Group { member: Type { ... } }', light: 'Light { kind: point; at: (x, y, z); }  or, named, Key::Light { ... }', define: 'define Name(param, other = 10mm) :: Type { ... }', let: 'let name = value;', comment: '// line  or  /* block */', styleRule: 'Selector, .class, #Name { prop: value; }', motionRule: 'Target { forever: prop: value;  0s..2s: prop: a -> b ease-in-out;  then 2s: ... }' },
     units: Object.fromEntries(tables.UNITS.map(([u, k]) => [u, k])), easings: tables.EASE,
     shapes: Object.fromEntries(Object.entries(M.SHAPES).map(([k, v]) => [k, { properties: v.props.map(p => ({ name: p, ...doc(p) })), required: tables.REQUIRED[k] || [], anchors: tables.ANCHORS[k] || [], doc: tables.SHAPE_DOC[k] || '' }])),
     commonProperties: common.map(p => ({ name: p, ...doc(p) })),
@@ -553,6 +553,7 @@ async function main() {
       break;
     }
     case 'eval': {
+      if (!pos[0] || !pos[1]) throw usage('eval needs a task file and a folder of answers: gearscript eval evals/tasks.json answers/ [--json]');
       const r = evaluate(pos[0], pos[1]);
       if (o.json) console.log(pretty(r));
       else {

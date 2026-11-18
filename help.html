@@ -835,7 +835,7 @@ Note  { font-family: Inter; }</div>
       <h2>Camera, lights and scene</h2>
       <div data-snippet="scene">Observer { position: (2600mm, 1700mm, 3400mm); look-at: (450mm, 1000mm, 0); zoom: 1; fov: 40deg; }
 Light    { kind: directional; direction: (-1, -2, -1.5); power: 0.85; }
-Light    { kind: point; at: (0, 0, 0); power: 0.5; }
+Fill::Light { kind: point; at: (0, 0, 0); power: 0.5; }
 Scene    { duration: 4.5s; grid: floor; background: #070a10; }</div>
       <p><code>background</code> takes any colour. <code>background: transparent</code> keeps the background clear: the preview shows a checkerboard, and a saved PNG frame, <b>PNG frames</b>, <b>GIF</b> and the <b>3D player</b> keep the transparency, so the animation can sit on a slide, a web page or in a video editor. MP4 and WebM have no transparency, so those fill it with the theme colour. You can also pick <b>Transparent</b> under Background in the right-click menu or Settings without changing the code.</p>
       <h3 id="frame">Frame: portrait, landscape, Shorts and Reels</h3>

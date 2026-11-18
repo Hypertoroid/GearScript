@@ -125,6 +125,7 @@ define Tyre(r = 50mm, mount) :: Wheel { radius: r; hinge: axis on mount; }   // 
 FL::Tyre(mount: Car.axle1.end.b);                      // positional or named values
 Observer { position: (x, y, z); look-at: Part; zoom: 1; fov: 40deg; }
 Light    { kind: directional; direction: (-1, -2, -1); power: 0.85; }
+Key::Light { kind: point; at: (300mm, 400mm, 300mm); power: 0.6; }   // a light may carry a name
 Scene    { duration: 4s; grid: floor; background: #070a10; }   // background: transparent keeps it clear in PNG, GIF and the 3D player
 Scene    { sky: dusk; ground: #2c3328; stars: 900; }          // a glowing sky sphere round everything, and a floor that fades into it
 Scene    { sky: sunset; sun: (5deg, -30deg) #ffb36b; }         // a sun on the sky that also aims the main light
@@ -333,6 +334,8 @@ Target, .class, DefineName { forever: prop: value;   0s..2s: prop: value;   then
 - **Acceleration** (`(0, -9.81m/s2, 0)`): constant within its block.
 - **Function of time**: any expression using `t` in seconds, such as `35deg * sin(t * 3.1416)`.
 - **Easings:** linear, ease, ease-in, ease-out, ease-in-out, cubic-bezier(…).
+- **Several rules for one target** add their blocks together, for parts, joints and the `Observer` alike: `Observer { 0s..4s: position: …; }` and `Observer { forever: look-at: Aim; }` both apply.
+- **Words keep their meaning.** In a property whose values are words (`text-align`, `facing`, `fit`, `kind`, `material`, colours, `font-weight`, `sky`, `frame` …), a word the property knows stays that word even when a `let` has the same name: with `let left = -45deg;`, `text-align: left;` still aligns left.
 
 ### Properties
 

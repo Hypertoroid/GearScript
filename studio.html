@@ -1551,7 +1551,21 @@ class Parser {
       if (t.v === 'define' && this.peek(1).type === 'id') return this.defineStmt();
       this.next();
       if (this.isP('::')) {
-        this.next(); const ty = this.expectId('a shape type'); const { classes, args } = this.typeTail();
+        this.next(); const ty = this.expectId('a shape type');
+        if (ty.v === 'Camera') {   /* Cam::Camera { }: the camera is the Observer block */
+          const d = new Diag(t, 'E0200', 'The camera is the Observer block, and it takes no name.', 'Write Observer { position: (...); look-at: Part; }');
+          d.edit = { line: t.line, col: t.col, del: ty.end - t.pos, ins: 'Observer' }; throw d;
+        }
+        if (ty.v === 'Observer' || ty.v === 'Scene') {   /* Cam::Observer { }: there is one camera and one scene, and they take no name */
+          const d = new Diag(t, 'E0200', `${ty.v} takes no name: there is only one ${ty.v === 'Observer' ? 'camera' : 'scene'}.`, `Write ${ty.v} { ... } and move it with ${ty.v} { ... } in @motion.`);
+          d.edit = { line: t.line, col: t.col, del: ty.pos - t.pos, ins: '' }; throw d;
+        }
+        if (ty.v === 'Light') {   /* Key::Light { }: a light may carry a name, as parts, sounds and voices do */
+          if (!this.isP('{')) this.fail(this.peek(), `A light needs its settings in { }.`, `Write ${t.v}::Light { kind: point; at: (0, 300mm, 300mm); power: 0.6; }`, 'E0200');
+          const b = this.block();
+          return { kind: 'special', name: 'Light', label: t.v, ...b, line: t.line, col: t.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
+        }
+        const { classes, args } = this.typeTail();
         const b = this.isP(';') ? (this.next(), { props: [], members: [], anchors: [] }) : this.block();
         return { kind: 'entity', name: t.v, type: ty.v, tline: ty.line, tcol: ty.col, classes, args, ...b, line: t.line, col: t.col, file: this.file, pos: t.pos, end: this.t[this.i - 1].end };
       }
@@ -1559,6 +1573,14 @@ class Parser {
         if (!['Observer', 'Light', 'Scene'].includes(t.v)) {
           const kind = this.blockLooksLike();
           if (kind) this.fail(t, `"${t.v} { … }" looks like ${kind === 'motion' ? 'motion (it has times such as 0s..2s)' : 'a style rule'}, but it is in the scene.`, `Move it under @${kind}. In one file, write @scene, @style and @motion each on its own line; a missing line puts everything after it in the wrong section.`, 'E0200');
+          const low = ['observer', 'light', 'scene'].find(w => w === t.v.toLowerCase());
+          if (low) { const W = low[0].toUpperCase() + low.slice(1), d = new Diag(t, 'E0200', `Write ${W} with a capital ${W[0]}.`, `${W} { ... } is a block without a type; names are case-sensitive.`); d.edit = { line: t.line, col: t.col, del: t.v.length, ins: W, old: t.v }; throw d; }
+          if (/^camera$/i.test(t.v)) { const d = new Diag(t, 'E0200', `The camera is the Observer block.`, `Write Observer { position: (...); look-at: Part; }`); d.edit = { line: t.line, col: t.col, del: t.v.length, ins: 'Observer', old: t.v }; throw d; }
+          if (SHAPES[t.v]) {   /* Box { ... }, Sound { ... }: a part needs a name before its type */
+            const eg = t.v === 'Sound' ? 'Tick::Sound { kind: tick; }' : t.v === 'Voice' ? 'Narrator::Voice { voice: en-GB; }' : `Door::${t.v} { ... }`;
+            const d = new Diag(t, 'E0200', `A ${t.v} needs a name.`, `Write ${eg}. Observer, Light and Scene are the only blocks without a name.`);
+            d.edit = { line: t.line, col: t.col, del: 0, ins: `${t.v}1::` }; throw d;
+          }
           this.fail(t, `"${t.v}" needs a type.`, `Write ${t.v}::Box { ... } (or another shape). Observer, Light and Scene are the only blocks without a type.`, 'E0200');
         }
         const b = this.block();
@@ -1685,6 +1707,21 @@ function cubicBezier(p1x, p1y, p2x, p2y) {
 /* ---------- shapes ---------- */
 const FACES = { front: [0, 0, 1], back: [0, 0, -1], left: [-1, 0, 0], right: [1, 0, 0], top: [0, 1, 0], bottom: [0, -1, 0] };
 const AXIS_OF = f => FACES[f].findIndex(x => x !== 0);
+/* the words each word-valued property accepts; a let with one of these names does not replace the word in that property */
+const PROP_WORDS = {
+  'text-align': ['left', 'center', 'right'], facing: ['front', 'camera', 'observer', 'upright'], fit: ['contain', 'cover', 'stretch'],
+  projection: ['orthographic', 'perspective'], material: ['metal', 'chrome', 'brushed', 'gold', 'matte', 'plastic', 'glass', 'flat', 'glow', 'ghost'],
+  'font-weight': ['normal', 'bold'], 'font-style': ['normal', 'italic'], 'text-transform': ['uppercase', 'lowercase', 'capitalize', 'none'],
+  shadow: ['none', 'on', 'off'], outline: ['none'], wireframe: ['on', 'off', 'none'], 'text-side': ['front', 'back', 'both'],
+};
+function propKeyword(prop, w) {
+  if (PROP_WORDS[prop] && PROP_WORDS[prop].includes(w)) return true;
+  if (prop === 'kind') return w === 'directional' || w === 'point' || (typeof SOUND_KINDS !== 'undefined' && w in SOUND_KINDS);
+  if (prop === 'sky') return typeof SKY_PRESETS !== 'undefined' && w in SKY_PRESETS;
+  if (prop === 'frame') return typeof FRAME_PRESETS !== 'undefined' && w in FRAME_PRESETS;
+  if (/(^|-)colou?r$|background$|^ground$/.test(prop)) return w === 'transparent' || w in NAMED_COLORS || ((typeof THREE !== 'undefined' && THREE.Color.NAMES) || {})[w.toLowerCase()] !== undefined;
+  return false;
+}
 const NAMED_COLORS = { steel: '#8f99a3', brass: '#c9a43a', oak: '#b17a45', copper: '#bf7a4b', aluminium: '#c7ccd2', aluminum: '#c7ccd2', iron: '#5c6168', rubber: '#2a2b2d', walnut: '#6e4a2f', glass: '#a9d4e0', graphite: '#3b4148' };
 const SHAPES = {
   Box: { dim: 3, props: ['size'] }, Sphere: { dim: 3, props: ['radius'] }, Cylinder: { dim: 3, props: ['radius', 'height'] },
@@ -2136,6 +2173,11 @@ function compile(files, opts) {
   const subst = (node, extra) => {
     if (Array.isArray(node)) return node.map(n => subst(n, extra));
     if (!node || typeof node !== 'object') return node;
+    if (typeof node.name === 'string' && Array.isArray(node.items) && node.items.some(it => it && it.t === 'ref' && it.parts.length === 1 && propKeyword(node.name, it.parts[0]))) {
+      /* a word the property knows (text-align: left, color: steel, kind: point) stays that word even when a let has the same name */
+      const out = {}; for (const k in node) out[k] = k === 'items' ? node.items.map(it => it && it.t === 'ref' && it.parts.length === 1 && propKeyword(node.name, it.parts[0]) ? it : subst(it, extra)) : k === 'easing' ? node[k] : subst(node[k], extra);
+      return out;
+    }
     if (node.t === 'ref' && node.parts.length === 1) {
       const k = node.parts[0];
       if (extra && k in extra) return { t: 'num', v: extra[k], line: node.line, col: node.col, file: node.file };
@@ -2655,7 +2697,7 @@ function compile(files, opts) {
   for (const st of sceneAst) {
     tryDo(() => {
       if (st.kind === 'entity') {
-        if (model.ents.has(st.name) || model.sounds.has(st.name) || model.voices.has(st.name)) throw new Diag(st, 'E0210', `"${st.name}" is declared twice.`, 'Give each entity its own name.');
+        if (model.ents.has(st.name) || model.sounds.has(st.name) || model.voices.has(st.name) || (model.lightNames && model.lightNames.has(st.name))) throw new Diag(st, 'E0210', `"${st.name}" is declared twice.`, 'Give each entity its own name.');
         if (st.type === 'Sound') { compileSoundDecl(model, st, warn); return; }
         if (st.type === 'Voice') { compileVoiceDecl(model, st, warn); return; }
         if (st.type === 'Style') throw new Diag(st, 'E0616', `${st.name}::Style belongs in the style section.`, 'Move it below @style (or into the .style file); parts take it with use: ' + st.name + ';');
@@ -2717,6 +2759,12 @@ function compile(files, opts) {
           if (P.direction) l.direction = vec3(P.direction.items[0], {}, 'direction');
           if (P.at) l.at = vec3(P.at.items[0], placeEnv, 'at');
           if (P.color) l.color = P.color.items[0];
+          if (st.label && (model.ents.has(st.label) || model.sounds.has(st.label) || model.voices.has(st.label) || (model.lightNames && model.lightNames.has(st.label) && !layered))) throw new Diag(st, 'E0210', `"${st.label}" is declared twice.`, 'Give each light its own name.');
+          if (st.label) {   /* in a chapter, a light with the name of one from @common replaces it */
+            const old = model.lightNames && model.lightNames.get(st.label);
+            if (old) model.lights = model.lights.filter(x => x !== old);
+            l.name = st.label; (model.lightNames || (model.lightNames = new Map())).set(st.label, l);
+          }
           model.lights.push(l);
         } else if (st.name === 'Scene') {
           if (P.duration) model.sceneOpts.duration = num(P.duration.items[0], {}, 'duration');
@@ -3311,7 +3359,8 @@ function applyStyle(model, warn, tryDo) {
   /* a rule's properties with its use: list expanded in place: the styles first (left to right), then the rule's own properties */
   const ruleProps = new Map(); for (const r of rules) { const ps = []; for (const p of r.props) if (p.name !== 'use') ps.push(p); const us = r.props.filter(p => p.name === 'use'); ruleProps.set(r, [...us.flatMap(u => useList(u, [])), ...ps]); }
   for (const rule of rules) {
-    for (const sel of rule.sels) if (sel.kind !== 'all' && !model.leaves.some(l => matches(sel, l))) warn({ file: 'style', line: sel.line, col: sel.col }, 'W0601', `No entity matches "${sel.kind === 'class' || sel.kind === 'classes' ? '.' + sel.v : sel.kind === 'id' ? '#' + sel.v : sel.parts.join('.')}".`, 'Check the name against the scene file.');
+    for (const sel of rule.sels) if (sel.kind === 'name' && sel.parts.length === 1 && ((model.lightNames && model.lightNames.has(sel.parts[0])) || ['Light', 'Observer', 'Scene'].includes(sel.parts[0])) && !model.leaves.some(l => matches(sel, l))) warn({ file: 'style', line: sel.line, col: sel.col }, 'W0601', `"${sel.parts[0]}" is ${sel.parts[0] === 'Observer' ? 'the camera' : sel.parts[0] === 'Scene' ? 'the scene' : 'a light'}, and @style is for parts.`, sel.parts[0] === 'Observer' || sel.parts[0] === 'Scene' ? `Set it in its ${sel.parts[0]} { ... } block in the scene.` : 'Set its colour and power in its block in the scene: color: #ffd9a0; power: 0.6;');
+    else if (sel.kind !== 'all' && !model.leaves.some(l => matches(sel, l))) warn({ file: 'style', line: sel.line, col: sel.col }, 'W0601', `No entity matches "${sel.kind === 'class' || sel.kind === 'classes' ? '.' + sel.v : sel.kind === 'id' ? '#' + sel.v : sel.parts.join('.')}".`, 'Check the name against the scene file.');
     for (const p of rule.props) if (p.name !== 'use' && !STYLE_PROPS.includes(p.name)) nearFix(warn(p, 'W0602', `"${p.name}" is not a style property.`, `Style properties: ${STYLE_PROPS.join(', ')}.`), p.name, STYLE_PROPS);
   }
   for (const leaf of model.leaves) {
@@ -3462,6 +3511,7 @@ function compileMotion(model, ast, warn, tryDo) {
       else if (rule.target.length > 1 && model.ents.has(rule.target[0])) throw new Diag(rule, 'E0501', `Motion rules move whole entities; "${name}" is a part of ${rule.target[0]}.`, `Move ${rule.target[0]}, or declare ${rule.target[rule.target.length - 1]} as its own entity and attach it.`);
       else if (model.voices.has(name)) throw new Diag(rule, 'E0546', `${name} is a voice; it speaks from another rule.`, `Write say: ${name} "words"; inside a rule, or Scene { 2s..3s: say: ${name} "words"; }`);
       else if (model.sounds.has(name)) throw new Diag(rule, 'E0546', `${name} is a sound; it plays from another rule.`, `Write sound: ${name}; inside the rule of the part it belongs to, or in Scene { sound: ${name} at 2s; }`);
+      else if (model.lightNames && model.lightNames.has(name)) throw new Diag(rule, 'E0500', `"${name}" is a light, and lights do not move.`, 'Lights keep their place, kind, power and colour for the whole scene. To light a moving part, give it luminosity: in @style or @motion.');
       else throw nearFix(new Diag(rule, 'E0500', `There is nothing called "${name}" to move.`, `Targets: ${[...new Set([...model.ents.keys(), ...jointByName.keys(), 'Observer', 'Scene'])].join(', ')}.`), name, [...model.ents.keys(), ...jointByName.keys(), 'Observer', 'Scene']);
       let prevEnd = 0, prevDur = 0; const blocks = [];
       for (const b of rule.blocks) {
@@ -3574,7 +3624,8 @@ function compileMotion(model, ast, warn, tryDo) {
       j.rule = j.rule ? { ...r, props: [...j.rule.props, ...r.props] } : r; j.key = key;   /* several rules for one joint add their blocks together */
       if (j.roll && r.props.some(p => p.name === key)) dropProp(warn(j.roll.p, 'W0531', `${j.name} has both roll and ${key}; roll wins.`, `Remove the ${key} line.`), r.props.find(p => p.name === key));
     }
-    if (r.target.kind === 'observer') { model.obsRule = r; for (const p of r.props) if (!OBSERVER_PROPS.includes(p.name)) nearFix(warn(p, 'W0515', `"${p.name}" is not a camera property.`, `Camera properties: ${OBSERVER_PROPS.join(', ')}.`), p.name, OBSERVER_PROPS); }
+    if (r.target.kind === 'observer') { model.obsRule = model.obsRule ? { ...r, blocks: [...model.obsRule.blocks, ...r.blocks], props: [...model.obsRule.props, ...r.props] } : r;   /* several Observer rules add their blocks together, as joint rules do */
+      for (const p of r.props) if (!OBSERVER_PROPS.includes(p.name)) nearFix(warn(p, 'W0515', `"${p.name}" is not a camera property.`, `Camera properties: ${OBSERVER_PROPS.join(', ')}.`), p.name, OBSERVER_PROPS); }
   }
   for (const j of model.joints) tryDo(() => setSrc(model.find(j.movingEnt), { kind: 'joint', joint: j, label: `the ${j.type.toLowerCase()} on ${j.name}` }, j.st));
 
@@ -5326,7 +5377,7 @@ fixed: top-left | top | top-right | left | center | right | bottom-left | bottom
   A fixed part keeps its own motion (a spin, a fade) but takes no hinge, slider, attach or other connection, and goes on a whole part, not a group member.
 Points can be anchor maths: Frame.face.top + (0, 10mm, 0).   overlap: allow; silences the pass-through warning for that part.
 Observer { position: (x, y, z); look-at: Part | (x, y, z); fov: 40deg; projection: orthographic; }   (one Observer)
-Light { kind: directional | point; direction: (-1, -2, -1); at: (x, y, z); power: 0.8; color: #ffe2b8; }   (any number)
+Light { kind: directional | point; direction: (-1, -2, -1); at: (x, y, z); power: 0.8; color: #ffe2b8; }   (any number; Key::Light { ... } names one)
 Scene { duration: 12s; frame: youtube | youtube-short | reel | tiktok | instagram | square | slides | 4k | 9:16 | 1080x1920; sky: day | dawn | dusk | sunset | night | space | overcast | studio | #top #horizon #below; ground: #3d4a35 [at 0mm]; stars: 900; background: #0b0f14 | transparent; grid: floor; }
   frame sets the picture's shape and export size; for phone formats keep titles and captions inside the middle 70% (the apps cover the edges).
   sky is a glowing sphere round the whole scene that also tints the ambient light; ground is a wide floor that fades into it.
@@ -8762,7 +8813,7 @@ function suggestions() {
   if (cx.file === 'scene') {
     if (cx.depth === 0) {
       const tm = s.match(/^([A-Z]\w*)::([A-Za-z]*)$/) || s.match(/^define\s+\w+(?:\([^)]*\))?\s*::\s*([A-Za-z]*)$/);
-      if (tm) { prefix = tm[tm.length - 1]; return { prefix, items: [browseItem(), ...Object.keys(GearScript.SHAPES).map(k => it(k, 'shape', SHAPE_DOC[k], k + ' { ')), ...[...facts.defines.keys()].map(k => it(k, 'define', `built on ${facts.defines.get(k)}`, k + ' { '))] }; }
+      if (tm) { prefix = tm[tm.length - 1]; return { prefix, items: [browseItem(), ...Object.keys(GearScript.SHAPES).map(k => it(k, 'shape', SHAPE_DOC[k], k + ' { ')), ...(tm.length === 3 ? [it('Light', 'light', 'a named light: Key::Light { kind: point; at: (...); }', 'Light { ')] : []), ...[...facts.defines.keys()].map(k => it(k, 'define', `built on ${facts.defines.get(k)}`, k + ' { '))] }; }
       if (/^[A-Za-z]*$/.test(s)) return { prefix, items: [it('let', 'keyword', 'let name = value;', 'let '), it('define', 'keyword', 'define Name(param = default) :: Shape { ... }', 'define '), it('Observer', 'camera', 'Observer { position: (...); look-at: Part; }', 'Observer { '), it('Light', 'light', 'Light { kind: directional; direction: (...); }', 'Light { '), it('Scene', 'settings', 'Scene { duration: 4s; }', 'Scene { ')] };
       return null;
     }
@@ -8772,6 +8823,7 @@ function suggestions() {
     const hm = (h) => h.match(/^(?:(\w+)\s*:\s*)?([A-Z]\w*)?(?:::([A-Z]\w*))?/);
     const om = outer.match(/^([A-Z]\w*)::([A-Z]\w*)/) || outer.match(/^define\s+\w+(?:\([^)]*\))?\s*::\s*([A-Z]\w*)/);
     if (/^(Observer|Light|Scene)\b/.test(outer)) special = outer.match(/^(\w+)/)[1];
+    else if (/^[A-Z]\w*\s*::\s*Light\b/.test(outer)) special = 'Light';   /* Key::Light { */
     else if (om) type = baseType(om[om.length - 1], facts);
     if (cx.depth >= 2) { const mm = inner.match(/^\w+\s*:\s*([A-Z]\w*)/); if (mm) type = baseType(mm[1], facts); }
     isGroup = type === 'Group' && cx.depth === 1;
